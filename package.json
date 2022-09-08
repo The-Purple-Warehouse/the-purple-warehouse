@@ -1,19 +1,21 @@
 {
-  "name": "the-purple-warehouse",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HarkerRobo/the-purple-warehouse.git"
-  },
-  "author": "Harker Robotics",
-  "license": "AGPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/HarkerRobo/the-purple-warehouse/issues"
-  },
-  "homepage": "https://github.com/HarkerRobo/the-purple-warehouse#readme"
+	"name": "the-purple-warehouse",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.ts",
+	"scripts": {
+		"start": "node build/index.js",
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/HarkerRobo/the-purple-warehouse.git"
+	},
+	"author": "Harker Robotics",
+	"license": "AGPL-3.0-or-later",
+	"bugs": {
+		"url": "https://github.com/HarkerRobo/the-purple-warehouse/issues"
+	},
+	"homepage": "https://github.com/HarkerRobo/the-purple-warehouse#readme"
 }
