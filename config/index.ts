@@ -3,8 +3,9 @@ import * as development from "./development";
 
 const env = process.env.NODE_ENV || "development";
 
-const config = { production, development }[env] as Config;
-if (!config) throw new Error(`Config file for environment ${env} could not be found.`);
+if (!["development", "production"].includes(env)) 
+	throw new Error(`Config file for environment ${env} could not be found.`);
+const config = (env === "production" ? production : development);
 
 export default config;
 
