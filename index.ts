@@ -15,6 +15,7 @@ console.log();
 console.log("--- PROCESS INITIALIZED ---");
 console.log("Time:", Date.now());
 
+//@ts-ignore
 global.__base = __dirname + "/";
 console.log("__base:", __base);
 
