@@ -16,7 +16,7 @@ console.log("--- PROCESS INITIALIZED ---");
 console.log("Time:", Date.now());
 
 //@ts-ignore
-global.__base = __dirname + "/";
+(global as any).__base = __dirname + "/";
 console.log("__base:", __base);
 
 const app = new Koa();
@@ -25,7 +25,7 @@ const router = new Router<Koa.DefaultState, Koa.Context>();
 app.use(json());
 app.use(bodyParser());
 
-app.use(views(_base + "view", {
+app.use(views(__base + "view", {
 	map: {
 		hbs: "handlebars"
 	},
