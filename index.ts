@@ -3,7 +3,8 @@ import * as Router from "koa-router";
 import * as json from "koa-json";
 import * as views from "koa-views";
 import * as bodyParser from "koa-bodyparser";
-import * as serve from 'koa-static';
+import * as serve from "koa-static";
+import * as moment from "moment"
 
 import { register, registerHelper } from "./helpers/components";
 
@@ -23,16 +24,16 @@ const router = new Router<Koa.DefaultState, Koa.Context>();
 app.use(json());
 app.use(bodyParser());
 
-app.use(views(_base + 'views', {
+app.use(views(_base + "view", {
 	map: {
 		hbs: "handlebars"
 	},
 	extension: "hbs"
 }));
 
-register('./views/partials/head.hbs');
-register('./views/partials/nav.hbs');
-register('./views/partials/copyright.hbs');
+register("./views/partials/head.hbs");
+register("./views/partials/nav.hbs");
+register("./views/partials/copyright.hbs");
 
 function getTimeFormatted() {
 	return moment().format("MMMM Do YYYY, h:mm:ss a") + " (" + Date.now() + ")";
@@ -44,7 +45,7 @@ router.get("/", async (ctx, next) => {
 
 app.use(router.routes());
 
-app.use(serve('./static', {}))
+app.use(serve("./static", {}))
 
 const port = config.server.port || 5000;
 const server = app.listen(port, () => {

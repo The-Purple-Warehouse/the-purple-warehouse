@@ -7,11 +7,11 @@
  * which is what this file does.
  */
 
-import * as fs from 'fs'
-import { resolve } from 'path'
-import * as handlebars from 'handlebars'
+import * as fs from "fs"
+import { resolve } from "path"
+import * as handlebars from "handlebars"
 
-const HBS_FILE_EXTENSION = '.hbs'
+const HBS_FILE_EXTENSION = ".hbs"
 const HBS_REGEX = /.+\.hbs$/
 
 /**
@@ -34,8 +34,8 @@ export async function register(filePath) {
 	}
 
 	// extract the component name, so remove the front of the file path and the file extension
-	// accounts for OS - macs use front slash '/' and windows uses '\'
-	let startIndex = Math.max(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('\\') + 1)
+	// accounts for OS - macs use front slash "/" and windows uses "\"
+	let startIndex = Math.max(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("\\") + 1)
 	let endIndex = filePath.length - HBS_FILE_EXTENSION.length
 	let componentName = filePath.substring(startIndex, endIndex)
 
