@@ -17,5 +17,8 @@
 	"bugs": {
 		"url": "https://github.com/HarkerRobo/the-purple-warehouse/issues"
 	},
-	"homepage": "https://github.com/HarkerRobo/the-purple-warehouse#readme"
+	"homepage": "https://github.com/HarkerRobo/the-purple-warehouse#readme",
+	"devDependencies": {
+		"typescript": "^4.8.3"
+	}
 }
