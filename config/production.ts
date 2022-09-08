@@ -6,3 +6,5 @@ const config: Config = {
 		domain: "thepurplewarehouse.com"
 	}
 }
+
+export default config;

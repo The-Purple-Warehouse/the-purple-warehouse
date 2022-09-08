@@ -6,3 +6,5 @@ const config: Config = {
 		domain: "localhost"
 	}
 }
+
+export default config;
