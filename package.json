@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
-		"dev": "NODE_ENV=development node build/index.js",
-		"start": "NODE_ENV=production node build/index.js",
+		"dev": "cd ./build && NODE_ENV=development node index.js && cd ..",
+		"start": "cd ./build && NODE_ENV=production node index.js && cd ..",
 		"build": "rm -rf ./build && cp -R ./src ./build && cd ./build && tsc && cd ..",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

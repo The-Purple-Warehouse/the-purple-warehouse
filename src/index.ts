@@ -24,7 +24,7 @@ const router = new Router<Koa.DefaultState, Koa.Context>();
 app.use(json());
 app.use(bodyParser());
 
-app.use(views(global.__base + "view", {
+app.use(views(global.__base + "views", {
 	map: {
 		hbs: "handlebars"
 	},
