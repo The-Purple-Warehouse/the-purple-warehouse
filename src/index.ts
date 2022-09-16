@@ -4,7 +4,7 @@ import * as json from "koa-json";
 import * as views from "koa-views";
 import * as bodyParser from "koa-bodyparser";
 import * as serve from "koa-static";
-import * as moment from "moment"
+import * as moment from "moment";
 
 import { register, registerHelper } from "./helpers/components";
 
@@ -41,6 +41,10 @@ function getTimeFormatted() {
 
 router.get("/", async (ctx, next) => {
 	await ctx.render("index")
+});
+
+router.get("/app/", async (ctx, next) => {
+	await ctx.render("app/index")
 });
 
 app.use(router.routes());
