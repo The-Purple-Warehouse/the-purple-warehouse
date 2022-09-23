@@ -34,6 +34,8 @@ app.use(views(global.__base + "views", {
 register("./views/partials/head.hbs");
 register("./views/partials/nav.hbs");
 register("./views/partials/copyright.hbs");
+register("./views/app/partials/feed.hbs");
+register("./views/app/partials/resources.hbs");
 
 function getTimeFormatted() {
 	return moment().format("MMMM Do YYYY, h:mm:ss a") + " (" + Date.now() + ")";

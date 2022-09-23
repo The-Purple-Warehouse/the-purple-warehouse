@@ -15,6 +15,7 @@
 
 body {
     margin: 0 0 0 0;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
 nav {
@@ -132,3 +133,30 @@ li div {
 li div:hover {
     background-color: #333;
 }*/
+
+.resources {
+    background-color: #A0C1D8;
+    margin: 5vh 5vw 5vh 5vw;
+    height: 60vh;
+    width: 50vw;
+    border-radius: 10px;
+    display: flex;
+    overflow-y: scroll;
+}
+
+.grid-container {
+    margin: 5vh 5vw 5vh 5vw;
+    width: 100%;
+    display: inline-block;
+}
+
+.grid-item {
+    background-color: #D9D9D9;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 5px;
+    margin: 5vh 5vw 5vh 5vw;
+    width: 15vw;
+    height: 10vh;
+    float: left;
+}
