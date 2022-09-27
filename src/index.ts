@@ -51,7 +51,7 @@ router.get("/app/", async (ctx, next) => {
 
 app.use(router.routes());
 
-app.use(serve("./static", '/static'))
+app.use(serve(`${__dirname}/static`, '/static'))
 
 const port = config.server.port || 5000;
 const server = app.listen(port, () => {
