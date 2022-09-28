@@ -138,14 +138,14 @@ li div:hover {
     background-color: #A0C1D8;
     margin: 5vh 5vw 5vh 5vw;
     height: 60vh;
-    width: 50vw;
+    width: 55vw;
     border-radius: 10px;
     display: flex;
     overflow-y: scroll;
 }
 
 .grid-container {
-    margin: 5vh 5vw 5vh 5vw;
+    margin: 2vh 2vw 2vh 2vw;
     width: 100%;
     display: inline-block;
 }
@@ -155,8 +155,9 @@ li div:hover {
     text-align: center;
     vertical-align: middle;
     border-radius: 5px;
-    margin: 5vh 5vw 5vh 5vw;
-    width: 15vw;
-    height: 10vh;
+    margin: 1vh 1vw 1vh 1vw;
+    /*width: 20vw;*/
+    width: 150px;
+    height: 120px;
     float: left;
 }
