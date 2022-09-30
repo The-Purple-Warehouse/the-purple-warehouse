@@ -1,16 +1,18 @@
 <div class="resources">
     <div class="grid-container">
+        {{#each resources}}
         <div class="grid-item">
-            1
+            <p class="grid-text">{{this}}</p>
+        </div>
+        {{/each}}
+        <!--<div class="grid-item">
+            {{resources}}
         </div>
         <div class="grid-item">
-            2 
+            {{resources}}
         </div>
         <div class="grid-item">
-            3
-        </div>
-        <div class="grid-item">
-            4
-        </div>
+            {{resources}}
+        </div>-->
     </div>
 </div>
