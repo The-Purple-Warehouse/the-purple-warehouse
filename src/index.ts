@@ -45,8 +45,10 @@ router.get("/", async (ctx, next) => {
 	await ctx.render("index")
 });
 
+const res = ["App Dev", "Software", "Scouting", "Mechanical", "Machining", "Electrical", "Design", "Outreach", "Media"];
+
 router.get("/app/", async (ctx, next) => {
-	await ctx.render("app/index")
+	await ctx.render("app/index", {resources:res})
 });
 
 app.use(router.routes());
