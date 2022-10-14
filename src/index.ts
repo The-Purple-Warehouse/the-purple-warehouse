@@ -57,7 +57,7 @@ const res1 = [
 ]
 
 router.get("/data/", async(ctx, next) => {
-	ctx.set('Access-Control-Allow-Origin', '*')
+	ctx.set('Access-Control-Allow-Origin', '*');
 	ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
 	ctx.body = (res1)
@@ -80,3 +80,4 @@ const server = app.listen(port, () => {
 }).on("error", (err) => {
 	console.error("Connection error:", err);
 });
+
