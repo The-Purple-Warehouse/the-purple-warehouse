@@ -1,9 +1,34 @@
 <div class="resources">
-    <div class="grid-container">
+    <div class="grid-container" id="stuff">
         {{#each resources}}
-        <div class="grid-item">
-            <p class="grid-text">{{this}}</p>
+        <div class="grid-item" onclick="change({{@index}})">
+            <p class="grid-text">{{this.name}}</p>
         </div>
         {{/each}}
     </div>
 </div>
+
+<script>
+    function httpGet(theUrl) {
+        let xmlHttpReq = new XMLHttpRequest();
+        xmlHttpReq.open("GET", theUrl, false); 
+        xmlHttpReq.send(null);
+        console.log(xmlHttpReq.responseText);
+        return JSON.parse(xmlHttpReq.responseText);
+    }
+    let data = httpGet('http://127.0.0.1:8000/data/');
+    console.log(data);
+    function change(i) {
+        let stuff = document.getElementById('stuff');
+        stuff.innerHTML = '';
+        for (var key in data[i]['inner']) {
+            console.log(key);
+            let html = "<p class='grid-text'>"+data[i]['inner'][key]['name']+"</p>";
+            let div = document.createElement("div");
+            div.innerHTML = html;
+            div.setAttribute('class', 'grid-item');
+            div.setAttribute('onclick', 'change()');
+            stuff.appendChild(div);
+        }
+    }
+</script>
