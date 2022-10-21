@@ -7,6 +7,7 @@ import * as serve from "koa-static";
 import * as moment from "moment";
 
 import { register, registerHelper } from "./helpers/components";
+import { getAllResourcesByParent } from "./helpers/resources";
 
 import config from "./config";
 
@@ -44,27 +45,19 @@ function getTimeFormatted() {
 router.get("/", async (ctx, next) => {
 	await ctx.render("index")
 });
-const res = ["App Dev", "Software", "Scouting", "Mechanical", "Machining", "Electrical", "Design", "Outreach", "Media"];
-const res1 = [
-	{name: "App Dev", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Software", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Scouting", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Mechanical", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Electrical", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Design", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Outreach", inner: [{name: "1"}, {name: "2"}, {name: "3"}]},
-	{name: "Media", inner: [{name: "1"}, {name: "2"}, {name: "3"}]}
-]
 
-router.get("/data/", async(ctx, next) => {
+router.get("/api/v1/resources/:parent", async(ctx, next) => {
 	ctx.set('Access-Control-Allow-Origin', '*');
 	ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-	ctx.body = (res1)
+	ctx.body = {
+		success: true,
+		content: await getAllResourcesByParent(ctx.params.parent)
+	};
 });
 
 router.get("/app/", async (ctx, next) => {
-	await ctx.render("app/index", {resources: res1})
+	await ctx.render("app/index", {resources: await getAllResourcesByParent("global")})
 });
 
 app.use(router.routes());
