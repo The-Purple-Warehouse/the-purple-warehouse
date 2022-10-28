@@ -7,7 +7,8 @@ import * as serve from "koa-static";
 import * as moment from "moment";
 
 import { register, registerHelper } from "./helpers/components";
-import { getAllResourcesByParent } from "./helpers/resources";
+import {getAllResourcesByParent, addFile, getResource} from "./helpers/resources";
+import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
 
@@ -46,14 +47,67 @@ router.get("/", async (ctx, next) => {
 	await ctx.render("index")
 });
 
-router.get("/api/v1/resources/:parent", async(ctx, next) => {
-	ctx.set('Access-Control-Allow-Origin', '*');
-	ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-	ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+router.get("/api/v1/resources/list/:parent", async(ctx, next) => {
+	addAPIHeaders(ctx);
+	let resources = await getAllResourcesByParent(ctx.params.parent);
 	ctx.body = {
 		success: true,
-		content: await getAllResourcesByParent(ctx.params.parent)
+		body: {
+			resources: resources.map((resource: any) => {
+				return {
+					identifier: resource.identifier,
+					type: resource.type,
+					name: resource.name,
+					content: resource.content,
+					parent: resource.parent
+				}
+			})
+		}
 	};
+});
+
+router.post("/api/v1/resources/files/add/:parent", async(ctx, next) => {
+	addAPIHeaders(ctx);
+	if(typeof ctx.request.body.name != "string" || ctx.request.body.name == "") {
+		ctx.body = {
+			success: false,
+			error: {
+				code: 0,
+				message: ""
+			}
+		};
+	} else {
+		ctx.body = {
+			success: true,
+			body: {
+				identifier: await addFile(ctx.request.body.name as string, ctx.request.body.content, ctx.params.parent)
+			}
+		};
+	}
+});
+
+router.get("/api/v1/resources/get/:identifier", async(ctx, next) => {
+	addAPIHeaders(ctx);
+	let resource = (await getResource(ctx.params.identifier))[0] as any;
+	if(resource != null) {
+		ctx.body = {
+			success: true,
+			body: {
+				type: resource.type,
+				name: resource.name,
+				content: resource.content,
+				parent: resource.parent
+			}
+		};
+	} else {
+		ctx.body = {
+			success: false,
+			error: {
+				code: 0,
+				message: ""
+			}
+		};
+	}
 });
 
 router.get("/app/", async (ctx, next) => {
