@@ -12,9 +12,9 @@
     async function getResources(parent) {
         let data = [];
         try {
-            let request = await (await fetch(`/api/v1/resources/${parent}`)).json();
+            let request = await (await fetch(`/api/v1/resources/list/${parent}`)).json();
             if(request.success) {
-                data = request.content;
+                data = request.body.resources;
             }
         } catch(err) {
 
@@ -25,21 +25,21 @@
         if(type == "folder") {
             let data = await getResources(id);
             document.getElementById("resources").innerHTML = data.map((element) => {
-                return `
-                    <div class="grid-item" onclick="updateResourcesGrid('${element.type}', '${element.identifier}')">
-                        <p class="grid-text">${element.name}</p>
-                    </div>
-                `;
+                if(element.type == "folder") {
+                    return `
+                        <div class="grid-item" onclick="updateResourcesGrid('${element.type}', '${element.identifier}')">
+                            <p class="grid-text">${element.name}</p>
+                        </div>
+                    `;
+                } else if(element.type == "file") {
+                  return `
+                        <div class="grid-item" onclick="window.open('${encodeURI(element.content.link)}', '_blank')">
+                            <p class="grid-text">${element.name}</p>
+                        </div>
+                    `;
+                }
             }).join("");
         } else if(type == "file") {
-          let data = await getResources(id);
-          document.getElementById("resources").innerHTML = data.map((element) => {
-            return `
-                    <div class="grid-item" onclick="window.location.href = (${element.link})">
-                        <p class="grid-text">${element.name}</p>
-                    </div>
-                    `;
-          }).join("");
         }
     }
 </script>
