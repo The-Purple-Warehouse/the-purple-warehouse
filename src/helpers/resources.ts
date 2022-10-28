@@ -8,6 +8,10 @@ export async function addResource(type: string, name: string, content: any = {},
     return identifier;
 }
 
+export function getResource(identifier: string) {
+    return Resource.find({identifier: identifier});
+}
+
 export function getAllResources(limit: number = null) {
     return Resource.find().limit(limit).lean();
 }
