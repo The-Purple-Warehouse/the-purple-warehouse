@@ -12,11 +12,12 @@
     async function getResources(parent) {
         let data = [];
         try {
-            request = await (await fetch(`/api/v1/resources/${parent}`)).json();
+            let request = await (await fetch(`/api/v1/resources/${parent}`)).json();
             if(request.success) {
                 data = request.content;
             }
         } catch(err) {
+
         }
         return data;
     }
@@ -31,7 +32,14 @@
                 `;
             }).join("");
         } else if(type == "file") {
-
+          let data = await getResources(id);
+          document.getElementById("resources").innerHTML = data.map((element) => {
+            return `
+                    <div class="grid-item" onclick="window.location.href = (${element.link})">
+                        <p class="grid-text">${element.name}</p>
+                    </div>
+                    `;
+          }).join("");
         }
     }
 </script>
