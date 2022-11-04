@@ -7,7 +7,7 @@ import * as serve from "koa-static";
 import * as moment from "moment";
 
 import { register, registerHelper } from "./helpers/components";
-import {getAllResourcesByParent, addFile, getResource} from "./helpers/resources";
+import { getAllResourcesByParent, addFile, addFolder, getResource, removeResource } from "./helpers/resources";
 import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
@@ -86,6 +86,26 @@ router.post("/api/v1/resources/files/add/:parent", async(ctx, next) => {
 	}
 });
 
+router.post("/api/v1/resources/folders/add/:parent", async(ctx, next) => {
+	addAPIHeaders(ctx);
+	if(typeof ctx.request.body.name != "string" || ctx.request.body.name == "") {
+		ctx.body = {
+			success: false,
+			error: {
+				code: 0,
+				message: ""
+			}
+		};
+	} else {
+		ctx.body = {
+			success: true,
+			body: {
+				identifier: await addFolder(ctx.request.body.name as string, ctx.params.parent)
+			}
+		};
+	}
+});
+
 router.get("/api/v1/resources/get/:identifier", async(ctx, next) => {
 	addAPIHeaders(ctx);
 	let resource = (await getResource(ctx.params.identifier))[0] as any;
@@ -108,6 +128,26 @@ router.get("/api/v1/resources/get/:identifier", async(ctx, next) => {
 			}
 		};
 	}
+});
+
+router.get("/api/v1/resources/delete/:identifier", async(ctx, next) => {
+	addAPIHeaders(ctx);
+	let removed = removeResource(ctx.params.identifier);
+	if (removed) {
+		ctx.body = {
+			success: true,
+			body: {}
+		};
+	} else {
+		ctx.body = {
+			success: false,
+			error: {
+				code: 0,
+				message: ""
+			}
+		};
+	}
+	
 });
 
 router.get("/app/", async (ctx, next) => {

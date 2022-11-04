@@ -24,6 +24,10 @@ export function getAllResourcesByParentAndType(parent: string = "global", type: 
     return Resource.find({ parent: parent, type: type }).limit(limit).lean();
 }
 
+export async function removeResource(identifier: string) {
+    return (await Resource.deleteOne({ identifier: identifier })).deletedCount > 0;
+}
+
 export async function removeAllResources() {
     await Resource.deleteMany({});
 }
