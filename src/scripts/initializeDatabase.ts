@@ -1,4 +1,4 @@
-import {addFile, addFolder, removeAllResources} from "../helpers/resources";
+import { addFile, addFolder, removeAllResources } from "../helpers/resources";
 
 async function initializeDatabase() {
     await removeAllResources();
@@ -14,16 +14,17 @@ async function initializeDatabase() {
         "Media"
     ];
     let ids = {};
-    for(let i = 0; i < subteams.length; i++) {
+    for (let i = 0; i < subteams.length; i++) {
         ids[subteams[i]] = await addFolder(subteams[i]);
         console.log(`Added resource: ${subteams[i]}`);
     }
-    const subfiles = [
-        "README.md",
-        "Instructions.md"
-    ]
-    for(let i = 0; i < subfiles.length; i++) {
-        await addFile(subfiles[i], {link: `https://google.com/search?q=file${i}`}, ids["App Dev"]);
+    const subfiles = ["README.md", "Instructions.md"];
+    for (let i = 0; i < subfiles.length; i++) {
+        await addFile(
+            subfiles[i],
+            { link: `https://google.com/search?q=file${i}` },
+            ids["App Dev"]
+        );
         console.log(`Added resource: ${subfiles[i]}`);
     }
     return;

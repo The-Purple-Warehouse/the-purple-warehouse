@@ -1,10 +1,10 @@
-import { Config } from "."
+import { Config } from ".";
 
 const config: Config = {
-	server: {
-		port: 5000,
-		domain: "thepurplewarehouse.com"
-	}
-}
+    server: {
+        port: 5000,
+        domain: "thepurplewarehouse.com"
+    }
+};
 
 export default config;
