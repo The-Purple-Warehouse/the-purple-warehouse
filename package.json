@@ -20,7 +20,10 @@
         "update-prod": "git fetch && git checkout prod && git pull && npm run deploy-prod",
         "pm2-dev": "pm2 start \"npm run update-dev\"",
         "pm2-staging": "pm2 start \"npm run update-staging\"",
-        "pm2-prod": "pm2 start \"npm run update-prod\""
+        "pm2-prod": "pm2 start \"npm run update-prod\"",
+        "stop-dev": "pm2 stop \"npm run update-dev\"",
+        "stop-staging": "pm2 stop \"npm run update-staging\"",
+        "stop-prod": "pm2 stop \"npm run update-prod\""
     },
     "repository": {
         "type": "git",
