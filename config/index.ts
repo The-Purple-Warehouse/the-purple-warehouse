@@ -34,6 +34,9 @@ export interface Config {
             username?: string;
             password?: string;
         };
+        ci: {
+            deploy: string;
+        };
     };
     features: string[];
 }

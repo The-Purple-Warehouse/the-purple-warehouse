@@ -18,6 +18,9 @@ const config: Config = {
             restricted: false,
             username: "admin",
             password: "admin"
+        },
+        ci: {
+            deploy: ""
         }
     },
     features: ["scouting"]
