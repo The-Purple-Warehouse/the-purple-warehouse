@@ -15,9 +15,9 @@
         "deploy-dev": "npm run build && npm run dev",
         "deploy-staging": "npm run build && npm run staging",
         "deploy-prod": "npm run build && npm run start",
-        "update-dev": "git pull && npm run deploy-dev",
-        "update-staging": "git pull && npm run deploy-staging",
-        "update-prod": "git pull && npm run deploy-prod"
+        "update-dev": "git fetch && git checkout main && git pull && npm run deploy-dev",
+        "update-staging": "git fetch && git checkout staging && git pull && npm run deploy-staging",
+        "update-prod": "git fetch && git checkout prod && git pull && npm run deploy-prod"
     },
     "repository": {
         "type": "git",
