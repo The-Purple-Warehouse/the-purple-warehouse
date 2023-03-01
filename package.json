@@ -11,7 +11,10 @@
         "debug": "NODE_ENV=development npx nodemon",
         "dev": "NODE_ENV=development node build/index.js",
         "staging": "NODE_ENV=staging node build/index.js",
-        "format": "npx prettier . -w"
+        "format": "npx prettier . -w",
+        "deploy-dev": "npm run build && npm run dev",
+        "deploy-staging": "npm run build && npm run staging",
+        "deploy-prod": "npm run build && npm run start"
     },
     "repository": {
         "type": "git",
