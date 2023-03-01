@@ -1,10 +1,10 @@
-import production from "./production";
-import staging from "./staging";
 import development from "./development";
+import staging from "./staging";
+import production from "./production";
 
 const env = process.env.NODE_ENV || "development";
 
-if (!["development", "production"].includes(env))
+if (!["development", "staging", "production"].includes(env))
     throw new Error(`Config file for environment ${env} could not be found.`);
 const config: Config = env === "production" ? production : (env === "staging" ? staging : development);
 
