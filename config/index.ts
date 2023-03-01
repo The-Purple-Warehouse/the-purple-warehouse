@@ -16,6 +16,7 @@ const config: Config =
 export default config;
 
 export interface Config {
+    branch: string;
     server: {
         port: number;
         domain: string;

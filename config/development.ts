@@ -1,6 +1,7 @@
 import { Config } from ".";
 
 const config: Config = {
+    branch: "main",
     server: {
         port: 8080,
         domain: "localhost"
