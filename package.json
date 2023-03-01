@@ -17,7 +17,10 @@
         "deploy-prod": "npm run build && npm run start",
         "update-dev": "git fetch && git checkout main && git pull && npm run deploy-dev",
         "update-staging": "git fetch && git checkout staging && git pull && npm run deploy-staging",
-        "update-prod": "git fetch && git checkout prod && git pull && npm run deploy-prod"
+        "update-prod": "git fetch && git checkout prod && git pull && npm run deploy-prod",
+        "pm2-dev": "pm2 start \"npm run update-dev\"",
+        "pm2-staging": "pm2 start \"npm run update-staging\"",
+        "pm2-prod": "pm2 start \"npm run update-prod\""
     },
     "repository": {
         "type": "git",
