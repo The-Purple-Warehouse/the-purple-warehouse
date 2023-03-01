@@ -9,7 +9,7 @@ import requireScoutingAuth from "../middleware/requireScoutingAuth";
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
 router.get("/", async (ctx, next) => {
-    ctx.redirect("/scouting")
+    ctx.redirect("/scouting");
 });
 
 export default router;

@@ -5,7 +5,7 @@ import secret from "./secret";
 const config: Config = {
     server: {
         port: 8971,
-        domain: "staging.thepurplewarehouse.com",
+        domain: "staging.thepurplewarehouse.com"
     },
     db: secret.staging.db,
     auth: secret.staging.auth,
