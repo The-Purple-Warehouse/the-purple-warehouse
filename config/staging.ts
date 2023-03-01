@@ -5,10 +5,10 @@ import secret from "./secret";
 const config: Config = {
     server: {
         port: 5000,
-        domain: "thepurplewarehouse.com",
+        domain: "staging.thepurplewarehouse.com",
     },
-    db: secret.production.db,
-    auth: secret.production.auth,
+    db: secret.staging.db,
+    auth: secret.staging.auth,
     features: ["scouting"]
 };
 

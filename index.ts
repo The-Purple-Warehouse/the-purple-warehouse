@@ -6,6 +6,7 @@ import views from "koa-views";
 import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import session from "koa-session";
+import auth from "koa-basic-auth";
 import { createServer } from "http";
 
 import registerHelpers from "./helpers/hbsHelpers";
@@ -41,6 +42,29 @@ app.use(
         extension: "hbs",
     })
 );
+
+app.use(async (ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        if (401 == err.status) {
+            ctx.status = 401;
+            ctx.set('WWW-Authenticate', 'Basic');
+            ctx.body = 'Unauthorized';
+        } else {
+            throw err;
+        }
+    }
+});
+
+if(config.auth.access.restricted) {
+    app.use(
+        auth({
+            name: config.auth.access.username,
+            pass: config.auth.access.password
+        })
+    );
+}
 
 registerHelpers();
 registerComponentsWithinDirectory("./views/partials");

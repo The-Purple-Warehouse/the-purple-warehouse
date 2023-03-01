@@ -3,7 +3,8 @@ import development from "./development";
 
 let secret = {
     development: development,
-    production: development
+    staging: development,
+    production: development,
 };
 
 try {
