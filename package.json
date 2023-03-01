@@ -4,11 +4,13 @@
     "description": "",
     "main": "index.ts",
     "scripts": {
-        "dev": "NODE_ENV=development npx ts-node src/index",
         "start": "NODE_ENV=production node build/index.js",
-        "build": "rm -rf ./build && cp -R ./src ./build && cd ./build && tsc && cd ..",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "format": "npx prettier  . -w"
+        "build": "tsc",
+        "build-watch": "tsc -w",
+        "debug": "NODE_ENV=development npx nodemon",
+        "dev": "NODE_ENV=development node build/index.js",
+        "format": "npx prettier . -w"
     },
     "repository": {
         "type": "git",

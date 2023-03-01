@@ -1,193 +1,74 @@
-import * as Koa from "koa";
-import * as Router from "koa-router";
-import * as json from "koa-json";
-import * as views from "koa-views";
-import * as bodyParser from "koa-bodyparser";
-import * as serve from "koa-static";
-import * as moment from "moment";
+import Koa from "koa";
+import Router from "koa-router";
+import json from "koa-json";
+import logger from "koa-logger";
+import views from "koa-views";
+import bodyParser from "koa-bodyparser";
+import serve from "koa-static";
+import session from "koa-session";
+import { createServer } from "http";
 
-import { register, registerHelper } from "./helpers/components";
-import {
-    getAllResourcesByParent,
-    addFile,
-    addFolder,
-    getResource,
-    removeResource
-} from "./helpers/resources";
-import { addAPIHeaders } from "./helpers/utils";
+import registerHelpers from "./helpers/hbsHelpers";
 
 import config from "./config";
+import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
 
-console.log();
-console.log();
-console.log("--- PROCESS INITIALIZED ---");
-console.log("Time:", Date.now());
-
-(global as any).__base = __dirname + "/";
-console.log("__base:", global.__base);
+// import loginRouter from "./routers/login"; // contains base route "/"
+import defaultRouter from "./routers/default"; // contains base route "/"
+import scoutingDefaultRouter from "./routers/scoutingDefault"; // contains base route "/"
+import resourcesRouter from "./routers/resources";
+import resourcesAPIRouter from "./routers/api/resources";
+import scoutingRouter from "./routers/scouting";
+import scoutingAPIRouter from "./routers/api/scouting";
 
 const app = new Koa();
-const router = new Router<Koa.DefaultState, Koa.Context>();
 
+const sessionConfig: Partial<session.opts> = {
+    key: config.auth.cookieKeys[0],
+    maxAge: 1000 * 60 * 60 * 24 * 3, // 3 days
+};
+
+app.keys = config.auth.cookieKeys.slice(1);
+app.use(session(sessionConfig, app));
 app.use(json());
+app.use(logger());
 app.use(bodyParser());
-
 app.use(
-    views(global.__base + "views", {
+    views(__dirname + (__dirname.endsWith("build") ? "/../views" : "/views"), {
         map: {
-            hbs: "handlebars"
+            hbs: "handlebars",
         },
-        extension: "hbs"
+        extension: "hbs",
     })
 );
 
-register(`${__dirname}/views/partials/head.hbs`);
-register(`${__dirname}/views/partials/nav.hbs`);
-register(`${__dirname}/views/partials/copyright.hbs`);
-register(`${__dirname}/views/app/partials/feed.hbs`);
-register(`${__dirname}/views/app/partials/resources.hbs`);
+registerHelpers();
+registerComponentsWithinDirectory("./views/partials");
 
-function getTimeFormatted() {
-    return moment().format("MMMM Do YYYY, h:mm:ss a") + " (" + Date.now() + ")";
+const router = new Router<Koa.DefaultState, Koa.Context>();
+// router.use("", loginRouter.routes());
+if(config.features.includes("resources")) {
+    router.use("/app", resourcesRouter.routes());
+    router.use("/api/v1/resources", resourcesAPIRouter.routes());
+} else if(config.features.includes("scouting")) {
+    router.use("/", scoutingDefaultRouter.routes());
+} else {
+    router.use("/", defaultRouter.routes());
+}
+if(config.features.includes("scouting")) {
+    router.use("/scouting", scoutingRouter.routes());
+    router.use("/api/v1/scouting", scoutingAPIRouter.routes());
 }
 
 router.get("/", async (ctx, next) => {
     await ctx.render("index");
 });
 
-router.get("/api/v1/resources/list/:parent", async (ctx, next) => {
-    addAPIHeaders(ctx);
-    let resources = await getAllResourcesByParent(ctx.params.parent);
-    ctx.body = {
-        success: true,
-        body: {
-            resources: resources.map((resource: any) => {
-                return {
-                    identifier: resource.identifier,
-                    type: resource.type,
-                    name: resource.name,
-                    content: resource.content,
-                    parent: resource.parent
-                };
-            })
-        }
-    };
-});
-
-router.post("/api/v1/resources/files/add/:parent", async (ctx, next) => {
-    addAPIHeaders(ctx);
-    if (
-        typeof ctx.request.body.name != "string" ||
-        ctx.request.body.name == ""
-    ) {
-        ctx.body = {
-            success: false,
-            error: {
-                code: 0,
-                message: ""
-            }
-        };
-    } else {
-        ctx.body = {
-            success: true,
-            body: {
-                identifier: await addFile(
-                    ctx.request.body.name as string,
-                    ctx.request.body.content,
-                    ctx.params.parent
-                )
-            }
-        };
-    }
-});
-
-router.post("/api/v1/resources/folders/add/:parent", async (ctx, next) => {
-    addAPIHeaders(ctx);
-    if (
-        typeof ctx.request.body.name != "string" ||
-        ctx.request.body.name == ""
-    ) {
-        ctx.body = {
-            success: false,
-            error: {
-                code: 0,
-                message: ""
-            }
-        };
-    } else {
-        ctx.body = {
-            success: true,
-            body: {
-                identifier: await addFolder(
-                    ctx.request.body.name as string,
-                    ctx.params.parent
-                )
-            }
-        };
-    }
-});
-
-router.get("/api/v1/resources/get/:identifier", async (ctx, next) => {
-    addAPIHeaders(ctx);
-    let resource = (await getResource(ctx.params.identifier))[0] as any;
-    if (resource != null) {
-        ctx.body = {
-            success: true,
-            body: {
-                type: resource.type,
-                name: resource.name,
-                content: resource.content,
-                parent: resource.parent
-            }
-        };
-    } else {
-        ctx.body = {
-            success: false,
-            error: {
-                code: 0,
-                message: ""
-            }
-        };
-    }
-});
-
-router.get("/api/v1/resources/delete/:identifier", async (ctx, next) => {
-    addAPIHeaders(ctx);
-    let removed = removeResource(ctx.params.identifier);
-    if (removed) {
-        ctx.body = {
-            success: true,
-            body: {}
-        };
-    } else {
-        ctx.body = {
-            success: false,
-            error: {
-                code: 0,
-                message: ""
-            }
-        };
-    }
-});
-
-router.get("/app/", async (ctx, next) => {
-    await ctx.render("app/index", {
-        resources: await getAllResourcesByParent("global")
-    });
-});
-
 app.use(router.routes());
+app.use(serve("./static", {}));
 
-app.use(serve(`${__dirname}/static`, "/static"));
+const httpServer = createServer(app.callback());
 
-const port = config.server.port || 5000;
-const server = app
-    .listen(port, () => {
-        console.log();
-        console.log("--- WEBSERVER ON ---");
-        console.log("Listening at http://" + config.server.domain + ":" + port);
-        console.log();
-    })
-    .on("error", (err) => {
-        console.error("Connection error:", err);
-    });
+httpServer.listen(config.server.port, () => {
+    console.log("Listening at http://" + config.server.domain + ":" + config.server.port);
+});

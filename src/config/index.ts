@@ -21,4 +21,8 @@ export interface Config {
         host: string;
         port: number;
     };
+    auth?: {
+        cookieKeys: string[];
+    };
+    features: string[];
 }
