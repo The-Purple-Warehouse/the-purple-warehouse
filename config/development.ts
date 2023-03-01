@@ -15,7 +15,7 @@ const config: Config = {
     auth: {
         cookieKeys: ["1", "2", "3", "4", "I declare a thumb war"],
     },
-    features: ["resources", "scouting"],
+    features: ["scouting"],
 };
 
 export default config;
