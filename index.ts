@@ -44,10 +44,23 @@ app.use(
     })
 );
 
+function handleAuthenticate(ctx, next) {
+    try {
+        await next();
+    } catch (err) {
+        if (err.status === 401) {
+            ctx.status = 401;
+            ctx.set("WWW-Authenticate", "Basic");
+            ctx.body = "Unauthorized";
+        } else {
+            throw err;
+        }
+    }
+}
 app.use(async (ctx, next) => {
     try {
         if (
-            ctx.request.toString() == "/update" &&
+            ctx.request.url.toString() == "/update" &&
             ctx.request.header["user-agent"].toLowerCase().includes("github")
         ) {
             let requestHash = Buffer.from(
@@ -63,24 +76,17 @@ app.use(async (ctx, next) => {
             );
             if (crypto.timingSafeEqual(requestHash, verifyHash)) {
                 if (ctx.request.body.ref == `refs/heads/${config.branch}`) {
+                    ctx.body = "";
                     process.exit(0);
                 }
             }
             ctx.body = "";
         } else {
-            try {
-                await next();
-            } catch (err) {
-                if (err.status === 401) {
-                    ctx.status = 401;
-                    ctx.set("WWW-Authenticate", "Basic");
-                    ctx.body = "Unauthorized";
-                } else {
-                    throw err;
-                }
-            }
+            handleAuthenticate(ctx, next);
         }
-    } catch (err) {}
+    } catch (err) {
+        handleAuthenticate(ctx, next);
+    }
 });
 
 if (config.auth.access.restricted) {
