@@ -44,7 +44,7 @@ app.use(
     })
 );
 
-function handleAuthenticate(ctx, next) {
+async function handleAuthenticate(ctx, next) {
     try {
         await next();
     } catch (err) {
@@ -82,10 +82,10 @@ app.use(async (ctx, next) => {
             }
             ctx.body = "";
         } else {
-            handleAuthenticate(ctx, next);
+            await handleAuthenticate(ctx, next);
         }
     } catch (err) {
-        handleAuthenticate(ctx, next);
+        await handleAuthenticate(ctx, next);
     }
 });
 
