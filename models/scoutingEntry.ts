@@ -1,35 +1,65 @@
 import mongoose from "../db";
 
+let ScoutingData = new mongoose.Schema({
+    category: {
+        ref: "ScoutingCategory",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    data: Number
+});
+
+let ScoutingContributor = new mongoose.Schema({
+    team: {
+        ref: "Team",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    username: String
+});
+
+let ScoutingAbility = new mongoose.Schema({
+    category: {
+        ref: "ScoutingCategory",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    ability: mongoose.Schema.Types.Mixed
+});
+
+let ScoutingCounter = new mongoose.Schema({
+    category: {
+        ref: "ScoutingCategory",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    counter: Number
+});
+
+let ScoutingTimer = new mongoose.Schema({
+    category: {
+        ref: "ScoutingCategory",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    timer: Number
+});
+
+let ScoutingRating = new mongoose.Schema({
+    category: {
+        ref: "ScoutingCategory",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    rating: Number
+});
+
 export default mongoose.model(
     "ScoutingEntry",
     new mongoose.Schema({
-        contributor: {
-            ref: "ScoutingContributor",
-            type: mongoose.Schema.Types.ObjectId
-        },
+        contributor: ScoutingContributor,
         match: Number,
         team: String,
         color: String,
-        data: [{
-            ref: "ScoutingData",
-            type: mongoose.Schema.Types.ObjectId
-        }],
-        abilities: [{
-            ref: "ScoutingAbility",
-            type: mongoose.Schema.Types.ObjectId
-        }],
-        counters: [{
-            ref: "ScoutingCounter",
-            type: mongoose.Schema.Types.ObjectId
-        }],
-        timers: [{
-            ref: "ScoutingTimer",
-            type: mongoose.Schema.Types.ObjectId
-        }],
-        ratings: [{
-            ref: "ScoutingRating",
-            type: mongoose.Schema.Types.ObjectId
-        }],
+        data: ScoutingData,
+        abilities: [ScoutingAbility],
+        counters: [ScoutingCounter],
+        timers: [ScoutingTimer],
+        ratings: [ScoutingRating],
         comments: String
     })
 );

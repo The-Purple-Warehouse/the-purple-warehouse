@@ -7,6 +7,6 @@ export default mongoose.model(
             ref: "ScoutingCategory",
             type: mongoose.Schema.Types.ObjectId
         },
-        counter: String
+        counter: Number
     })
 );

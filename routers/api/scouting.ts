@@ -20,4 +20,9 @@ router.get("/", async (ctx, next) => {
     };
 });
 
+router.post("/entry/add", async (ctx, next) => {
+    addAPIHeaders(ctx);
+    
+});
+
 export default router;
