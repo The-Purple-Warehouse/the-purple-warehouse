@@ -1,19 +1,19 @@
 import mongoose from "../db";
 
-let ScoutingData = new mongoose.Schema({
-    category: {
-        ref: "ScoutingCategory",
-        type: mongoose.Schema.Types.ObjectId
-    },
-    data: Number
-});
-
 let ScoutingContributor = new mongoose.Schema({
     team: {
         ref: "Team",
         type: mongoose.Schema.Types.ObjectId
     },
     username: String
+});
+
+let ScoutingData = new mongoose.Schema({
+    category: {
+        ref: "ScoutingCategory",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    data: String
 });
 
 let ScoutingAbility = new mongoose.Schema({
@@ -55,7 +55,7 @@ export default mongoose.model(
         match: Number,
         team: String,
         color: String,
-        data: ScoutingData,
+        data: [ScoutingData],
         abilities: [ScoutingAbility],
         counters: [ScoutingCounter],
         timers: [ScoutingTimer],
