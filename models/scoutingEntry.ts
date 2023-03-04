@@ -60,6 +60,9 @@ export default mongoose.model(
         counters: [ScoutingCounter],
         timers: [ScoutingTimer],
         ratings: [ScoutingRating],
-        comments: String
+        comments: String,
+        clientTimestamp: Number,
+        serverTimestamp: Number,
+        hash: String
     })
 );
