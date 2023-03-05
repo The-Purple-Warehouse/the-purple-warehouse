@@ -25,7 +25,7 @@ const config: Config = {
         },
         scoutingKeys: ["1", "2", "3", "4", "I declare a thumb war"]
     },
-    features: ["scouting"]
+    features: ["scouting", "resources"]
 };
 
 export default config;
