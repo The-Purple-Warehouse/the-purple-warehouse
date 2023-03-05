@@ -22,7 +22,8 @@ const config: Config = {
         },
         ci: {
             deploy: ""
-        }
+        },
+        scoutingKeys: ["1", "2", "3", "4", "I declare a thumb war"]
     },
     features: ["scouting"]
 };

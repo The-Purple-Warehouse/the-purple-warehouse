@@ -6,7 +6,7 @@ export default async (ctx: Koa.Context, next: Koa.Next) => {
         !ctx.session.scoutingAuthed ||
         !ctx.session.scoutingUsername
     ) {
-        await ctx.render("pages/scoutingLogin");
+        await ctx.render("app/scoutingLogin");
     } else {
         await next();
     }

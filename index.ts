@@ -15,7 +15,7 @@ import registerHelpers from "./helpers/hbsHelpers";
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
 
-// import loginRouter from "./routers/login"; // contains base route "/"
+import loginRouter from "./routers/login"; // contains base route "/"
 import defaultRouter from "./routers/default"; // contains base route "/"
 import scoutingDefaultRouter from "./routers/scoutingDefault"; // contains base route "/"
 import resourcesRouter from "./routers/resources";
@@ -102,7 +102,7 @@ registerHelpers();
 registerComponentsWithinDirectory("./views/partials");
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
-// router.use("", loginRouter.routes());
+router.use("", loginRouter.routes());
 if (config.features.includes("resources")) {
     router.use("/app", resourcesRouter.routes());
     router.use("/api/v1/resources", resourcesAPIRouter.routes());

@@ -38,6 +38,7 @@ export interface Config {
         ci: {
             deploy: string;
         };
+        scoutingKeys: string[];
     };
     features: string[];
 }

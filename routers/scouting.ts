@@ -11,7 +11,7 @@ import requireScoutingAuth from "../middleware/requireScoutingAuth";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
-router.get("/", async (ctx, next) => {
+router.get("/", requireScoutingAuth, async (ctx, next) => {
     await ctx.render("app/scouting");
 });
 
