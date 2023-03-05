@@ -10,14 +10,14 @@ const router = new Router<Koa.DefaultState, Koa.Context>();
 
 router.get("/login", async (ctx) => {
     await ctx.render("app/scoutingLogin");
-})
+});
 
 router.get("/logout", async (ctx) => {
     if (!ctx.session) {
         return ctx.throw(
             500,
             JSON.stringify({
-                message: "There was an error logging out",
+                message: "There was an error logging out"
             })
         );
     } else {
@@ -26,22 +26,26 @@ router.get("/logout", async (ctx) => {
 
     ctx.body = {
         success: true,
-        message: "Logging out...",
+        message: "Logging out..."
     };
     ctx.status = 200;
 });
 
 router.post("/login", bodyParser(), async (ctx) => {
-    if (ctx.teamNumber && ctx.session.accessToken && ctx.session.username) return ctx.throw(200,
-        JSON.stringify({ message: "You are already logged in" }));
-    
+    if (ctx.teamNumber && ctx.session.accessToken && ctx.session.username)
+        return ctx.throw(
+            200,
+            JSON.stringify({ message: "You are already logged in" })
+        );
+
     const body = ctx.request.body as any;
 
     if (!body.teamNumber || !body.accessToken || !body.username) {
         return ctx.throw(
             401,
             JSON.stringify({
-                message: "Please provide both a team number, access token, and username.",
+                message:
+                    "Please provide both a team number, access token, and username."
             })
         );
     }
@@ -58,7 +62,7 @@ router.post("/login", bodyParser(), async (ctx) => {
         return ctx.throw(
             401,
             JSON.stringify({
-                message: e.message,
+                message: e.message
             })
         );
     }
@@ -67,7 +71,7 @@ router.post("/login", bodyParser(), async (ctx) => {
         return ctx.throw(
             500,
             JSON.stringify({
-                message: "There was an error logging in",
+                message: "There was an error logging in"
             })
         );
 
@@ -77,8 +81,7 @@ router.post("/login", bodyParser(), async (ctx) => {
     ctx.body = {
         success: true,
         message: res.message
-    }
+    };
 });
 
-
-export default router
+export default router;
