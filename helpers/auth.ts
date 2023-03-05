@@ -1,6 +1,6 @@
 import config from "../config";
 import * as crypto from "crypto";
-import Teams from "./team";
+import { getAccessToken } from "./teams";
 
 type AuthResults = {
     success: boolean;
@@ -9,12 +9,12 @@ type AuthResults = {
 
 export default async function auth(
     teamNumber: string,
-    accessToken: string,
-    username: string
+    username: string,
+    accessToken: string
 ): Promise<AuthResults> {
     return new Promise<AuthResults>(async (resolve, reject) => {
         let verifyHash = Buffer.from(
-            await Teams.getAccessToken(teamNumber),
+            await getAccessToken(teamNumber),
             "utf8"
         );
 
