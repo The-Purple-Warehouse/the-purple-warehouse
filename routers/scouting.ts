@@ -14,7 +14,8 @@ const router = new Router<Koa.DefaultState, Koa.Context>();
 
 router.get("/", requireScoutingAuth, async (ctx, next) => {
     await ctx.render("scouting/index");
-});router.get("/login", async (ctx) => {
+});
+router.get("/login", async (ctx) => {
     await ctx.render("scouting/login");
 });
 

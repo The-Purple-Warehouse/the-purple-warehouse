@@ -4,7 +4,7 @@ function makeRequest(method, url, parameters, callback) {
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
             let responseText;
-            if (typeof xhr.response === 'object') {
+            if (typeof xhr.response === "object") {
                 responseText = JSON.parse(xhr.response);
             } else {
                 responseText = xhr.response;
@@ -15,9 +15,9 @@ function makeRequest(method, url, parameters, callback) {
     };
 
     xhr.open(method, url, true);
-    if (typeof parameters !== 'string') {
+    if (typeof parameters !== "string") {
         parameters = JSON.stringify(parameters);
     }
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(parameters);
 }

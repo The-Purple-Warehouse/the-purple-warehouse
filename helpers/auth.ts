@@ -13,10 +13,7 @@ export default async function auth(
     accessToken: string
 ): Promise<AuthResults> {
     return new Promise<AuthResults>(async (resolve, reject) => {
-        let verifyHash = Buffer.from(
-            await getAccessToken(teamNumber),
-            "utf8"
-        );
+        let verifyHash = Buffer.from(await getAccessToken(teamNumber), "utf8");
 
         let requestHash = Buffer.from(
             crypto

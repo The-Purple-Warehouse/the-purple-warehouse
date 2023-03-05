@@ -5,6 +5,6 @@ export function getTeamByNumber(teamNumber: string) {
 }
 
 export async function getAccessToken(teamNumber: string): Promise<string> {
-    const team = await getTeamByNumber(teamNumber) as any;
+    const team = (await getTeamByNumber(teamNumber)) as any;
     return team.accessToken;
 }
