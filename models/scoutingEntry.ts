@@ -13,7 +13,7 @@ let ScoutingData = new mongoose.Schema({
         ref: "ScoutingCategory",
         type: mongoose.Schema.Types.ObjectId
     },
-    data: String
+    data: mongoose.Schema.Types.Mixed
 });
 
 let ScoutingAbility = new mongoose.Schema({
