@@ -24,7 +24,7 @@ const config: Config = {
             deploy: ""
         }
     },
-    features: ["scouting"]
+    features: ["scouting", "resources"]
 };
 
 export default config;

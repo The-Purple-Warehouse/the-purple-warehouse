@@ -1,6 +1,6 @@
 import { addFile, addFolder, removeAllResources } from "../helpers/resources";
 
-async function initializeDatabase() {
+async function initializeExampleDatabase() {
     await removeAllResources();
     const subteams = [
         "App Dev",
@@ -30,4 +30,4 @@ async function initializeDatabase() {
     return;
 }
 
-initializeDatabase();
+initializeExampleDatabase();
