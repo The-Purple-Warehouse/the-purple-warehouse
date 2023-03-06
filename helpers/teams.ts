@@ -8,7 +8,7 @@ export function hashAccessToken(accessToken) {
     return crypto
         .createHmac("sha256", config.auth.scoutingKeys[0])
         .update(accessToken)
-        .digest("hex")
+        .digest("hex");
 }
 
 export function getTeamByNumber(teamNumber: string) {
