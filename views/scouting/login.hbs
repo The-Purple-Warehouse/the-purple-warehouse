@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	{{> head}}
+	<link href="/css/login.css" rel="stylesheet">
+    <script src="/js/snackbar.js" defer></script>
+    <script src="/js/scoutingLogin.js" defer></script>
+</head>
+
+<body>
+    <main>
+        <h1>Scouting Login</h1>
+        <form autocomplete="off" method="POST" action="/scouting/login">
+            <div>
+                <label for="team-number">Team Number: </label>
+                <input type="text" id="team-number" name="teamNumber">
+            </div>
+
+            <div>
+                <label for="username">Username: </label>
+                <input type="text" id="username" name="username">
+            </div>
+
+            <div>
+              <label for="access-token">Access Token: </label>
+              <input type="password" id="access-token" name="accessToken">
+            </div>
+
+            <button type="submit" id="submit" class="dark-gray">Log In</button>
+        </form>
+
+        {{> snackbar}}
+        
+        {{> madewith}}
+    </main>
+</body>
+
+</html>
