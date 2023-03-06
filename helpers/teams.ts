@@ -1,6 +1,6 @@
 import Team from "../models/team";
 import ScoutingCategory from "../models/scoutingCategory";
-import {getCategoryByIdentifier} from "./scouting";
+import { getCategoryByIdentifier } from "./scouting";
 import crypto from "crypto";
 import config from "../config";
 
@@ -38,10 +38,7 @@ export async function getAccessTokenHash(teamNumber: string): Promise<string> {
 }
 
 export async function removeTeam(teamNumber: string) {
-    return (
-        (await Team.deleteOne({ teamNumber }))
-            .deletedCount > 0
-    );
+    return (await Team.deleteOne({ teamNumber })).deletedCount > 0;
 }
 
 export async function removeAllTeams() {
