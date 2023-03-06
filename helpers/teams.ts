@@ -1,6 +1,8 @@
 import Team from "../models/team";
 import ScoutingCategory from "../models/scoutingCategory";
 import {getCategoryByIdentifier} from "./scouting";
+import crypto from "crypto";
+import config from "../config";
 
 export function getTeamByNumber(teamNumber: string) {
     return Team.findOne({ teamNumber });
@@ -20,14 +22,17 @@ export async function addTeam(
         team = new Team({
             teamName: teamName,
             teamNumber: teamNumber,
-            accessToken: accessToken
+            accessToken: crypto
+                .createHmac("sha256", config.auth.scoutingKeys[0])
+                .update(accessToken)
+                .digest("hex")
         });
         await team.save();
     }
     return team;
 }
 
-export async function getAccessToken(teamNumber: string): Promise<string> {
+export async function getAccessTokenHash(teamNumber: string): Promise<string> {
     const team = (await getTeamByNumber(teamNumber)) as any;
     return team.accessToken;
 }
