@@ -4,6 +4,13 @@ import { getCategoryByIdentifier } from "./scouting";
 import crypto from "crypto";
 import config from "../config";
 
+export function hashAccessToken(accessToken) {
+    return crypto
+        .createHmac("sha256", config.auth.scoutingKeys[0])
+        .update(accessToken)
+        .digest("hex");
+}
+
 export function getTeamByNumber(teamNumber: string) {
     return Team.findOne({ teamNumber });
 }
@@ -22,10 +29,7 @@ export async function addTeam(
         team = new Team({
             teamName: teamName,
             teamNumber: teamNumber,
-            accessToken: crypto
-                .createHmac("sha256", config.auth.scoutingKeys[0])
-                .update(accessToken)
-                .digest("hex")
+            accessToken: hashAccessToken(accessToken)
         });
         await team.save();
     }
