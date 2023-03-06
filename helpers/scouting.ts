@@ -28,8 +28,8 @@ export async function addCategory(
             });
         }
         await category.save();
-        return category;
     }
+    return category;
 }
 
 export async function removeCategory(identifier: string) {

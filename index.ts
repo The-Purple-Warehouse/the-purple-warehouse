@@ -53,7 +53,8 @@ async function handleAuthenticate(ctx, next) {
             ctx.set("WWW-Authenticate", "Basic");
             ctx.body = "Unauthorized";
         } else {
-            throw err;
+            console.log(err);
+            // throw err;
         }
     }
 }
