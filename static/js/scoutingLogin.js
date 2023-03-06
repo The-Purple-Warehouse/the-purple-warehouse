@@ -11,7 +11,7 @@ submitButton.addEventListener("click", function () {
         username: usernameInp.value,
         accessToken: accessTokenInp.value
     };
-    makeRequest("POST", "/login", inp, function (res) {
+    makeRequest("POST", "/scouting/login", inp, function (res) {
         submitButton.disabled = false;
         try {
             const response = JSON.parse(res.responseText);

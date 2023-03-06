@@ -1,7 +1,7 @@
 const snackbarContainer = document.querySelector("#snackbar-container");
 const snackbar = document.querySelector("#snackbar");
 
-const SNACKBAR_TIMEOUT = 2000;
+const SNACKBAR_TIMEOUT = 5000;
 let timer;
 
 function succBar(message) {

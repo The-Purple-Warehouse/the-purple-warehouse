@@ -9,12 +9,14 @@ import * as session from "koa-session";
 import * as Handlebars from "handlebars";
 import requireScoutingAuth from "../middleware/requireScoutingAuth";
 import auth from "../helpers/auth";
+import { teamExistsByNumber } from "../helpers/teams";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
 router.get("/", requireScoutingAuth, async (ctx, next) => {
     await ctx.render("scouting/index");
 });
+
 router.get("/login", async (ctx) => {
     await ctx.render("scouting/login");
 });
@@ -39,56 +41,56 @@ router.get("/logout", async (ctx) => {
 });
 
 router.post("/login", bodyParser(), async (ctx) => {
-    if (ctx.teamNumber && ctx.session.accessToken && ctx.session.username)
-        return ctx.throw(
-            200,
-            JSON.stringify({ message: "You are already logged in" })
-        );
+    if (ctx.session.teamNumber && ctx.session.accessToken && ctx.session.username) {
+        ctx.body = {
+            success: true,
+            message: "You are already logged in."
+        };
+    } else {
+        const body = ctx.request.body as any;
 
-    const body = ctx.request.body as any;
+        if (!body.teamNumber || !body.accessToken || !body.username) {
+            ctx.body = {
+                success: false,
+                message: "Please provide a team number, username, and access token."
+            };
+        } else if (!(await teamExistsByNumber(body.teamNumber))) {
+            ctx.body = {
+                success: false,
+                message: "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+            };
+        } else {
 
-    if (!body.teamNumber || !body.accessToken || !body.username) {
-        return ctx.throw(
-            401,
-            JSON.stringify({
-                message:
-                    "Please provide both a team number, access token, and username."
-            })
-        );
+            let res;
+
+            try {
+                res = await auth(
+                    body.teamNumber as string,
+                    body.username as string,
+                    body.accessToken as string
+                );
+                if (!ctx.session) {
+                    ctx.body = {
+                        success: false,
+                        message: "There was an error logging in"
+                    };
+                } else {
+                    ctx.session.scoutingAuthed = true;
+                    ctx.session.scoutingTeamNumber = body.teamNumber as string;
+                    ctx.session.scoutingUsername = (body.username as string).toLowerCase();
+                    ctx.body = {
+                        success: true,
+                        message: res.message
+                    };
+                }
+            } catch (e) {
+                ctx.body = {
+                    success: false,
+                    message: e.message
+                };
+            }
+        }
     }
-
-    let res;
-
-    try {
-        res = await auth(
-            body.teamNumber as string,
-            body.username as string,
-            body.accessToken as string
-        );
-    } catch (e) {
-        return ctx.throw(
-            401,
-            JSON.stringify({
-                message: e.message
-            })
-        );
-    }
-
-    if (!ctx.session)
-        return ctx.throw(
-            500,
-            JSON.stringify({
-                message: "There was an error logging in"
-            })
-        );
-
-    ctx.session.scoutingAuthed = true;
-    ctx.session.scoutingTeamNumber = body.teamNumber as string;
-    ctx.session.scoutingUsername = (body.username as string).toLowerCase();
-    ctx.body = {
-        success: true,
-        message: res.message
-    };
 });
 
 export default router;
