@@ -41,7 +41,11 @@ router.get("/logout", async (ctx) => {
 });
 
 router.post("/login", bodyParser(), async (ctx) => {
-    if (ctx.session.teamNumber && ctx.session.accessToken && ctx.session.username) {
+    if (
+        ctx.session.teamNumber &&
+        ctx.session.accessToken &&
+        ctx.session.username
+    ) {
         ctx.body = {
             success: true,
             message: "You are already logged in."
@@ -52,15 +56,16 @@ router.post("/login", bodyParser(), async (ctx) => {
         if (!body.teamNumber || !body.accessToken || !body.username) {
             ctx.body = {
                 success: false,
-                message: "Please provide a team number, username, and access token."
+                message:
+                    "Please provide a team number, username, and access token."
             };
         } else if (!(await teamExistsByNumber(body.teamNumber))) {
             ctx.body = {
                 success: false,
-                message: "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                message:
+                    "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
             };
         } else {
-
             let res;
 
             try {
@@ -77,7 +82,9 @@ router.post("/login", bodyParser(), async (ctx) => {
                 } else {
                     ctx.session.scoutingAuthed = true;
                     ctx.session.scoutingTeamNumber = body.teamNumber as string;
-                    ctx.session.scoutingUsername = (body.username as string).toLowerCase();
+                    ctx.session.scoutingUsername = (
+                        body.username as string
+                    ).toLowerCase();
                     ctx.body = {
                         success: true,
                         message: res.message
