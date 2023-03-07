@@ -51,9 +51,23 @@ export async function entryExistsByHash(hash: string) {
     return (await getEntryByHash(hash)) != null;
 }
 
+export async function getLatestMatch(event: string) {
+    let entry = ScoutingEntry.find({ event }).sort({match: -1}).limit(1).lean() as any;
+    if(entry != null && entry[0] != null && entry[0].match != null) {
+        return entry[0].match;
+    } else {
+        return 0;
+    }
+}
+
+export async function getTeamEntriesByEvent(event: string, contributingTeam: string) {
+    return ScoutingEntry.find({ event, "contributor.team": contributingTeam }).lean();
+}
+
 export async function addEntry(
     contributingTeam: string,
     contributingUsername: string,
+    event: String,
     match: number,
     team: string,
     color: string,
@@ -68,6 +82,7 @@ export async function addEntry(
     let stringified = JSON.stringify([
         contributingTeam,
         contributingUsername,
+        event,
         match,
         team,
         color,
@@ -112,6 +127,7 @@ export async function addEntry(
                 team: (await getTeamByNumber(contributingTeam))._id,
                 username: contributingUsername
             },
+            event: event,
             match: match,
             team: team,
             color: color,
