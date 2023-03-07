@@ -1,0 +1,28 @@
+#snackbar-container {
+    z-index: 5;
+    position: fixed;
+    width: 100vw;
+    bottom: 0;
+    left: 0;
+    opacity: 0.85;
+    -webkit-transition: bottom 0.2s;
+    transition: bottom 0.2s;
+}
+
+#snackbar-container.hidden {
+    bottom: -100px;
+}
+
+#snackbar-container.success {
+    background-color: #71b778;
+}
+
+#snackbar-container.error {
+    background-color: #f44336;
+}
+
+#snackbar-container #snackbar {
+    text-align: center;
+    padding: 12px 18px;
+    color: white;
+}
