@@ -414,7 +414,7 @@ export function layout() {
                 }
             ]
         }
-    ]
+    ];
 }
 
 const scouting2023 = { categories, layout };
