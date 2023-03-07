@@ -70,7 +70,7 @@ router.get("/entry/data/event/:event", requireScoutingAuth, async (ctx, next) =>
     ctx.body = {
         success: true,
         body: {
-            entries: await getTeamEntriesByEvent(event, ctx.session.scoutingTeamNumber);
+            entries: await getTeamEntriesByEvent(ctx.params.event, ctx.session.scoutingTeamNumber)
         }
     }
     addAPIHeaders(ctx);

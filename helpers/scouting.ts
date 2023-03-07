@@ -61,7 +61,7 @@ export async function getLatestMatch(event: string) {
 }
 
 export async function getTeamEntriesByEvent(event: string, contributingTeam: string) {
-    return ScoutingEntry.find({ event, "contributor.team": contributingTeam }).lean();
+    return ScoutingEntry.find({ event, "contributor.team": (await getTeamByNumber(contributingTeam))._id }).lean();
 }
 
 export async function addEntry(
