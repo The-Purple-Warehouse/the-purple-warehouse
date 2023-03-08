@@ -1,4 +1,6 @@
 import { Config } from ".";
+// @ts-ignore
+import secret from "./secret";
 
 const config: Config = {
     branch: "main",
@@ -23,9 +25,10 @@ const config: Config = {
         ci: {
             deploy: ""
         },
-        scoutingKeys: ["1", "2", "3", "4", "I declare a thumb war"]
+        scoutingKeys: ["1", "2", "3", "4", "I declare a thumb war"],
+        tba: secret.development.auth.tba
     },
-    features: ["scouting", "resources"]
+    features: ["scouting", "resources"],
 };
 
 export default config;
