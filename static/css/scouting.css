@@ -1,9 +1,9 @@
 :root {
-    --backgroundColor: #f4e5ea;
+    --backgroundColor: #f8f0ff;
     --contentColor: #404040;
-    --primaryBackgroundColor: #5c2b5f;
-    --primaryContentColor: #f3e5f4;
-    --primaryDarkerBackgroundColor: #5c2b5f;
+    --primaryBackgroundColor: #7d4090;
+    --primaryContentColor: #e3dce9;
+    --primaryDarkerBackgroundColor: #5d2e6c;
     --disabledColor: #747474;
 }
 
@@ -60,7 +60,7 @@
     touch-action: manipulation;
 }
 
-body {
+html, body {
     background-color: var(--backgroundColor);
     overflow-x: hidden;
 }
@@ -81,7 +81,7 @@ body {
 
 .login-window > h1 {
     color: var(--contentColor);
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin: 0;
     margin-bottom: 10px;
     width: 100%;
@@ -169,7 +169,7 @@ body {
 .home-window > .footer-text a {
     color: var(--contentColor);
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .home-window > .boltman-quote {
@@ -565,6 +565,19 @@ body {
     height: calc(50vw - 17px);
     max-width: 600px;
     max-height: 300px;
+}
+
+.large-grid-y .grid {
+    height: calc(75vw) !important;
+}
+
+.small-grid-x .grid {
+    width: calc(50vw) !important;
+}
+
+.small-grid-x {
+    /* width: calc(50% - 10px) !important; */
+    width: fit-content !important;
 }
 
 .match-window
