@@ -9,9 +9,10 @@ import * as session from "koa-session";
 import * as Handlebars from "handlebars";
 import requireScoutingAuth from "../../middleware/requireScoutingAuth";
 
+import config from "../../config";
 import { addAPIHeaders } from "../../helpers/utils";
-import {addFile} from "../../helpers/resources";
 import { addEntry, entryExistsByHash, getLatestMatch, getTeamEntriesByEvent } from "../../helpers/scouting";
+import { getEvents, getMatches } from "../../helpers/tba";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -22,6 +23,25 @@ router.get("/", async (ctx, next) => {
     };
 });
 
+router.get("/events/:year", requireScoutingAuth, async (ctx, next) => {
+    ctx.body = {
+        success: true,
+        body: {
+            events: await getEvents(ctx.params.year)
+        }
+    }
+    addAPIHeaders(ctx);
+});
+router.get("/matches/:event", requireScoutingAuth, async (ctx, next) => {
+    ctx.body = {
+        success: true,
+        body: {
+            matches: await getMatches(ctx.params.event)
+        }
+    }
+    addAPIHeaders(ctx);
+});
+
 router.post("/entry/add/:event/:match/:team/:color", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     ctx.body = {
@@ -29,7 +49,7 @@ router.post("/entry/add/:event/:match/:team/:color", requireScoutingAuth, async 
         body: {
             hash: (await addEntry(
                 ctx.session.scoutingTeamNumber,
-                ctx.session.scoutingUsername,
+                (ctx.request.body.username as string) || ctx.session.scoutingUsername,
                 ctx.params.event,
                 parseInt(ctx.params.match),
                 ctx.params.team,

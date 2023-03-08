@@ -52,7 +52,7 @@ export async function entryExistsByHash(hash: string) {
 }
 
 export async function getLatestMatch(event: string) {
-    let entry = ScoutingEntry.find({ event }).sort({match: -1}).limit(1).lean() as any;
+    let entry = await ScoutingEntry.find({ event }).sort({match: -1}).limit(1).lean() as any;
     if(entry != null && entry[0] != null && entry[0].match != null) {
         return entry[0].match;
     } else {
@@ -182,7 +182,7 @@ export async function addEntry(
                 })
             ),
             clientTimestamp: timestamp,
-            serverTimestamp: new Date().getTime(),
+            serverTimestamp: (new Date()).getTime(),
             hash: hash,
             comments: comments
         });

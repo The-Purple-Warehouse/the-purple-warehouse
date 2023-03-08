@@ -10,11 +10,17 @@ import * as Handlebars from "handlebars";
 import requireScoutingAuth from "../middleware/requireScoutingAuth";
 import auth from "../helpers/auth";
 import { teamExistsByNumber } from "../helpers/teams";
+import scoutingConfig from "../config/scouting";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
 router.get("/", requireScoutingAuth, async (ctx, next) => {
-    await ctx.render("scouting/index");
+    await ctx.render("scouting/index", {
+        preload: ["./img/2023grid-red.png", "./img/2023grid-blue.png"],
+        pages: scoutingConfig.layout(),
+        username: ctx.session.scoutingUsername,
+        team: ctx.session.scoutingTeamNumber
+    });
 });
 
 router.get("/login", async (ctx) => {
