@@ -9,7 +9,7 @@ export async function getEvents(year) {
             )}/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
         )
     ).json();
-    return events
+    return (events as any)
         .map((event) => {
             return {
                 key: event.key,
