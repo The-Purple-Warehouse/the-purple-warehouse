@@ -52,6 +52,7 @@ export default mongoose.model(
     "ScoutingEntry",
     new mongoose.Schema({
         contributor: ScoutingContributor,
+        event: String,
         match: Number,
         team: String,
         color: String,

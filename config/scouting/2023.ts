@@ -35,7 +35,11 @@ export function layout() {
             components: [
                 {
                     type: "title",
-                    label: (state) => `AUTO (${state.teamNumber})`
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `AUTO (${state.teamNumber})`).toString()
+                    }
                 },
                 {
                     type: "checkbox",
@@ -59,8 +63,17 @@ export function layout() {
                 },
                 {
                     type: "locations",
-                    src: "./img/2023grid.png",
-                    default: [],
+                    src: {
+                        type: "function",
+                        definition: ((state) =>
+                            `./img/2023grid-${state.color}.png`).toString()
+                    },
+
+                    default: {
+                        locations: [],
+                        values: [],
+                        counter: 0
+                    },
                     data: {
                         locations: "23-2",
                         values: "23-3",
@@ -68,7 +81,7 @@ export function layout() {
                     },
                     rows: 9,
                     columns: 3,
-                    orientation: 1,
+                    orientation: 0,
                     options: [
                         {
                             label: "Cube",
@@ -89,7 +102,7 @@ export function layout() {
                 },
                 {
                     type: "select",
-                    label: "Charge Station level",
+                    label: "Charge Station Level",
                     data: "23-8",
                     default: 0,
                     options: [
@@ -128,7 +141,11 @@ export function layout() {
             components: [
                 {
                     type: "title",
-                    label: (state) => `TELEOP (${state.teamNumber})`
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `TELEOP (${state.teamNumber})`).toString()
+                    }
                 },
                 {
                     type: "timer",
@@ -148,8 +165,12 @@ export function layout() {
                 },
                 {
                     type: "locations",
-                    src: "./img/2023grid.png",
-                    default: [],
+                    src: "./img/2023grid-red.png",
+                    default: {
+                        locations: [],
+                        values: [],
+                        counter: 0
+                    },
                     data: {
                         locations: "23-4",
                         values: "23-5",
@@ -157,7 +178,7 @@ export function layout() {
                     },
                     rows: 9,
                     columns: 3,
-                    orientation: 1,
+                    orientation: 0,
                     options: [
                         {
                             label: "Cube",
@@ -200,7 +221,11 @@ export function layout() {
             components: [
                 {
                     type: "title",
-                    label: (state) => `ENDGAME (${state.teamNumber})`
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `ENDGAME (${state.teamNumber})`).toString()
+                    }
                 },
                 {
                     type: "timer",
@@ -212,7 +237,7 @@ export function layout() {
                 },
                 {
                     type: "select",
-                    label: "Charge Station level",
+                    label: "Charge Station Level",
                     data: "23-9",
                     default: 0,
                     options: [
@@ -251,7 +276,11 @@ export function layout() {
             components: [
                 {
                     type: "title",
-                    label: (state) => `NOTES (${state.teamNumber})`
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `NOTES (${state.teamNumber})`).toString()
+                    }
                 },
                 {
                     type: "text",
@@ -261,26 +290,26 @@ export function layout() {
                     type: "textbox",
                     placeholder: "Enter notes here...",
                     default: "",
-                    data: "notes"
+                    data: "comments"
                 },
-                {
-                    type: "rating",
-                    label: "Drive Skill Rating",
-                    default: 4,
-                    data: "23-13"
-                },
-                {
-                    type: "rating",
-                    label: "Defense Skill Rating",
-                    default: 4,
-                    data: "23-14"
-                },
-                {
-                    type: "rating",
-                    label: "Speed Rating",
-                    default: 4,
-                    data: "23-15"
-                },
+                // {
+                //     type: "rating",
+                //     label: "Drive Skill Rating",
+                //     default: 4,
+                //     data: "23-13"
+                // },
+                // {
+                //     type: "rating",
+                //     label: "Defense Skill Rating",
+                //     default: 4,
+                //     data: "23-14"
+                // },
+                // {
+                //     type: "rating",
+                //     label: "Speed Rating",
+                //     default: 4,
+                //     data: "23-15"
+                // },
                 {
                     type: "layout",
                     direction: "columns",

@@ -39,6 +39,7 @@ export interface Config {
             deploy: string;
         };
         scoutingKeys: string[];
+        tba: string;
     };
     features: string[];
 }
