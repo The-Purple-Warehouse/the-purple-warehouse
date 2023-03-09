@@ -28,7 +28,7 @@ const config: Config = {
         scoutingKeys: ["1", "2", "3", "4", "I declare a thumb war"],
         tba: secret.development.auth.tba
     },
-    features: ["scouting", "resources"],
+    features: ["scouting", "resources"]
 };
 
 export default config;

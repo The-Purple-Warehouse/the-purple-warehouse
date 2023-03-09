@@ -37,7 +37,8 @@ export function layout() {
                     type: "title",
                     label: {
                         type: "function",
-                        definition: ((state) => `AUTO (${state.teamNumber})`).toString()
+                        definition: ((state) =>
+                            `AUTO (${state.teamNumber})`).toString()
                     }
                 },
                 {
@@ -64,7 +65,8 @@ export function layout() {
                     type: "locations",
                     src: {
                         type: "function",
-                        definition: ((state) => `./img/2023grid-${state.color}.png`).toString()
+                        definition: ((state) =>
+                            `./img/2023grid-${state.color}.png`).toString()
                     },
 
                     default: {
@@ -141,7 +143,8 @@ export function layout() {
                     type: "title",
                     label: {
                         type: "function",
-                        definition: ((state) => `TELEOP (${state.teamNumber})`).toString()
+                        definition: ((state) =>
+                            `TELEOP (${state.teamNumber})`).toString()
                     }
                 },
                 {
@@ -220,7 +223,8 @@ export function layout() {
                     type: "title",
                     label: {
                         type: "function",
-                        definition: ((state) => `ENDGAME (${state.teamNumber})`).toString()
+                        definition: ((state) =>
+                            `ENDGAME (${state.teamNumber})`).toString()
                     }
                 },
                 {
@@ -274,7 +278,8 @@ export function layout() {
                     type: "title",
                     label: {
                         type: "function",
-                        definition: ((state) => `NOTES (${state.teamNumber})`).toString()
+                        definition: ((state) =>
+                            `NOTES (${state.teamNumber})`).toString()
                     }
                 },
                 {

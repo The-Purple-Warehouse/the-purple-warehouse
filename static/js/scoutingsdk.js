@@ -180,9 +180,9 @@ const ScoutingAppSDK = function (element, config) {
             timers: [],
             ratings: [],
             comments: data.data.comments || "",
-            timestamp: (new Date()).getTime()
-        }
-        if(data.data.comments != null) {
+            timestamp: new Date().getTime()
+        };
+        if (data.data.comments != null) {
             delete data.data.comments;
         }
         let dataKeys = Object.keys(data.data);
@@ -190,26 +190,47 @@ const ScoutingAppSDK = function (element, config) {
         let counterKeys = Object.keys(data.counters);
         let timerKeys = Object.keys(data.timers);
         let ratingKeys = Object.keys(data.ratings);
-        for(let i = 0; i < dataKeys.length; i++) {
-            formatted.data[i] = {category: dataKeys[i], data: data.data[dataKeys[i]]}
+        for (let i = 0; i < dataKeys.length; i++) {
+            formatted.data[i] = {
+                category: dataKeys[i],
+                data: data.data[dataKeys[i]]
+            };
         }
-        for(let i = 0; i < abilityKeys.length; i++) {
-            formatted.abilities[i] = {category: abilityKeys[i], ability: data.abilities[abilityKeys[i]]}
+        for (let i = 0; i < abilityKeys.length; i++) {
+            formatted.abilities[i] = {
+                category: abilityKeys[i],
+                ability: data.abilities[abilityKeys[i]]
+            };
         }
-        for(let i = 0; i < counterKeys.length; i++) {
-            formatted.counters[i] = {category: counterKeys[i], counter: data.counters[counterKeys[i]]}
+        for (let i = 0; i < counterKeys.length; i++) {
+            formatted.counters[i] = {
+                category: counterKeys[i],
+                counter: data.counters[counterKeys[i]]
+            };
         }
-        for(let i = 0; i < timerKeys.length; i++) {
-            formatted.timers[i] = {category: timerKeys[i], timer: data.timers[timerKeys[i]]}
+        for (let i = 0; i < timerKeys.length; i++) {
+            formatted.timers[i] = {
+                category: timerKeys[i],
+                timer: data.timers[timerKeys[i]]
+            };
         }
-        for(let i = 0; i < ratingKeys.length; i++) {
-            formatted.ratings[i] = {category: ratingKeys[i], rating: data.ratings[ratingKeys[i]]}
+        for (let i = 0; i < ratingKeys.length; i++) {
+            formatted.ratings[i] = {
+                category: ratingKeys[i],
+                rating: data.ratings[ratingKeys[i]]
+            };
         }
         console.log(formatted);
         return formatted;
     };
 
-    this.stringifyFormatted = (eventCode, matchNumber, teamNumber, color, formatted) => {
+    this.stringifyFormatted = (
+        eventCode,
+        matchNumber,
+        teamNumber,
+        color,
+        formatted
+    ) => {
         let stringified = JSON.stringify([
             config.account.team,
             config.account.username,
@@ -251,7 +272,7 @@ const ScoutingAppSDK = function (element, config) {
             formatted.timestamp
         ]);
         return stringified;
-    }
+    };
 
     let timers = {};
     window.t = timers;
@@ -278,17 +299,23 @@ const ScoutingAppSDK = function (element, config) {
                 ratings: {}
             };
             timers = {};
-            if(_eventCode != "" && this.getEventCode() != null && this.getEventCode() != "") {
+            if (
+                _eventCode != "" &&
+                this.getEventCode() != null &&
+                this.getEventCode() != ""
+            ) {
                 this.setEventCode(_eventCode);
             }
             let latestMatch = "";
-            if(config.latest.autofill) {
-                let latestMatchData = await this.getLatestMatch(this.getEventCode());
-                if(latestMatchData.success) {
+            if (config.latest.autofill) {
+                let latestMatchData = await this.getLatestMatch(
+                    this.getEventCode()
+                );
+                if (latestMatchData.success) {
                     latestMatch = latestMatchData.body.latest + 1;
                 }
             }
-            let year = (new Date()).toLocaleDateString().split("/")[2];
+            let year = new Date().toLocaleDateString().split("/")[2];
             await this.setEvents(year);
             let events = await this.getEvents(year);
             element.innerHTML = `
@@ -299,16 +326,31 @@ const ScoutingAppSDK = function (element, config) {
                         <button class="view-data">View Data</button>
                     </div>
                     <h1>TPW Scouting App</h1>
-                    <h3>Signed in as ${this.escape(config.account.username)} (${this.escape(config.account.team)})</h3>
+                    <h3>Signed in as ${this.escape(
+                        config.account.username
+                    )} (${this.escape(config.account.team)})</h3>
                     <h2>Event Code:</h2>
                     <select class="event-code">
-                        <option value=""${(_eventCode || this.getEventCode()) == null || (_eventCode || this.getEventCode()) == "" ? " selected" : ""}>Select an event...</option>
-                        ${events.map((event) => `<option value="${event.key}"${(_eventCode || this.getEventCode()) == event.key ? " selected" : ""}>${event.name}</option>`)}
+                        <option value=""${
+                            (_eventCode || this.getEventCode()) == null ||
+                            (_eventCode || this.getEventCode()) == ""
+                                ? " selected"
+                                : ""
+                        }>Select an event...</option>
+                        ${events.map(
+                            (event) =>
+                                `<option value="${event.key}"${
+                                    (_eventCode || this.getEventCode()) ==
+                                    event.key
+                                        ? " selected"
+                                        : ""
+                                }>${event.name}</option>`
+                        )}
                     </select>
                     <h2>Match Number:</h2>
                     <input class="match-number" type="number" min="0" value="${this.escape(
-                _matchNumber || latestMatch
-            )}" />
+                        _matchNumber || latestMatch
+                    )}" />
                     <h2>Team:</h2>
                     <select class="team">
                         <option value="">Select a team...</option>
@@ -328,15 +370,12 @@ const ScoutingAppSDK = function (element, config) {
                 async () => {
                     window.location.href = "/scouting/logout";
                 };
-            element.querySelector(
-                ".button-row > button.view-data"
-            ).onclick = async () => {
-            };
-            element.querySelector(
-                ".button-row > button.scan-data"
-            ).onclick = async () => {
-                await this.showScannerPage(this.getEventCode());
-            };
+            element.querySelector(".button-row > button.view-data").onclick =
+                async () => {};
+            element.querySelector(".button-row > button.scan-data").onclick =
+                async () => {
+                    await this.showScannerPage(this.getEventCode());
+                };
             element.querySelector(".home-window > button.start").onclick =
                 async () => {
                     let eventCode = element.querySelector(
@@ -364,24 +403,25 @@ const ScoutingAppSDK = function (element, config) {
                         );
                     }
                 };
-            element.querySelector(
-                ".home-window > select.event-code"
-            ).onchange = async () => {
-                let eventCode = element.querySelector(
-                    ".home-window > select.event-code"
-                ).value;
-                this.setEventCode(eventCode);
-                this.setMatches(eventCode);
-                updateTeamsList()
-                let latestMatch = "";
-                if(config.latest.autofill) {
-                    let latestMatchData = await this.getLatestMatch(this.getEventCode());
-                    if(latestMatchData.success) {
-                        latestMatch = latestMatchData.body.latest + 1;
+            element.querySelector(".home-window > select.event-code").onchange =
+                async () => {
+                    let eventCode = element.querySelector(
+                        ".home-window > select.event-code"
+                    ).value;
+                    this.setEventCode(eventCode);
+                    this.setMatches(eventCode);
+                    updateTeamsList();
+                    let latestMatch = "";
+                    if (config.latest.autofill) {
+                        let latestMatchData = await this.getLatestMatch(
+                            this.getEventCode()
+                        );
+                        if (latestMatchData.success) {
+                            latestMatch = latestMatchData.body.latest + 1;
+                        }
                     }
-                }
-                element.querySelector(".match-number").value = latestMatch;
-            };
+                    element.querySelector(".match-number").value = latestMatch;
+                };
             let updateTeamsList = async () => {
                 element.querySelector(
                     ".home-window > select.team"
@@ -424,9 +464,8 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     ).innerHTML = teams;
                 }
             };
-            element.querySelector(
-                ".home-window > input.match-number"
-            ).onblur = updateTeamsList;
+            element.querySelector(".home-window > input.match-number").onblur =
+                updateTeamsList;
             updateTeamsList();
             resolve();
         });
@@ -442,11 +481,11 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                 element.innerHTML = `
 					<div class="match-window">
 						${await this.compileComponent(
-                    eventCode,
-                    matchNumber,
-                    teamNumber,
-                    config.pages[index]
-                )}
+                            eventCode,
+                            matchNumber,
+                            teamNumber,
+                            config.pages[index]
+                        )}
 					</div>
 					<div class="overlay"></div>
 					<div class="location-popup"></div>
@@ -487,11 +526,8 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     } catch (err) {}
                     window.location.href = "/scouting/logout";
                 };
-            element.querySelector(
-                ".button-row > button.view-data"
-            ).onclick = async () => {
-
-            };
+            element.querySelector(".button-row > button.view-data").onclick =
+                async () => {};
             element.querySelector(".button-row > button.scout").onclick =
                 async () => {
                     try {
@@ -499,13 +535,12 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     } catch (err) {}
                     await this.showHomePage();
                 };
-            element.querySelector("button.scan-again").onclick =
-                async () => {
-                    try {
-                        await reader.stop();
-                    } catch (err) {}
-                    await this.showScannerPage(eventCode);
-                };
+            element.querySelector("button.scan-again").onclick = async () => {
+                try {
+                    await reader.stop();
+                } catch (err) {}
+                await this.showScannerPage(eventCode);
+            };
             let devices = [];
             let codes = [];
             let deviceIndex = 0;
@@ -515,14 +550,11 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                 try {
                     let data = JSON.parse(decodedText);
                     codes[data[0]] = data[2];
-                    element.querySelector(
-                        ".scanner-window > p"
-                    ).innerHTML = `${
+                    element.querySelector(".scanner-window > p").innerHTML = `${
                         codes.filter((code) => code != null).length
                     }/${data[1]}`;
                     if (
-                        codes.filter((code) => code != null).length ==
-                        data[1]
+                        codes.filter((code) => code != null).length == data[1]
                     ) {
                         console.log(codes.join(""));
                         let data = JSON.parse(codes.join(""));
@@ -532,15 +564,14 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             data.tn,
                             data
                         );
-                        if(data.at == config.account.team) {
-                            formatted.username = data.au
+                        if (data.at == config.account.team) {
+                            formatted.username = data.au;
                         } else {
                             formatted.username = `team${data.at}-${data.au}`;
                         }
 
-                        element.querySelector(
-                            ".scanner-window > p"
-                        ).innerHTML = "&nbsp;";
+                        element.querySelector(".scanner-window > p").innerHTML =
+                            "&nbsp;";
                         await reader.stop();
                         element.querySelector(
                             ".scanner-window > button.switch-camera"
@@ -556,7 +587,13 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             ).innerHTML += `<h3>Uploading...</h3>`;
                             let upload = await (
                                 await fetch(
-                                    `/api/v1/scouting/entry/add/${encodeURIComponent(data.ec)}/${encodeURIComponent(data.mn)}/${encodeURIComponent(data.tn)}/${encodeURIComponent(data.tc)}`,
+                                    `/api/v1/scouting/entry/add/${encodeURIComponent(
+                                        data.ec
+                                    )}/${encodeURIComponent(
+                                        data.mn
+                                    )}/${encodeURIComponent(
+                                        data.tn
+                                    )}/${encodeURIComponent(data.tc)}`,
                                     {
                                         method: "POST",
                                         headers: {
@@ -644,10 +681,7 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                                 }
                             },
                             async (decodedText, decodedResult) => {
-                                await scanResult(
-                                    decodedText,
-                                    decodedResult
-                                );
+                                await scanResult(decodedText, decodedResult);
                             },
                             async (errorMessage) => {
                                 // console.error(errorMessage);
@@ -855,8 +889,7 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
         if (randomQuoteID < importantQuotes.length * 3) {
             boltmanQuote = importantQuotes[Math.floor(randomQuoteID / 3)];
         } else {
-            boltmanQuote =
-                quotes[randomQuoteID - importantQuotes.length * 3];
+            boltmanQuote = quotes[randomQuoteID - importantQuotes.length * 3];
         }
         return '"' + boltmanQuote + '" --Boltman';
     };
@@ -877,13 +910,13 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     )
                 ).json();
                 resolve(latestMatchData);
-            } catch(err) {
+            } catch (err) {
                 resolve({
                     success: false
                 });
             }
         });
-    }
+    };
 
     this.getEventCode = () => {
         if (localStorage.getItem("eventCode") == null) {
@@ -926,7 +959,9 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
             try {
                 let matches = await (
                     await fetch(
-                        `/api/v1/scouting/matches/${encodeURIComponent(eventCode)}`
+                        `/api/v1/scouting/matches/${encodeURIComponent(
+                            eventCode
+                        )}`
                     )
                 ).json();
                 if (matches.success) {
@@ -1012,17 +1047,13 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
     this.getEvents = (year) => {
         return new Promise(async (resolve, reject) => {
             if (localStorage.getItem(`events::${year}`) != null) {
-                resolve(
-                    JSON.parse(localStorage.getItem(`events::${year}`))
-                );
+                resolve(JSON.parse(localStorage.getItem(`events::${year}`)));
                 await this.setEvents(year);
             } else {
                 let set = await this.setEvents(year);
                 if (set) {
                     resolve(
-                        JSON.parse(
-                            localStorage.getItem(`events::${year}`)
-                        )
+                        JSON.parse(localStorage.getItem(`events::${year}`))
                     );
                 } else {
                     resolve([]);
@@ -1075,35 +1106,35 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                 return {
                     value: values[i],
                     index: loc
-                }
+                };
             });
             element.querySelector(".location-popup").innerHTML = `
 				${options
-                .map((option) => {
-                    return `
+                    .map((option) => {
+                        return `
 						<div data-option="${this.escape(option.value)}">
 							<h2>${option.label}</h2>
 							<button data-increment="-1" data-value="${this.escape(
-                        option.value
-                    )}"><span>-</span></button>
+                                option.value
+                            )}"><span>-</span></button>
 							<h3>${
-                        locationData.filter(
-                            (loc) =>
-                                loc.value == option.value &&
-                                loc.index == index
-                        ).length
-                    } here<br>${
-                        locationData.filter(
-                            (loc) => loc.value == option.value
-                        ).length
-                    } total</h3>
+                                locationData.filter(
+                                    (loc) =>
+                                        loc.value == option.value &&
+                                        loc.index == index
+                                ).length
+                            } here<br>${
+                            locationData.filter(
+                                (loc) => loc.value == option.value
+                            ).length
+                        } total</h3>
 							<button data-increment="1" data-value="${this.escape(
-                        option.value
-                    )}"><span>+</span></button>
+                                option.value
+                            )}"><span>+</span></button>
 						</div>
 					`;
-                })
-                .join("")}
+                    })
+                    .join("")}
 				<button>Save/Close</button>
 			`;
             element.querySelector(".location-popup > button").onclick =
@@ -1131,9 +1162,9 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             let indexToRemove = locationData.findIndex(
                                 (loc) =>
                                     loc.value ==
-                                    elements[i].getAttribute(
-                                        "data-value"
-                                    ) && loc.index == index
+                                        elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
                             );
                             if (indexToRemove > -1) {
                                 locationData.splice(indexToRemove, 1);
@@ -1174,7 +1205,11 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
         component = {}
     ) => {
         return new Promise(async (resolve, reject) => {
-            let color = await this.getTeamColor(eventCode, matchNumber, teamNumber);
+            let color = await this.getTeamColor(
+                eventCode,
+                matchNumber,
+                teamNumber
+            );
 
             function getState() {
                 return {
@@ -1183,7 +1218,7 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     teamNumber: teamNumber,
                     color: color,
                     data: data
-                }
+                };
             }
 
             let types = [
@@ -1221,17 +1256,17 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                 resolve(`
 					<div class="component-layout-${direction}">
 						${(
-                    await Promise.all(
-                        components.map((component) =>
-                            this.compileComponent(
-                                eventCode,
-                                matchNumber,
-                                teamNumber,
-                                component
+                            await Promise.all(
+                                components.map((component) =>
+                                    this.compileComponent(
+                                        eventCode,
+                                        matchNumber,
+                                        teamNumber,
+                                        component
+                                    )
+                                )
                             )
-                        )
-                    )
-                ).join("")}
+                        ).join("")}
 					</div>
 				`);
             } else if (component.type == "title") {
@@ -1299,17 +1334,26 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     await this.setData(
                         "data",
                         component.data.locations,
-                        checkNull(data.data[component.data.locations], defaultValue.locations)
+                        checkNull(
+                            data.data[component.data.locations],
+                            defaultValue.locations
+                        )
                     );
                     await this.setData(
                         "data",
                         component.data.values,
-                        checkNull(data.data[component.data.values], defaultValue.values)
+                        checkNull(
+                            data.data[component.data.values],
+                            defaultValue.values
+                        )
                     );
                     await this.setData(
                         "counters",
                         component.data.counter,
-                        checkNull(data.counters[component.data.counter], defaultValue.counter)
+                        checkNull(
+                            data.counters[component.data.counter],
+                            defaultValue.counter
+                        )
                     );
                     element.querySelector(
                         `[data-id="${this.escape(id)}"] > button`
@@ -1343,13 +1387,31 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             let result = await this.showLocationPopup(
                                 e.target.getAttribute("data-index"),
                                 options,
-                                checkNull(data.data[component.data.locations], defaultValue.locations),
-                                checkNull(data.data[component.data.values], defaultValue.values)
+                                checkNull(
+                                    data.data[component.data.locations],
+                                    defaultValue.locations
+                                ),
+                                checkNull(
+                                    data.data[component.data.values],
+                                    defaultValue.values
+                                )
                             );
                             if (result != null) {
-                                await this.setData("data", component.data.locations, result.map(entry => entry.index));
-                                await this.setData("data", component.data.values, result.map(entry => entry.value));
-                                await this.setData("counters", component.data.counter, result.length);
+                                await this.setData(
+                                    "data",
+                                    component.data.locations,
+                                    result.map((entry) => entry.index)
+                                );
+                                await this.setData(
+                                    "data",
+                                    component.data.values,
+                                    result.map((entry) => entry.value)
+                                );
+                                await this.setData(
+                                    "counters",
+                                    component.data.counter,
+                                    result.length
+                                );
                                 for (
                                     let index = 0;
                                     index < rows * columns;
@@ -1359,8 +1421,8 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                                         checkNull(
                                             data.data[component.data.locations],
                                             defaultValue.locations
-                                        ).filter((loc) => loc == index)
-                                            .length > 0
+                                        ).filter((loc) => loc == index).length >
+                                        0
                                     ) {
                                         element
                                             .querySelector(
@@ -1388,20 +1450,20 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 });
                 let additionalClasses = [];
-                if(rows > 5) {
+                if (rows > 5) {
                     additionalClasses.push("large-grid-y");
                 }
-                if(columns < 4) {
+                if (columns < 4) {
                     additionalClasses.push("small-grid-x");
                 }
                 resolve(`
 					<div class="component-locations" data-id="${this.escape(id)}">
 						<div class="component-locations-container ${additionalClasses.join(" ")}">
 							<div class="grid" data-orientation="${this.escape(
-                    fieldOrientationSet
-                        ? fieldOrientation
-                        : orientation
-                )}" style="grid-template-rows: repeat(${this.escape(
+                                fieldOrientationSet
+                                    ? fieldOrientation
+                                    : orientation
+                            )}" style="grid-template-rows: repeat(${this.escape(
                     rows
                 )}, 1fr); grid-template-columns: repeat(${this.escape(
                     columns
@@ -1411,35 +1473,38 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                         : ""
                 }">
 								${[...new Array(rows).keys()]
-                    .map((row, rowindex) => {
-                        return [...new Array(columns).keys()]
-                            .map((column, columnindex) => {
-                                return `<div style="grid-area: ${
-                                    rowindex + 1
-                                } / ${columnindex + 1} / ${
-                                    rowindex + 2
-                                } / ${
-                                    columnindex + 2
-                                };" data-row="${rowindex}" data-column="${columnindex}" data-index="${
-                                    rowindex * columns +
-                                    columnindex
-                                }"${
-                                    checkNull(
-                                        data.data[component.data.locations],
-                                        defaultValue.locations
-                                    ).filter(
-                                        (loc) =>
-                                            loc ==
-                                            rowindex * columns +
-                                            columnindex
-                                    ).length > 0
-                                        ? ` class="active"`
-                                        : ""
-                                }></div>`;
-                            })
-                            .join("");
-                    })
-                    .join("")}
+                                    .map((row, rowindex) => {
+                                        return [...new Array(columns).keys()]
+                                            .map((column, columnindex) => {
+                                                return `<div style="grid-area: ${
+                                                    rowindex + 1
+                                                } / ${columnindex + 1} / ${
+                                                    rowindex + 2
+                                                } / ${
+                                                    columnindex + 2
+                                                };" data-row="${rowindex}" data-column="${columnindex}" data-index="${
+                                                    rowindex * columns +
+                                                    columnindex
+                                                }"${
+                                                    checkNull(
+                                                        data.data[
+                                                            component.data
+                                                                .locations
+                                                        ],
+                                                        defaultValue.locations
+                                                    ).filter(
+                                                        (loc) =>
+                                                            loc ==
+                                                            rowindex * columns +
+                                                                columnindex
+                                                    ).length > 0
+                                                        ? ` class="active"`
+                                                        : ""
+                                                }></div>`;
+                                            })
+                                            .join("");
+                                    })
+                                    .join("")}
 							</div>
 						</div>
 						<button>Flip</button>
@@ -1589,7 +1654,9 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             `[data-id="${this.escape(
                                 timers[name].id
                             )}"] > h2 > span`
-                        ).innerHTML = this.timerFormat(data.timers[component.data]);
+                        ).innerHTML = this.timerFormat(
+                            data.timers[component.data]
+                        );
                     };
                     element.querySelector(
                         `[data-id="${this.escape(
@@ -1606,7 +1673,9 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             `[data-id="${this.escape(
                                 timers[name].id
                             )}"] > h2 > span`
-                        ).innerHTML = this.timerFormat(data.timers[component.data]);
+                        ).innerHTML = this.timerFormat(
+                            data.timers[component.data]
+                        );
                     };
                     element.querySelector(
                         `[data-id="${this.escape(
@@ -1715,13 +1784,13 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
 						<div class="button-container">
 							<button class="minus">&nbsp;<span>-</span></button>
 							<button class="timer" ${
-                    checkNull(
-                        checkNull(timers[name], {}).restricted,
-                        false
-                    )
-                        ? "disabled"
-                        : ""
-                }>${
+                                checkNull(
+                                    checkNull(timers[name], {}).restricted,
+                                    false
+                                )
+                                    ? "disabled"
+                                    : ""
+                            }>${
                     checkNull(checkNull(timers[name], {}).running, false)
                         ? "Stop"
                         : "Start"
@@ -1755,17 +1824,21 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                         await this.setData(
                             "abilities",
                             component.data,
-                            parseInt(element.querySelector(
-                                `[data-id="${this.escape(id)}"] > select`
-                            ).value)
+                            parseInt(
+                                element.querySelector(
+                                    `[data-id="${this.escape(id)}"] > select`
+                                ).value
+                            )
                         );
                     };
                     await this.setData(
                         "abilities",
                         component.data,
-                        parseInt(element.querySelector(
-                            `[data-id="${this.escape(id)}"] > select`
-                        ).value)
+                        parseInt(
+                            element.querySelector(
+                                `[data-id="${this.escape(id)}"] > select`
+                            ).value
+                        )
                     );
                 });
                 resolve(`
@@ -1773,16 +1846,16 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
 						<h2>${this.escape(label)}</h2>
 						<select>
 							${options.map((option, index) => {
-                    return `<option value="${index}" ${
-                        index ==
-                        checkNull(
-                            data.abilities[component.data],
-                            defaultValue
-                        )
-                            ? "selected"
-                            : ""
-                    }>${this.escape(option.label)}</option>`;
-                })}
+                                return `<option value="${index}" ${
+                                    index ==
+                                    checkNull(
+                                        data.abilities[component.data],
+                                        defaultValue
+                                    )
+                                        ? "selected"
+                                        : ""
+                                }>${this.escape(option.label)}</option>`;
+                            })}
 						</select>
 					</div>
 				`);
@@ -1837,7 +1910,13 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                         ).innerHTML += `<h3>Uploading...</h3>`;
                         let upload = await (
                             await fetch(
-                                `/api/v1/scouting/entry/add/${encodeURIComponent(eventCode)}/${encodeURIComponent(matchNumber)}/${encodeURIComponent(teamNumber)}/${encodeURIComponent(color)}`,
+                                `/api/v1/scouting/entry/add/${encodeURIComponent(
+                                    eventCode
+                                )}/${encodeURIComponent(
+                                    matchNumber
+                                )}/${encodeURIComponent(
+                                    teamNumber
+                                )}/${encodeURIComponent(color)}`,
                                 {
                                     method: "POST",
                                     headers: {
@@ -1852,13 +1931,19 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                             element.querySelector(
                                 `[data-id="${this.escape(id)}"]`
                             ).innerHTML += `<h3>Verifying...</h3>`;
-                            let stringified = this.stringifyFormatted(eventCode, matchNumber, teamNumber, color, formatted);
-                            let hash = this.hash(
-                                stringified
-                            )
+                            let stringified = this.stringifyFormatted(
+                                eventCode,
+                                matchNumber,
+                                teamNumber,
+                                color,
+                                formatted
+                            );
+                            let hash = this.hash(stringified);
                             let verify = await (
                                 await fetch(
-                                    `/api/v1/scouting/entry/verify/${encodeURIComponent(hash)}`
+                                    `/api/v1/scouting/entry/verify/${encodeURIComponent(
+                                        hash
+                                    )}`
                                 )
                             ).json();
                             if (verify.success) {
@@ -1911,8 +1996,8 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     a: data.abilities,
                     c: data.counters,
                     t: data.timers,
-                    r: data.ratings,
-                })
+                    r: data.ratings
+                });
                 let chunkLength = 20;
                 if (typeof component.chunkLength == "number") {
                     chunkLength = component.chunkLength;
@@ -1955,8 +2040,8 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
                     a: data.abilities,
                     c: data.counters,
                     t: data.timers,
-                    r: data.ratings,
-                })
+                    r: data.ratings
+                });
                 resolve(
                     `<textarea class="component-textbox" readonly>${this.escape(
                         code
@@ -2061,14 +2146,10 @@ ${this.escape(teamNumber)} (Blue ${i + 1})
         if (configuration.account == null) {
             configuration.account = {};
         }
-        if (
-            configuration.account.username == null
-        ) {
+        if (configuration.account.username == null) {
             configuration.account.username = "";
         }
-        if (
-            configuration.account.team == null
-        ) {
+        if (configuration.account.team == null) {
             configuration.account.team = "";
         }
         return configuration;
