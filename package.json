@@ -79,7 +79,7 @@
         "moment": "^2.29.4",
         "mongodb": "^3.7.3",
         "mongoose": "^5.13.15",
-        "node-fetch": "^3.3.0",
+        "node-fetch": "^2.6.9",
         "path": "^0.12.7",
         "serve": "^14.0.1",
         "uuidv4": "^6.2.13"
