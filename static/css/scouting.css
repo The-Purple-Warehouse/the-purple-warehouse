@@ -562,18 +562,27 @@ body {
     display: grid;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    width: calc(100vw - 34px);
-    height: calc(50vw - 17px);
+    width: 100vw;
+    height: 50vw;
     max-width: 600px;
     max-height: 300px;
 }
 
 .large-grid-y .grid {
     height: calc(75vw) !important;
+    max-width: 400px !important;
+    max-height: 300px !important;
 }
 
 .small-grid-x .grid {
     width: calc(50vw) !important;
+    max-width: 450px !important;
+    max-height: 450px !important;
+}
+
+.large-grid-y.small-grid-x .grid {
+    max-width: 300px !important;
+    max-height: 450px !important;
 }
 
 .small-grid-x {
