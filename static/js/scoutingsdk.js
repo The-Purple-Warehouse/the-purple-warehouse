@@ -1377,23 +1377,36 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
-							${option.type == "toggle" ? `<button class="toggle" data-type="${option.type}" data-value="${_this.escape(
-                                option.value
-                            )}">[${locationData.filter(
-                                (loc) =>
-                                    loc.value == option.value &&
-                                    loc.index == index
-                            ).length}/${locationData.filter(
-                                (loc) =>
-                                    loc.value == option.value
-                            ).length}] ${locationData.filter(
-                                (loc) =>
-                                    loc.value == option.value &&
-                                    loc.index == index
-                            ).length > 0 ? "Deselect" : "Select"}</button>` : 
-                            `<button data-increment="-1" data-type="${option.type}" data-value="${_this.escape(
-                                option.value
-                            )}"><span>-</span></button>
+							${
+                                option.type == "toggle"
+                                    ? `<button class="toggle" data-type="${
+                                          option.type
+                                      }" data-value="${_this.escape(
+                                          option.value
+                                      )}">[${
+                                          locationData.filter(
+                                              (loc) =>
+                                                  loc.value == option.value &&
+                                                  loc.index == index
+                                          ).length
+                                      }/${
+                                          locationData.filter(
+                                              (loc) => loc.value == option.value
+                                          ).length
+                                      }] ${
+                                          locationData.filter(
+                                              (loc) =>
+                                                  loc.value == option.value &&
+                                                  loc.index == index
+                                          ).length > 0
+                                              ? "Deselect"
+                                              : "Select"
+                                      }</button>`
+                                    : `<button data-increment="-1" data-type="${
+                                          option.type
+                                      }" data-value="${_this.escape(
+                                          option.value
+                                      )}"><span>-</span></button>
 							<h3>${
                                 locationData.filter(
                                     (loc) =>
@@ -1401,13 +1414,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         loc.index == index
                                 ).length
                             } here<br>${
-                            locationData.filter(
-                                (loc) => loc.value == option.value
-                            ).length
-                        } total</h3>
-							<button data-increment="1" data-type="${option.type}" data-value="${_this.escape(
-                                option.value
-                            )}"><span>+</span></button>`}
+                                          locationData.filter(
+                                              (loc) => loc.value == option.value
+                                          ).length
+                                      } total</h3>
+							<button data-increment="1" data-type="${
+                                option.type
+                            }" data-value="${_this.escape(
+                                          option.value
+                                      )}"><span>+</span></button>`
+                            }
 						</div>
 					`;
                     })
@@ -1431,39 +1447,47 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             );
             for (let i = 0; i < elements.length; i++) {
                 elements[i].onclick = async () => {
-                    if(elements[i].getAttribute("data-type") == "toggle") {
-                        if(elements[i].innerHTML.includes("Deselect")) {
+                    if (elements[i].getAttribute("data-type") == "toggle") {
+                        if (elements[i].innerHTML.includes("Deselect")) {
                             let indexToRemove = locationData.findIndex(
                                 (loc) =>
                                     loc.value ==
-                                    elements[i].getAttribute(
-                                        "data-value"
-                                    ) && loc.index == index
+                                        elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
                             );
                             if (indexToRemove > -1) {
                                 locationData.splice(indexToRemove, 1);
                             }
-                            elements[i].innerHTML = `[${locationData.filter(
-                                (loc) =>
-                                    loc.value == option[i].value &&
-                                    loc.index == index
-                            ).length}/${locationData.filter(
-                                (loc) =>
-                                    loc.value == option[i].value
-                            ).length}] ${locationData.filter(
-                                (loc) =>
-                                    loc.value == option[i].value &&
-                                    loc.index == index
-                            ).length > 0 ? "Deselect" : "Select"}`;
+                            elements[i].innerHTML = `[${
+                                locationData.filter(
+                                    (loc) =>
+                                        loc.value == option[i].value &&
+                                        loc.index == index
+                                ).length
+                            }/${
+                                locationData.filter(
+                                    (loc) => loc.value == option[i].value
+                                ).length
+                            }] ${
+                                locationData.filter(
+                                    (loc) =>
+                                        loc.value == option[i].value &&
+                                        loc.index == index
+                                ).length > 0
+                                    ? "Deselect"
+                                    : "Select"
+                            }`;
                         } else {
                             locationData.push({
                                 value: elements[i].getAttribute("data-value"),
                                 index: index
                             });
-                            elements[i].innerHTML = `[1/${locationData.filter(
-                                (loc) =>
-                                    loc.value == options[i].value
-                            ).length}] Deselect`;
+                            elements[i].innerHTML = `[1/${
+                                locationData.filter(
+                                    (loc) => loc.value == options[i].value
+                                ).length
+                            }] Deselect`;
                         }
                     } else {
                         let increment = parseInt(
@@ -1472,16 +1496,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         for (let j = 0; j < Math.abs(increment); j++) {
                             if (increment > 0) {
                                 locationData.push({
-                                    value: elements[i].getAttribute("data-value"),
+                                    value: elements[i].getAttribute(
+                                        "data-value"
+                                    ),
                                     index: index
                                 });
                             } else {
                                 let indexToRemove = locationData.findIndex(
                                     (loc) =>
                                         loc.value ==
-                                        elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
+                                            elements[i].getAttribute(
+                                                "data-value"
+                                            ) && loc.index == index
                                 );
                                 if (indexToRemove > -1) {
                                     locationData.splice(indexToRemove, 1);
@@ -1491,7 +1517,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
 
                     for (let i = 0; i < options.length; i++) {
-                        if(options[i].type != "toggle") {
+                        if (options[i].type != "toggle") {
                             element.querySelector(
                                 `.location-popup > div[data-option="${_this.escape(
                                     options[i].value
