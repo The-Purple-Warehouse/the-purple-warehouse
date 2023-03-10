@@ -771,6 +771,10 @@ body {
     position: relative;
 }
 
+.location-popup > div > button.toggle {
+    width: calc(100vw - 60px) !important;
+}
+
 .location-popup > div > button > span {
     position: absolute;
     left: 50%;
