@@ -5,6 +5,8 @@
     --primaryContentColor: #e3dce9;
     --primaryDarkerBackgroundColor: #5d2e6c;
     --disabledColor: #747474;
+    --outline-img: "";
+    --filled-img: "";
 }
 
 @font-face {
@@ -183,7 +185,7 @@ body {
 .home-window select,
 .download-window input,
 .data-window input {
-    background-color: var(--backroundColor) !important;
+    background-color: var(--backgroundColor) !important;
     border: 2px solid var(--contentColor);
     border-radius: 5px;
     padding: 10px;
@@ -250,12 +252,12 @@ body {
     background-color: var(--primaryDarkerBackgroundColor);
 }
 
-.scanner-window > p {
+.scanner-window p {
     text-align: center;
     color: var(--contentColor);
 }
 
-.scanner-window > .upload > h3 {
+.scanner-window .upload > h3 {
     text-align: center;
     color: var(--contentColor);
     width: calc(100% - 20px);
@@ -265,11 +267,11 @@ body {
     transform: translate(-50%, 0);
 }
 
-.scanner-window > .upload > h3.red {
+.scanner-window .upload > h3.red {
     color: #ff0000;
 }
 
-.scanner-window > .upload > h3.primary {
+.scanner-window .upload > h3.primary {
     color: var(--primaryBackgroundColor);
 }
 
@@ -302,6 +304,15 @@ body {
     margin: 0;
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.match-window .component-header {
+    color: var(--contentColor);
+    text-align: center;
+    margin: 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
 }
 
 .match-window .component-text {
@@ -493,7 +504,7 @@ body {
 }
 
 .match-window .component-select > select {
-    background-color: var(--backroundColor) !important;
+    background-color: var(--backgroundColor) !important;
     border: 2px solid var(--contentColor);
     border-radius: 5px;
     padding: 10px;
@@ -523,8 +534,9 @@ body {
     padding: 8px;
 }
 
-.match-window .component-textbox {
-    background-color: var(--backroundColor) !important;
+.match-window .component-textbox,
+.upload-box {
+    background-color: var(--backgroundColor) !important;
     border: 2px solid var(--contentColor);
     border-radius: 5px;
     padding: 10px;
@@ -541,7 +553,8 @@ body {
     transform: translate(-50%, 0);
 }
 
-.match-window .component-textbox:focus {
+.match-window .component-textbox:focus,
+.upload-box:focus {
     outline: 0;
     border: 4px solid var(--contentColor);
     padding: 8px;
@@ -562,18 +575,62 @@ body {
     display: grid;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    width: calc(100vw - 34px);
-    height: calc(50vw - 17px);
+    width: 100vw;
+    height: 50vw;
     max-width: 600px;
     max-height: 300px;
 }
 
+.match-window .component-rating > h2 {
+    color: var(--contentColor);
+    text-align: center;
+    margin: 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.match-window .component-rating .rating-container {
+    width: max-content;
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.match-window .component-rating .rating-star {
+    width: 15vw;
+    height: 15vw;
+    background-size: 15vw;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.match-window .component-rating .rating-star[data-rating="4"] {
+    margin-right: 0;
+}
+
+.match-window .component-rating .rating-star[data-value="0"] {
+    background-image: var(--outline-img);
+}
+
+.match-window .component-rating .rating-star[data-value="1"] {
+    background-image: var(--filled-img);
+}
+
 .large-grid-y .grid {
     height: calc(75vw) !important;
+    max-width: 400px !important;
+    max-height: 300px !important;
 }
 
 .small-grid-x .grid {
     width: calc(50vw) !important;
+    max-width: 450px !important;
+    max-height: 450px !important;
+}
+
+.large-grid-y.small-grid-x .grid {
+    max-width: 300px !important;
+    max-height: 450px !important;
 }
 
 .small-grid-x {
