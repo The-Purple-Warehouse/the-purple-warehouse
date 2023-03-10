@@ -534,7 +534,8 @@ body {
     padding: 8px;
 }
 
-.match-window .component-textbox, .upload-box {
+.match-window .component-textbox,
+.upload-box {
     background-color: var(--backgroundColor) !important;
     border: 2px solid var(--contentColor);
     border-radius: 5px;
@@ -552,7 +553,8 @@ body {
     transform: translate(-50%, 0);
 }
 
-.match-window .component-textbox:focus, .upload-box:focus {
+.match-window .component-textbox:focus,
+.upload-box:focus {
     outline: 0;
     border: 4px solid var(--contentColor);
     padding: 8px;

@@ -358,7 +358,9 @@ const ScoutingAppSDK = function (element, config) {
                         <option value="">Select a team...</option>
                     </select>
                     <button class="start">Start</button>
-                    <p class="boltman-quote">${_this.escape(_this.getQuote())}</p>
+                    <p class="boltman-quote">${_this.escape(
+                        _this.getQuote()
+                    )}</p>
                     <p class="footer-text">Made with &lt; &gt; by <a href="https://kabirramzan.com/" target="_blank">Kabir Ramzan</a> of <a href="https://robotics.harker.org/" target="_blank">Harker Robotics</a></p>
                 </div>
             `;
@@ -383,9 +385,11 @@ const ScoutingAppSDK = function (element, config) {
                     let eventCode = element.querySelector(
                         ".home-window > select.event-code"
                     ).value;
-                    let matchNumber = parseInt(element.querySelector(
-                        ".home-window > input.match-number"
-                    ).value);
+                    let matchNumber = parseInt(
+                        element.querySelector(
+                            ".home-window > input.match-number"
+                        ).value
+                    );
                     let teamNumber = element.querySelector(
                         ".home-window > select.team"
                     ).value;
@@ -431,9 +435,10 @@ const ScoutingAppSDK = function (element, config) {
                 let eventCode = element.querySelector(
                     ".home-window > select.event-code"
                 ).value;
-                let matchNumber = parseInt(element.querySelector(
-                    ".home-window > input.match-number"
-                ).value);
+                let matchNumber = parseInt(
+                    element.querySelector(".home-window > input.match-number")
+                        .value
+                );
                 if (
                     eventCode != "" &&
                     matchNumber != "" &&
@@ -505,18 +510,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     }
 
     _this.uploadData = async (data) => {
-        let formatted = _this.formatData(
-            data.ec,
-            data.mn,
-            data.tn,
-            {
-                data: data.d,
-                abilities: data.a,
-                counters: data.c,
-                timers: data.t,
-                ratings: data.r
-            }
-        );
+        let formatted = _this.formatData(data.ec, data.mn, data.tn, {
+            data: data.d,
+            abilities: data.a,
+            counters: data.c,
+            timers: data.t,
+            ratings: data.r
+        });
         if (data.at == config.account.team) {
             formatted.username = data.au;
         } else {
@@ -530,16 +530,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 await fetch(
                     `/api/v1/scouting/entry/add/${encodeURIComponent(
                         data.ec
-                    )}/${encodeURIComponent(
-                        data.mn
-                    )}/${encodeURIComponent(
+                    )}/${encodeURIComponent(data.mn)}/${encodeURIComponent(
                         data.tn
                     )}/${encodeURIComponent(data.tc)}`,
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type":
-                                "application/json;charset=UTF-8"
+                            "Content-Type": "application/json;charset=UTF-8"
                         },
                         body: JSON.stringify(formatted)
                     }
@@ -565,21 +562,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (verify.success && verify.body.verified) {
                     console.log("Success!");
                 } else {
-                    console.log(`Upload Failed!\n${
-                        verify.error ||
-                        "Unable to verify upload completion."
-                    }`);
+                    console.log(
+                        `Upload Failed!\n${
+                            verify.error ||
+                            "Unable to verify upload completion."
+                        }`
+                    );
                 }
             } else {
-                console.log(`Upload Failed!\n${
-                    upload.error || "Unknown error."
-                }`);
+                console.log(
+                    `Upload Failed!\n${upload.error || "Unknown error."}`
+                );
             }
         } catch (err) {
             console.error(err);
             console.log(`Upload Failed!\nCould not connect to the server.`);
         }
-    }
+    };
 
     _this.showScannerPage = (view = 0) => {
         return new Promise(async (resolve, reject) => {
@@ -590,7 +589,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <button class="scout">Scout</button>
                         <button class="view-data">View Data</button>
                     </div>
-                    <div class="scanner-view" style="display: ${view == 0 ? "block" : "none"};">
+                    <div class="scanner-view" style="display: ${
+                        view == 0 ? "block" : "none"
+                    };">
                         <button class="use-text-input">Use Text Input</button>
                         <button class="switch-camera">Switch Camera</button>
                         <p>&nbsp;</p>
@@ -598,7 +599,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <div class="upload"></div>
                         <button style="display: none;" class="scan-again">Scan Again</button>
                     </div>
-                    <div class="upload-view" style="display: ${view == 1 ? "block" : "none"};">
+                    <div class="upload-view" style="display: ${
+                        view == 1 ? "block" : "none"
+                    };">
                         <button class="use-scanner">Use Scanner</button>
                         <textarea class="upload-box"></textarea>
                         <button class="upload-data">Upload</button>
@@ -610,7 +613,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             let reader = {
                 stop: () => {}
             };
-            if(view == 0) {
+            if (view == 0) {
                 reader = new Html5Qrcode("reader");
             }
             element.querySelector(".button-row > button.log-out").onclick =
@@ -641,12 +644,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 } catch (err) {}
                 await _this.showScannerPage(1);
             };
-            element.querySelector("button.use-text-input").onclick = async () => {
-                try {
-                    await reader.stop();
-                } catch (err) {}
-                await _this.showScannerPage(1);
-            };
+            element.querySelector("button.use-text-input").onclick =
+                async () => {
+                    try {
+                        await reader.stop();
+                    } catch (err) {}
+                    await _this.showScannerPage(1);
+                };
             element.querySelector("button.use-scanner").onclick = async () => {
                 try {
                     await reader.stop();
@@ -784,7 +788,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
             element.querySelector("button.upload-data").onclick = async () => {
                 try {
-                    let data = JSON.parse(element.querySelector(".upload-view > .upload-box").value);
+                    let data = JSON.parse(
+                        element.querySelector(".upload-view > .upload-box")
+                            .value
+                    );
                     let formatted = _this.formatData(
                         data.ec,
                         data.mn,
@@ -891,7 +898,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 } catch (err) {}
                 // console.log(decodedText);
                 // console.log(decodedResult);
-            }
+            };
 
             element.querySelector("button.switch-camera").onclick =
                 async () => {
@@ -921,7 +928,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                     } catch (err) {}
                 };
-            if(view == 0) {
+            if (view == 0) {
                 try {
                     devices = await Html5Qrcode.getCameras();
                     console.log(devices);
@@ -943,8 +950,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             }
                         );
                     }
-                } catch (err) {
-                }
+                } catch (err) {}
                 resolve();
             }
         });
@@ -1193,10 +1199,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         return new Promise(async (resolve, reject) => {
             try {
                 let cacheTime = 0;
-                if(!isNaN(parseInt(localStorage.getItem(`cachetime::matches::${eventCode}`)))) {
-                    cacheTime = parseInt(localStorage.getItem(`cachetime::matches::${eventCode}`));
+                if (
+                    !isNaN(
+                        parseInt(
+                            localStorage.getItem(
+                                `cachetime::matches::${eventCode}`
+                            )
+                        )
+                    )
+                ) {
+                    cacheTime = parseInt(
+                        localStorage.getItem(`cachetime::matches::${eventCode}`)
+                    );
                 }
-                if(cacheTime + (1000 * 10) > (new Date()).getTime()) {
+                if (cacheTime + 1000 * 10 > new Date().getTime()) {
                     resolve(true);
                 } else {
                     let matches = await (
@@ -1207,7 +1223,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         )
                     ).json();
                     if (matches.success) {
-                        localStorage.setItem(`cachetime::matches::${eventCode}`, (new Date()).getTime());
+                        localStorage.setItem(
+                            `cachetime::matches::${eventCode}`,
+                            new Date().getTime()
+                        );
                         localStorage.setItem(
                             `matches::${eventCode}`,
                             JSON.stringify(matches.body.matches || [])
@@ -1548,10 +1567,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }
                 resolve(
-                    `<p class="component-text">${_this.escape(label).replace(
-                        new RegExp("\n", "g"),
-                        "<br>"
-                    )}</p>`
+                    `<p class="component-text">${_this
+                        .escape(label)
+                        .replace(new RegExp("\n", "g"), "<br>")}</p>`
                 );
             } else if (component.type == "locations") {
                 let id = _this.random();
@@ -1799,7 +1817,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                         await _this.showMatchPage(
                             element
-                                .querySelector(`[data-id="${_this.escape(id)}"]`)
+                                .querySelector(
+                                    `[data-id="${_this.escape(id)}"]`
+                                )
                                 .getAttribute("data-page"),
                             eventCode,
                             matchNumber,
@@ -2175,28 +2195,55 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }
                 pendingFunctions.push(async () => {
-                    let ratingElements = [...element.querySelectorAll(
-                        `[data-id="${_this.escape(id)}"] .rating-star`
-                    )];
-                    for(let i = 0; i < ratingElements.length; i++) {
+                    let ratingElements = [
+                        ...element.querySelectorAll(
+                            `[data-id="${_this.escape(id)}"] .rating-star`
+                        )
+                    ];
+                    for (let i = 0; i < ratingElements.length; i++) {
                         let ratingElement = ratingElements[i];
                         ratingElement.onclick = async () => {
-                            let indexToSelect = parseInt(ratingElement.getAttribute("data-rating"));
+                            let indexToSelect = parseInt(
+                                ratingElement.getAttribute("data-rating")
+                            );
                             let indexToDeselect = indexToSelect + 1;
                             console.log(indexToSelect, indexToDeselect);
-                            while(indexToSelect >= 0) {
-                                element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${indexToSelect}"]`).setAttribute("data-value", 1);
+                            while (indexToSelect >= 0) {
+                                element
+                                    .querySelector(
+                                        `[data-id="${_this.escape(
+                                            id
+                                        )}"] [data-rating="${indexToSelect}"]`
+                                    )
+                                    .setAttribute("data-value", 1);
                                 indexToSelect--;
                             }
-                            while(indexToDeselect <= 4) {
-                                element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${indexToDeselect}"]`).setAttribute("data-value", 0);
+                            while (indexToDeselect <= 4) {
+                                element
+                                    .querySelector(
+                                        `[data-id="${_this.escape(
+                                            id
+                                        )}"] [data-rating="${indexToDeselect}"]`
+                                    )
+                                    .setAttribute("data-value", 0);
                                 indexToDeselect++;
                             }
                             let highestIndex = -1;
-                            let star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="0"]`);
-                            while(star != null && star.getAttribute("data-value") == 1) {
-                                highestIndex += 1
-                                star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${highestIndex + 1}"]`);
+                            let star = element.querySelector(
+                                `[data-id="${_this.escape(
+                                    id
+                                )}"] [data-rating="0"]`
+                            );
+                            while (
+                                star != null &&
+                                star.getAttribute("data-value") == 1
+                            ) {
+                                highestIndex += 1;
+                                star = element.querySelector(
+                                    `[data-id="${_this.escape(
+                                        id
+                                    )}"] [data-rating="${highestIndex + 1}"]`
+                                );
                             }
                             await _this.setData(
                                 "ratings",
@@ -2206,10 +2253,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         };
                     }
                     let highestIndex = -1;
-                    let star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="0"]`);
-                    while(star != null && star.getAttribute("data-value") == 1) {
-                        highestIndex += 1
-                        star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${highestIndex + 1}"]`);
+                    let star = element.querySelector(
+                        `[data-id="${_this.escape(id)}"] [data-rating="0"]`
+                    );
+                    while (
+                        star != null &&
+                        star.getAttribute("data-value") == 1
+                    ) {
+                        highestIndex += 1;
+                        star = element.querySelector(
+                            `[data-id="${_this.escape(id)}"] [data-rating="${
+                                highestIndex + 1
+                            }"]`
+                        );
                     }
                     await _this.setData(
                         "ratings",
@@ -2218,12 +2274,28 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     );
                 });
                 resolve(
-                    `<div class="component-rating" data-id="${_this.escape(id)}">
+                    `<div class="component-rating" data-id="${_this.escape(
+                        id
+                    )}">
                         <h2>${_this.escape(label)}</h2>
                         <div class="rating-container">
-                            ${[0, 1, 2, 3, 4].map((i) => {
-                                return `<div class="rating-star" data-value="${i <= checkNull(data.ratings[component.data], defaultValue) ? "1" : "0"}" data-rating="${i}" style="--outline-img: url(${_this.escape(src[0])}); --filled-img: url(${_this.escape(src[1])});"></div>`;
-                            }).join("")}
+                            ${[0, 1, 2, 3, 4]
+                                .map((i) => {
+                                    return `<div class="rating-star" data-value="${
+                                        i <=
+                                        checkNull(
+                                            data.ratings[component.data],
+                                            defaultValue
+                                        )
+                                            ? "1"
+                                            : "0"
+                                    }" data-rating="${i}" style="--outline-img: url(${_this.escape(
+                                        src[0]
+                                    )}); --filled-img: url(${_this.escape(
+                                        src[1]
+                                    )});"></div>`;
+                                })
+                                .join("")}
                         </div> 
                     </div>`
                 );
@@ -2341,11 +2413,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 pendingFunctions.push(async () => {
                     await _this.prepareQRCodes(
                         code,
-                        element.querySelector(`[data-id="${_this.escape(id)}"]`),
+                        element.querySelector(
+                            `[data-id="${_this.escape(id)}"]`
+                        ),
                         chunkLength
                     );
                     await _this.showQRCodes(
-                        element.querySelector(`[data-id="${_this.escape(id)}"]`),
+                        element.querySelector(
+                            `[data-id="${_this.escape(id)}"]`
+                        ),
                         interval
                     );
                 });
