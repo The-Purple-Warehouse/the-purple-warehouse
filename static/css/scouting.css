@@ -772,7 +772,7 @@ body {
 }
 
 .location-popup > div > button.toggle {
-    width: calc(100vw - 60px) !important;
+    width: calc(100vw - 65px) !important;
 }
 
 .location-popup > div > button > span {
