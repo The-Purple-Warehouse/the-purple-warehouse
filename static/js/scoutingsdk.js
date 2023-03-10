@@ -2253,7 +2253,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     `<textarea class="component-textbox" placeholder="${_this.escape(
                         placeholder
                     )}" data-id="${_this.escape(id)}">${_this.escape(
-                        checkNull(data[component.data], defaultValue)
+                        checkNull(data.data[component.data], defaultValue)
                     )}</textarea>`
                 );
             } else if (component.type == "rating") {
