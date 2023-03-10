@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    {{> head}}
+    <link href="/css/scouting.css" rel="stylesheet">
+    <script src="/js/easy.qrcode.min.js"></script>
+    <script src="js/html5-qrcode.min.js"></script>
+    <script src="/js/sha256.min.js"></script>
+    <script src="/js/scoutingsdk.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    {{#each preload as |src|}}
+      <img src="{{src}}" style="display: none" />
+    {{/each}}
+    <script>
+      const sdk = new ScoutingAppSDK(document.querySelector("#app"), {
+        theme: {
+          backgroundColor: "#f8f0ff",
+          contentColor: "#404040",
+          primaryBackgroundColor: "#7d4090",
+          primaryContentColor: "#e3dce9",
+          primaryDarkerBackgroundColor: "#5d2e6c",
+          disabledColor: "#747474"
+        },
+        pages: {{{ json pages }}},
+        latest: {
+          autofill: true
+        },
+        account: {
+          username: "{{ username }}",
+          team: "{{ team }}"
+        }
+      });
+
+      sdk.showHomePage();
+    </script>
+  </body>
+</html>

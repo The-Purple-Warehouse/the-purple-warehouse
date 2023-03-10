@@ -6,11 +6,17 @@ const env = process.env.NODE_ENV || "development";
 
 if (!["development", "staging", "production"].includes(env))
     throw new Error(`Config file for environment ${env} could not be found.`);
-const config: Config = env === "production" ? production : (env === "staging" ? staging : development);
+const config: Config =
+    env === "production"
+        ? production
+        : env === "staging"
+        ? staging
+        : development;
 
 export default config;
 
 export interface Config {
+    branch: string;
     server: {
         port: number;
         domain: string;
@@ -29,6 +35,11 @@ export interface Config {
             username?: string;
             password?: string;
         };
+        ci: {
+            deploy: string;
+        };
+        scoutingKeys: string[];
+        tba: string;
     };
     features: string[];
 }

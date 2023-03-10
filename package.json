@@ -6,8 +6,8 @@
     "scripts": {
         "start": "NODE_ENV=production node build/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc",
-        "build-watch": "tsc -w",
+        "build": "npm i && tsc",
+        "build-noinstall": "tsc",
         "debug": "NODE_ENV=development npx nodemon",
         "dev": "NODE_ENV=development node build/index.js",
         "staging": "NODE_ENV=staging node build/index.js",
@@ -15,9 +15,20 @@
         "deploy-dev": "npm run build && npm run dev",
         "deploy-staging": "npm run build && npm run staging",
         "deploy-prod": "npm run build && npm run start",
-        "update-dev": "git pull && npm run deploy-dev",
-        "update-staging": "git pull && npm run deploy-staging",
-        "update-prod": "git pull && npm run deploy-prod"
+        "deploy-dev-noinstall": "npm run build-noinstall && npm run dev",
+        "deploy-staging-noinstall": "npm run build-noinstall && npm run staging",
+        "deploy-prod-noinstall": "npm run build-noinstall && npm run start",
+        "drop-changes": "git stash & git stash drop",
+        "update-dev": "git fetch && npm run drop-changes & git checkout main && git pull && npm run deploy-dev",
+        "update-staging": "git fetch && npm run drop-changes & git checkout staging && git pull && npm run deploy-staging",
+        "update-prod": "git fetch && npm run drop-changes & git checkout prod && git pull && npm run deploy-prod",
+        "pm2-dev": "pm2 start \"npm run update-dev\"",
+        "pm2-staging": "pm2 start \"npm run update-staging\"",
+        "pm2-prod": "pm2 start \"npm run update-prod\"",
+        "logs": "pm2 logs",
+        "stop-dev": "pm2 stop \"npm run update-dev\"",
+        "stop-staging": "pm2 stop \"npm run update-staging\"",
+        "stop-prod": "pm2 stop \"npm run update-prod\""
     },
     "repository": {
         "type": "git",
@@ -43,6 +54,7 @@
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.2.1",
         "nodemon": "^2.0.20",
+        "pm2": "^5.2.2",
         "prettier": "^2.7.1",
         "ts-node": "^10.9.1",
         "typescript": "^4.8.4"
@@ -71,6 +83,7 @@
         "moment": "^2.29.4",
         "mongodb": "^3.7.3",
         "mongoose": "^5.13.15",
+        "node-fetch": "^2.6.9",
         "path": "^0.12.7",
         "serve": "^14.0.1",
         "uuidv4": "^6.2.13"
