@@ -773,6 +773,7 @@ body {
 
 .location-popup > div > button.toggle {
     width: calc(100vw - 65px) !important;
+    max-width: 310px;
 }
 
 .location-popup > div > button > span {
