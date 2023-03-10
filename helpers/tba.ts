@@ -11,23 +11,22 @@ export async function getEvents(year) {
             )}/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
         )
     ).json();
-    let formatted = (events as any)
-        .map((event) => {
-            return {
-                key: event.key,
-                name: event.name
-            };
-        })
+    let formatted = (events as any).map((event) => {
+        return {
+            key: event.key,
+            name: event.name
+        };
+    });
     formatted.push({
         key: "2023cafr-prac",
         name: "Central Valley Regional PRACTICE"
-    })
+    });
     return formatted.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function getMatches(event) {
     let matches = [];
-    if(event.endsWith("-prac")) {
+    if (event.endsWith("-prac")) {
         matches = practice[event] || [];
     } else {
         matches = await (
