@@ -1443,10 +1443,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (indexToRemove > -1) {
                                 locationData.splice(indexToRemove, 1);
                             }
-                            elements[i].innerHTML = `[0/${locationData.filter(
+                            elements[i].innerHTML = `[${locationData.filter(
                                 (loc) =>
-                                    loc.value == options[i].value
-                            ).length}] Select`;
+                                    loc.value == option[i].value &&
+                                    loc.index == index
+                            ).length}/${locationData.filter(
+                                (loc) =>
+                                    loc.value == option[i].value
+                            ).length}] ${locationData.filter(
+                                (loc) =>
+                                    loc.value == option[i].value &&
+                                    loc.index == index
+                            ).length > 0 ? "Deselect" : "Select"}`;
                         } else {
                             locationData.push({
                                 value: elements[i].getAttribute("data-value"),
