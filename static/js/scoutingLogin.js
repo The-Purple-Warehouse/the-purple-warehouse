@@ -3,7 +3,8 @@ const usernameInp = document.querySelector("#username");
 const accessTokenInp = document.querySelector("#access-token");
 const submitButton = document.querySelector("#submit");
 
-submitButton.addEventListener("click", function () {
+submitButton.addEventListener("click", function (e) {
+    e.preventDefault();
     submitButton.disabled = true;
 
     const inp = {
@@ -24,7 +25,7 @@ submitButton.addEventListener("click", function () {
             } else {
                 errBar(response.message);
             }
-        } catch (e) {
+        } catch (err) {
             errBar("There was an error");
         }
     });
