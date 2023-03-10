@@ -1462,17 +1462,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             elements[i].innerHTML = `[${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == option[i].value &&
+                                        loc.value == options[i].value &&
                                         loc.index == index
                                 ).length
                             }/${
                                 locationData.filter(
-                                    (loc) => loc.value == option[i].value
+                                    (loc) => loc.value == options[i].value
                                 ).length
                             }] ${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == option[i].value &&
+                                        loc.value == options[i].value &&
                                         loc.index == index
                                 ).length > 0
                                     ? "Deselect"
