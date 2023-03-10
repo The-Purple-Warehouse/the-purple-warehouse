@@ -599,9 +599,11 @@ body {
 .match-window .component-rating .rating-star {
     width: 15vw;
     height: 15vw;
-    background-size: 15vw;
+    background-size: 100%;
     display: inline-block;
     margin-right: 10px;
+    max-width: 75px;
+    max-height: 75px;
 }
 
 .match-window .component-rating .rating-star[data-rating="4"] {
