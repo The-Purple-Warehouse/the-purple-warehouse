@@ -1377,9 +1377,36 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
-							<button data-increment="-1" data-value="${_this.escape(
-                                option.value
-                            )}"><span>-</span></button>
+							${
+                                option.type == "toggle"
+                                    ? `<button class="toggle" data-type="${
+                                          option.type
+                                      }" data-value="${_this.escape(
+                                          option.value
+                                      )}">[${
+                                          locationData.filter(
+                                              (loc) =>
+                                                  loc.value == option.value &&
+                                                  loc.index == index
+                                          ).length
+                                      }/${
+                                          locationData.filter(
+                                              (loc) => loc.value == option.value
+                                          ).length
+                                      }] ${
+                                          locationData.filter(
+                                              (loc) =>
+                                                  loc.value == option.value &&
+                                                  loc.index == index
+                                          ).length > 0
+                                              ? "Deselect"
+                                              : "Select"
+                                      }</button>`
+                                    : `<button data-increment="-1" data-type="${
+                                          option.type
+                                      }" data-value="${_this.escape(
+                                          option.value
+                                      )}"><span>-</span></button>
 							<h3>${
                                 locationData.filter(
                                     (loc) =>
@@ -1387,13 +1414,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         loc.index == index
                                 ).length
                             } here<br>${
-                            locationData.filter(
-                                (loc) => loc.value == option.value
-                            ).length
-                        } total</h3>
-							<button data-increment="1" data-value="${_this.escape(
-                                option.value
-                            )}"><span>+</span></button>
+                                          locationData.filter(
+                                              (loc) => loc.value == option.value
+                                          ).length
+                                      } total</h3>
+							<button data-increment="1" data-type="${
+                                option.type
+                            }" data-value="${_this.escape(
+                                          option.value
+                                      )}"><span>+</span></button>`
+                            }
 						</div>
 					`;
                     })
@@ -1417,16 +1447,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             );
             for (let i = 0; i < elements.length; i++) {
                 elements[i].onclick = async () => {
-                    let increment = parseInt(
-                        elements[i].getAttribute("data-increment")
-                    );
-                    for (let j = 0; j < Math.abs(increment); j++) {
-                        if (increment > 0) {
-                            locationData.push({
-                                value: elements[i].getAttribute("data-value"),
-                                index: index
-                            });
-                        } else {
+                    if (elements[i].getAttribute("data-type") == "toggle") {
+                        if (elements[i].innerHTML.includes("Deselect")) {
                             let indexToRemove = locationData.findIndex(
                                 (loc) =>
                                     loc.value ==
@@ -1437,24 +1459,81 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (indexToRemove > -1) {
                                 locationData.splice(indexToRemove, 1);
                             }
+                            elements[i].innerHTML = `[${
+                                locationData.filter(
+                                    (loc) =>
+                                        loc.value == option[i].value &&
+                                        loc.index == index
+                                ).length
+                            }/${
+                                locationData.filter(
+                                    (loc) => loc.value == option[i].value
+                                ).length
+                            }] ${
+                                locationData.filter(
+                                    (loc) =>
+                                        loc.value == option[i].value &&
+                                        loc.index == index
+                                ).length > 0
+                                    ? "Deselect"
+                                    : "Select"
+                            }`;
+                        } else {
+                            locationData.push({
+                                value: elements[i].getAttribute("data-value"),
+                                index: index
+                            });
+                            elements[i].innerHTML = `[1/${
+                                locationData.filter(
+                                    (loc) => loc.value == options[i].value
+                                ).length
+                            }] Deselect`;
+                        }
+                    } else {
+                        let increment = parseInt(
+                            elements[i].getAttribute("data-increment")
+                        );
+                        for (let j = 0; j < Math.abs(increment); j++) {
+                            if (increment > 0) {
+                                locationData.push({
+                                    value: elements[i].getAttribute(
+                                        "data-value"
+                                    ),
+                                    index: index
+                                });
+                            } else {
+                                let indexToRemove = locationData.findIndex(
+                                    (loc) =>
+                                        loc.value ==
+                                            elements[i].getAttribute(
+                                                "data-value"
+                                            ) && loc.index == index
+                                );
+                                if (indexToRemove > -1) {
+                                    locationData.splice(indexToRemove, 1);
+                                }
+                            }
                         }
                     }
+
                     for (let i = 0; i < options.length; i++) {
-                        element.querySelector(
-                            `.location-popup > div[data-option="${_this.escape(
-                                options[i].value
-                            )}"] > h3`
-                        ).innerHTML = `${
-                            locationData.filter(
-                                (loc) =>
-                                    loc.value == options[i].value &&
-                                    loc.index == index
-                            ).length
-                        } here<br>${
-                            locationData.filter(
-                                (loc) => loc.value == options[i].value
-                            ).length
-                        } total`;
+                        if (options[i].type != "toggle") {
+                            element.querySelector(
+                                `.location-popup > div[data-option="${_this.escape(
+                                    options[i].value
+                                )}"] > h3`
+                            ).innerHTML = `${
+                                locationData.filter(
+                                    (loc) =>
+                                        loc.value == options[i].value &&
+                                        loc.index == index
+                                ).length
+                            } here<br>${
+                                locationData.filter(
+                                    (loc) => loc.value == options[i].value
+                                ).length
+                            } total`;
+                        }
                     }
                 };
             }
