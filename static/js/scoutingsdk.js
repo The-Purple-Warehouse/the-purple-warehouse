@@ -1407,6 +1407,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".overlay").style.display = "none";
                     resolve(locationData);
                 };
+            element.querySelector(".overlay").onclick =
+                async () => {
+                    element.querySelector(".location-popup").style.display =
+                        "none";
+                    element.querySelector(".overlay").style.display = "none";
+                    resolve(locationData);
+                };
             let elements = element.querySelectorAll(
                 ".location-popup > div > button"
             );

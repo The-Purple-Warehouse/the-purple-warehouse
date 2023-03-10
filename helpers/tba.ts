@@ -11,18 +11,18 @@ export async function getEvents(year) {
             )}/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
         )
     ).json();
-    let mapped = (events as any)
+    let formatted = (events as any)
         .map((event) => {
             return {
                 key: event.key,
                 name: event.name
             };
         })
-    mapped.push({
+    formatted.push({
         key: "2023cafr-prac",
         name: "Central Valley Regional PRACTICE"
     })
-    events.sort((a, b) => a.name.localeCompare(b.name));
+    return formatted.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function getMatches(event) {
