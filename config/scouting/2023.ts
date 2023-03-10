@@ -66,7 +66,7 @@ export function layout() {
                     src: {
                         type: "function",
                         definition: ((state) =>
-                            `./img/2023grid-${state.color}.png`).toString()
+                            `/img/2023grid-${state.color}.png`).toString()
                     },
 
                     default: {
@@ -165,7 +165,11 @@ export function layout() {
                 },
                 {
                     type: "locations",
-                    src: "./img/2023grid-red.png",
+                    src: {
+                        type: "function",
+                        definition: ((state) =>
+                            `/img/2023grid-${state.color}.png`).toString()
+                    },
                     default: {
                         locations: [],
                         values: [],
@@ -283,8 +287,33 @@ export function layout() {
                     }
                 },
                 {
+                    type: "rating",
+                    label: "Drive Skill Rating",
+                    default: 0,
+                    data: "23-13",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Defense Skill Rating",
+                    default: 0,
+                    data: "23-14",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Speed Rating",
+                    default: 0,
+                    data: "23-15",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "header",
+                    label: "Other Notes"
+                },
+                {
                     type: "text",
-                    label: "Please give any important information about this robot or its performance in the match including:\n\n- Driver skill\n- Ability to defend\n- Ability to score against defense\n- Robot stability\n- Fouls or other issues\n- Anything else that is relevant"
+                    label: "Please give any important information about this robot or its performance in the match including:\n\n- Ability to score against defense\n- Robot stability\n- Fouls or other issues\n- Anything else that is relevant"
                 },
                 {
                     type: "textbox",
@@ -292,24 +321,6 @@ export function layout() {
                     default: "",
                     data: "comments"
                 },
-                // {
-                //     type: "rating",
-                //     label: "Drive Skill Rating",
-                //     default: 4,
-                //     data: "23-13"
-                // },
-                // {
-                //     type: "rating",
-                //     label: "Defense Skill Rating",
-                //     default: 4,
-                //     data: "23-14"
-                // },
-                // {
-                //     type: "rating",
-                //     label: "Speed Rating",
-                //     default: 4,
-                //     data: "23-15"
-                // },
                 {
                     type: "layout",
                     direction: "columns",
@@ -446,5 +457,14 @@ export function layout() {
     ];
 }
 
-const scouting2023 = { categories, layout };
+export function preload() {
+    return [
+        "/img/2023grid-red.png",
+        "/img/2023grid-blue.png",
+        "/img/star-outline.png",
+        "/img/star-filled.png"
+    ];
+}
+
+const scouting2023 = { categories, layout, preload };
 export default scouting2023;

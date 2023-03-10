@@ -16,7 +16,7 @@ const router = new Router<Koa.DefaultState, Koa.Context>();
 
 router.get("/", requireScoutingAuth, async (ctx, next) => {
     await ctx.render("scouting/index", {
-        preload: ["./img/2023grid-red.png", "./img/2023grid-blue.png"],
+        preload: scoutingConfig.preload(),
         pages: scoutingConfig.layout(),
         username: ctx.session.scoutingUsername,
         team: ctx.session.scoutingTeamNumber

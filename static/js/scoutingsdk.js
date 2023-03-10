@@ -581,7 +581,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         }
     }
 
-    _this.showScannerPage = () => {
+    _this.showScannerPage = (view = 0) => {
         return new Promise(async (resolve, reject) => {
             element.innerHTML = `
                 <div class="scanner-window">
@@ -590,14 +590,29 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <button class="scout">Scout</button>
                         <button class="view-data">View Data</button>
                     </div>
-                    <button class="switch-camera">Switch Camera</button>
-                    <p>&nbsp;</p>
-                    <div class="reader" id="reader"></div>
-                    <div class="upload"></div>
-                    <button style="display: none;" class="scan-again">Scan Again</button>
+                    <div class="scanner-view" style="display: ${view == 0 ? "block" : "none"};">
+                        <button class="use-text-input">Use Text Input</button>
+                        <button class="switch-camera">Switch Camera</button>
+                        <p>&nbsp;</p>
+                        <div class="reader" id="reader"></div>
+                        <div class="upload"></div>
+                        <button style="display: none;" class="scan-again">Scan Again</button>
+                    </div>
+                    <div class="upload-view" style="display: ${view == 1 ? "block" : "none"};">
+                        <button class="use-scanner">Use Scanner</button>
+                        <textarea class="upload-box"></textarea>
+                        <button class="upload-data">Upload</button>
+                        <div class="upload"></div>
+                        <button style="display: none;" class="upload-again">Upload Again</button>
+                    </div>
                 </div>
             `;
-            let reader = new Html5Qrcode("reader");
+            let reader = {
+                stop: () => {}
+            };
+            if(view == 0) {
+                reader = new Html5Qrcode("reader");
+            }
             element.querySelector(".button-row > button.log-out").onclick =
                 async () => {
                     try {
@@ -618,7 +633,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 try {
                     await reader.stop();
                 } catch (err) {}
-                await _this.showScannerPage();
+                await _this.showScannerPage(0);
+            };
+            element.querySelector("button.upload-again").onclick = async () => {
+                try {
+                    await reader.stop();
+                } catch (err) {}
+                await _this.showScannerPage(1);
+            };
+            element.querySelector("button.use-text-input").onclick = async () => {
+                try {
+                    await reader.stop();
+                } catch (err) {}
+                await _this.showScannerPage(1);
+            };
+            element.querySelector("button.use-scanner").onclick = async () => {
+                try {
+                    await reader.stop();
+                } catch (err) {}
+                await _this.showScannerPage(0);
             };
             let devices = [];
             let codes = [];
@@ -628,7 +661,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 try {
                     let data = JSON.parse(decodedText);
                     codes[data[0]] = data[2];
-                    element.querySelector(".scanner-window > p").innerHTML = `${
+                    element.querySelector(".scanner-view > p").innerHTML = `${
                         codes.filter((code) => code != null).length
                     }/${data[1]}`;
                     if (
@@ -654,19 +687,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             formatted.username = `team${data.at}-${data.au}`;
                         }
 
-                        element.querySelector(".scanner-window > p").innerHTML =
+                        element.querySelector(".scanner-view > p").innerHTML =
                             "&nbsp;";
                         await reader.stop();
                         element.querySelector(
-                            ".scanner-window > button.switch-camera"
+                            ".scanner-view > button.switch-camera"
                         ).style.display = "none";
 
                         try {
                             element.querySelector(
-                                ".scanner-window > .upload"
+                                ".scanner-view > .upload"
                             ).innerHTML = "<h3>Preparing...</h3>";
                             element.querySelector(
-                                ".scanner-window > .upload"
+                                ".scanner-view > .upload"
                             ).innerHTML += `<h3>Uploading...</h3>`;
                             let upload = await (
                                 await fetch(
@@ -689,7 +722,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             ).json();
                             if (upload.success) {
                                 element.querySelector(
-                                    ".scanner-window > .upload"
+                                    ".scanner-view > .upload"
                                 ).innerHTML += `<h3>Verifying...</h3>`;
                                 let stringified = _this.stringifyFormatted(
                                     data.ec,
@@ -708,39 +741,39 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ).json();
                                 if (verify.success && verify.body.verified) {
                                     element.querySelector(
-                                        ".scanner-window > .upload"
+                                        ".scanner-view > .upload"
                                     ).innerHTML += `<h3 class="primary">Success!</h3>`;
                                     element.querySelector(
-                                        ".scanner-window > button.scan-again"
+                                        ".scanner-view > button.scan-again"
                                     ).style.display = "block";
                                 } else {
                                     element.querySelector(
-                                        ".scanner-window > .upload"
+                                        ".scanner-view > .upload"
                                     ).innerHTML += `<h3 class="red">Upload Failed!<br>${
                                         verify.error ||
                                         "Unable to verify upload completion."
                                     }</h3>`;
                                     element.querySelector(
-                                        ".scanner-window > button.scan-again"
+                                        ".scanner-view > button.scan-again"
                                     ).style.display = "block";
                                 }
                             } else {
                                 element.querySelector(
-                                    ".scanner-window > .upload"
+                                    ".scanner-view > .upload"
                                 ).innerHTML += `<h3 class="red">Upload Failed!<br>${
                                     upload.error || "Unknown error."
                                 }</h3>`;
                                 element.querySelector(
-                                    ".scanner-window > button.scan-again"
+                                    ".scanner-view > button.scan-again"
                                 ).style.display = "block";
                             }
                         } catch (err) {
                             console.error(err);
                             element.querySelector(
-                                ".scanner-window > .upload"
+                                ".scanner-view > .upload"
                             ).innerHTML += `<h3 class="red">Upload Failed!<br>Could not connect to the server.</h3>`;
                             element.querySelector(
-                                ".scanner-window > button.scan-again"
+                                ".scanner-view > button.scan-again"
                             ).style.display = "block";
                         }
                     }
@@ -748,6 +781,118 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 // console.log(decodedText);
                 // console.log(decodedResult);
             }
+
+            element.querySelector("button.upload-data").onclick = async () => {
+                try {
+                    let data = JSON.parse(element.querySelector(".upload-view > .upload-box").value);
+                    let formatted = _this.formatData(
+                        data.ec,
+                        data.mn,
+                        data.tn,
+                        {
+                            data: data.d,
+                            abilities: data.a,
+                            counters: data.c,
+                            timers: data.t,
+                            ratings: data.r
+                        }
+                    );
+                    if (data.at == config.account.team) {
+                        formatted.username = data.au;
+                    } else {
+                        formatted.username = `team${data.at}-${data.au}`;
+                    }
+
+                    element.querySelector(".upload-view > p").innerHTML =
+                        "&nbsp;";
+
+                    try {
+                        element.querySelector(
+                            ".upload-view > .upload"
+                        ).innerHTML = "<h3>Preparing...</h3>";
+                        element.querySelector(
+                            ".upload-view > .upload"
+                        ).innerHTML += `<h3>Uploading...</h3>`;
+                        let upload = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/add/${encodeURIComponent(
+                                    data.ec
+                                )}/${encodeURIComponent(
+                                    data.mn
+                                )}/${encodeURIComponent(
+                                    data.tn
+                                )}/${encodeURIComponent(data.tc)}`,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json;charset=UTF-8"
+                                    },
+                                    body: JSON.stringify(formatted)
+                                }
+                            )
+                        ).json();
+                        if (upload.success) {
+                            element.querySelector(
+                                ".upload-view > .upload"
+                            ).innerHTML += `<h3>Verifying...</h3>`;
+                            let stringified = _this.stringifyFormatted(
+                                data.ec,
+                                data.mn,
+                                data.tn,
+                                data.tc,
+                                formatted
+                            );
+                            let hash = _this.hash(stringified);
+                            let verify = await (
+                                await fetch(
+                                    `/api/v1/scouting/entry/verify/${encodeURIComponent(
+                                        hash
+                                    )}`
+                                )
+                            ).json();
+                            if (verify.success && verify.body.verified) {
+                                element.querySelector(
+                                    ".upload-view > .upload"
+                                ).innerHTML += `<h3 class="primary">Success!</h3>`;
+                                element.querySelector(
+                                    ".upload-view > button.upload-again"
+                                ).style.display = "block";
+                            } else {
+                                element.querySelector(
+                                    ".upload-view > .upload"
+                                ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                                    verify.error ||
+                                    "Unable to verify upload completion."
+                                }</h3>`;
+                                element.querySelector(
+                                    ".upload-view > button.upload-again"
+                                ).style.display = "block";
+                            }
+                        } else {
+                            element.querySelector(
+                                ".upload-view > .upload"
+                            ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                                upload.error || "Unknown error."
+                            }</h3>`;
+                            element.querySelector(
+                                ".upload-view > button.upload-again"
+                            ).style.display = "block";
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        element.querySelector(
+                            ".upload-view > .upload"
+                        ).innerHTML += `<h3 class="red">Upload Failed!<br>Could not connect to the server.</h3>`;
+                        element.querySelector(
+                            ".upload-view > button.upload-again"
+                        ).style.display = "block";
+                    }
+                } catch (err) {}
+                // console.log(decodedText);
+                // console.log(decodedResult);
+            }
+
             element.querySelector("button.switch-camera").onclick =
                 async () => {
                     try {
@@ -776,29 +921,32 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                     } catch (err) {}
                 };
-            try {
-                devices = await Html5Qrcode.getCameras();
-                console.log(devices);
-                if (devices.length > 0) {
-                    reader.start(
-                        devices[deviceIndex].id,
-                        {
-                            fps: 10,
-                            qrbox: {
-                                width: getQRScannerSize(),
-                                height: getQRScannerSize()
+            if(view == 0) {
+                try {
+                    devices = await Html5Qrcode.getCameras();
+                    console.log(devices);
+                    if (devices.length > 0) {
+                        reader.start(
+                            devices[deviceIndex].id,
+                            {
+                                fps: 10,
+                                qrbox: {
+                                    width: getQRScannerSize(),
+                                    height: getQRScannerSize()
+                                }
+                            },
+                            async (decodedText, decodedResult) => {
+                                await scanResult(decodedText, decodedResult);
+                            },
+                            async (errorMessage) => {
+                                // console.error(errorMessage);
                             }
-                        },
-                        async (decodedText, decodedResult) => {
-                            await scanResult(decodedText, decodedResult);
-                        },
-                        async (errorMessage) => {
-                            // console.error(errorMessage);
-                        }
-                    );
+                        );
+                    }
+                } catch (err) {
                 }
-            } catch (err) {}
-            resolve();
+                resolve();
+            }
         });
     };
 
@@ -1044,21 +1192,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     _this.setMatches = (eventCode) => {
         return new Promise(async (resolve, reject) => {
             try {
-                let matches = await (
-                    await fetch(
-                        `/api/v1/scouting/matches/${encodeURIComponent(
-                            eventCode
-                        )}`
-                    )
-                ).json();
-                if (matches.success) {
-                    localStorage.setItem(
-                        `matches::${eventCode}`,
-                        JSON.stringify(matches.body.matches || [])
-                    );
+                let cacheTime = 0;
+                if(!isNaN(parseInt(localStorage.getItem(`cachetime::matches::${eventCode}`)))) {
+                    cacheTime = parseInt(localStorage.getItem(`cachetime::matches::${eventCode}`));
+                }
+                if(cacheTime + (1000 * 10) > (new Date()).getTime()) {
                     resolve(true);
                 } else {
-                    resolve(false);
+                    let matches = await (
+                        await fetch(
+                            `/api/v1/scouting/matches/${encodeURIComponent(
+                                eventCode
+                            )}`
+                        )
+                    ).json();
+                    if (matches.success) {
+                        localStorage.setItem(`cachetime::matches::${eventCode}`, (new Date()).getTime());
+                        localStorage.setItem(
+                            `matches::${eventCode}`,
+                            JSON.stringify(matches.body.matches || [])
+                        );
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }
                 }
             } catch (err) {
                 resolve(false);
@@ -1311,6 +1468,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             let types = [
                 "layout",
                 "title",
+                "header",
                 "text",
                 "locations",
                 "pagebutton",
@@ -1318,7 +1476,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 "timer",
                 "select",
                 "textbox",
-                "tbaverify",
+                "rating",
                 "upload",
                 "qrcode",
                 "data"
@@ -1367,6 +1525,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 }
                 resolve(
                     `<h1 class="component-title">${_this.escape(label)}</h1>`
+                );
+            } else if (component.type == "header") {
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label = eval(component.label.definition)(getState());
+                    } else {
+                        label = component.label.toString();
+                    }
+                }
+                resolve(
+                    `<h1 class="component-header">${_this.escape(label)}</h1>`
                 );
             } else if (component.type == "text") {
                 let label = "";
@@ -1981,6 +2151,81 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     )}" data-id="${_this.escape(id)}">${_this.escape(
                         checkNull(data[component.data], defaultValue)
                     )}</textarea>`
+                );
+            } else if (component.type == "rating") {
+                let id = _this.random();
+                let defaultValue = "";
+                if (component.default != null) {
+                    defaultValue = component.default.toString();
+                }
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label = eval(component.label.definition)(getState());
+                    } else {
+                        label = component.label.toString();
+                    }
+                }
+                let src = [];
+                if (component.src != null) {
+                    if (component.src.type == "function") {
+                        src = eval(component.src.definition)(getState());
+                    } else {
+                        src = component.src;
+                    }
+                }
+                pendingFunctions.push(async () => {
+                    let ratingElements = [...element.querySelectorAll(
+                        `[data-id="${_this.escape(id)}"] .rating-star`
+                    )];
+                    for(let i = 0; i < ratingElements.length; i++) {
+                        let ratingElement = ratingElements[i];
+                        ratingElement.onclick = async () => {
+                            let indexToSelect = parseInt(ratingElement.getAttribute("data-rating"));
+                            let indexToDeselect = indexToSelect + 1;
+                            console.log(indexToSelect, indexToDeselect);
+                            while(indexToSelect >= 0) {
+                                element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${indexToSelect}"]`).setAttribute("data-value", 1);
+                                indexToSelect--;
+                            }
+                            while(indexToDeselect <= 4) {
+                                element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${indexToDeselect}"]`).setAttribute("data-value", 0);
+                                indexToDeselect++;
+                            }
+                            let highestIndex = -1;
+                            let star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="0"]`);
+                            while(star != null && star.getAttribute("data-value") == 1) {
+                                highestIndex += 1
+                                star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${highestIndex + 1}"]`);
+                            }
+                            await _this.setData(
+                                "ratings",
+                                component.data,
+                                highestIndex
+                            );
+                        };
+                    }
+                    let highestIndex = -1;
+                    let star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="0"]`);
+                    while(star != null && star.getAttribute("data-value") == 1) {
+                        highestIndex += 1
+                        star = element.querySelector(`[data-id="${_this.escape(id)}"] [data-rating="${highestIndex + 1}"]`);
+                    }
+                    await _this.setData(
+                        "ratings",
+                        component.data,
+                        highestIndex
+                    );
+                });
+                resolve(
+                    `<div class="component-rating" data-id="${_this.escape(id)}">
+                        <h2>${_this.escape(label)}</h2>
+                        <div class="rating-container">
+                            ${[0, 1, 2, 3, 4].map((i) => {
+                                return `<div class="rating-star" data-value="${i <= checkNull(data.ratings[component.data], defaultValue) ? "1" : "0"}" data-rating="${i}" style="--outline-img: url(${_this.escape(src[0])}); --filled-img: url(${_this.escape(src[1])});"></div>`;
+                            }).join("")}
+                        </div> 
+                    </div>`
                 );
             } else if (component.type == "upload") {
                 let id = _this.random();

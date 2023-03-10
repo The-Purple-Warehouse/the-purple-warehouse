@@ -11,7 +11,7 @@
   <body>
     <div id="app"></div>
     {{#each preload as |src|}}
-      <!-- <img src="{{src}}" style="display: none" /> -->
+      <img src="{{src}}" style="display: none" />
     {{/each}}
     <script>
       const sdk = new ScoutingAppSDK(document.querySelector("#app"), {
