@@ -174,6 +174,81 @@ let practice = {
             set_number: 1,
             time: 0,
             winning_alliance: "red"
+        },
+        {
+            actual_time: 0,
+            alliances: {
+                blue: {
+                    dq_team_keys: [],
+                    score: 0,
+                    surrogate_team_keys: [],
+                    team_keys: ["frc6884", "frc1671", "frc6711"]
+                },
+                red: {
+                    dq_team_keys: [],
+                    score: 0,
+                    surrogate_team_keys: [],
+                    team_keys: ["frc4738", "frc8546", "frc8033"]
+                }
+            },
+            comp_level: "qm",
+            event_key: "2023cafr-prac",
+            key: "2023cafr-prac_qm8",
+            match_number: 8,
+            predicted_time: 0,
+            set_number: 1,
+            time: 0,
+            winning_alliance: "red"
+        },
+        {
+            actual_time: 0,
+            alliances: {
+                blue: {
+                    dq_team_keys: [],
+                    score: 0,
+                    surrogate_team_keys: [],
+                    team_keys: ["frc6657", "frc1148", "frc3189"]
+                },
+                red: {
+                    dq_team_keys: [],
+                    score: 0,
+                    surrogate_team_keys: [],
+                    team_keys: ["frc8048", "frc973", "frc5104"]
+                }
+            },
+            comp_level: "qm",
+            event_key: "2023cafr-prac",
+            key: "2023cafr-prac_qm9",
+            match_number: 9,
+            predicted_time: 0,
+            set_number: 1,
+            time: 0,
+            winning_alliance: "red"
+        },
+        {
+            actual_time: 0,
+            alliances: {
+                blue: {
+                    dq_team_keys: [],
+                    score: 0,
+                    surrogate_team_keys: [],
+                    team_keys: ["frc100", "frc2288", "frc5817"]
+                },
+                red: {
+                    dq_team_keys: [],
+                    score: 0,
+                    surrogate_team_keys: [],
+                    team_keys: ["frc1323", "frc6662", "frc7419"]
+                }
+            },
+            comp_level: "qm",
+            event_key: "2023cafr-prac",
+            key: "2023cafr-prac_qm10",
+            match_number: 10,
+            predicted_time: 0,
+            set_number: 1,
+            time: 0,
+            winning_alliance: "red"
         }
     ]
 };
