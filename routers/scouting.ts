@@ -28,22 +28,10 @@ router.get("/login", async (ctx) => {
 });
 
 router.get("/logout", async (ctx) => {
-    if (!ctx.session) {
-        return ctx.throw(
-            500,
-            JSON.stringify({
-                message: "There was an error logging out"
-            })
-        );
-    } else {
+    if (ctx.session) {
         ctx.session = null;
     }
-
-    ctx.body = {
-        success: true,
-        message: "Logging out..."
-    };
-    ctx.status = 200;
+    ctx.redirect("/scouting");
 });
 
 router.post("/login", bodyParser(), async (ctx) => {
