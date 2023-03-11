@@ -8,5 +8,6 @@ let year = new Date().toLocaleDateString().split("/")[2];
 scoutingConfig.categories = scoutingConfig[year].categories;
 scoutingConfig.layout = scoutingConfig[year].layout;
 scoutingConfig.preload = scoutingConfig[year].preload;
+scoutingConfig.formatData = scoutingConfig[year].formatData;
 
 export default scoutingConfig;
