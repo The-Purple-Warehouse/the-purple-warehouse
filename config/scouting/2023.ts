@@ -513,7 +513,7 @@ export function formatData(data, categories, teams) {
                 `${entry.contributor.username || "username"} (${
                     teams[entry.contributor.team] || 0
                 })`,
-                entry.comments || ""
+                (entry.comments || "").replace(/\n/g, "\\n")
             ].join(",");
         })
         .join("\n")}`;
