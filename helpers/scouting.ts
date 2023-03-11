@@ -1,8 +1,9 @@
 import ScoutingEntry from "../models/scoutingEntry";
 import ScoutingCategory from "../models/scoutingCategory";
+import Team from "../models/team";
 import { getTeamByNumber } from "./teams";
 import * as crypto from "crypto";
-import Resource from "../models/resource";
+import scoutingConfig from "../config/scouting";
 
 export function getCategoryByIdentifier(identifier: string) {
     return ScoutingCategory.findOne({ identifier });
@@ -76,7 +77,7 @@ export async function getTeamEntriesByEvent(
 export async function addEntry(
     contributingTeam: string,
     contributingUsername: string,
-    event: String,
+    event: string,
     match: number,
     team: string,
     color: string,
@@ -198,4 +199,21 @@ export async function addEntry(
         await entry.save();
     }
     return entry;
+}
+
+export async function getAllData(event: string) {
+    let data = await ScoutingEntry.find({}).lean();
+    let teamsFromDatabase = await Team.find({}).lean();
+    let categoriesFromDatabase = await ScoutingCategory.find({}).lean();
+    let teams = {};
+    for(let i = 0; i < teamsFromDatabase.length; i++) {
+        let team = teamsFromDatabase[i] as any;
+        teams[team._id.toString()] = team.teamNumber;
+    }
+    let categories = {};
+    for(let i = 0; i < categoriesFromDatabase.length; i++) {
+        let category = categoriesFromDatabase[i] as any;
+        categories[category.identifier] = category._id.toString();
+    }
+    return scoutingConfig.formatData(data, categories, teams);
 }
