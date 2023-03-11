@@ -498,7 +498,7 @@ export function formatData(data, categories, teams) {
         19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
         16, 7, 26, 17, 8, 27, 18, 9
     ];
-    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,scouter,comments\n${data
+    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments\n${data
         .map((entry, i) => {
             let locations = [
                 ...find(entry, "data", "23-2", []),
@@ -523,9 +523,11 @@ export function formatData(data, categories, teams) {
                 Math.round(parseInt(find(entry, "timers", "23-10", 0)) / 1000),
                 Math.round(parseInt(find(entry, "timers", "23-11", 0)) / 1000),
                 Math.round(parseInt(find(entry, "timers", "23-12", 0)) / 1000),
-                find(entry, "ratings", "23-13", 0),
-                find(entry, "ratings", "23-14", 0),
-                find(entry, "ratings", "23-15", 0),
+                find(entry, "ratings", "23-13", ""),
+                find(entry, "ratings", "23-14", ""),
+                find(entry, "ratings", "23-15", ""),
+                find(entry, "ratings", "23-16", ""),
+                find(entry, "ratings", "23-17", ""),
                 JSON.stringify(
                     `${entry.contributor.username || "username"} (${
                         teams[entry.contributor.team] || 0

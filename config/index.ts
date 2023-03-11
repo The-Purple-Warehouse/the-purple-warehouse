@@ -40,6 +40,7 @@ export interface Config {
         };
         scoutingKeys: string[];
         tba: string;
+        scoutingAdmins: string[];
     };
     features: string[];
 }
