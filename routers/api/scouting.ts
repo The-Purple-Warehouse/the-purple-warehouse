@@ -15,7 +15,8 @@ import {
     addEntry,
     entryExistsByHash,
     getLatestMatch,
-    getTeamEntriesByEvent
+    getTeamEntriesByEvent,
+    getSharedData
 } from "../../helpers/scouting";
 import { getEvents, getMatches } from "../../helpers/tba";
 
@@ -99,19 +100,19 @@ router.get("/entry/latest/:event", requireScoutingAuth, async (ctx, next) => {
 });
 
 router.get(
-    "/entry/data/event/:event",
+    "/entry/data/event/:event/csv",
     requireScoutingAuth,
     async (ctx, next) => {
+        addAPIHeaders(ctx);
         ctx.body = {
             success: true,
             body: {
-                entries: await getTeamEntriesByEvent(
+                csv: await getSharedData(
                     ctx.params.event,
                     ctx.session.scoutingTeamNumber
                 )
             }
         };
-        addAPIHeaders(ctx);
     }
 );
 

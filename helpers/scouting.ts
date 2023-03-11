@@ -4,6 +4,7 @@ import Team from "../models/team";
 import { getTeamByNumber } from "./teams";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
+import config from "../config";
 
 export function getCategoryByIdentifier(identifier: string) {
     return ScoutingCategory.findOne({ identifier });
@@ -200,7 +201,7 @@ export async function addEntry(
     return entry;
 }
 
-export async function getAllDataByEvent(event: string) {
+export async function getAllRawDataByEvent(event: string) {
     let data = await ScoutingEntry.find({ event }).lean();
     let teamsFromDatabase = await Team.find({}).lean();
     let categoriesFromDatabase = await ScoutingCategory.find({}).lean();
@@ -213,6 +214,27 @@ export async function getAllDataByEvent(event: string) {
     for (let i = 0; i < categoriesFromDatabase.length; i++) {
         let category = categoriesFromDatabase[i] as any;
         categories[category.identifier] = category._id.toString();
+    }
+    return { data, categories, teams };
+}
+
+export async function getAllDataByEvent(event: string) {
+    let { data, categories, teams } = await getAllRawDataByEvent(event);
+    return scoutingConfig.formatData(data, categories, teams);
+}
+
+export async function getSharedData(event: string, teamNumber: string) {
+    let { data, categories, teams } = await getAllRawDataByEvent(event);
+    let team = await getTeamByNumber(teamNumber) || {_id: ""};
+    if(!config.auth.scoutingAdmins.includes(teamNumber)) {
+        data = data.map((entry: any) => {
+            if(entry.contributor.team != team._id.toString()) {
+                entry.comments = "[redacted for privacy]";
+                entry.contributor.username = crypto.createHash("sha256").update(entry.contributor.username).digest("hex").substring(0, 8);
+                entry.ratings = [];
+            }
+            return entry;
+        });
     }
     return scoutingConfig.formatData(data, categories, teams);
 }
