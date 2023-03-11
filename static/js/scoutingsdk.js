@@ -175,12 +175,12 @@ const ScoutingAppSDK = function (element, config) {
     };
 
     _this.formatData = (eventCode, matchNumber, teamNumber, data) => {
-        data = {...data};
-        data.data = {...data.data};
-        data.abilities = {...data.abilities};
-        data.counters = {...data.counters};
-        data.timers = {...data.timers};
-        data.ratings = {...data.ratings};
+        data = { ...data };
+        data.data = { ...data.data };
+        data.abilities = { ...data.abilities };
+        data.counters = { ...data.counters };
+        data.timers = { ...data.timers };
+        data.ratings = { ...data.ratings };
         let formatted = {
             data: [],
             abilities: [],
@@ -818,8 +818,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
 
                     try {
-                        element.querySelector(".upload-view > .upload-box").style.display = "none";
-                        element.querySelector("button.upload-data").style.display = "none";
+                        element.querySelector(
+                            ".upload-view > .upload-box"
+                        ).style.display = "none";
+                        element.querySelector(
+                            "button.upload-data"
+                        ).style.display = "none";
                         element.querySelector(
                             ".upload-view > .upload"
                         ).innerHTML = "<h3>Preparing...</h3>";
