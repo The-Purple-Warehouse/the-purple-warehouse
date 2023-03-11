@@ -201,8 +201,8 @@ export async function addEntry(
     return entry;
 }
 
-export async function getAllData(event: string) {
-    let data = await ScoutingEntry.find({}).lean();
+export async function getAllDataByEvent(event: string) {
+    let data = await ScoutingEntry.find({ event }).lean();
     let teamsFromDatabase = await Team.find({}).lean();
     let categoriesFromDatabase = await ScoutingCategory.find({}).lean();
     let teams = {};
