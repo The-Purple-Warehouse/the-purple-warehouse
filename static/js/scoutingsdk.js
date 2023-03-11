@@ -331,7 +331,7 @@ const ScoutingAppSDK = function (element, config) {
                     <h3>Signed in as ${_this.escape(
                         config.account.username
                     )} (${_this.escape(config.account.team)})</h3>
-                    <h2>Event Code:</h2>
+                    <h2>Event:</h2>
                     <select class="event-code">
                         <option value=""${
                             (_eventCode || _this.getEventCode()) == null ||
