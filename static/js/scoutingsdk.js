@@ -2329,7 +2329,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     )}"] [data-rating="${highestIndex + 1}"]`
                                 );
                             }
-                            if(highestIndex < 0) {
+                            if (highestIndex < 0) {
                                 highestIndex = 0;
                             }
                             await _this.setData(
@@ -2355,7 +2355,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                     }
 
-                    if(highestIndex < 0) {
+                    if (highestIndex < 0) {
                         highestIndex = 0;
                     }
                     await _this.setData(
