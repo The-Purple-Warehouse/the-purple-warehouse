@@ -126,8 +126,7 @@ export async function addEntry(
             "rating",
             ratingObj.rating
         ]),
-        comments,
-        timestamp
+        comments
     ]);
     let hash = crypto.createHash("sha256").update(stringified).digest("hex");
     let entry = await getEntryByHash(hash);
