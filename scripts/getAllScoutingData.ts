@@ -1,11 +1,11 @@
-import { getAllData } from "../helpers/scouting";
+import { getAllDataByEvent } from "../helpers/scouting";
 
 async function getAllScoutingData(event) {
     if (event == null) {
         console.log("Missing --event argument");
         return;
     }
-    let data = (await getAllData(event)) as any;
+    let data = (await getAllDataByEvent(event)) as any;
     console.log(data);
     return;
 }

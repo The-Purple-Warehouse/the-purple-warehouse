@@ -201,17 +201,17 @@ export async function addEntry(
     return entry;
 }
 
-export async function getAllData(event: string) {
-    let data = await ScoutingEntry.find({}).lean();
+export async function getAllDataByEvent(event: string) {
+    let data = await ScoutingEntry.find({ event }).lean();
     let teamsFromDatabase = await Team.find({}).lean();
     let categoriesFromDatabase = await ScoutingCategory.find({}).lean();
     let teams = {};
-    for(let i = 0; i < teamsFromDatabase.length; i++) {
+    for (let i = 0; i < teamsFromDatabase.length; i++) {
         let team = teamsFromDatabase[i] as any;
         teams[team._id.toString()] = team.teamNumber;
     }
     let categories = {};
-    for(let i = 0; i < categoriesFromDatabase.length; i++) {
+    for (let i = 0; i < categoriesFromDatabase.length; i++) {
         let category = categoriesFromDatabase[i] as any;
         categories[category.identifier] = category._id.toString();
     }
