@@ -504,9 +504,9 @@ export function formatData(data, categories, teams) {
                 find(entry, "counters", "23-6", 0),
                 find(entry, "abilities", "23-8", 0),
                 find(entry, "abilities", "23-9", 0),
-                Math.round(parseInt(find(entry, "timers", "23-10", 0)) / 100),
-                Math.round(parseInt(find(entry, "timers", "23-11", 0)) / 100),
-                Math.round(parseInt(find(entry, "timers", "23-12", 0)) / 100),
+                Math.round(parseInt(find(entry, "timers", "23-10", 0)) / 1000),
+                Math.round(parseInt(find(entry, "timers", "23-11", 0)) / 1000),
+                Math.round(parseInt(find(entry, "timers", "23-12", 0)) / 1000),
                 find(entry, "ratings", "23-13", 0),
                 find(entry, "ratings", "23-14", 0),
                 find(entry, "ratings", "23-15", 0),
@@ -515,7 +515,7 @@ export function formatData(data, categories, teams) {
                         teams[entry.contributor.team] || 0
                     })`
                 ),
-                JSON.stringify((entry.comments || ""))
+                JSON.stringify(entry.comments || "")
             ].join(",");
         })
         .join("\n")}`;
