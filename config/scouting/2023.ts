@@ -510,10 +510,12 @@ export function formatData(data, categories, teams) {
                 find(entry, "ratings", "23-13", 0),
                 find(entry, "ratings", "23-14", 0),
                 find(entry, "ratings", "23-15", 0),
-                JSON.stringify(`${entry.contributor.username || "username"} (${
-                    teams[entry.contributor.team] || 0
-                })`),
-                JSON.stringify((entry.comments || "").replace(/\n/g, "\\n"))
+                JSON.stringify(
+                    `${entry.contributor.username || "username"} (${
+                        teams[entry.contributor.team] || 0
+                    })`
+                ),
+                JSON.stringify((entry.comments || ""))
             ].join(",");
         })
         .join("\n")}`;
