@@ -18,7 +18,7 @@ import {
     getTeamEntriesByEvent,
     getSharedData
 } from "../../helpers/scouting";
-import { getEvents, getMatches } from "../../helpers/tba";
+import { getEvents, getMatches, getMatchesFull } from "../../helpers/tba";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -43,6 +43,15 @@ router.get("/matches/:event", requireScoutingAuth, async (ctx, next) => {
         success: true,
         body: {
             matches: await getMatches(ctx.params.event)
+        }
+    };
+    addAPIHeaders(ctx);
+});
+router.get("/matches/full/:event", requireScoutingAuth, async (ctx, next) => {
+    ctx.body = {
+        success: true,
+        body: {
+            matches: await getMatchesFull(ctx.params.event)
         }
     };
     addAPIHeaders(ctx);
