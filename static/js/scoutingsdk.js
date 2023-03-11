@@ -235,7 +235,7 @@ const ScoutingAppSDK = function (element, config) {
     ) => {
         let stringified = JSON.stringify([
             config.account.team,
-            config.account.username,
+            formatted.username || config.account.username,
             eventCode,
             matchNumber,
             teamNumber,
@@ -416,7 +416,6 @@ const ScoutingAppSDK = function (element, config) {
                     ).value;
                     _this.setEventCode(eventCode);
                     _this.setMatches(eventCode);
-                    updateTeamsList();
                     let latestMatch = "";
                     if (config.latest.autofill) {
                         let latestMatchData = await _this.getLatestMatch(
@@ -427,6 +426,7 @@ const ScoutingAppSDK = function (element, config) {
                         }
                     }
                     element.querySelector(".match-number").value = latestMatch;
+                    updateTeamsList();
                 };
             let updateTeamsList = async () => {
                 element.querySelector(
@@ -562,6 +562,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (verify.success && verify.body.verified) {
                     console.log("Success!");
                 } else {
+                    console.log(stringified);
                     console.log(
                         `Upload Failed!\n${
                             verify.error ||
@@ -751,6 +752,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ".scanner-view > button.scan-again"
                                     ).style.display = "block";
                                 } else {
+                                    console.log(stringified);
                                     element.querySelector(
                                         ".scanner-view > .upload"
                                     ).innerHTML += `<h3 class="red">Upload Failed!<br>${
@@ -810,9 +812,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         formatted.username = `team${data.at}-${data.au}`;
                     }
 
-                    element.querySelector(".upload-view > p").innerHTML =
-                        "&nbsp;";
-
                     try {
                         element.querySelector(
                             ".upload-view > .upload"
@@ -866,6 +865,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ".upload-view > button.upload-again"
                                 ).style.display = "block";
                             } else {
+                                console.log(stringified);
                                 element.querySelector(
                                     ".upload-view > .upload"
                                 ).innerHTML += `<h3 class="red">Upload Failed!<br>${
@@ -2253,7 +2253,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     `<textarea class="component-textbox" placeholder="${_this.escape(
                         placeholder
                     )}" data-id="${_this.escape(id)}">${_this.escape(
-                        checkNull(data[component.data], defaultValue)
+                        checkNull(data.data[component.data], defaultValue)
                     )}</textarea>`
                 );
             } else if (component.type == "rating") {
@@ -2439,6 +2439,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     `[data-id="${_this.escape(id)}"]`
                                 ).innerHTML += `<h3 class="primary">Success!</h3>`;
                             } else {
+                                console.log(stringified);
                                 element.querySelector(
                                     `[data-id="${_this.escape(id)}"]`
                                 ).innerHTML += `<h3 class="red">Upload Failed!<br>${

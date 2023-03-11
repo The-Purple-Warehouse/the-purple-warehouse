@@ -333,6 +333,10 @@ body {
     padding-left: 35px;
     cursor: pointer;
     font-size: 1.3rem;
+    min-width: 275px;
+    max-width: 400px;
+    margin-left: 50%;
+    transform: translate(-50%, 0);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -604,6 +608,7 @@ body {
     margin-right: 10px;
     max-width: 75px;
     max-height: 75px;
+    cursor: pointer;
 }
 
 .match-window .component-rating .rating-star[data-rating="4"] {
