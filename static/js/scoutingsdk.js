@@ -175,6 +175,12 @@ const ScoutingAppSDK = function (element, config) {
     };
 
     _this.formatData = (eventCode, matchNumber, teamNumber, data) => {
+        data = {...data};
+        data.data = {...data.data};
+        data.abilities = {...data.abilities};
+        data.counters = {...data.counters};
+        data.timers = {...data.timers};
+        data.ratings = {...data.ratings};
         let formatted = {
             data: [],
             abilities: [],
@@ -270,8 +276,7 @@ const ScoutingAppSDK = function (element, config) {
                 "rating",
                 ratingObj.rating
             ]),
-            formatted.comments,
-            formatted.timestamp
+            formatted.comments
         ]);
         return stringified;
     };
@@ -813,6 +818,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
 
                     try {
+                        element.querySelector(".upload-view > .upload-box").style.display = "none";
+                        element.querySelector("button.upload-data").style.display = "none";
                         element.querySelector(
                             ".upload-view > .upload"
                         ).innerHTML = "<h3>Preparing...</h3>";
@@ -2475,12 +2482,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 );
             } else if (component.type == "qrcode") {
                 let id = _this.random();
-                let formatted = _this.formatData(
-                    eventCode,
-                    matchNumber,
-                    teamNumber,
-                    data
-                );
                 let code = JSON.stringify({
                     ec: eventCode,
                     mn: matchNumber,
@@ -2523,12 +2524,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     )}" style="display: none;"></div>`
                 );
             } else if (component.type == "data") {
-                let formatted = _this.formatData(
-                    eventCode,
-                    matchNumber,
-                    teamNumber,
-                    data
-                );
                 let code = JSON.stringify({
                     ec: eventCode,
                     mn: matchNumber,
