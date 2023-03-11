@@ -515,7 +515,7 @@ export function formatData(data, categories, teams) {
                         teams[entry.contributor.team] || 0
                     })`
                 ),
-                JSON.stringify((entry.comments || "").replace(/\n/g, "\\n"))
+                JSON.stringify((entry.comments || ""))
             ].join(",");
         })
         .join("\n")}`;
