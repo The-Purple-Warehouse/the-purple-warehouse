@@ -6,7 +6,7 @@ async function getAllScoutingData(event, teamNumber) {
         return;
     }
     let data;
-    if(teamNumber == null) {
+    if (teamNumber == null) {
         data = (await getAllDataByEvent(event)) as any;
     } else {
         data = (await getSharedData(event, teamNumber)) as any;

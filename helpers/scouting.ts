@@ -225,12 +225,16 @@ export async function getAllDataByEvent(event: string) {
 
 export async function getSharedData(event: string, teamNumber: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
-    let team = await getTeamByNumber(teamNumber) || {_id: ""};
-    if(!config.auth.scoutingAdmins.includes(teamNumber)) {
+    let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
+    if (!config.auth.scoutingAdmins.includes(teamNumber)) {
         data = data.map((entry: any) => {
-            if(entry.contributor.team != team._id.toString()) {
+            if (entry.contributor.team != team._id.toString()) {
                 entry.comments = "[redacted for privacy]";
-                entry.contributor.username = crypto.createHash("sha256").update(entry.contributor.username).digest("hex").substring(0, 8);
+                entry.contributor.username = crypto
+                    .createHash("sha256")
+                    .update(entry.contributor.username)
+                    .digest("hex")
+                    .substring(0, 8);
                 entry.ratings = [];
             }
             return entry;
