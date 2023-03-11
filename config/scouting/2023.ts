@@ -466,5 +466,44 @@ export function preload() {
     ];
 }
 
-const scouting2023 = { categories, layout, preload };
+export function formatData(data, categories, teams) {
+    let categoriesInSingular = {
+        abilities: "ability",
+        data: "data",
+        counters: "counter",
+        timers: "timer",
+        ratings: "rating"
+    }
+    function find(entry, type, category, fallback: any = "") {
+        return (entry[type].find(d => d.category == categories[category]) || fallback)[categoriesInSingular[type]];
+    }
+    let locationConversion = [19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25, 16, 7, 26, 17, 8, 27, 18, 9];
+    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,scouter,comments\n${data.map((entry, i) => {
+        let locations = [...find(entry, "data", "23-2", []), ...find(entry, "data", "23-4", [])];
+        let pieces = [...find(entry, "data", "23-3", []), ...find(entry, "data", "23-5", [])];
+        return [
+            i,
+            entry.match || 0,
+            entry.team || 0,
+            entry.color || "unknown",
+            find(entry, "abilities", "23-0", "FALSE") ? "TRUE" : "FALSE",
+            find(entry, "abilities", "23-1", "FALSE") ? "TRUE" : "FALSE",
+            `"[${locations.map(d => locationConversion[d]).join(", ")}]"`,
+            `"[${pieces.map(d => `'${d}'`).join(", ")}]"`,
+            find(entry, "counters", "23-6", 0),
+            find(entry, "abilities", "23-8", 0),
+            find(entry, "abilities", "23-9", 0),
+            Math.round(parseInt(find(entry, "timers", "23-10", 0)) / 100),
+            Math.round(parseInt(find(entry, "timers", "23-11", 0)) / 100),
+            Math.round(parseInt(find(entry, "timers", "23-12", 0)) / 100),
+            find(entry, "ratings", "23-13", 0),
+            find(entry, "ratings", "23-14", 0),
+            find(entry, "ratings", "23-15", 0),
+            `${entry.contributor.username || "username"} (${teams[entry.contributor.team] || 0})`,
+            entry.comments || ""
+        ].join(",");
+    }).join("\n")}`;
+}
+
+const scouting2023 = { categories, layout, preload, formatData };
 export default scouting2023;
