@@ -23,7 +23,9 @@ export function categories() {
         { name: "Defense Time", identifier: "23-12" },
         { name: "Drive Skill Rating", identifier: "23-13" },
         { name: "Defense Skill Rating", identifier: "23-14" },
-        { name: "Speed Rating", identifier: "23-15" }
+        { name: "Robot Speed Rating", identifier: "23-15" },
+        { name: "Robot Stability Rating", identifier: "23-16" },
+        { name: "Intake Consistency Rating", identifier: "23-17" }
     ];
 }
 
@@ -302,9 +304,23 @@ export function layout() {
                 },
                 {
                     type: "rating",
-                    label: "Speed Rating",
+                    label: "Robot Speed Rating",
                     default: 0,
                     data: "23-15",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Robot Stability Rating",
+                    default: 0,
+                    data: "23-16",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Intake Consistency Rating",
+                    default: 0,
+                    data: "23-17",
                     src: ["/img/star-outline.png", "/img/star-filled.png"]
                 },
                 {
