@@ -1000,6 +1000,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     </select>
                     <button class="show-data">Show Data</button>
                     <button class="download-csv">Download CSV</button>
+                    <p class="notes"></p>
                     <h3 class="red">&nbsp;</h3>
                     <table class="data-table" style="display: none;">
                         <thead>
@@ -1061,6 +1062,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         .replaceAll("\\n", "<br>")}</th>`
                             )
                             .join("")}</tr>`;
+                        element.querySelector(".data-window > .notes").innerHTML = data.body.notes.replaceAll("\n", "<br>");
                         element
                             .querySelector(".data-window")
                             .classList.add("data-window-visible");
