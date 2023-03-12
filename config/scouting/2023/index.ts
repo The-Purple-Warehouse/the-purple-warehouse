@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
-import config from "../../";
+import { getMatchesFull } from "../../../helpers/tba";
 
 export function categories() {
     return [
@@ -573,35 +573,48 @@ export function notes() {
 27 18 9`;
 }
 
-export function analysis(event, teamNumber) {
+export async function analysis(event, teamNumber) {
     let analyzed = [];
     try {
-        let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --apiPath "http://localhost:${config.server.port}/api/v1/scouting/entry/data/event/<EVENT>/tba?token=${config.auth.scoutingInternal.accessToken}&team=${config.auth.scoutingInternal.teamNumber}" --baseFilePath ../`;
+        fs.writeFileSync("../2023cafr-tba.json", JSON.stringify(await getMatchesFull(event)));
+        let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
-        let rankings = JSON.parse(fs.readFileSync("../2023cafr-rankings.json").toString());
+        let rankings = JSON.parse(
+            fs.readFileSync("../2023cafr-rankings.json").toString()
+        );
         let rankingsTeams = Object.keys(rankings);
         let rankingsArr = [];
-        for(let i = 0; i < rankingsTeams.length; i++) {
+        for (let i = 0; i < rankingsTeams.length; i++) {
             rankingsArr.push({
                 teamNumber: rankingsTeams[i],
                 offenseScore: rankings[rankingsTeams[i]]["off-score"],
-                defenseScore: rankings[rankingsTeams[i]]["def-score"],
+                defenseScore: rankings[rankingsTeams[i]]["def-score"]
             });
         }
         analyzed.push({
             type: "leaderboard",
             label: "Offense Rankings",
-            values: rankingsArr.sort((a, b) => b.offenseScore - a.offenseScore).map(ranking => ranking.teamNumber)
+            values: rankingsArr
+                .sort((a, b) => b.offenseScore - a.offenseScore)
+                .map((ranking) => ranking.teamNumber)
         });
         analyzed.push({
             type: "leaderboard",
             label: "Defense Rankings",
-            values: rankingsArr.sort((a, b) => b.defenseScore - a.defenseScore).map(ranking => ranking.teamNumber)
+            values: rankingsArr
+                .sort((a, b) => b.defenseScore - a.defenseScore)
+                .map((ranking) => ranking.teamNumber)
         });
-    } catch(err) {
-    }
+    } catch (err) {}
     return analyzed;
 }
 
-const scouting2023 = { categories, layout, preload, formatData, notes, analysis };
+const scouting2023 = {
+    categories,
+    layout,
+    preload,
+    formatData,
+    notes,
+    analysis
+};
 export default scouting2023;

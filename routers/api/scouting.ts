@@ -31,31 +31,31 @@ router.get("/", async (ctx, next) => {
 });
 
 router.get("/events/:year", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
     ctx.body = {
         success: true,
         body: {
             events: await getEvents(ctx.params.year)
         }
     };
-    addAPIHeaders(ctx);
 });
 router.get("/matches/:event", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
     ctx.body = {
         success: true,
         body: {
             matches: await getMatches(ctx.params.event)
         }
     };
-    addAPIHeaders(ctx);
 });
 router.get("/matches/full/:event", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
     ctx.body = {
         success: true,
         body: {
             matches: await getMatchesFull(ctx.params.event)
         }
     };
-    addAPIHeaders(ctx);
 });
 
 router.post(
@@ -127,14 +127,33 @@ router.get(
     }
 );
 
-router.get("/entry/data/event/:event/tba", requireScoutingAuth, async (ctx, next) => {
+router.get(
+    "/entry/data/event/:event/tba",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        ctx.body = {
+            success: true,
+            body: {
+                matches: await getMatchesFull(ctx.params.event)
+            }
+        };
+        addAPIHeaders(ctx);
+    }
+);
+
+router.get("/entry/analysis/event/:event", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    let entries = await getTeamEntriesByEvent(ctx.params.event, ctx.session.scoutingTeamNumber);
+    let analysis = [];
+    if(entries.length >= 5) {
+        analysis = await scoutingConfig.analysis(ctx.params.event, ctx.session.scoutingTeamNumber);
+    }
     ctx.body = {
         success: true,
         body: {
-            matches: await getMatchesFull(ctx.params.event)
+            analysis: analysis
         }
     };
-    addAPIHeaders(ctx);
 });
 
 export default router;
