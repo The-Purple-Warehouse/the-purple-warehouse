@@ -577,13 +577,13 @@ export async function analysis(event, teamNumber) {
     let analyzed = [];
     try {
         fs.writeFileSync(
-            "../2023cafr-tba.json",
+            `../${event}-tba.json`,
             JSON.stringify(await getMatchesFull(event))
         );
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
         let rankings = JSON.parse(
-            fs.readFileSync("../2023cafr-rankings.json").toString()
+            fs.readFileSync(`../${event}-rankings.json`).toString()
         );
         let rankingsTeams = Object.keys(rankings);
         let rankingsArr = [];
@@ -601,7 +601,7 @@ export async function analysis(event, teamNumber) {
             .sort((a, b) => b.defenseScore - a.defenseScore)
             .map((ranking) => ranking.teamNumber);
         let tableRankings = [["Offense", "Defense"]];
-        for(let i = 0; i < offense.length; i++) {
+        for (let i = 0; i < offense.length; i++) {
             tableRankings.push([offense[i], defense[i]]);
         }
         analyzed.push({
