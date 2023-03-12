@@ -576,7 +576,10 @@ export function notes() {
 export async function analysis(event, teamNumber) {
     let analyzed = [];
     try {
-        fs.writeFileSync("../2023cafr-tba.json", JSON.stringify(await getMatchesFull(event)));
+        fs.writeFileSync(
+            "../2023cafr-tba.json",
+            JSON.stringify(await getMatchesFull(event))
+        );
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
         let rankings = JSON.parse(
