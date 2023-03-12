@@ -227,23 +227,49 @@ export async function getSharedData(event: string, teamNumber: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
     if (!config.auth.scoutingAdmins.includes(teamNumber)) {
-        let contributions = data.filter((entry: any) => entry.contributor.team == team._id.toString());
-        let hashStarts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"].slice(0, Math.round((contributions.length > 10 ? 10 : contributions.length) * 1.5));
-        data = data.map((entry: any) => {
-            if (entry.contributor.team != team._id.toString()) {
-                if(!hashStarts.includes(entry.hash[0])) {
-                    return null;
+        let contributions = data.filter(
+            (entry: any) => entry.contributor.team == team._id.toString()
+        );
+        let hashStarts = [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f"
+        ].slice(
+            0,
+            Math.round(
+                (contributions.length > 10 ? 10 : contributions.length) * 1.5
+            )
+        );
+        data = data
+            .map((entry: any) => {
+                if (entry.contributor.team != team._id.toString()) {
+                    if (!hashStarts.includes(entry.hash[0])) {
+                        return null;
+                    }
+                    entry.comments = "[redacted for privacy]";
+                    entry.contributor.username = crypto
+                        .createHash("sha256")
+                        .update(entry.contributor.username)
+                        .digest("hex")
+                        .substring(0, 8);
+                    entry.ratings = [];
                 }
-                entry.comments = "[redacted for privacy]";
-                entry.contributor.username = crypto
-                    .createHash("sha256")
-                    .update(entry.contributor.username)
-                    .digest("hex")
-                    .substring(0, 8);
-                entry.ratings = [];
-            }
-            return entry;
-        }).filter((entry: any) => entry != null);
+                return entry;
+            })
+            .filter((entry: any) => entry != null);
     }
     return scoutingConfig.formatData(data, categories, teams);
 }

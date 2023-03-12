@@ -1069,20 +1069,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <h2>Event:</h2>
                     <select class="event-code">
                         <option value=""${
-                (_this.getEventCode()) == null ||
-                (_this.getEventCode()) == ""
-                    ? " selected"
-                    : ""
-            }>Select an event...</option>
+                            _this.getEventCode() == null ||
+                            _this.getEventCode() == ""
+                                ? " selected"
+                                : ""
+                        }>Select an event...</option>
                         ${events.map(
-                (event) =>
-                    `<option value="${event.key}"${
-                        (_this.getEventCode()) ==
-                        event.key
-                            ? " selected"
-                            : ""
-                    }>${event.name}</option>`
-            )}
+                            (event) =>
+                                `<option value="${event.key}"${
+                                    _this.getEventCode() == event.key
+                                        ? " selected"
+                                        : ""
+                                }>${event.name}</option>`
+                        )}
                     </select>
                     <button class="show-data">Show Data</button>
                     <button class="download-csv">Download CSV</button>
@@ -1108,69 +1107,80 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 async () => {
                     await _this.showScannerPage();
                 };
-            element.querySelector("button.show-data").onclick =
-                async () => {
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv`
+            element.querySelector("button.show-data").onclick = async () => {
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                eventCode
+                            )}/csv`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = Papa.parse(data.body.csv).data;
+                        element.querySelector(".data-table > tbody").innerHTML =
+                            csv
+                                .slice(1)
+                                .map((data) => {
+                                    return `<tr>${data
+                                        .map((cell) => `<td>${cell}</td>`)
+                                        .join("")}</tr>`;
+                                })
+                                .join("");
+                        element.querySelector(
+                            ".data-table > thead"
+                        ).innerHTML = `<tr>${csv[0]
+                            .map(
+                                (cell) => `<th>${cell.replaceAll('"', "")}</th>`
                             )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML =
-                                "&nbsp;";
-                            let csv = Papa.parse(data.body.csv).data;
-                            element.querySelector(".data-table > tbody").innerHTML = csv.slice(1).map((data) => {
-                                return `<tr>${data.map(cell => `<td>${cell}</td>`).join("")}</tr>`;
-                            }).join("");
-                            element.querySelector(".data-table > thead").innerHTML = `<tr>${csv[0].map(cell => `<th>${cell.replaceAll("\"", "")}</th>`).join("")}</tr>`;
-                            element.querySelector(".data-window").classList.add("data-window-visible");
-                            element.querySelector(".data-table").style.display = "block";
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {}
-                };
-            element.querySelector("button.download-csv").onclick =
-                async () => {
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML =
-                                "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," + csv;
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download", `tpw-scouting-${eventCode}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {}
-                };
+                            .join("")}</tr>`;
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {}
+            };
+            element.querySelector("button.download-csv").onclick = async () => {
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                eventCode
+                            )}/csv`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = data.body.csv;
+                        let download = "data:text/csv;charset=utf-8," + csv;
+                        let link = document.createElement("a");
+                        link.style.display = "none";
+                        link.setAttribute("href", download);
+                        link.setAttribute(
+                            "download",
+                            `tpw-scouting-${eventCode}.csv`
+                        );
+                        element.appendChild(link);
+                        link.click();
+                        link.remove();
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {}
+            };
             resolve();
         });
     };
