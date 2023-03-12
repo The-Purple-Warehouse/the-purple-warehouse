@@ -494,10 +494,20 @@ export function formatData(data, categories, teams) {
         return (entry[type].find((d) => d.category == categories[category]) ||
             fallback)[categoriesInSingular[type]];
     }
-    let locationConversion = [
-        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
-        16, 7, 26, 17, 8, 27, 18, 9
-    ];
+    let locationConversion = {
+        red: [
+            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
+            16, 7, 26, 17, 8, 27, 18, 9
+        ],
+        blue: [
+            1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 32, 6, 15, 24, 7,
+            16, 25, 8, 17, 26, 9, 18, 27
+        ],
+        unknown: [
+            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
+            16, 7, 26, 17, 8, 27, 18, 9
+        ]
+    };
     return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments\n${data
         .map((entry, i) => {
             let locations = [
@@ -515,7 +525,7 @@ export function formatData(data, categories, teams) {
                 entry.color || "unknown",
                 find(entry, "abilities", "23-0", "FALSE") ? "TRUE" : "FALSE",
                 find(entry, "abilities", "23-1", "FALSE") ? "TRUE" : "FALSE",
-                `"[${locations.map((d) => locationConversion[d]).join(", ")}]"`,
+                `"[${locations.map((d) => locationConversion[entry.color || "unknown"][d]).join(", ")}]"`,
                 `"[${pieces.map((d) => `'${d}'`).join(", ")}]"`,
                 find(entry, "counters", "23-6", 0),
                 find(entry, "abilities", "23-8", 0),
@@ -539,5 +549,23 @@ export function formatData(data, categories, teams) {
         .join("\n")}`;
 }
 
-const scouting2023 = { categories, layout, preload, formatData };
+export function notes() {
+    return `- For game pieces, b = cube, y = cone, m = missed
+- For the 5 ratings at the end, they are exported on a 0-4 scale, so add 1 to each number to translate to a 1-5 scale.
+- For climb (charge station), 0 = None, 1 = Docked, 2 = Level
+- Times are all exported in seconds
+- Locations are mapped to spots 1-27 on a grid in the following order:
+
+19 10 1
+20 11 2
+21 12 3&nbsp;&nbsp;&nbsp;U
+22 13 4&nbsp;&nbsp;&nbsp;P
+23 14 5&nbsp;&nbsp;&nbsp;P
+24 15 6&nbsp;&nbsp;&nbsp;E
+25 16 7&nbsp;&nbsp;&nbsp;R
+26 17 8
+27 18 9`
+}
+
+const scouting2023 = { categories, layout, preload, formatData, notes };
 export default scouting2023;

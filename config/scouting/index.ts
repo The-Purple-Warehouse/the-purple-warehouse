@@ -9,5 +9,6 @@ scoutingConfig.categories = scoutingConfig[year].categories;
 scoutingConfig.layout = scoutingConfig[year].layout;
 scoutingConfig.preload = scoutingConfig[year].preload;
 scoutingConfig.formatData = scoutingConfig[year].formatData;
+scoutingConfig.notes = scoutingConfig[year].notes;
 
 export default scoutingConfig;
