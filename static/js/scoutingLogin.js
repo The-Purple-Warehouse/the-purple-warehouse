@@ -18,12 +18,12 @@ submitButton.addEventListener("click", function (e) {
             const response = JSON.parse(res.responseText);
 
             if (response.success) {
-                succBar(response.message);
+                succBar(response.body.message);
                 setTimeout(function () {
                     window.location.reload(true);
                 }, 750);
             } else {
-                errBar(response.message);
+                errBar(response.error.message);
             }
         } catch (err) {
             errBar("There was an error");

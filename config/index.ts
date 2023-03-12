@@ -41,6 +41,10 @@ export interface Config {
         scoutingKeys: string[];
         tba: string;
         scoutingAdmins: string[];
+        scoutingInternal: {
+            teamNumber: string;
+            accessToken: string;
+        };
     };
     features: string[];
 }
