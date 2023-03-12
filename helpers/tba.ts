@@ -40,9 +40,7 @@ async function syncEventsCache(year) {
             timestamp: new Date().getTime()
         };
         fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
-    } catch(err) {
-
-    }
+    } catch (err) {}
 }
 
 export async function getEvents(year) {
@@ -75,9 +73,7 @@ async function syncMatchesCache(event) {
             timestamp: new Date().getTime()
         };
         fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
-    } catch(err) {
-
-    }
+    } catch (err) {}
 }
 
 export async function getMatches(event) {
@@ -110,9 +106,7 @@ async function syncMatchesFullCache(event) {
             timestamp: new Date().getTime()
         };
         fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
-    } catch(err) {
-
-    }
+    } catch (err) {}
 }
 
 export async function getMatchesFull(event) {
