@@ -150,7 +150,7 @@ router.get(
             ctx.params.event,
             ctx.session.scoutingTeamNumber
         );
-        let analysis = [];
+        let analysis: any = {};
         if (entries.length >= 5) {
             analysis = await scoutingConfig.analysis(
                 ctx.params.event,
@@ -160,7 +160,8 @@ router.get(
         ctx.body = {
             success: true,
             body: {
-                analysis: analysis
+                display: analysis.display,
+                data: analysis.data
             }
         };
     }
