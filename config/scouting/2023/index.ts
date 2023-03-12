@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import { getMatchesFull } from "../../../helpers/tba";
+import { getAllDataByEvent } from "../../../helpers/scouting";
 
 export function categories() {
     return [
@@ -573,7 +574,15 @@ export function notes() {
 27 18 9`;
 }
 
-export async function analysis(event, teamNumber) {
+let cache;
+
+try {
+    cache = JSON.parse(fs.readFileSync("../analysiscache.json").toString());
+} catch (err) {
+    cache = {};
+}
+
+async function syncAnalysisCache(event, teamNumber) {
     let analyzed = [];
     let data: any = {
         offenseRankings: [],
@@ -584,8 +593,14 @@ export async function analysis(event, teamNumber) {
             `../${event}-tba.json`,
             JSON.stringify(await getMatchesFull(event))
         );
+        fs.writeFileSync(
+            `../${event}.csv`,
+            await getAllDataByEvent(event)
+        );
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
+        let graphsCommand = `python3 config/scouting/2023/graphs.py --event ${event} --teamNumber ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        execSync(graphsCommand);
         let rankings = JSON.parse(
             fs.readFileSync(`../${event}-rankings.json`).toString()
         );
@@ -610,16 +625,36 @@ export async function analysis(event, teamNumber) {
         for (let i = 0; i < offense.length; i++) {
             tableRankings.push([offense[i], defense[i]]);
         }
+        let graphs = fs.readFileSync(`../${event}-${teamNumber}-analysis.html`).toString();
+        analyzed.push({
+            type: "html",
+            label: "Scoring Graph",
+            value: graphs
+        });
         analyzed.push({
             type: "table",
             label: "Rankings",
             values: tableRankings
         });
-    } catch (err) {}
-    return {
-        display: analyzed,
-        data: data
-    };
+    } catch (err) {
+    }
+    cache[`${event}-${teamNumber}`] = {
+        value: {
+            display: analyzed,
+            data: data
+        },
+        timestamp: new Date().getTime()
+    }
+    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
+}
+
+export async function analysis(event, teamNumber) {
+    if (cache[`${event}-${teamNumber}`] == null) {
+        await syncAnalysisCache(event, teamNumber);
+    } else if (new Date().getTime() > cache[`${event}-${teamNumber}`].timestamp + 150000) {
+        syncAnalysisCache(event, teamNumber);
+    }
+    return cache[`${event}-${teamNumber}`].value;
 }
 
 const scouting2023 = {
