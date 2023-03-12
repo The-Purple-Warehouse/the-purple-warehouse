@@ -127,4 +127,14 @@ router.get(
     }
 );
 
+router.get("/entry/data/event/:event/tba", requireScoutingAuth, async (ctx, next) => {
+    ctx.body = {
+        success: true,
+        body: {
+            matches: await getMatchesFull(ctx.params.event)
+        }
+    };
+    addAPIHeaders(ctx);
+});
+
 export default router;

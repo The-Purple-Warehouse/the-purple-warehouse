@@ -8,8 +8,11 @@ export default async (ctx: Koa.Context, next: Koa.Next) => {
         if (!(await teamExistsByNumber(query.team))) {
             ctx.body = {
                 success: false,
-                message:
-                    "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                error: {
+                    code: 0,
+                    message:
+                        "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                }
             };
         } else {
             let res;
@@ -23,7 +26,10 @@ export default async (ctx: Koa.Context, next: Koa.Next) => {
                 if (!ctx.session) {
                     ctx.body = {
                         success: false,
-                        message: "There was an error logging in"
+                        error: {
+                            code: 0,
+                            message: "There was an error logging in"
+                        }
                     };
                 } else {
                     ctx.session.scoutingAuthed = true;
@@ -34,7 +40,10 @@ export default async (ctx: Koa.Context, next: Koa.Next) => {
             } catch (e) {
                 ctx.body = {
                     success: false,
-                    message: e.message
+                    error: {
+                        code: 0,
+                        message: e.message
+                    }
                 };
             }
         }

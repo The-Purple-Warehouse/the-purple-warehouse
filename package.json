@@ -6,8 +6,8 @@
     "scripts": {
         "start": "NODE_ENV=production node build/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "npm i && tsc",
-        "build-noinstall": "tsc",
+        "build": "npm i && rm -rf build && tsc",
+        "build-noinstall": "rm -rf build && tsc",
         "debug": "NODE_ENV=development npx nodemon",
         "dev": "NODE_ENV=development node build/index.js",
         "staging": "NODE_ENV=staging node build/index.js",

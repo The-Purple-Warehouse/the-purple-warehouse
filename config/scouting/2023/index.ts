@@ -1,3 +1,7 @@
+import { execSync } from "child_process";
+import * as fs from "fs";
+import config from "../../";
+
 export function categories() {
     return [
         { name: "Leaves Community", identifier: "23-0", dataType: "boolean" },
@@ -496,16 +500,16 @@ export function formatData(data, categories, teams) {
     }
     let locationConversion = {
         red: [
-            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
-            16, 7, 26, 17, 8, 27, 18, 9
+            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
+            25, 16, 7, 26, 17, 8, 27, 18, 9
         ],
         blue: [
             1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 32, 6, 15, 24, 7,
             16, 25, 8, 17, 26, 9, 18, 27
         ],
         unknown: [
-            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
-            16, 7, 26, 17, 8, 27, 18, 9
+            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
+            25, 16, 7, 26, 17, 8, 27, 18, 9
         ]
     };
     return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments\n${data
@@ -525,7 +529,9 @@ export function formatData(data, categories, teams) {
                 entry.color || "unknown",
                 find(entry, "abilities", "23-0", "FALSE") ? "TRUE" : "FALSE",
                 find(entry, "abilities", "23-1", "FALSE") ? "TRUE" : "FALSE",
-                `"[${locations.map((d) => locationConversion[entry.color || "unknown"][d]).join(", ")}]"`,
+                `"[${locations
+                    .map((d) => locationConversion[entry.color || "unknown"][d])
+                    .join(", ")}]"`,
                 `"[${pieces.map((d) => `'${d}'`).join(", ")}]"`,
                 find(entry, "counters", "23-6", 0),
                 find(entry, "abilities", "23-8", 0),
@@ -564,8 +570,38 @@ export function notes() {
 24 15 6&nbsp;&nbsp;&nbsp;E
 25 16 7&nbsp;&nbsp;&nbsp;R
 26 17 8
-27 18 9`
+27 18 9`;
 }
 
-const scouting2023 = { categories, layout, preload, formatData, notes };
+export function analysis(event, teamNumber) {
+    let analyzed = [];
+    try {
+        let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --apiPath "http://localhost:${config.server.port}/api/v1/scouting/entry/data/event/<EVENT>/tba?token=${config.auth.scoutingInternal.accessToken}&team=${config.auth.scoutingInternal.teamNumber}" --baseFilePath ../`;
+        execSync(rankingCommand);
+        let rankings = JSON.parse(fs.readFileSync("../2023cafr-rankings.json").toString());
+        let rankingsTeams = Object.keys(rankings);
+        let rankingsArr = [];
+        for(let i = 0; i < rankingsTeams.length; i++) {
+            rankingsArr.push({
+                teamNumber: rankingsTeams[i],
+                offenseScore: rankings[rankingsTeams[i]]["off-score"],
+                defenseScore: rankings[rankingsTeams[i]]["def-score"],
+            });
+        }
+        analyzed.push({
+            type: "leaderboard",
+            label: "Offense Rankings",
+            values: rankingsArr.sort((a, b) => b.offenseScore - a.offenseScore).map(ranking => ranking.teamNumber)
+        });
+        analyzed.push({
+            type: "leaderboard",
+            label: "Defense Rankings",
+            values: rankingsArr.sort((a, b) => b.defenseScore - a.defenseScore).map(ranking => ranking.teamNumber)
+        });
+    } catch(err) {
+    }
+    return analyzed;
+}
+
+const scouting2023 = { categories, layout, preload, formatData, notes, analysis };
 export default scouting2023;

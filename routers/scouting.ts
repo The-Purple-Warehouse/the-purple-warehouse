@@ -42,7 +42,9 @@ router.post("/login", bodyParser(), async (ctx) => {
     ) {
         ctx.body = {
             success: true,
-            message: "You are already logged in."
+            body: {
+                message: "You are already logged in."
+            }
         };
     } else {
         const body = ctx.request.body as any;
@@ -50,14 +52,20 @@ router.post("/login", bodyParser(), async (ctx) => {
         if (!body.teamNumber || !body.accessToken || !body.username) {
             ctx.body = {
                 success: false,
-                message:
-                    "Please provide a team number, username, and access token."
+                error: {
+                    code: 0,
+                    message:
+                        "Please provide a team number, username, and access token."
+                }
             };
         } else if (!(await teamExistsByNumber(body.teamNumber))) {
             ctx.body = {
                 success: false,
-                message:
-                    "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                error: {
+                    code: 0,
+                    message:
+                        "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                }
             };
         } else {
             let res;
@@ -71,7 +79,10 @@ router.post("/login", bodyParser(), async (ctx) => {
                 if (!ctx.session) {
                     ctx.body = {
                         success: false,
-                        message: "There was an error logging in"
+                        error: {
+                            code: 0,
+                            message: "There was an error logging in"
+                        }
                     };
                 } else {
                     ctx.session.scoutingAuthed = true;
@@ -81,13 +92,18 @@ router.post("/login", bodyParser(), async (ctx) => {
                     ).toLowerCase();
                     ctx.body = {
                         success: true,
-                        message: res.message
+                        body: {
+                            message: res.message
+                        }
                     };
                 }
             } catch (e) {
                 ctx.body = {
                     success: false,
-                    message: e.message
+                    error: {
+                        code: 0,
+                        message: e.message
+                    }
                 };
             }
         }
