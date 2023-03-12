@@ -868,11 +868,35 @@ body {
     color: var(--backgroundColor);
 }
 
+.data-window .analysis > div {
+    width: min-content;
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+}
+
+@media (max-width: 650px) {
+    .data-window .analysis > div {
+        margin-left: 50%;
+        transform: translate(-50%, 0) scale(0.8);
+    }
+}
+
 @media (max-width: 500px) {
     .data-window table {
         overflow-x: initial;
     }
     .data-window-visible {
         overflow-x: auto;
+    }
+    .data-window .analysis > div {
+        margin-left: 50%;
+        transform: translate(-50%, 0) scale(0.65);
+    }
+}
+
+@media (max-width: 400px) {
+    .data-window .analysis > div {
+        margin-left: 50%;
+        transform: translate(-50%, 0) scale(0.55);
     }
 }
