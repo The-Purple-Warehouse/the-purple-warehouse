@@ -601,7 +601,7 @@ export async function analysis(event, teamNumber) {
             .sort((a, b) => b.defenseScore - a.defenseScore)
             .map((ranking) => ranking.teamNumber);
         let tableRankings = [["Offense", "Defense"]];
-        for(let i = 0; i < offense.length; i++) {
+        for (let i = 0; i < offense.length; i++) {
             tableRankings.push([offense[i], defense[i]]);
         }
         analyzed.push({
