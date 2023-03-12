@@ -576,7 +576,10 @@ export function notes() {
 export async function analysis(event, teamNumber) {
     let analyzed = [];
     try {
-        fs.writeFileSync("../2023cafr-tba.json", JSON.stringify(await getMatchesFull(event)));
+        fs.writeFileSync(
+            "../2023cafr-tba.json",
+            JSON.stringify(await getMatchesFull(event))
+        );
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
         let rankings = JSON.parse(
@@ -591,19 +594,20 @@ export async function analysis(event, teamNumber) {
                 defenseScore: rankings[rankingsTeams[i]]["def-score"]
             });
         }
+        let offense = rankingsArr
+            .sort((a, b) => b.offenseScore - a.offenseScore)
+            .map((ranking) => ranking.teamNumber);
+        let defense = rankingsArr
+            .sort((a, b) => b.defenseScore - a.defenseScore)
+            .map((ranking) => ranking.teamNumber);
+        let tableRankings = [["Offense", "Defense"]];
+        for(let i = 0; i < offense.length; i++) {
+            tableRankings.push([offense[i], defense[i]]);
+        }
         analyzed.push({
-            type: "leaderboard",
-            label: "Offense Rankings",
-            values: rankingsArr
-                .sort((a, b) => b.offenseScore - a.offenseScore)
-                .map((ranking) => ranking.teamNumber)
-        });
-        analyzed.push({
-            type: "leaderboard",
-            label: "Defense Rankings",
-            values: rankingsArr
-                .sort((a, b) => b.defenseScore - a.defenseScore)
-                .map((ranking) => ranking.teamNumber)
+            type: "table",
+            label: "Rankings",
+            values: tableRankings
         });
     } catch (err) {}
     return analyzed;
