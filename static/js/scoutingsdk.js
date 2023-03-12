@@ -329,7 +329,7 @@ const ScoutingAppSDK = function (element, config) {
                     <div class="button-row">
                         <button class="log-out">Log Out</button>
                         <button class="scan-data">Upload Data</button>
-                        <button class="view-data">View Data</button>
+                        <button class="view-data">View Data/Analysis</button>
                     </div>
                     <h1>TPW Scouting App</h1>
                     <h3>Signed in as ${_this.escape(
@@ -594,7 +594,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <div class="button-row">
                         <button class="log-out">Log Out</button>
                         <button class="scout">Scout</button>
-                        <button class="view-data">View Data</button>
+                        <button class="view-data">View Data/Analysis</button>
                     </div>
                     <div class="scanner-view" style="display: ${
                         view == 0 ? "block" : "none"
