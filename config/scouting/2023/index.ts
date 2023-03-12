@@ -575,6 +575,10 @@ export function notes() {
 
 export async function analysis(event, teamNumber) {
     let analyzed = [];
+    let data: any = {
+        offenseRankings: [],
+        defenseRankings: []
+    };
     try {
         fs.writeFileSync(
             `../${event}-tba.json`,
@@ -600,6 +604,8 @@ export async function analysis(event, teamNumber) {
         let defense = rankingsArr
             .sort((a, b) => b.defenseScore - a.defenseScore)
             .map((ranking) => ranking.teamNumber);
+        data.offenseRankings = offense;
+        data.defenseRankings = offense;
         let tableRankings = [["Offense", "Defense"]];
         for (let i = 0; i < offense.length; i++) {
             tableRankings.push([offense[i], defense[i]]);
@@ -610,7 +616,10 @@ export async function analysis(event, teamNumber) {
             values: tableRankings
         });
     } catch (err) {}
-    return analyzed;
+    return {
+        display: analyzed,
+        data: data
+    };
 }
 
 const scouting2023 = {

@@ -159,7 +159,7 @@ body {
 
 .home-window > h2,
 .download-window > h2,
-.data-window > h2 {
+.data-window h2 {
     color: var(--contentColor);
     text-align: center;
     margin: 0;
@@ -811,7 +811,7 @@ body {
 
 .component-upload > h3,
 .download-window > h3,
-.data-window > h3 {
+.data-window h2 {
     text-align: center;
     color: var(--contentColor);
     width: calc(100% - 20px);
@@ -823,7 +823,7 @@ body {
 
 .component-upload > h3.red,
 .download-window > h3.red,
-.data-window > h3.red {
+.data-window h3.red {
     color: #ff0000;
 }
 
@@ -831,34 +831,36 @@ body {
     color: var(--primaryBackgroundColor);
 }
 
-.data-window > table {
+.data-window table {
     color: var(--contentColor);
     overflow-x: auto;
     border-collapse: collapse;
+    min-width: 100%;
+    margin-top: 15px;
 }
 
-.data-window > table td,
-.data-window > table th {
+.data-window table td,
+.data-window table th {
     border: 1px solid var(--contentColor);
     padding: 8px;
     color: var(--contentColor);
 }
 
-.data-window > table td:hover {
+.data-window table td:hover {
     background-color: var(--backgroundColor);
     filter: brightness(0.8);
 }
 
-.data-window > table tbody > tr {
+.data-window table tbody > tr {
     background-color: var(--backgroundColor);
 }
 
-.data-window > table tbody > tr:nth-child(even) {
+.data-window table tbody > tr:nth-child(even) {
     background-color: var(--backgroundColor);
     filter: brightness(0.9);
 }
 
-.data-window > table th {
+.data-window table th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -867,7 +869,7 @@ body {
 }
 
 @media (max-width: 500px) {
-    .data-window > table {
+    .data-window table {
         overflow-x: initial;
     }
     .data-window-visible {

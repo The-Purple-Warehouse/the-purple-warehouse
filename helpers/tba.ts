@@ -17,28 +17,32 @@ try {
 }
 
 async function syncEventsCache(year) {
-    let events = await (
-        await fetch(
-            `https://www.thebluealliance.com/api/v3/events/${encodeURIComponent(
-                year
-            )}/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
-        )
-    ).json();
-    let formatted = (events as any).map((event) => {
-        return {
-            key: event.key,
-            name: event.name
+    try {
+        let events = await (
+            await fetch(
+                `https://www.thebluealliance.com/api/v3/events/${encodeURIComponent(
+                    year
+                )}/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
+            )
+        ).json();
+        let formatted = (events as any).map((event) => {
+            return {
+                key: event.key,
+                name: event.name
+            };
+        });
+        formatted.push({
+            key: "2023cafr-prac",
+            name: "Central Valley Regional PRACTICE"
+        });
+        cache.events[year] = {
+            value: formatted.sort((a, b) => a.name.localeCompare(b.name)),
+            timestamp: new Date().getTime()
         };
-    });
-    formatted.push({
-        key: "2023cafr-prac",
-        name: "Central Valley Regional PRACTICE"
-    });
-    cache.events[year] = {
-        value: formatted.sort((a, b) => a.name.localeCompare(b.name)),
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
+        fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
+    } catch(err) {
+
+    }
 }
 
 export async function getEvents(year) {
@@ -51,25 +55,29 @@ export async function getEvents(year) {
 }
 
 async function syncMatchesCache(event) {
-    let matches = [];
-    if (event.endsWith("-prac")) {
-        matches = practice[event] || [];
-    } else {
-        matches = await (
-            await fetch(
-                `https://www.thebluealliance.com/api/v3/event/${encodeURIComponent(
-                    event
-                )}/matches/simple?X-TBA-Auth-Key=${encodeURIComponent(
-                    config.auth.tba
-                )}`
-            )
-        ).json();
+    try {
+        let matches = [];
+        if (event.endsWith("-prac")) {
+            matches = practice[event] || [];
+        } else {
+            matches = await (
+                await fetch(
+                    `https://www.thebluealliance.com/api/v3/event/${encodeURIComponent(
+                        event
+                    )}/matches/simple?X-TBA-Auth-Key=${encodeURIComponent(
+                        config.auth.tba
+                    )}`
+                )
+            ).json();
+        }
+        cache.matches[event] = {
+            value: matches,
+            timestamp: new Date().getTime()
+        };
+        fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
+    } catch(err) {
+
     }
-    cache.matches[event] = {
-        value: matches,
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
 }
 
 export async function getMatches(event) {
@@ -82,25 +90,29 @@ export async function getMatches(event) {
 }
 
 async function syncMatchesFullCache(event) {
-    let matches = [];
-    if (event.endsWith("-prac")) {
-        matches = practice[event] || [];
-    } else {
-        matches = await (
-            await fetch(
-                `https://www.thebluealliance.com/api/v3/event/${encodeURIComponent(
-                    event
-                )}/matches?X-TBA-Auth-Key=${encodeURIComponent(
-                    config.auth.tba
-                )}`
-            )
-        ).json();
+    try {
+        let matches = [];
+        if (event.endsWith("-prac")) {
+            matches = practice[event] || [];
+        } else {
+            matches = await (
+                await fetch(
+                    `https://www.thebluealliance.com/api/v3/event/${encodeURIComponent(
+                        event
+                    )}/matches?X-TBA-Auth-Key=${encodeURIComponent(
+                        config.auth.tba
+                    )}`
+                )
+            ).json();
+        }
+        cache.matchesFull[event] = {
+            value: matches,
+            timestamp: new Date().getTime()
+        };
+        fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
+    } catch(err) {
+
     }
-    cache.matchesFull[event] = {
-        value: matches,
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
 }
 
 export async function getMatchesFull(event) {
