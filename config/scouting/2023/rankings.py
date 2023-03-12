@@ -12,17 +12,12 @@ for i in range(len(rawArgs)):
 	if rawArgs[i] == "--event" and "event" not in args:
 		args["event"] = rawArgs[i + 1]
 		i += 1
-	elif rawArgs[i] == "--apiPath" and "apiPath" not in args:
-		args["apiPath"] = rawArgs[i + 1]
-		i += 1
 	elif rawArgs[i] == "--baseFilePath" and "baseFilePath" not in args:
 		args["baseFilePath"] = rawArgs[i + 1]
 		i += 1
 
 eventKeys = [args["event"]]
-api = args["apiPath"]
 base = args["baseFilePath"]
-qualsFinished = False
 
 def avg(data):
     data = np.array([data])
@@ -48,18 +43,11 @@ def copy(li1):
 for event in eventKeys:
 	try:
 		path = base + event + "-tba.json"
-		if os.path.exists(path) and qualsFinished:
+		if os.path.exists(path):
 			with open(base + event + "-tba.json", "r") as file:
 				data = json.load(file)
 		else:
-			res = rq.get(api.replace("<EVENT>", event))
-			raw_data = res.json()
-			if raw_data["success"]:
-				data = raw_data["body"]["matches"]
-				with open(base + event + "-tba.json", "w") as f:
-					json.dump(data, f)
-			else:
-				raise Exception(raw_data["error"]["message"])
+			raise Exception("Could not find TBA file")
 
 		team_data = OrderedDict()
 		matches_data = OrderedDict()

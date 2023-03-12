@@ -9,7 +9,7 @@ async function runScoutingAnalysis(event, teamNumber) {
         console.log("Missing --teamNumber argument");
         return;
     }
-    console.log(scoutingConfig.analysis(event, teamNumber));
+    console.log(await scoutingConfig.analysis(event, teamNumber));
     return;
 }
 
