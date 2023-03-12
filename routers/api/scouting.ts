@@ -139,13 +139,13 @@ router.get(
         };
         addAPIHeaders(ctx);
     }
-});
+);
 
 router.get("/entry/analysis/event/:event", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     let entries = await getTeamEntriesByEvent(ctx.params.event, ctx.session.scoutingTeamNumber);
     let analysis = [];
-    if(entries.length > 0) {
+    if(entries.length >= 5) {
         analysis = await scoutingConfig.analysis(ctx.params.event, ctx.session.scoutingTeamNumber);
     }
     ctx.body = {
