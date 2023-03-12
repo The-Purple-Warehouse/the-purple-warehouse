@@ -1085,6 +1085,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             )}
                     </select>
                     <button class="show-data">Show Data</button>
+                    <button class="download-csv">Download CSV</button>
                     <h3 class="red">&nbsp;</h3>
                     <table class="data-table" style="display: none;">
                         <thead>
@@ -1130,6 +1131,40 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             element.querySelector(".data-table > thead").innerHTML = `<tr>${csv[0].map(cell => `<th>${cell.replaceAll("\"", "")}</th>`).join("")}</tr>`;
                             element.querySelector(".data-window").classList.add("data-window-visible");
                             element.querySelector(".data-table").style.display = "block";
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {}
+                };
+            element.querySelector("button.download-csv").onclick =
+                async () => {
+                    let eventCode = element.querySelector(
+                        ".data-window > select.event-code"
+                    ).value;
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                    eventCode
+                                )}/csv`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML =
+                                "&nbsp;";
+                            let csv = data.body.csv;
+                            let download =
+                                "data:text/csv;charset=utf-8," + csv;
+                            let link = document.createElement("a");
+                            link.style.display = "none";
+                            link.setAttribute("href", download);
+                            link.setAttribute(
+                                "download", `tpw-scouting-${eventCode}.csv`
+                            );
+                            element.appendChild(link);
+                            link.click();
+                            link.remove();
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
