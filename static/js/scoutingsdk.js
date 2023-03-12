@@ -323,7 +323,6 @@ const ScoutingAppSDK = function (element, config) {
                 }
             }
             let year = new Date().toLocaleDateString().split("/")[2];
-            await _this.setEvents(year);
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="home-window">
@@ -380,7 +379,9 @@ const ScoutingAppSDK = function (element, config) {
                     window.location.href = "/scouting/logout";
                 };
             element.querySelector(".button-row > button.view-data").onclick =
-                async () => {};
+                async () => {
+                    await _this.showDataPage();
+                };
             element.querySelector(".button-row > button.scan-data").onclick =
                 async () => {
                     await _this.showScannerPage();
@@ -630,7 +631,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     window.location.href = "/scouting/logout";
                 };
             element.querySelector(".button-row > button.view-data").onclick =
-                async () => {};
+                async () => {
+                    await _this.showDataPage();
+                };
             element.querySelector(".button-row > button.scout").onclick =
                 async () => {
                     try {
@@ -1052,28 +1055,39 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
          */
     };
 
-    _this.showDataPage = (_eventCode = "") => {
-        /*
+    _this.showDataPage = () => {
         return new Promise(async (resolve, reject) => {
-            _this.setEventCode(_eventCode);
+            let year = new Date().toLocaleDateString().split("/")[2];
+            let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
                     <div class="button-row">
                         <button class="log-out">Log Out</button>
-                        <button class="upload-data">Upload Data</button>
+                        <button class="scan-data">Upload Data</button>
                         <button class="scout">Scout</button>
                     </div>
-                    <h2>Event Code:</h2>
-                    <input class="event-code" value="${_this.escape(
-                _eventCode || (_this.getEventCode())
-            )}" />
+                    <h2>Event:</h2>
+                    <select class="event-code">
+                        <option value=""${
+                (_this.getEventCode()) == null ||
+                (_this.getEventCode()) == ""
+                    ? " selected"
+                    : ""
+            }>Select an event...</option>
+                        ${events.map(
+                (event) =>
+                    `<option value="${event.key}"${
+                        (_this.getEventCode()) ==
+                        event.key
+                            ? " selected"
+                            : ""
+                    }>${event.name}</option>`
+            )}
+                    </select>
                     <button class="show-data">Show Data</button>
                     <h3 class="red">&nbsp;</h3>
                     <table class="data-table" style="display: none;">
                         <thead>
-                            <tr>
-                                ${config.data.dataHeaders.map(header => `<th>${header}</th>`).join("")}
-                            </tr>
                         </thead>
                         <tbody>
                         </tbody>
@@ -1084,14 +1098,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 async () => {
                     window.location.href = "/scouting/logout";
                 };
-            element.querySelector(
-                ".button-row > button.view-data"
-            ).onclick = async () => {
-            };
             element.querySelector(".button-row > button.scout").onclick =
                 async () => {
                     await _this.showHomePage();
                     window.location.href = "./";
+                };
+            element.querySelector(".button-row > button.scan-data").onclick =
+                async () => {
+                    await _this.showScannerPage();
                 };
             element.querySelector("button.show-data").onclick =
                 async () => {
@@ -1103,23 +1117,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             await fetch(
                                 `/api/v1/scouting/entry/data/event/${encodeURIComponent(
                                     eventCode
-                                )}`
+                                )}/csv`
                             )
                         ).json();
                         if (data.success) {
                             element.querySelector(".red").innerHTML =
                                 "&nbsp;";
-                            let csv = [];
-                            let contents = data.contents;
-                            for (let i = 0; i < contents.length; i++) {
-                                csv.push(contents[i].contents.split(","));
-                            }
-                            for(let i = 0; i < csv.length; i++) {
-                                csv[i] = await _this.formatData(csv[i]);
-                            }
-                            element.querySelector(".data-table > tbody").innerHTML = csv.map((data) => {
+                            let csv = Papa.parse(data.body.csv).data;
+                            element.querySelector(".data-table > tbody").innerHTML = csv.slice(1).map((data) => {
                                 return `<tr>${data.map(cell => `<td>${cell}</td>`).join("")}</tr>`;
                             }).join("");
+                            element.querySelector(".data-table > thead").innerHTML = `<tr>${csv[0].map(cell => `<th>${cell.replaceAll("\"", "")}</th>`).join("")}</tr>`;
                             element.querySelector(".data-window").classList.add("data-window-visible");
                             element.querySelector(".data-table").style.display = "block";
                         } else {
@@ -1130,7 +1138,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 };
             resolve();
         });
-         */
     };
 
     _this.getQuote = () => {
