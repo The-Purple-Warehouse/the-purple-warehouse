@@ -1127,7 +1127,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .slice(1)
                                 .map((data) => {
                                     return `<tr>${data
-                                        .map((cell) => `<td>${cell.replaceAll("\\n", "<br>")}</td>`)
+                                        .map(
+                                            (cell) =>
+                                                `<td>${cell.replaceAll(
+                                                    "\\n",
+                                                    "<br>"
+                                                )}</td>`
+                                        )
                                         .join("")}</tr>`;
                                 })
                                 .join("");
@@ -1135,7 +1141,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             ".data-table > thead"
                         ).innerHTML = `<tr>${csv[0]
                             .map(
-                                (cell) => `<th>${cell.replaceAll('"', "").replaceAll("\\n", "<br>")}</th>`
+                                (cell) =>
+                                    `<th>${cell
+                                        .replaceAll('"', "")
+                                        .replaceAll("\\n", "<br>")}</th>`
                             )
                             .join("")}</tr>`;
                         element
