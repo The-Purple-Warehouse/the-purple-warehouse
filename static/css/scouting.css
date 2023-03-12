@@ -874,6 +874,10 @@ body {
     transform: translate(-50%, 0);
 }
 
+.data-window .analysis > div rect.mpld3-axesbg {
+    fill: var(--backgroundColor) !important;
+}
+
 @media (max-width: 650px) {
     .data-window .analysis > div {
         margin-left: 50%;
