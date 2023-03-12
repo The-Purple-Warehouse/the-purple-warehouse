@@ -4,7 +4,7 @@ import auth from "../helpers/auth";
 
 export default async (ctx: Koa.Context, next: Koa.Next) => {
     const query = ctx.query as any;
-    if(query.token && query.team) {
+    if (query.token && query.team) {
         if (!(await teamExistsByNumber(query.team))) {
             ctx.body = {
                 success: false,
