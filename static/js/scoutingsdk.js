@@ -970,91 +970,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
-    _this.showDownloadPage = (_eventCode = "") => {
-        /*
-        return new Promise(async (resolve, reject) => {
-            _this.setEventCode(_eventCode);
-            element.innerHTML = `
-                <div class="download-window">
-                    <div class="button-row">
-                        <button class="log-out">Log Out</button>
-                        <button class="scout">Scout</button>
-                        <button class="view-data">View Data</button>
-                    </div>
-                    <h2>Event Code:</h2>
-                    <input class="event-code" value="${_this.escape(
-                _eventCode || (_this.getEventCode())
-            )}" />
-                    <h2>Filename:</h2>
-                    <input class="filename" value="data.csv" />
-                    <button class="download-csv">Download CSV</button>
-                    <h3 class="red">&nbsp;</h3>
-                </div>
-            `;
-            element.querySelector(".button-row > button.log-out").onclick =
-                async () => {
-                    window.location.href = "/scouting/logout";
-                };
-            element.querySelector(
-                ".button-row > button.view-data"
-            ).onclick = async () => {
-            };
-            element.querySelector(".button-row > button.scout").onclick =
-                async () => {
-                    await _this.showHomePage();
-                    window.location.href = "./";
-                };
-            element.querySelector("button.download-csv").onclick =
-                async () => {
-                    let eventCode = element.querySelector(
-                        ".download-window > select.event-code"
-                    ).value;
-                    let filename = element.querySelector(
-                        ".download-window > input.filename"
-                    ).value;
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML =
-                                "&nbsp;";
-                            let csv = [
-                                config.data.csvHeaders.join(",")
-                            ];
-                            let contents = data.contents;
-                            for (let i = 0; i < contents.length; i++) {
-                                csv.push(contents[i].contents);
-                            }
-                            let joined = csv.join("\r\n");
-                            let download =
-                                "data:text/csv;charset=utf-8," + joined;
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                filename || "data.csv"
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                            console.log(joined);
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {}
-                };
-            resolve();
-        });
-         */
-    };
-
     _this.showDataPage = () => {
         return new Promise(async (resolve, reject) => {
             let year = new Date().toLocaleDateString().split("/")[2];
@@ -1101,7 +1016,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             element.querySelector(".button-row > button.scout").onclick =
                 async () => {
                     await _this.showHomePage();
-                    window.location.href = "./";
                 };
             element.querySelector(".button-row > button.scan-data").onclick =
                 async () => {
