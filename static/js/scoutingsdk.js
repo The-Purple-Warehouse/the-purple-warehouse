@@ -1062,7 +1062,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         .replaceAll("\\n", "<br>")}</th>`
                             )
                             .join("")}</tr>`;
-                        element.querySelector(".data-window > .notes").innerHTML = data.body.notes.replaceAll("\n", "<br>");
+                        element.querySelector(
+                            ".data-window > .notes"
+                        ).innerHTML = data.body.notes.replaceAll("\n", "<br>");
                         element
                             .querySelector(".data-window")
                             .classList.add("data-window-visible");
