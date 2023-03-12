@@ -998,6 +998,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 }>${event.name}</option>`
                         )}
                     </select>
+                    <h2>Team Number<br>(leave blank to show all):</h2>
+                    <input class="team-number" placeholder="Team Number" />
                     <button class="show-data">Show Data</button>
                     <button class="show-analysis">Show Analysis</button>
                     <button class="download-csv">Download CSV</button>
@@ -1012,8 +1014,26 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <div class="analysis" style="display: none;">
                         
                     </div>
+                    <div class="overlay" style="display: none;"></div>
                 </div>
             `;
+            let overlayShown = false;
+            function showOverlay() {
+                overlayShown = true;
+                setTimeout(() => {
+                    if(overlayShown) {
+                        element.querySelector(".overlay").style.display = "block";
+                    }
+                }, 500);
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                setTimeout(() => {
+                    if(!overlayShown) {
+                        element.querySelector(".overlay").style.display = "none";
+                    }
+                }, 500);
+            }
             element.querySelector(".button-row > button.log-out").onclick =
                 async () => {
                     window.location.href = "/scouting/logout";
@@ -1027,8 +1047,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     await _this.showScannerPage();
                 };
             element.querySelector("button.show-data").onclick = async () => {
+                showOverlay();
                 let eventCode = element.querySelector(
                     ".data-window > select.event-code"
+                ).value;
+                let teamNumber = element.querySelector(
+                    ".data-window > input.team-number"
                 ).value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
@@ -1048,6 +1072,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(".data-table > tbody").innerHTML =
                             csv
                                 .slice(1)
+                                .filter(data => teamNumber == "" || data.includes(teamNumber))
                                 .map((data) => {
                                     return `<tr>${data
                                         .map(
@@ -1083,12 +1108,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             data.error || "Unknown error.";
                     }
                 } catch (err) {}
+                hideOverlay();
             };
             element.querySelector("button.show-analysis").onclick =
                 async () => {
+                    showOverlay();
                     let eventCode = element.querySelector(
                         ".data-window > select.event-code"
                     ).value;
+                    let teamNumber = element.querySelector(
+                        ".data-window > input.team-number"
+                    ).value || config.account.team;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
@@ -1098,7 +1128,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             await fetch(
                                 `/api/v1/scouting/entry/analysis/event/${encodeURIComponent(
                                     eventCode
-                                )}`
+                                )}/${teamNumber}`
                             )
                         ).json();
                         if (data.success) {
@@ -1106,41 +1136,46 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             element.querySelector(".analysis").innerHTML =
                                 data.body.display.map((item) => {
                                     if (item.type == "table") {
-                                        return `<h2>${
-                                            item.label
-                                        }</h2><table class="data-table">
-                                    <thead>
-                                        <tr>${item.values[0]
-                                            .map(
-                                                (cell) =>
-                                                    `<th>${cell
-                                                        .replaceAll('"', "")
-                                                        .replaceAll(
-                                                            "\\n",
-                                                            "<br>"
-                                                        )}</th>`
-                                            )
-                                            .join("")}</tr>
-                                    </thead>
-                                    <tbody>
-                                        ${item.values
-                                            .slice(1)
-                                            .map((data) => {
-                                                return `<tr>${data
+                                        return `<h2>${item.label}</h2>
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>${item.values[0]
                                                     .map(
                                                         (cell) =>
-                                                            `<td>${cell.replaceAll(
-                                                                "\\n",
-                                                                "<br>"
-                                                            )}</td>`
+                                                            `<th>${cell
+                                                                .replaceAll('"', "")
+                                                                .replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</th>`
                                                     )
-                                                    .join("")}</tr>`;
-                                            })
-                                            .join("")}
-                                    </tbody>
-                                </table>`;
+                                                    .join("")}</tr>
+                                            </thead>
+                                            <tbody>
+                                                ${item.values
+                                                    .slice(1)
+                                                    .map((data) => {
+                                                        return `<tr>${data
+                                                            .map(
+                                                                (cell) =>
+                                                                    `<td>${cell.replaceAll(
+                                                                        "\\n",
+                                                                        "<br>"
+                                                                    )}</td>`
+                                                            )
+                                                            .join("")}</tr>`;
+                                                    })
+                                                    .join("")}
+                                            </tbody>
+                                        </table>`;
+                                    } else if(item.type == "html") {
+                                        return `<h2>${item.label}</h2>${item.value}`;
                                     }
-                                });
+                                }).join("");
+                            let scripts = [...element.querySelectorAll(".analysis > script")];
+                            for(let i = 0; i < scripts.length; i++) {
+                                eval(scripts[i].innerHTML);
+                            }
                             element
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
@@ -1151,10 +1186,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 data.error || "Unknown error.";
                         }
                     } catch (err) {}
+                    hideOverlay();
                 };
             element.querySelector("button.download-csv").onclick = async () => {
+                showOverlay();
                 let eventCode = element.querySelector(
                     ".data-window > select.event-code"
+                ).value;
+                let teamNumber = element.querySelector(
+                    ".data-window > input.team-number"
                 ).value;
                 try {
                     let data = await (
@@ -1183,6 +1223,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             data.error || "Unknown error.";
                     }
                 } catch (err) {}
+                hideOverlay();
             };
             resolve();
         });

@@ -142,7 +142,7 @@ router.get(
 );
 
 router.get(
-    "/entry/analysis/event/:event",
+    "/entry/analysis/event/:event/:team",
     requireScoutingAuth,
     async (ctx, next) => {
         addAPIHeaders(ctx);
@@ -154,7 +154,7 @@ router.get(
         if (entries.length >= 5) {
             analysis = await scoutingConfig.analysis(
                 ctx.params.event,
-                ctx.session.scoutingTeamNumber
+                ctx.params.team
             );
         }
         ctx.body = {

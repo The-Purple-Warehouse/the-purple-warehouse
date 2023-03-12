@@ -46,7 +46,7 @@ async function syncEventsCache(year) {
 export async function getEvents(year) {
     if (cache.events[year] == null) {
         await syncEventsCache(year);
-    } else if (new Date().getTime() + 60000 > cache.events[year].timestamp) {
+    } else if (new Date().getTime() > cache.events[year].timestamp + 60000) {
         syncEventsCache(year);
     }
     return cache.events[year].value;
@@ -79,7 +79,7 @@ async function syncMatchesCache(event) {
 export async function getMatches(event) {
     if (cache.matches[event] == null) {
         await syncMatchesCache(event);
-    } else if (new Date().getTime() + 60000 > cache.matches[event].timestamp) {
+    } else if (new Date().getTime() > cache.matches[event].timestamp + 60000) {
         syncMatchesCache(event);
     }
     return cache.matches[event].value;
@@ -113,8 +113,8 @@ export async function getMatchesFull(event) {
     if (cache.matchesFull[event] == null) {
         await syncMatchesFullCache(event);
     } else if (
-        new Date().getTime() + 60000 >
-        cache.matchesFull[event].timestamp
+        new Date().getTime() >
+        cache.matchesFull[event].timestamp + 60000
     ) {
         syncMatchesFullCache(event);
     }
