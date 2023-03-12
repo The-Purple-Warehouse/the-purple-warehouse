@@ -999,6 +999,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         )}
                     </select>
                     <button class="show-data">Show Data</button>
+                    <button class="show-analysis">Show Analysis</button>
                     <button class="download-csv">Download CSV</button>
                     <p class="notes"></p>
                     <h3 class="red">&nbsp;</h3>
@@ -1008,6 +1009,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <tbody>
                         </tbody>
                     </table>
+                    <div class="analysis" style="display: none;">
+                        
+                    </div>
                 </div>
             `;
             element.querySelector(".button-row > button.log-out").onclick =
@@ -1026,6 +1030,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let eventCode = element.querySelector(
                     ".data-window > select.event-code"
                 ).value;
+                element.querySelector(".notes").innerHTML = "";
+                element.querySelector(".data-table > tbody").innerHTML = "";
+                element.querySelector(".analysis").innerHTML = "";
+                element.querySelector(".analysis").style.display = "none";
                 try {
                     let data = await (
                         await fetch(
@@ -1069,6 +1077,67 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             .querySelector(".data-window")
                             .classList.add("data-window-visible");
                         element.querySelector(".data-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {}
+            };
+            element.querySelector("button.show-analysis").onclick = async () => {
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                element.querySelector(".notes").innerHTML = "";
+                element.querySelector(".data-table > tbody").innerHTML = "";
+                element.querySelector(".data-table").style.display = "none";
+                element.querySelector(".analysis").innerHTML = "";
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/analysis/event/${encodeURIComponent(
+                                eventCode
+                            )}`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        element.querySelector(".analysis").innerHTML = data.body.display.map((item) => {
+                            if(item.type == "table") {
+                                return `<h2>${item.label}</h2><table class="data-table">
+                                    <thead>
+                                        <tr>${item.values[0]
+                                        .map(
+                                            (cell) =>
+                                                `<th>${cell
+                                                    .replaceAll('"', "")
+                                                    .replaceAll("\\n", "<br>")}</th>`
+                                        )
+                                        .join("")}</tr>
+                                    </thead>
+                                    <tbody>
+                                        ${item.values
+                                            .slice(1)
+                                            .map((data) => {
+                                                return `<tr>${data
+                                                .map(
+                                                    (cell) =>
+                                                        `<td>${cell.replaceAll(
+                                                            "\\n",
+                                                            "<br>"
+                                                        )}</td>`
+                                                )
+                                                .join("")}</tr>`;
+                                            })
+                                            .join("")}
+                                    </tbody>
+                                </table>`
+                            }
+                        });
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".analysis").style.display =
                             "block";
                     } else {
                         element.querySelector(".red").innerHTML =
