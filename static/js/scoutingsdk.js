@@ -1021,16 +1021,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             function showOverlay() {
                 overlayShown = true;
                 setTimeout(() => {
-                    if(overlayShown) {
-                        element.querySelector(".overlay").style.display = "block";
+                    if (overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "block";
                     }
                 }, 500);
             }
             function hideOverlay() {
                 overlayShown = false;
                 setTimeout(() => {
-                    if(!overlayShown) {
-                        element.querySelector(".overlay").style.display = "none";
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
                     }
                 }, 500);
             }
@@ -1072,7 +1074,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(".data-table > tbody").innerHTML =
                             csv
                                 .slice(1)
-                                .filter(data => teamNumber == "" || data.includes(teamNumber))
+                                .filter(
+                                    (data) =>
+                                        teamNumber == "" ||
+                                        data.includes(teamNumber)
+                                )
                                 .map((data) => {
                                     return `<tr>${data
                                         .map(
@@ -1116,9 +1122,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let eventCode = element.querySelector(
                         ".data-window > select.event-code"
                     ).value;
-                    let teamNumber = element.querySelector(
-                        ".data-window > input.team-number"
-                    ).value || config.account.team;
+                    let teamNumber =
+                        element.querySelector(
+                            ".data-window > input.team-number"
+                        ).value || config.account.team;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
@@ -1134,16 +1141,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
                             element.querySelector(".analysis").innerHTML =
-                                data.body.display.map((item) => {
-                                    if (item.type == "table") {
-                                        return `<h2>${item.label}</h2>
+                                data.body.display
+                                    .map((item) => {
+                                        if (item.type == "table") {
+                                            return `<h2>${item.label}</h2>
                                         <table class="data-table">
                                             <thead>
                                                 <tr>${item.values[0]
                                                     .map(
                                                         (cell) =>
                                                             `<th>${cell
-                                                                .replaceAll('"', "")
+                                                                .replaceAll(
+                                                                    '"',
+                                                                    ""
+                                                                )
                                                                 .replaceAll(
                                                                     "\\n",
                                                                     "<br>"
@@ -1168,12 +1179,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     .join("")}
                                             </tbody>
                                         </table>`;
-                                    } else if(item.type == "html") {
-                                        return `<h2>${item.label}</h2>${item.value}`;
-                                    }
-                                }).join("");
-                            let scripts = [...element.querySelectorAll(".analysis > script")];
-                            for(let i = 0; i < scripts.length; i++) {
+                                        } else if (item.type == "html") {
+                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        }
+                                    })
+                                    .join("");
+                            let scripts = [
+                                ...element.querySelectorAll(
+                                    ".analysis > script"
+                                )
+                            ];
+                            for (let i = 0; i < scripts.length; i++) {
                                 eval(scripts[i].innerHTML);
                             }
                             element

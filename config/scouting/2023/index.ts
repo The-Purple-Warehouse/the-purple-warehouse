@@ -593,10 +593,7 @@ async function syncAnalysisCache(event, teamNumber) {
             `../${event}-tba.json`,
             JSON.stringify(await getMatchesFull(event))
         );
-        fs.writeFileSync(
-            `../${event}.csv`,
-            await getAllDataByEvent(event)
-        );
+        fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
         let graphsCommand = `python3 config/scouting/2023/graphs.py --event ${event} --teamNumber ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
@@ -625,7 +622,9 @@ async function syncAnalysisCache(event, teamNumber) {
         for (let i = 0; i < offense.length; i++) {
             tableRankings.push([offense[i], defense[i]]);
         }
-        let graphs = fs.readFileSync(`../${event}-${teamNumber}-analysis.html`).toString();
+        let graphs = fs
+            .readFileSync(`../${event}-${teamNumber}-analysis.html`)
+            .toString();
         analyzed.push({
             type: "html",
             label: "Scoring Graph",
@@ -636,22 +635,24 @@ async function syncAnalysisCache(event, teamNumber) {
             label: "Rankings",
             values: tableRankings
         });
-    } catch (err) {
-    }
+    } catch (err) {}
     cache[`${event}-${teamNumber}`] = {
         value: {
             display: analyzed,
             data: data
         },
         timestamp: new Date().getTime()
-    }
+    };
     fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
 }
 
 export async function analysis(event, teamNumber) {
     if (cache[`${event}-${teamNumber}`] == null) {
         await syncAnalysisCache(event, teamNumber);
-    } else if (new Date().getTime() > cache[`${event}-${teamNumber}`].timestamp + 150000) {
+    } else if (
+        new Date().getTime() >
+        cache[`${event}-${teamNumber}`].timestamp + 150000
+    ) {
         syncAnalysisCache(event, teamNumber);
     }
     return cache[`${event}-${teamNumber}`].value;
