@@ -184,7 +184,9 @@ body {
 .home-window input,
 .home-window select,
 .download-window input,
-.data-window input {
+.download-window select,
+.data-window input,
+.data-window select {
     background-color: var(--backgroundColor) !important;
     border: 2px solid var(--contentColor);
     border-radius: 5px;
