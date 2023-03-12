@@ -19,6 +19,7 @@ import {
     getSharedData
 } from "../../helpers/scouting";
 import { getEvents, getMatches, getMatchesFull } from "../../helpers/tba";
+import scoutingConfig from "../../config/scouting";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -119,7 +120,8 @@ router.get(
                 csv: await getSharedData(
                     ctx.params.event,
                     ctx.session.scoutingTeamNumber
-                )
+                ),
+                notes: scoutingConfig.notes()
             }
         };
     }
