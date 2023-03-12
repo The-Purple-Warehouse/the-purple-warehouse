@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
-import config from "../../";
+import { getMatchesFull } from "../../../helpers/tba";
 
 export function categories() {
     return [
@@ -573,10 +573,11 @@ export function notes() {
 27 18 9`;
 }
 
-export function analysis(event, teamNumber) {
+export async function analysis(event, teamNumber) {
     let analyzed = [];
     try {
-        let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --apiPath "http://localhost:${config.server.port}/api/v1/scouting/entry/data/event/<EVENT>/tba?token=${config.auth.scoutingInternal.accessToken}&team=${config.auth.scoutingInternal.teamNumber}" --baseFilePath ../`;
+        fs.writeFileSync("../2023cafr-tba.json", JSON.stringify(await getMatchesFull(event)));
+        let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         execSync(rankingCommand);
         let rankings = JSON.parse(
             fs.readFileSync("../2023cafr-rankings.json").toString()
