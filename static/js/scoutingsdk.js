@@ -326,11 +326,6 @@ const ScoutingAppSDK = function (element, config) {
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="home-window">
-                    <div class="button-row">
-                        <button class="log-out">Log Out</button>
-                        <button class="scan-data">Upload Data</button>
-                        <button class="view-data">View Data/Analysis</button>
-                    </div>
                     <h1>TPW Scouting App</h1>
                     <h3>Signed in as ${_this.escape(
                         config.account.username
@@ -368,24 +363,14 @@ const ScoutingAppSDK = function (element, config) {
                     <p class="footer-text">Made with &lt; &gt; by <a href="https://kabirramzan.com/" target="_blank">Kabir Ramzan</a> of <a href="https://robotics.harker.org/" target="_blank">Harker Robotics</a></p>
                 </div>
             `;
+            
             let eventCode = element.querySelector(
                 ".home-window > select.event-code"
             ).value;
             if (eventCode != null && eventCode != "") {
                 _this.setMatches(eventCode);
             }
-            element.querySelector(".button-row > button.log-out").onclick =
-                async () => {
-                    window.location.href = "/scouting/logout";
-                };
-            element.querySelector(".button-row > button.view-data").onclick =
-                async () => {
-                    await _this.showDataPage();
-                };
-            element.querySelector(".button-row > button.scan-data").onclick =
-                async () => {
-                    await _this.showScannerPage();
-                };
+            
             element.querySelector(".home-window > button.start").onclick =
                 async () => {
                     let eventCode = element.querySelector(
@@ -591,11 +576,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         return new Promise(async (resolve, reject) => {
             element.innerHTML = `
                 <div class="scanner-window">
-                    <div class="button-row">
-                        <button class="log-out">Log Out</button>
-                        <button class="scout">Scout</button>
-                        <button class="view-data">View Data/Analysis</button>
-                    </div>
                     <div class="scanner-view" style="display: ${
                         view == 0 ? "block" : "none"
                     };">
@@ -623,24 +603,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             if (view == 0) {
                 reader = new Html5Qrcode("reader");
             }
-            element.querySelector(".button-row > button.log-out").onclick =
-                async () => {
-                    try {
-                        await reader.stop();
-                    } catch (err) {}
-                    window.location.href = "/scouting/logout";
-                };
-            element.querySelector(".button-row > button.view-data").onclick =
-                async () => {
-                    await _this.showDataPage();
-                };
-            element.querySelector(".button-row > button.scout").onclick =
-                async () => {
-                    try {
-                        await reader.stop();
-                    } catch (err) {}
-                    await _this.showHomePage();
-                };
             element.querySelector("button.scan-again").onclick = async () => {
                 try {
                     await reader.stop();
@@ -965,7 +927,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                     }
                 } catch (err) {}
-                resolve();
+                resolve(reader);
             }
         });
     };
@@ -976,11 +938,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
-                    <div class="button-row">
-                        <button class="log-out">Log Out</button>
-                        <button class="scan-data">Upload Data</button>
-                        <button class="scout">Scout</button>
-                    </div>
                     <h2>Event:</h2>
                     <select class="event-code">
                         <option value=""${
@@ -1036,18 +993,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }, 500);
             }
-            element.querySelector(".button-row > button.log-out").onclick =
-                async () => {
-                    window.location.href = "/scouting/logout";
-                };
-            element.querySelector(".button-row > button.scout").onclick =
-                async () => {
-                    await _this.showHomePage();
-                };
-            element.querySelector(".button-row > button.scan-data").onclick =
-                async () => {
-                    await _this.showScannerPage();
-                };
             element.querySelector("button.show-data").onclick = async () => {
                 showOverlay();
                 let eventCode = element.querySelector(

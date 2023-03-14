@@ -10,6 +10,7 @@
     <script src="/js/scoutingsdk.js?v=8"></script>
   </head>
   <body>
+    {{> scoutingNav}}
     <div id="app"></div>
     {{#each preload as |src|}}
       <img src="{{src}}" style="display: none" />
