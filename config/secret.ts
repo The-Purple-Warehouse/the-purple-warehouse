@@ -1,11 +1,6 @@
 import * as fs from "fs";
-import development from "./development";
 
-let secret = {
-    development: development,
-    staging: development,
-    production: development
-};
+let secret: any = {};
 
 try {
     let path =
@@ -14,7 +9,16 @@ try {
             ? "/../../config/secret.json"
             : "/secret.json");
     if (fs.existsSync(path)) {
-        secret = JSON.parse(fs.readFileSync(path).toString());
+        let secretFile = JSON.parse(fs.readFileSync(path).toString());
+        if(secretFile.development != null) {
+            secret.development = secretFile.development;
+        }
+        if(secretFile.staging != null) {
+            secret.staging = secretFile.staging;
+        }
+        if(secretFile.production != null) {
+            secret.production = secretFile.production;
+        }
     }
 } catch (err) {}
 
