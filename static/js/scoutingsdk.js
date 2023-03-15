@@ -326,10 +326,6 @@ const ScoutingAppSDK = function (element, config) {
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="home-window">
-                    <h1>TPW Scouting App</h1>
-                    <h3>Signed in as ${_this.escape(
-                        config.account.username
-                    )} (${_this.escape(config.account.team)})</h3>
                     <h2>Event:</h2>
                     <select class="event-code">
                         <option value=""${
@@ -672,10 +668,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         try {
                             element.querySelector(
                                 ".scanner-view > .upload"
-                            ).innerHTML = "<h3>Preparing...</h3>";
+                            ).innerHTML = `<div class="status-box success" data-status="prepare">Preparing...</div>`;
                             element.querySelector(
                                 ".scanner-view > .upload"
-                            ).innerHTML += `<h3>Uploading...</h3>`;
+                            ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading...</div>`;
                             let upload = await (
                                 await fetch(
                                     `/api/v1/scouting/entry/add/${encodeURIComponent(
@@ -696,9 +692,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                             ).json();
                             if (upload.success) {
+                                const uploadBox = element.querySelector("[data-status='upload']");
+                                uploadBox.classList.remove("loading");
+                                uploadBox.classList.add("success");
+
                                 element.querySelector(
                                     ".scanner-view > .upload"
-                                ).innerHTML += `<h3>Verifying...</h3>`;
+                                ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying...</div>`;
                                 let stringified = _this.stringifyFormatted(
                                     data.ec,
                                     data.mn,
@@ -715,17 +715,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     )
                                 ).json();
                                 if (verify.success && verify.body.verified) {
+                                    const verifyBox = element.querySelector("[data-status='verify']");
+                                    verifyBox.classList.remove("loading");
+                                    verifyBox.classList.add("success");
                                     element.querySelector(
-                                        ".scanner-view > .upload"
-                                    ).innerHTML += `<h3 class="primary">Success!</h3>`;
-                                    element.querySelector(
-                                        ".scanner-view > button.scan-again"
-                                    ).style.display = "block";
+                                        `.scanner-view > .upload`
+                                    ).innerHTML += `<h3 class="green">Success!</h3>`;
+                                    jsConfetti.addConfetti();
                                 } else {
                                     console.log(stringified);
+                                    const verifyBox = element.querySelector("[data-status='verify']");
+                                    verifyBox.classList.remove("loading");
+                                    verifyBox.classList.add("error");
                                     element.querySelector(
                                         ".scanner-view > .upload"
-                                    ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                                    ).innerHTML += `<h3 class="red">${
                                         verify.error ||
                                         "Unable to verify upload completion."
                                     }</h3>`;
@@ -734,9 +738,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ).style.display = "block";
                                 }
                             } else {
+                                const uploadBox = element.querySelector("[data-status='upload']");
+                                uploadBox.classList.remove("loading");
+                                uploadBox.classList.add("error");
                                 element.querySelector(
                                     ".scanner-view > .upload"
-                                ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                                ).innerHTML += `<h3 class="red">${
                                     upload.error || "Unknown error."
                                 }</h3>`;
                                 element.querySelector(
@@ -745,9 +752,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             }
                         } catch (err) {
                             console.error(err);
+                            const uploadBox = element.querySelector("[data-status='upload']");
+                            uploadBox.classList.remove("loading");
+                            uploadBox.classList.add("error");
                             element.querySelector(
                                 ".scanner-view > .upload"
-                            ).innerHTML += `<h3 class="red">Upload Failed!<br>Could not connect to the server.</h3>`;
+                            ).innerHTML += `<h3 class="red">Could not connect to the server.</h3>`;
                             element.querySelector(
                                 ".scanner-view > button.scan-again"
                             ).style.display = "block";
@@ -791,10 +801,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ).style.display = "none";
                         element.querySelector(
                             ".upload-view > .upload"
-                        ).innerHTML = "<h3>Preparing...</h3>";
+                        ).innerHTML = `<div class="status-box success" data-status="prepare">Preparing...</div>`;
                         element.querySelector(
                             ".upload-view > .upload"
-                        ).innerHTML += `<h3>Uploading...</h3>`;
+                        ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading...</div>`;
                         let upload = await (
                             await fetch(
                                 `/api/v1/scouting/entry/add/${encodeURIComponent(
@@ -815,9 +825,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             )
                         ).json();
                         if (upload.success) {
+                            const uploadBox = element.querySelector("[data-status='upload']");
+                            uploadBox.classList.remove("loading");
+                            uploadBox.classList.add("success");
                             element.querySelector(
                                 ".upload-view > .upload"
-                            ).innerHTML += `<h3>Verifying...</h3>`;
+                            ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying...</div>`;
                             let stringified = _this.stringifyFormatted(
                                 data.ec,
                                 data.mn,
@@ -834,17 +847,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                             ).json();
                             if (verify.success && verify.body.verified) {
+                                const verifyBox = element.querySelector("[data-status='verify']");
+                                verifyBox.classList.remove("loading");
+                                verifyBox.classList.add("success");
                                 element.querySelector(
                                     ".upload-view > .upload"
-                                ).innerHTML += `<h3 class="primary">Success!</h3>`;
+                                ).innerHTML += `<h3 class="green">Success!</h3>`;
+                                jsConfetti.addConfetti();
                                 element.querySelector(
                                     ".upload-view > button.upload-again"
                                 ).style.display = "block";
                             } else {
                                 console.log(stringified);
+                                const verifyBox = element.querySelector("[data-status='verify']");
+                                verifyBox.classList.remove("loading");
+                                verifyBox.classList.add("error");
                                 element.querySelector(
                                     ".upload-view > .upload"
-                                ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                                ).innerHTML += `<h3 class="red">${
                                     verify.error ||
                                     "Unable to verify upload completion."
                                 }</h3>`;
@@ -853,9 +873,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ).style.display = "block";
                             }
                         } else {
+                            const uploadBox = element.querySelector("[data-status='upload']");
+                            uploadBox.classList.remove("loading");
+                            uploadBox.classList.add("error");
                             element.querySelector(
                                 ".upload-view > .upload"
-                            ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                            ).innerHTML += `<h3 class="red">${
                                 upload.error || "Unknown error."
                             }</h3>`;
                             element.querySelector(
@@ -864,9 +887,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         }
                     } catch (err) {
                         console.error(err);
+                        const uploadBox = element.querySelector("[data-status='upload']");
+                        uploadBox.classList.remove("loading");
+                        uploadBox.classList.add("error");
                         element.querySelector(
                             ".upload-view > .upload"
-                        ).innerHTML += `<h3 class="red">Upload Failed!<br>Could not connect to the server.</h3>`;
+                        ).innerHTML += `<h3 class="red">Could not connect to the server.</h3>`;
                         element.querySelector(
                             ".upload-view > button.upload-again"
                         ).style.display = "block";
@@ -2468,9 +2494,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             teamNumber,
                             data
                         );
+
+                        const prepareBox = element.querySelector("[data-status='prepare']");
+                        prepareBox.classList.remove("loading");
+                        prepareBox.classList.add("success");
                         element.querySelector(
                             `[data-id="${_this.escape(id)}"]`
-                        ).innerHTML += `<h3>Uploading...</h3>`;
+                        ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading...</div>`;
                         let upload = await (
                             await fetch(
                                 `/api/v1/scouting/entry/add/${encodeURIComponent(
@@ -2491,9 +2521,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             )
                         ).json();
                         if (upload.success) {
+                            const uploadBox = element.querySelector("[data-status='upload']");
+                            uploadBox.classList.remove("loading");
+                            uploadBox.classList.add("success");
+
                             element.querySelector(
                                 `[data-id="${_this.escape(id)}"]`
-                            ).innerHTML += `<h3>Verifying...</h3>`;
+                            ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying...</div>`;
                             let stringified = _this.stringifyFormatted(
                                 eventCode,
                                 matchNumber,
@@ -2510,36 +2544,53 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                             ).json();
                             if (verify.success && verify.body.verified) {
+                                const verifyBox = element.querySelector("[data-status='verify']");
+                                verifyBox.classList.remove("loading");
+                                verifyBox.classList.add("success");
+
                                 element.querySelector(
                                     `[data-id="${_this.escape(id)}"]`
-                                ).innerHTML += `<h3 class="primary">Success!</h3>`;
+                                ).innerHTML += `<h3 class="green">Success!</h3>`;
+                                jsConfetti.addConfetti();
                             } else {
                                 console.log(stringified);
+                                const verifyBox = element.querySelector("[data-status='verify']");
+                                verifyBox.classList.remove("loading");
+                                verifyBox.classList.add("error");
+
                                 element.querySelector(
                                     `[data-id="${_this.escape(id)}"]`
-                                ).innerHTML += `<h3 class="red">Upload Failed!<br>${
-                                    verify.error ||
-                                    "Unable to verify upload completion."
+                                ).innerHTML += `<h3 class="red">${
+                                    verify.error || "Unable to verify upload completion."
                                 }</h3>`;
                             }
                         } else {
+                            const uploadBox = element.querySelector("[data-status='upload']");
+                            uploadBox.classList.remove("loading");
+                            uploadBox.classList.add("error");
+
                             element.querySelector(
                                 `[data-id="${_this.escape(id)}"]`
-                            ).innerHTML += `<h3 class="red">Upload Failed!<br>${
+                            ).innerHTML += `<h3 class="red">${
                                 upload.error || "Unknown error."
                             }</h3>`;
                         }
                     } catch (err) {
                         // console.error(err);
+                        const uploadBox = element.querySelector("[data-status='upload']");
+                        uploadBox.classList.remove("loading");
+                        uploadBox.classList.add("error");
                         element.querySelector(
                             `[data-id="${_this.escape(id)}"]`
-                        ).innerHTML += `<h3 class="red">Upload Failed!<br>Could not connect to the server.</h3>`;
+                        ).innerHTML += `<h3 class="red">Could not connect to the server.</h3>`;
                     }
                 });
                 resolve(
                     `<div class="component-upload" data-id="${_this.escape(
                         id
-                    )}"><h3>Preparing...</h3></div>`
+                    )}">
+                        <div class="status-box loading" data-status="prepare">Preparing...</div>
+                    </div>`
                 );
             } else if (component.type == "qrcode") {
                 let id = _this.random();

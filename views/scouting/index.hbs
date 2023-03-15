@@ -8,14 +8,16 @@
     <script src="/js/sha256.min.js"></script>
     <script src="/js/papaparse.min.js"></script>
     <script src="/js/scoutingsdk.js?v=8"></script>
+    <script src="/js/js-confetti.browser.js"></script>
   </head>
   <body>
-    {{> scoutingNav}}
+    {{> scoutingHeader}}
     <div id="app"></div>
     {{#each preload as |src|}}
       <img src="{{src}}" style="display: none" />
     {{/each}}
     <script>
+      const jsConfetti = new JSConfetti();
       const sdk = new ScoutingAppSDK(document.querySelector("#app"), {
         theme: {
           backgroundColor: "#f8f0ff",

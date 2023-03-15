@@ -1,19 +1,19 @@
 <div class="navbar-backdrop hidden"></div>
 <nav class="navbar hidden">
     <div class="navbar-header">
-        <h1>Pages</h1>
-        <button class="navbar-close-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
+        <h1>TPW Scouting App</h1>
+        <button class="navbar-close-btn"></button>
     </div>
-    <a class="home">Home</a>
-    <a class="scan-data">Upload Data</a>
-    <a class="view-data">View Data/Analysis</a>
-    <a class="log-out">Log Out</a>
+    <a class="active" data-page="home">Home</a>
+    <a data-page="scan-data">Upload Data</a>
+    <a data-page="view-data">View Data/Analysis</a>
+    <a data-page="log-out">Log Out</a>
 </nav>
-<button class="navbar-open-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</button>
+<header>
+    <button class="navbar-open-btn"></button>
+    <h3>{{username}} ({{team}})</h3>
+    <button class="header-btn"></button>
+</header>
 
 <script defer>
     const navbar = document.querySelector(".navbar");
@@ -42,30 +42,35 @@
     document.querySelector(".navbar-close-btn").onclick = closeNavbar;
     backdrop.onclick = closeNavbar;
     
-    document.querySelector(".navbar a.log-out").onclick =
+    document.querySelector(".navbar a[data-page='log-out']").onclick =
         async () => {
             window.location.href = "/scouting/logout";
         };
-    document.querySelector(".navbar a.view-data").onclick =
+    document.querySelector(".navbar a[data-page='view-data']").onclick =
         async () => {
             await sdk.showDataPage();
         };
-    document.querySelector(".navbar a.scan-data").onclick =
+    document.querySelector(".navbar a[data-page='scan-data']").onclick =
         async () => {
             reader = await sdk.showScannerPage();
         };
-    document.querySelector(".navbar a.home").onclick =
+    document.querySelector(".navbar a[data-page='home']").onclick =
         async () => {
            await sdk.showHomePage();
         };
-    
-    document.querySelectorAll(".navbar a").forEach((a) => a.addEventListener("click", async () => {
-        if (reader) {
-            try {
-                await reader.stop();
-            } catch (err) {}
-        }
-        
-        closeNavbar();
-    }));
+
+    document.querySelectorAll(".navbar a").forEach((a) => {
+        a.addEventListener("click", async () => {
+            if (reader) {
+                try {
+                    await reader.stop();
+                } catch (err) {}
+            }
+
+            document.querySelector(".navbar a.active").classList.remove("active");
+            a.classList.add("active");
+            
+            closeNavbar();
+        });
+    });
 </script>
