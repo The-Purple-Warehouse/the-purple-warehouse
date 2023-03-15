@@ -322,7 +322,8 @@ header .header-btn {
     justify-content: space-between;
 }
 
-.navbar-open-btn, .navbar-close-btn {
+.navbar-open-btn,
+.navbar-close-btn {
     border: 0;
     padding: 0;
     margin: 0;
@@ -903,7 +904,8 @@ header .header-btn {
     margin: 0.5rem 0;
 }
 
-.status-box::before, .status-box::after {
+.status-box::before,
+.status-box::after {
     content: "";
     border-radius: 50%;
     position: absolute;

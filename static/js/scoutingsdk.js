@@ -359,14 +359,14 @@ const ScoutingAppSDK = function (element, config) {
                     <p class="footer-text">Made with &lt; &gt; by <a href="https://kabirramzan.com/" target="_blank">Kabir Ramzan</a> of <a href="https://robotics.harker.org/" target="_blank">Harker Robotics</a></p>
                 </div>
             `;
-            
+
             let eventCode = element.querySelector(
                 ".home-window > select.event-code"
             ).value;
             if (eventCode != null && eventCode != "") {
                 _this.setMatches(eventCode);
             }
-            
+
             element.querySelector(".home-window > button.start").onclick =
                 async () => {
                     let eventCode = element.querySelector(
@@ -692,7 +692,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                             ).json();
                             if (upload.success) {
-                                const uploadBox = element.querySelector("[data-status='upload']");
+                                const uploadBox = element.querySelector(
+                                    "[data-status='upload']"
+                                );
                                 uploadBox.classList.remove("loading");
                                 uploadBox.classList.add("success");
 
@@ -715,7 +717,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     )
                                 ).json();
                                 if (verify.success && verify.body.verified) {
-                                    const verifyBox = element.querySelector("[data-status='verify']");
+                                    const verifyBox = element.querySelector(
+                                        "[data-status='verify']"
+                                    );
                                     verifyBox.classList.remove("loading");
                                     verifyBox.classList.add("success");
                                     element.querySelector(
@@ -724,7 +728,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     jsConfetti.addConfetti();
                                 } else {
                                     console.log(stringified);
-                                    const verifyBox = element.querySelector("[data-status='verify']");
+                                    const verifyBox = element.querySelector(
+                                        "[data-status='verify']"
+                                    );
                                     verifyBox.classList.remove("loading");
                                     verifyBox.classList.add("error");
                                     element.querySelector(
@@ -738,7 +744,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ).style.display = "block";
                                 }
                             } else {
-                                const uploadBox = element.querySelector("[data-status='upload']");
+                                const uploadBox = element.querySelector(
+                                    "[data-status='upload']"
+                                );
                                 uploadBox.classList.remove("loading");
                                 uploadBox.classList.add("error");
                                 element.querySelector(
@@ -752,7 +760,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             }
                         } catch (err) {
                             console.error(err);
-                            const uploadBox = element.querySelector("[data-status='upload']");
+                            const uploadBox = element.querySelector(
+                                "[data-status='upload']"
+                            );
                             uploadBox.classList.remove("loading");
                             uploadBox.classList.add("error");
                             element.querySelector(
@@ -825,7 +835,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             )
                         ).json();
                         if (upload.success) {
-                            const uploadBox = element.querySelector("[data-status='upload']");
+                            const uploadBox = element.querySelector(
+                                "[data-status='upload']"
+                            );
                             uploadBox.classList.remove("loading");
                             uploadBox.classList.add("success");
                             element.querySelector(
@@ -847,7 +859,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                             ).json();
                             if (verify.success && verify.body.verified) {
-                                const verifyBox = element.querySelector("[data-status='verify']");
+                                const verifyBox = element.querySelector(
+                                    "[data-status='verify']"
+                                );
                                 verifyBox.classList.remove("loading");
                                 verifyBox.classList.add("success");
                                 element.querySelector(
@@ -859,7 +873,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ).style.display = "block";
                             } else {
                                 console.log(stringified);
-                                const verifyBox = element.querySelector("[data-status='verify']");
+                                const verifyBox = element.querySelector(
+                                    "[data-status='verify']"
+                                );
                                 verifyBox.classList.remove("loading");
                                 verifyBox.classList.add("error");
                                 element.querySelector(
@@ -873,7 +889,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ).style.display = "block";
                             }
                         } else {
-                            const uploadBox = element.querySelector("[data-status='upload']");
+                            const uploadBox = element.querySelector(
+                                "[data-status='upload']"
+                            );
                             uploadBox.classList.remove("loading");
                             uploadBox.classList.add("error");
                             element.querySelector(
@@ -887,7 +905,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         }
                     } catch (err) {
                         console.error(err);
-                        const uploadBox = element.querySelector("[data-status='upload']");
+                        const uploadBox = element.querySelector(
+                            "[data-status='upload']"
+                        );
                         uploadBox.classList.remove("loading");
                         uploadBox.classList.add("error");
                         element.querySelector(
@@ -2495,7 +2515,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             data
                         );
 
-                        const prepareBox = element.querySelector("[data-status='prepare']");
+                        const prepareBox = element.querySelector(
+                            "[data-status='prepare']"
+                        );
                         prepareBox.classList.remove("loading");
                         prepareBox.classList.add("success");
                         element.querySelector(
@@ -2521,7 +2543,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             )
                         ).json();
                         if (upload.success) {
-                            const uploadBox = element.querySelector("[data-status='upload']");
+                            const uploadBox = element.querySelector(
+                                "[data-status='upload']"
+                            );
                             uploadBox.classList.remove("loading");
                             uploadBox.classList.add("success");
 
@@ -2544,7 +2568,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                             ).json();
                             if (verify.success && verify.body.verified) {
-                                const verifyBox = element.querySelector("[data-status='verify']");
+                                const verifyBox = element.querySelector(
+                                    "[data-status='verify']"
+                                );
                                 verifyBox.classList.remove("loading");
                                 verifyBox.classList.add("success");
 
@@ -2554,18 +2580,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 jsConfetti.addConfetti();
                             } else {
                                 console.log(stringified);
-                                const verifyBox = element.querySelector("[data-status='verify']");
+                                const verifyBox = element.querySelector(
+                                    "[data-status='verify']"
+                                );
                                 verifyBox.classList.remove("loading");
                                 verifyBox.classList.add("error");
 
                                 element.querySelector(
                                     `[data-id="${_this.escape(id)}"]`
                                 ).innerHTML += `<h3 class="red">${
-                                    verify.error || "Unable to verify upload completion."
+                                    verify.error ||
+                                    "Unable to verify upload completion."
                                 }</h3>`;
                             }
                         } else {
-                            const uploadBox = element.querySelector("[data-status='upload']");
+                            const uploadBox = element.querySelector(
+                                "[data-status='upload']"
+                            );
                             uploadBox.classList.remove("loading");
                             uploadBox.classList.add("error");
 
@@ -2577,7 +2608,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         }
                     } catch (err) {
                         // console.error(err);
-                        const uploadBox = element.querySelector("[data-status='upload']");
+                        const uploadBox = element.querySelector(
+                            "[data-status='upload']"
+                        );
                         uploadBox.classList.remove("loading");
                         uploadBox.classList.add("error");
                         element.querySelector(
