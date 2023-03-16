@@ -125,6 +125,10 @@ router.get("/", async (ctx, next) => {
     await ctx.render("index");
 });
 
+router.get("/discord", async (ctx) => {
+    ctx.redirect("https://discord.gg/gT9ZZDqTyx");
+});
+
 app.use(router.routes());
 app.use(serve("./static", {}));
 
