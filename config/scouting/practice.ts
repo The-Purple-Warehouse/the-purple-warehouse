@@ -1,5 +1,5 @@
 let practice = {
-    "all-prac": []
+    "2023all-prac": []
 };
 
 export default practice;
