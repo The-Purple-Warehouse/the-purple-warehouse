@@ -49,10 +49,7 @@ router.get("/list/:parent", async (ctx, next) => {
 router.post("/files/add/:parent", async (ctx, next) => {
     addAPIHeaders(ctx);
     let body = ctx.request.body as any;
-    if (
-        typeof body.name != "string" ||
-        body.name == ""
-    ) {
+    if (typeof body.name != "string" || body.name == "") {
         ctx.body = {
             success: false,
             error: {
@@ -77,10 +74,7 @@ router.post("/files/add/:parent", async (ctx, next) => {
 router.post("/folders/add/:parent", async (ctx, next) => {
     addAPIHeaders(ctx);
     let body = ctx.request.body as any;
-    if (
-        typeof body.name != "string" ||
-        body.name == ""
-    ) {
+    if (typeof body.name != "string" || body.name == "") {
         ctx.body = {
             success: false,
             error: {
