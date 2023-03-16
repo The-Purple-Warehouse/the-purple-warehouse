@@ -32,8 +32,8 @@ async function syncEventsCache(year) {
             };
         });
         formatted.push({
-            key: "2023cafr-prac",
-            name: "Central Valley Regional PRACTICE"
+            key: "2023all-prac",
+            name: "2023 PRACTICE"
         });
         cache.events[year] = {
             value: formatted.sort((a, b) => a.name.localeCompare(b.name)),

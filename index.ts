@@ -76,7 +76,7 @@ app.use(async (ctx, next) => {
                 "utf8"
             );
             if (crypto.timingSafeEqual(requestHash, verifyHash)) {
-                if (ctx.request.body.ref == `refs/heads/${config.branch}`) {
+                if ((ctx.request.body as any).ref == `refs/heads/${config.branch}`) {
                     ctx.body = "";
                     process.exit(0);
                 }
@@ -101,6 +101,7 @@ if (config.auth.access.restricted) {
 
 registerHelpers();
 registerComponentsWithinDirectory("./views/partials");
+registerComponentsWithinDirectory("./views/scouting/partials");
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 // router.use("", loginRouter.routes());

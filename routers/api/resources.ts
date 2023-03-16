@@ -48,9 +48,10 @@ router.get("/list/:parent", async (ctx, next) => {
 
 router.post("/files/add/:parent", async (ctx, next) => {
     addAPIHeaders(ctx);
+    let body = ctx.request.body as any;
     if (
-        typeof ctx.request.body.name != "string" ||
-        ctx.request.body.name == ""
+        typeof body.name != "string" ||
+        body.name == ""
     ) {
         ctx.body = {
             success: false,
@@ -64,8 +65,8 @@ router.post("/files/add/:parent", async (ctx, next) => {
             success: true,
             body: {
                 identifier: await addFile(
-                    ctx.request.body.name as string,
-                    ctx.request.body.content,
+                    body.name as string,
+                    body.content,
                     ctx.params.parent
                 )
             }
@@ -75,9 +76,10 @@ router.post("/files/add/:parent", async (ctx, next) => {
 
 router.post("/folders/add/:parent", async (ctx, next) => {
     addAPIHeaders(ctx);
+    let body = ctx.request.body as any;
     if (
-        typeof ctx.request.body.name != "string" ||
-        ctx.request.body.name == ""
+        typeof body.name != "string" ||
+        body.name == ""
     ) {
         ctx.body = {
             success: false,
@@ -91,7 +93,7 @@ router.post("/folders/add/:parent", async (ctx, next) => {
             success: true,
             body: {
                 identifier: await addFolder(
-                    ctx.request.body.name as string,
+                    body.name as string,
                     ctx.params.parent
                 )
             }

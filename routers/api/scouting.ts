@@ -63,25 +63,26 @@ router.post(
     requireScoutingAuth,
     async (ctx, next) => {
         addAPIHeaders(ctx);
+        let body = ctx.request.body as any;
         ctx.body = {
             success: true,
             body: {
                 hash: (
                     (await addEntry(
                         ctx.session.scoutingTeamNumber,
-                        (ctx.request.body.username as string) ||
+                        (body.username as string) ||
                             ctx.session.scoutingUsername,
                         ctx.params.event,
                         parseInt(ctx.params.match),
                         ctx.params.team,
                         ctx.params.color,
-                        ctx.request.body.data as [any],
-                        ctx.request.body.abilities as [any],
-                        ctx.request.body.counters as [any],
-                        ctx.request.body.timers as [any],
-                        ctx.request.body.ratings as [any],
-                        ctx.request.body.comments as string,
-                        ctx.request.body.timestamp as number
+                        body.data as [any],
+                        body.abilities as [any],
+                        body.counters as [any],
+                        body.timers as [any],
+                        body.ratings as [any],
+                        body.comments as string,
+                        body.timestamp as number
                     )) as any
                 ).hash
             }
