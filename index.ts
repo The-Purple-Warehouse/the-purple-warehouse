@@ -101,6 +101,7 @@ if (config.auth.access.restricted) {
 
 registerHelpers();
 registerComponentsWithinDirectory("./views/partials");
+registerComponentsWithinDirectory("./views/scouting/partials");
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 // router.use("", loginRouter.routes());
