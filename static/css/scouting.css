@@ -27,6 +27,10 @@ body {
     margin-top: 40px;
 }
 
+.app {
+    margin-top: 10px;
+}
+
 .hidden {
     display: none;
 }
