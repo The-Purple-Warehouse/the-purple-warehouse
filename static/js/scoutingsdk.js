@@ -668,10 +668,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         try {
                             element.querySelector(
                                 ".scanner-view > .upload"
-                            ).innerHTML = `<div class="status-box success" data-status="prepare">Preparing...</div>`;
+                            ).innerHTML = `<div class="status-box success" data-status="prepare">Preparing</div>`;
                             element.querySelector(
                                 ".scanner-view > .upload"
-                            ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading...</div>`;
+                            ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading</div>`;
                             let upload = await (
                                 await fetch(
                                     `/api/v1/scouting/entry/add/${encodeURIComponent(
@@ -700,7 +700,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                                 element.querySelector(
                                     ".scanner-view > .upload"
-                                ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying...</div>`;
+                                ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying</div>`;
                                 let stringified = _this.stringifyFormatted(
                                     data.ec,
                                     data.mn,
@@ -811,10 +811,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ).style.display = "none";
                         element.querySelector(
                             ".upload-view > .upload"
-                        ).innerHTML = `<div class="status-box success" data-status="prepare">Preparing...</div>`;
+                        ).innerHTML = `<div class="status-box success" data-status="prepare">Preparing</div>`;
                         element.querySelector(
                             ".upload-view > .upload"
-                        ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading...</div>`;
+                        ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading</div>`;
                         let upload = await (
                             await fetch(
                                 `/api/v1/scouting/entry/add/${encodeURIComponent(
@@ -842,7 +842,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             uploadBox.classList.add("success");
                             element.querySelector(
                                 ".upload-view > .upload"
-                            ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying...</div>`;
+                            ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying</div>`;
                             let stringified = _this.stringifyFormatted(
                                 data.ec,
                                 data.mn,
@@ -2522,7 +2522,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         prepareBox.classList.add("success");
                         element.querySelector(
                             `[data-id="${_this.escape(id)}"]`
-                        ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading...</div>`;
+                        ).innerHTML += `<div class="status-box loading" data-status="upload">Uploading</div>`;
                         let upload = await (
                             await fetch(
                                 `/api/v1/scouting/entry/add/${encodeURIComponent(
@@ -2551,7 +2551,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                             element.querySelector(
                                 `[data-id="${_this.escape(id)}"]`
-                            ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying...</div>`;
+                            ).innerHTML += `<div class="status-box loading" data-status="verify">Verifying</div>`;
                             let stringified = _this.stringifyFormatted(
                                 eventCode,
                                 matchNumber,
@@ -2622,7 +2622,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     `<div class="component-upload" data-id="${_this.escape(
                         id
                     )}">
-                        <div class="status-box loading" data-status="prepare">Preparing...</div>
+                        <div class="status-box loading" data-status="prepare">Preparing</div>
                     </div>`
                 );
             } else if (component.type == "qrcode") {
