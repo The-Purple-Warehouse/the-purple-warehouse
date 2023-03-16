@@ -269,7 +269,7 @@ header {
     top: 10px;
     width: calc(100% - 20px);
     box-shadow: 0px 0px 21px 0px var(--contentColor);
-    z-index: 999;
+    z-index: 998;
 }
 
 header > h3 {
@@ -307,7 +307,7 @@ header .header-btn {
     background-color: rgba(0, 0, 0, 0.5);
     opacity: 0;
     transition: opacity ease-in-out 250ms;
-    z-index: 10;
+    z-index: 999;
 }
 
 .navbar-backdrop.open {
