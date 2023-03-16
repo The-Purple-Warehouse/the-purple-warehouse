@@ -76,7 +76,7 @@ app.use(async (ctx, next) => {
                 "utf8"
             );
             if (crypto.timingSafeEqual(requestHash, verifyHash)) {
-                if (ctx.request.body.ref == `refs/heads/${config.branch}`) {
+                if ((ctx.request.body as any).ref == `refs/heads/${config.branch}`) {
                     ctx.body = "";
                     process.exit(0);
                 }
