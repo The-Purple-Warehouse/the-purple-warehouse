@@ -21,6 +21,11 @@ body {
     overflow-x: hidden;
 }
 
+body {
+    margin: 0;
+    padding: 10px;
+}
+
 .hidden {
     display: none;
 }
@@ -249,6 +254,14 @@ header {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
+    padding: 10px;
+    margin-left: -10px;
+    margin-top: -10px;
+    width: 100%;
+    margin-bottom: 0;
+    background-color: var(--primaryBackgroundColor);
+    color: var(--backgroundColor);
+    border-radius: 0 0 10px 10px;
 }
 
 header > h3 {
@@ -276,6 +289,7 @@ header .header-btn {
     z-index: 10;
     color: white;
     overflow: hidden;
+    border-radius: 0 10px 10px 0;
 }
 
 .navbar-backdrop {
