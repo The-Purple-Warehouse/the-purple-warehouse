@@ -24,6 +24,7 @@ body {
 body {
     margin: 0;
     padding: 10px;
+    margin-top: 40px;
 }
 
 .hidden {
@@ -253,15 +254,18 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
     padding: 10px;
     margin-left: -10px;
     margin-top: -10px;
-    width: 100%;
     margin-bottom: 0;
     background-color: var(--primaryBackgroundColor);
     color: var(--backgroundColor);
     border-radius: 0 0 10px 10px;
+    position: fixed;
+    top: 10px;
+    width: calc(100% - 20px);
+    box-shadow: 0px 0px 21px 0px var(--contentColor);
+    z-index: 999;
 }
 
 header > h3 {
@@ -286,10 +290,11 @@ header .header-btn {
     padding: 1em;
     min-width: 300px;
     background-color: var(--primaryBackgroundColor);
-    z-index: 10;
     color: white;
     overflow: hidden;
     border-radius: 0 10px 10px 0;
+    z-index: 1000;
+    box-shadow: 0px 0px 21px 0px var(--contentColor);
 }
 
 .navbar-backdrop {
