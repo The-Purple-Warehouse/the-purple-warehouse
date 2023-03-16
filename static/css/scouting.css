@@ -876,11 +876,11 @@ header .header-btn {
 }
 
 .red {
-    color: #ff0000;
+    color: #ff0000 !important;
 }
 
 .green {
-    color: #008000;
+    color: #008000 !important;
 }
 
 .component-upload > h3.primary {
