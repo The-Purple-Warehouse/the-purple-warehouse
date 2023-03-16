@@ -262,6 +262,7 @@ export async function getSharedData(event: string, teamNumber: string) {
                     entry.comments = "[redacted for privacy]";
                     entry.contributor.username = crypto
                         .createHash("sha256")
+                        .createHmac("sha256", config.auth.scoutingKeys[1])
                         .update(entry.contributor.username)
                         .digest("hex")
                         .substring(0, 8);
