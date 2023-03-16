@@ -1304,6 +1304,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     resolve(false);
                 }
             } catch (err) {
+                console.log(err);
+                if(!err.toString().includes("Failed to fetch")) {
+                    alert(err);
+                }
                 resolve(false);
             }
         });
@@ -1351,6 +1355,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }
             } catch (err) {
+                console.log(err);
+                if(!err.toString().includes("Failed to fetch")) {
+                    alert(err);
+                }
                 resolve(false);
             }
         });
