@@ -1,0 +1,76 @@
+<div class="navbar-backdrop hidden"></div>
+<nav class="navbar hidden">
+    <div class="navbar-header">
+        <h1>TPW Scouting App</h1>
+        <button class="navbar-close-btn"></button>
+    </div>
+    <a class="active" data-page="home">Home</a>
+    <a data-page="scan-data">Upload Data</a>
+    <a data-page="view-data">View Data/Analysis</a>
+    <a data-page="log-out">Log Out</a>
+</nav>
+<header>
+    <button class="navbar-open-btn"></button>
+    <h3>{{username}} ({{team}})</h3>
+    <button class="header-btn"></button>
+</header>
+
+<script defer>
+    const navbar = document.querySelector(".navbar");
+    const backdrop = document.querySelector(".navbar-backdrop");
+    let reader;
+
+    function openNavbar() {
+        navbar.classList.remove("hidden");
+        backdrop.classList.remove("hidden");
+        setTimeout(() => {
+            navbar.classList.add("open");
+            backdrop.classList.add("open");
+        }, 0);
+    }
+
+    function closeNavbar() {
+        navbar.classList.remove("open");
+        backdrop.classList.remove("open");
+        setTimeout(() => {
+            navbar.classList.add("hidden");
+            backdrop.classList.add("hidden");
+        }, 250);
+    }
+
+    document.querySelector(".navbar-open-btn").onclick = openNavbar;
+    document.querySelector(".navbar-close-btn").onclick = closeNavbar;
+    backdrop.onclick = closeNavbar;
+    
+    document.querySelector(".navbar a[data-page='log-out']").onclick =
+        async () => {
+            window.location.href = "/scouting/logout";
+        };
+    document.querySelector(".navbar a[data-page='view-data']").onclick =
+        async () => {
+            await sdk.showDataPage();
+        };
+    document.querySelector(".navbar a[data-page='scan-data']").onclick =
+        async () => {
+            reader = await sdk.showScannerPage();
+        };
+    document.querySelector(".navbar a[data-page='home']").onclick =
+        async () => {
+           await sdk.showHomePage();
+        };
+
+    document.querySelectorAll(".navbar a").forEach((a) => {
+        a.addEventListener("click", async () => {
+            if (reader) {
+                try {
+                    await reader.stop();
+                } catch (err) {}
+            }
+
+            document.querySelector(".navbar a.active").classList.remove("active");
+            a.classList.add("active");
+            
+            closeNavbar();
+        });
+    });
+</script>
