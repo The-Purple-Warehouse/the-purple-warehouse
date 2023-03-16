@@ -227,10 +227,6 @@ body {
     transform: translate(-50%, 0);
 }
 
-.scanner-window .upload > h3.red {
-    color: #ff0000;
-}
-
 .scanner-window .upload > h3.primary {
     color: var(--primaryBackgroundColor);
 }
@@ -879,14 +875,11 @@ header .header-btn {
     transform: translate(-50%, 0);
 }
 
-.component-upload > h3.red,
-.download-window > h3.red,
-.data-window h3.red {
+.red {
     color: #ff0000;
 }
 
-.component-upload > h3.green,
-.scanner-window > h3.green {
+.green {
     color: green;
 }
 
