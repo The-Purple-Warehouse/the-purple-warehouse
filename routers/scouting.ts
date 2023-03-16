@@ -34,6 +34,10 @@ router.get("/logout", async (ctx) => {
     ctx.redirect("/scouting");
 });
 
+router.get("/instructions", async (ctx) => {
+    ctx.redirect("https://docs.google.com/document/d/1SdEaSTeu6o0BTn-wvD_D0uTKrmf6f1qnEvlie4Gzfyo/edit?usp=sharing");
+});
+
 router.post("/login", bodyParser(), async (ctx) => {
     if (
         ctx.session.teamNumber &&
