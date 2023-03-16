@@ -47,15 +47,21 @@ export async function getEvents(year) {
     try {
         if (cache.events[year] == null) {
             await syncEventsCache(year);
-        } else if (new Date().getTime() > cache.events[year].timestamp + 60000) {
+        } else if (
+            new Date().getTime() >
+            cache.events[year].timestamp + 60000
+        ) {
             syncEventsCache(year);
         }
         return cache.events[year].value;
-    } catch(err) {
+    } catch (err) {
         year = new Date().toLocaleDateString().split("/")[2];
         if (cache.events[year] == null) {
             await syncEventsCache(year);
-        } else if (new Date().getTime() > cache.events[year].timestamp + 60000) {
+        } else if (
+            new Date().getTime() >
+            cache.events[year].timestamp + 60000
+        ) {
             syncEventsCache(year);
         }
         return cache.events[year].value;
