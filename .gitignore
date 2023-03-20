@@ -3,3 +3,4 @@ node_modules/
 build/
 .idea/
 config/secret.json
+**/accuracy.ts

@@ -2,6 +2,7 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import { getMatchesFull } from "../../../helpers/tba";
 import { getAllDataByEvent } from "../../../helpers/scouting";
+import accuracy2023 from "./accuracy";
 
 export function categories() {
     return [
@@ -487,64 +488,69 @@ export function preload() {
     ];
 }
 
-export function formatData(data, categories, teams) {
-    let categoriesInSingular = {
-        abilities: "ability",
-        data: "data",
-        counters: "counter",
-        timers: "timer",
-        ratings: "rating"
-    };
-    function find(entry, type, category, fallback: any = "") {
-        return (entry[type].find((d) => d.category == categories[category]) ||
-            fallback)[categoriesInSingular[type]];
+let categoriesInSingular = {
+    abilities: "ability",
+    data: "data",
+    counters: "counter",
+    timers: "timer",
+    ratings: "rating"
+};
+function find(entry, type, categories, category, fallback: any = "") {
+    let value = entry[type].find((d) => d.category == categories[category]);
+    if(value == null) {
+        return fallback;
+    } else {
+        return value[categoriesInSingular[type]];
     }
-    let locationConversion = {
-        red: [
-            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
-            25, 16, 7, 26, 17, 8, 27, 18, 9
-        ],
-        blue: [
-            1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 32, 6, 15, 24, 7,
-            16, 25, 8, 17, 26, 9, 18, 27
-        ],
-        unknown: [
-            19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
-            25, 16, 7, 26, 17, 8, 27, 18, 9
-        ]
-    };
+}
+let locationConversion = {
+    red: [
+        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
+        25, 16, 7, 26, 17, 8, 27, 18, 9
+    ],
+    blue: [
+        1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 32, 6, 15, 24, 7,
+        16, 25, 8, 17, 26, 9, 18, 27
+    ],
+    unknown: [
+        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
+        25, 16, 7, 26, 17, 8, 27, 18, 9
+    ]
+};
+
+export function formatData(data, categories, teams) {
     return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments\n${data
         .map((entry, i) => {
             let locations = [
-                ...find(entry, "data", "23-2", []),
-                ...find(entry, "data", "23-4", [])
+                ...find(entry, "data", categories, "23-2", []),
+                ...find(entry, "data", categories, "23-4", [])
             ];
             let pieces = [
-                ...find(entry, "data", "23-3", []),
-                ...find(entry, "data", "23-5", [])
+                ...find(entry, "data", categories, "23-3", []),
+                ...find(entry, "data", categories, "23-5", [])
             ];
             return [
                 i,
                 entry.match || 0,
                 entry.team || 0,
                 entry.color || "unknown",
-                find(entry, "abilities", "23-0", "FALSE") ? "TRUE" : "FALSE",
-                find(entry, "abilities", "23-1", "FALSE") ? "TRUE" : "FALSE",
+                find(entry, "abilities", categories, "23-0", false) ? "TRUE" : "FALSE",
+                find(entry, "abilities", categories, "23-1", false) ? "TRUE" : "FALSE",
                 `"[${locations
                     .map((d) => locationConversion[entry.color || "unknown"][d])
                     .join(", ")}]"`,
                 `"[${pieces.map((d) => `'${d}'`).join(", ")}]"`,
-                find(entry, "counters", "23-6", 0),
-                find(entry, "abilities", "23-8", 0),
-                find(entry, "abilities", "23-9", 0),
-                Math.round(parseInt(find(entry, "timers", "23-10", 0)) / 1000),
-                Math.round(parseInt(find(entry, "timers", "23-11", 0)) / 1000),
-                Math.round(parseInt(find(entry, "timers", "23-12", 0)) / 1000),
-                find(entry, "ratings", "23-13", ""),
-                find(entry, "ratings", "23-14", ""),
-                find(entry, "ratings", "23-15", ""),
-                find(entry, "ratings", "23-16", ""),
-                find(entry, "ratings", "23-17", ""),
+                find(entry, "counters", categories, "23-6", 0),
+                find(entry, "abilities", categories, "23-8", 0),
+                find(entry, "abilities", categories, "23-9", 0),
+                Math.round(parseInt(find(entry, "timers", categories, "23-10", 0)) / 1000),
+                Math.round(parseInt(find(entry, "timers", categories, "23-11", 0)) / 1000),
+                Math.round(parseInt(find(entry, "timers", categories, "23-12", 0)) / 1000),
+                find(entry, "ratings", categories, "23-13", ""),
+                find(entry, "ratings", categories, "23-14", ""),
+                find(entry, "ratings", categories, "23-15", ""),
+                find(entry, "ratings", categories, "23-16", ""),
+                find(entry, "ratings", categories, "23-17", ""),
                 JSON.stringify(
                     `${entry.contributor.username || "username"} (${
                         teams[entry.contributor.team] || 0
@@ -658,12 +664,17 @@ export async function analysis(event, teamNumber) {
     return cache[`${event}-${teamNumber}`].value;
 }
 
+export async function accuracy(event, matches, data, categories, teams) {
+    return await accuracy2023(event, matches, data, categories, teams);
+}
+
 const scouting2023 = {
     categories,
     layout,
     preload,
     formatData,
     notes,
-    analysis
+    analysis,
+    accuracy
 };
 export default scouting2023;
