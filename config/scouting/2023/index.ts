@@ -497,7 +497,7 @@ let categoriesInSingular = {
 };
 function find(entry, type, categories, category, fallback: any = "") {
     let value = entry[type].find((d) => d.category == categories[category]);
-    if(value == null) {
+    if (value == null) {
         return fallback;
     } else {
         return value[categoriesInSingular[type]];
@@ -505,16 +505,16 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 let locationConversion = {
     red: [
-        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
-        25, 16, 7, 26, 17, 8, 27, 18, 9
+        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
+        16, 7, 26, 17, 8, 27, 18, 9
     ],
     blue: [
-        1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 32, 6, 15, 24, 7,
-        16, 25, 8, 17, 26, 9, 18, 27
+        1, 10, 19, 2, 11, 20, 3, 12, 21, 4, 13, 22, 5, 14, 32, 6, 15, 24, 7, 16,
+        25, 8, 17, 26, 9, 18, 27
     ],
     unknown: [
-        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6,
-        25, 16, 7, 26, 17, 8, 27, 18, 9
+        19, 10, 1, 20, 11, 2, 21, 12, 3, 22, 13, 4, 32, 14, 5, 24, 15, 6, 25,
+        16, 7, 26, 17, 8, 27, 18, 9
     ]
 };
 
@@ -534,8 +534,12 @@ export function formatData(data, categories, teams) {
                 entry.match || 0,
                 entry.team || 0,
                 entry.color || "unknown",
-                find(entry, "abilities", categories, "23-0", false) ? "TRUE" : "FALSE",
-                find(entry, "abilities", categories, "23-1", false) ? "TRUE" : "FALSE",
+                find(entry, "abilities", categories, "23-0", false)
+                    ? "TRUE"
+                    : "FALSE",
+                find(entry, "abilities", categories, "23-1", false)
+                    ? "TRUE"
+                    : "FALSE",
                 `"[${locations
                     .map((d) => locationConversion[entry.color || "unknown"][d])
                     .join(", ")}]"`,
@@ -543,9 +547,18 @@ export function formatData(data, categories, teams) {
                 find(entry, "counters", categories, "23-6", 0),
                 find(entry, "abilities", categories, "23-8", 0),
                 find(entry, "abilities", categories, "23-9", 0),
-                Math.round(parseInt(find(entry, "timers", categories, "23-10", 0)) / 1000),
-                Math.round(parseInt(find(entry, "timers", categories, "23-11", 0)) / 1000),
-                Math.round(parseInt(find(entry, "timers", categories, "23-12", 0)) / 1000),
+                Math.round(
+                    parseInt(find(entry, "timers", categories, "23-10", 0)) /
+                        1000
+                ),
+                Math.round(
+                    parseInt(find(entry, "timers", categories, "23-11", 0)) /
+                        1000
+                ),
+                Math.round(
+                    parseInt(find(entry, "timers", categories, "23-12", 0)) /
+                        1000
+                ),
                 find(entry, "ratings", categories, "23-13", ""),
                 find(entry, "ratings", categories, "23-14", ""),
                 find(entry, "ratings", categories, "23-15", ""),
