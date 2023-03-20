@@ -23,6 +23,15 @@ router.get("/", requireScoutingAuth, async (ctx, next) => {
     });
 });
 
+router.get("/match", requireScoutingAuth, async (ctx, next) => {
+    await ctx.render("scouting/match", {
+        preload: scoutingConfig.preload(),
+        pages: scoutingConfig.layout(),
+        username: ctx.session.scoutingUsername,
+        team: ctx.session.scoutingTeamNumber
+    });
+});
+
 router.get("/login", async (ctx) => {
     await ctx.render("scouting/login");
 });
