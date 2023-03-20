@@ -228,6 +228,61 @@ export async function getAllDataByEvent(event: string) {
     return scoutingConfig.formatData(data, categories, teams);
 }
 
+export async function getSummaryByEvent(event: string) {
+    let { data, categories, teams } = await getAllRawDataByEvent(event);
+    let matches = {};
+    let accuracies = {};
+    for(let i = 0; i < data.length; i++) {
+        let entry = data[i] as any;
+        if(matches[teams[entry.contributor.team._id.toString()]] == null) {
+            matches[teams[entry.contributor.team._id.toString()]] = {};
+        }
+        if(matches[teams[entry.contributor.team._id.toString()]][entry.contributor.username] == null) {
+            matches[teams[entry.contributor.team._id.toString()]][entry.contributor.username] = 0;
+        }
+        matches[teams[entry.contributor.team._id.toString()]][entry.contributor.username] += 1;
+        if(accuracies[teams[entry.contributor.team._id.toString()]] == null) {
+            accuracies[teams[entry.contributor.team._id.toString()]] = {};
+        }
+        if(accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username] == null) {
+            accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username] = {
+                numerator: 0,
+                denominator: 0
+            };
+        }
+        if(entry.accuracy && entry.accuracy.calculated) {
+            accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username].numerator += entry.accuracy.percentage;
+            accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username].denominator += 1;
+        }
+    }
+    let matchesSorted = [];
+    let accuraciesSorted = [];
+    let teamsWithEntries = Object.keys(matches);
+    for(let i = 0; i < teamsWithEntries.length; i++) {
+        let usernames = Object.keys(matches[teamsWithEntries[i]]);
+        for(let j = 0; j < usernames.length; j++) {
+            matchesSorted.push({
+                team: teamsWithEntries[i],
+                username: usernames[j],
+                amount: matches[teamsWithEntries[i]][usernames[j]]
+            });
+            if(accuracies[teamsWithEntries[i]][usernames[j]].denominator > 0) {
+                accuraciesSorted.push({
+                    team: teamsWithEntries[i],
+                    username: usernames[j],
+                    amount: accuracies[teamsWithEntries[i]][usernames[j]].numerator / accuracies[teamsWithEntries[i]][usernames[j]].denominator
+                });
+            }
+        }
+    }
+    matchesSorted = matchesSorted.sort((a, b) => b.amount - a.amount);
+    accuraciesSorted = accuraciesSorted.sort((a, b) => b.amount - a.amount);
+    return {
+        matches: matchesSorted,
+        accuracies: accuraciesSorted
+    };
+}
+
 export async function getSharedData(event: string, teamNumber: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
