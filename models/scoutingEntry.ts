@@ -48,6 +48,19 @@ let ScoutingRating = new mongoose.Schema({
     rating: Number
 });
 
+let ScoutingAccuracy = new mongoose.Schema({
+    calculated: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
+    percentage: {
+        type: Number,
+        required: false,
+        default: 0
+    }
+});
+
 export default mongoose.model(
     "ScoutingEntry",
     new mongoose.Schema({
@@ -64,6 +77,7 @@ export default mongoose.model(
         comments: String,
         clientTimestamp: Number,
         serverTimestamp: Number,
-        hash: String
+        hash: String,
+        accuracy: ScoutingAccuracy
     })
 );

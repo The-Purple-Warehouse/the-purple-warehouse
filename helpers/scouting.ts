@@ -194,9 +194,14 @@ export async function addEntry(
             clientTimestamp: timestamp,
             serverTimestamp: new Date().getTime(),
             hash: hash,
-            comments: comments
+            comments: comments,
+            accuracy: {
+                calculated: false,
+                percentage: 0
+            }
         });
         await entry.save();
+        await updateAccuracy(event);
     }
     return entry;
 }
@@ -272,4 +277,32 @@ export async function getSharedData(event: string, teamNumber: string) {
             .filter((entry: any) => entry != null);
     }
     return scoutingConfig.formatData(data, categories, teams);
+}
+
+export async function updateAccuracy(event: string) {
+    let { data, categories, teams } = await getAllRawDataByEvent(event);
+    let matches: any = {};
+    for(let i = 0; i < data.length; i++) {
+        let entry = data[i] as any;
+        if(matches[`match${entry.match}`] == null) {
+            matches[`match${entry.match}`] = [];
+        }
+        matches[`match${entry.match}`].push(entry);
+    }
+    let matchNumbers = Object.keys(matches);
+    for(let i = 0; i < matchNumbers.length; i++) {
+        if (matches[matchNumbers[i]].filter(entry => !entry.accuracy || !entry.accuracy.calculated).length == 0) {
+            delete matches[matchNumbers[i]];
+        }
+    }
+    let calculated = await scoutingConfig.accuracy(event, matches, data, categories, teams);
+    let hashes = Object.keys(calculated);
+    await Promise.all(hashes.map((hash) => {
+        return ScoutingEntry.findOneAndUpdate({
+            hash
+        }, {
+            "accuracy.calculated": true,
+            "accuracy.percentage": calculated[hash]
+        });
+    }));
 }

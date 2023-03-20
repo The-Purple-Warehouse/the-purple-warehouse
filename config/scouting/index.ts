@@ -11,5 +11,6 @@ scoutingConfig.preload = scoutingConfig[year].preload;
 scoutingConfig.formatData = scoutingConfig[year].formatData;
 scoutingConfig.notes = scoutingConfig[year].notes;
 scoutingConfig.analysis = scoutingConfig[year].analysis;
+scoutingConfig.accuracy = scoutingConfig[year].accuracy;
 
 export default scoutingConfig;
