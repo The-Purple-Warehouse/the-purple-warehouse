@@ -232,45 +232,67 @@ export async function getSummaryByEvent(event: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let matches = {};
     let accuracies = {};
-    for(let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         let entry = data[i] as any;
-        if(matches[teams[entry.contributor.team._id.toString()]] == null) {
+        if (matches[teams[entry.contributor.team._id.toString()]] == null) {
             matches[teams[entry.contributor.team._id.toString()]] = {};
         }
-        if(matches[teams[entry.contributor.team._id.toString()]][entry.contributor.username] == null) {
-            matches[teams[entry.contributor.team._id.toString()]][entry.contributor.username] = 0;
+        if (
+            matches[teams[entry.contributor.team._id.toString()]][
+                entry.contributor.username
+            ] == null
+        ) {
+            matches[teams[entry.contributor.team._id.toString()]][
+                entry.contributor.username
+            ] = 0;
         }
-        matches[teams[entry.contributor.team._id.toString()]][entry.contributor.username] += 1;
-        if(accuracies[teams[entry.contributor.team._id.toString()]] == null) {
+        matches[teams[entry.contributor.team._id.toString()]][
+            entry.contributor.username
+        ] += 1;
+        if (accuracies[teams[entry.contributor.team._id.toString()]] == null) {
             accuracies[teams[entry.contributor.team._id.toString()]] = {};
         }
-        if(accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username] == null) {
-            accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username] = {
+        if (
+            accuracies[teams[entry.contributor.team._id.toString()]][
+                entry.contributor.username
+            ] == null
+        ) {
+            accuracies[teams[entry.contributor.team._id.toString()]][
+                entry.contributor.username
+            ] = {
                 numerator: 0,
                 denominator: 0
             };
         }
-        if(entry.accuracy && entry.accuracy.calculated) {
-            accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username].numerator += entry.accuracy.percentage;
-            accuracies[teams[entry.contributor.team._id.toString()]][entry.contributor.username].denominator += 1;
+        if (entry.accuracy && entry.accuracy.calculated) {
+            accuracies[teams[entry.contributor.team._id.toString()]][
+                entry.contributor.username
+            ].numerator += entry.accuracy.percentage;
+            accuracies[teams[entry.contributor.team._id.toString()]][
+                entry.contributor.username
+            ].denominator += 1;
         }
     }
     let matchesSorted = [];
     let accuraciesSorted = [];
     let teamsWithEntries = Object.keys(matches);
-    for(let i = 0; i < teamsWithEntries.length; i++) {
+    for (let i = 0; i < teamsWithEntries.length; i++) {
         let usernames = Object.keys(matches[teamsWithEntries[i]]);
-        for(let j = 0; j < usernames.length; j++) {
+        for (let j = 0; j < usernames.length; j++) {
             matchesSorted.push({
                 team: teamsWithEntries[i],
                 username: usernames[j],
                 amount: matches[teamsWithEntries[i]][usernames[j]]
             });
-            if(accuracies[teamsWithEntries[i]][usernames[j]].denominator > 0) {
+            if (accuracies[teamsWithEntries[i]][usernames[j]].denominator > 0) {
                 accuraciesSorted.push({
                     team: teamsWithEntries[i],
                     username: usernames[j],
-                    amount: accuracies[teamsWithEntries[i]][usernames[j]].numerator / accuracies[teamsWithEntries[i]][usernames[j]].denominator
+                    amount:
+                        accuracies[teamsWithEntries[i]][usernames[j]]
+                            .numerator /
+                        accuracies[teamsWithEntries[i]][usernames[j]]
+                            .denominator
                 });
             }
         }
@@ -337,27 +359,57 @@ export async function getSharedData(event: string, teamNumber: string) {
 export async function updateAccuracy(event: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let matches: any = {};
-    for(let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         let entry = data[i] as any;
-        if(matches[`match${entry.match}`] == null) {
+        if (matches[`match${entry.match}`] == null) {
             matches[`match${entry.match}`] = [];
         }
         matches[`match${entry.match}`].push(entry);
     }
     let matchNumbers = Object.keys(matches);
-    for(let i = 0; i < matchNumbers.length; i++) {
-        if (matches[matchNumbers[i]].filter(entry => !entry.accuracy || !entry.accuracy.calculated).length == 0) {
+    for (let i = 0; i < matchNumbers.length; i++) {
+        if (
+            matches[matchNumbers[i]].filter(
+                (entry) => !entry.accuracy || !entry.accuracy.calculated
+            ).length == 0
+        ) {
             delete matches[matchNumbers[i]];
         }
     }
-    let calculated = await scoutingConfig.accuracy(event, matches, data, categories, teams);
+    let calculated = await scoutingConfig.accuracy(
+        event,
+        matches,
+        data,
+        categories,
+        teams
+    );
     let hashes = Object.keys(calculated);
-    await Promise.all(hashes.map((hash) => {
-        return ScoutingEntry.findOneAndUpdate({
-            hash
-        }, {
-            "accuracy.calculated": true,
-            "accuracy.percentage": calculated[hash]
-        });
-    }));
+    await Promise.all(
+        hashes.map((hash) => {
+            return ScoutingEntry.findOneAndUpdate(
+                {
+                    hash
+                },
+                {
+                    "accuracy.calculated": true,
+                    "accuracy.percentage": calculated[hash]
+                }
+            );
+        })
+    );
+}
+
+export async function getStats() {
+    let entries = await ScoutingEntry.find({}, {contributor: 1}).lean();
+    let users = new Set();
+    for(let i = 0; i < entries.length; i++) {
+        let entry = entries[i] as any;
+        users.add(`${entry.contributor.team.toString()}-${entry.contributor.username}`);
+    }
+    return {
+        entries: await ScoutingEntry.countDocuments({}),
+        scouters: [...users].length,
+        teams: await Team.countDocuments({}),
+        countries: 3
+    }
 }
