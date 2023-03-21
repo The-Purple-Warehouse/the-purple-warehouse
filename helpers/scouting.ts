@@ -400,16 +400,18 @@ export async function updateAccuracy(event: string) {
 }
 
 export async function getStats() {
-    let entries = await ScoutingEntry.find({}, {contributor: 1}).lean();
+    let entries = await ScoutingEntry.find({}, { contributor: 1 }).lean();
     let users = new Set();
-    for(let i = 0; i < entries.length; i++) {
+    for (let i = 0; i < entries.length; i++) {
         let entry = entries[i] as any;
-        users.add(`${entry.contributor.team.toString()}-${entry.contributor.username}`);
+        users.add(
+            `${entry.contributor.team.toString()}-${entry.contributor.username}`
+        );
     }
     return {
         entries: await ScoutingEntry.countDocuments({}),
         scouters: [...users].length,
         teams: await Team.countDocuments({}),
         countries: 3
-    }
+    };
 }
