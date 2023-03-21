@@ -1,9 +1,374 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en-US">
 <head>
-	{{> head}}
+  {{> head}}
+  <title>The Purple Warehouse</title>
+  <link href="https://fonts.googleapis.com/css?family=Rubik:400,700,700i" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css"  href="/css/landing.css">
+
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
 </head>
-<body>
-	{{> nav}}
-	{{> copyright}}
+
+<body class="page-template-onepage">
+
+<div class="site-wrapper">
+
+  <div class="doc-loader">
+    <img src="/img/landing/preloader.gif" alt="Seppo">
+  </div>
+
+  <header class="header-holder">
+    <div class="menu-wrapper center-relative relative">
+      <div class="header-logo">
+        <a href="/">
+          <img class="top-logo" src="/img/landing/logo-circle.png" alt="Seppo">
+        </a>
+      </div>
+
+      <div class="toggle-holder">
+        <div id="toggle">
+          <div class="first-menu-line"></div>
+          <div class="second-menu-line"></div>
+          <div class="third-menu-line"></div>
+        </div>
+      </div>
+
+      <div class="menu-holder">
+        <nav id="header-main-menu">
+          <ul class="main-menu sm sm-clean">
+            <li>
+              <a href="#home">Home</a>
+            </li>
+            <li>
+              <a href="#steps">Steps</a>
+            </li>
+            <li>
+              <a href="#values">Values</a>
+            </li>
+            <li>
+              <a href="#stats">Stats</a>
+            </li>
+            <li>
+              <a href="#roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a href="https://robotics.harker.org/contact" target="_blank">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </header>
+
+  <div id="content" class="site-content center-relative">
+
+    <!-- Home Section -->
+    <div id="home" class="section no-page-title">
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+          <h1 class="big-text">
+            The Purple <br> Warehouse
+          </h1>
+          <div class="button-holder text-left">
+            <a href="/scouting" class="button">START SCOUTING</a>
+            <span class="button-spacing">&nbsp;&nbsp;</span>
+            <a href="https://thepurplewarehouse.com/discord" target="_blank" style="background-color: #7289da; border-color: #7289da;" class="discord-btn button" href="/scouting" class="button">JOIN DISCORD</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Section -->
+    <div id="steps" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          STEPS
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+
+          <div class="one_third ">
+            <div class="service-holder">
+              <p class="service-num">1</p>
+              <div class="service-txt">
+                <h4>Scout</h4>
+                <p>
+                  Enter data about robots using our intuitive scouting interface.
+                </p>
+                <br>
+              </div>
+            </div>
+          </div>
+
+          <div class="one_third ">
+            <div class="service-holder">
+              <p class="service-num">2</p>
+              <div class="service-txt">
+                <h4>Share</h4>
+                <p>
+                  Upload the data to our collaborative data repository of scouting entries.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="one_third last">
+            <div class="service-holder">
+              <p class="service-num">3</p>
+              <div class="service-txt">
+                <h4>Analyze</h4>
+                <p>
+                  Gain valuable insights about robots based on the collective scouting data.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+    <div id="values" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          VALUES
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+
+          <div class="one_half">
+            <p class="title-description-up">
+              WHAT WE STAND FOR
+            </p>
+            <h2 class="entry-title medium-text">
+              A collaborative <br>
+              environment
+            </h2>
+            <p>
+              <span style="color: var(--purple)">The Purple Warehouse</span> aims to support all FRC teams and level the playing field.
+              We believe that all teams, regardless of their size or experience, should have access to high-quality scouting data and analysis.
+              By fostering a collaborative environment through our shared scouting system, we hope to help teams embody the FIRST ethos of Coopertition.
+            </p>
+          </div>
+
+          <div class="one_half last" data-threshold="0 0" data-jarallax-element="120 0">
+            <img src="/img/landing/teamwork.png" alt="" />
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+    <div id="stats" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          STATS
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+          <ul class="milestones-holder">
+
+            <li class="milestone">
+              <div class="milestone-info-left">
+                <p class="milestone-num">{{ stats.entries }}</p>
+              </div>
+              <div class="milestone-info-right">
+                <h5>Scouting Entries</h5>
+                <p class="milestone-text">
+                  Our collaborative repository of scouting data collects hundreds of entries per event.
+                </p>
+              </div>
+            </li>
+
+            <li class="milestone">
+              <div class="milestone-info-left">
+                <p class="milestone-num">{{ stats.scouters }}</p>
+              </div>
+              <div class="milestone-info-right">
+                <h5>Individual Scouters</h5>
+                <p class="milestone-text">
+                  Numerous scouters work together to gather as much data as possible on robots.
+                </p>
+              </div>
+            </li>
+
+            <li class="milestone">
+              <div class="milestone-info-left">
+                <p class="milestone-num">{{ stats.teams }}</p>
+              </div>
+              <div class="milestone-info-right">
+                <h5>Registered Teams</h5>
+                <p class="milestone-text">
+                  Scouters across many teams contribute to our collaborative repository of scouting data.
+                </p>
+              </div>
+            </li>
+
+            <li class="milestone">
+              <div class="milestone-info-left">
+                <p class="milestone-num">{{ stats.countries }}</p>
+              </div>
+              <div class="milestone-info-right">
+                <h5>Countries with Registered Teams</h5>
+                <p class="milestone-text">
+                  TPW supports teams from around the world with high-quality data and analysis tools.
+                </p>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Features Section -->
+    <div id="roadmap" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          ROADMAP
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+
+          <div class="one_third">
+            <div class="pricing-table ">
+              <p class="pricing-num">1</p>
+              <div class="pricing-wrapper">
+                <div class="pricing-table-header">
+                  <div class="pricing-table-title">Scouting</div>
+                </div>
+                <small>Launched</small>
+                <div class="pricing-table-price">Mar '23</div>
+                <div class="pricing-table-content-holder">
+                  <ul>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Rich analysis
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Accuracy filter
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Offline support
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      CSV download
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="one_third">
+            <div class="pricing-table ">
+              <p class="pricing-num">2</p>
+              <div class="pricing-wrapper">
+                <div class="pricing-table-header">
+                  <div class="pricing-table-title">Resources</div>
+                </div>
+                <small>Launching</small>
+                <div class="pricing-table-price">Aug '23</div>
+                <div class="pricing-table-content-holder">
+                  <ul>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Helpful community
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Careful curation
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Categorization
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Networking
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="one_third last">
+            <div class="pricing-table ">
+              <p class="pricing-num">3</p>
+              <div class="pricing-wrapper">
+                <div class="pricing-table-header">
+                  <div class="pricing-table-title">Parts Trading</div>
+                </div>
+                <small>Launching</small>
+                <div class="pricing-table-price">
+                  Nov '23
+                </div>
+                <div class="pricing-table-content-holder">
+                  <ul>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Expense reduction
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Eco-friendliness
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Time-saver
+                    </li>
+                    <li class="pricing-list included-yes">
+                      <span class="fa fa-check" aria-hidden="true"></span>
+                      Mutual benefits
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="footer-content center-relative">
+        <div class="footer-logo">
+          <img src="/img/landing/logo-circle.png"/>
+        </div>
+        <div class="footer-logo-divider"></div>
+        <div class="footer-mail">
+          <a href="mailto:harker1072@gmail.com">harker1072@gmail.com</a>
+        </div>
+        <div class="footer-social-divider"></div>
+        <div class="social-holder"></div>
+        <div class="copyright-holder">
+          © 2023 <a href="https://robotics.harker.org">Harker Robotics</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script src="/js/jquery.js"></script>
+  <script src="/js/jquery.sticky.js"></script>
+  <script src="/js/tipper.js"></script>
+  <script src="/js/jarallax.js"></script>
+  <script src="/js/jarallax-element.min.js"></script>
+  <script src='/js/imagesloaded.pkgd.js'></script>
+  <script src='/js/jquery.fitvids.js'></script>
+  <script src='/js/jquery.smartmenus.min.js'></script>
+  <script src='/js/isotope.pkgd.js'></script>
+  <script src='/js/owl.carousel.min.js'></script>
+  <script src='/js/jquery.sticky-kit.min.js'></script>
+  <script src='/js/landing.js'></script>
 </body>
+</html>

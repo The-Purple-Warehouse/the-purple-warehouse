@@ -14,6 +14,7 @@ import registerHelpers from "./helpers/hbsHelpers";
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
+import { getStats } from "./helpers/scouting";
 
 // import loginRouter from "./routers/login"; // contains base route "/"
 import defaultRouter from "./routers/default"; // contains base route "/"
@@ -112,17 +113,45 @@ if (config.features.includes("resources")) {
     router.use("/app", resourcesRouter.routes());
     router.use("/api/v1/resources", resourcesAPIRouter.routes());
 } else if (config.features.includes("scouting")) {
-    router.use("/", scoutingDefaultRouter.routes());
+    // router.use("/", scoutingDefaultRouter.routes());
 } else {
-    router.use("/", defaultRouter.routes());
+    // router.use("/", defaultRouter.routes());
 }
 if (config.features.includes("scouting")) {
     router.use("/scouting", scoutingRouter.routes());
     router.use("/api/v1/scouting", scoutingAPIRouter.routes());
 }
 
+function formatNumber(num) {
+    if(num < 10) {
+        return num;
+    } else if(num < 100 && num >= 10) {
+        return `${(Math.floor(num / 10) * 10)}+`;
+    } else if(num >= 100 && num < 1000) {
+        return `${(Math.floor(num / 100) * 100)}+`;
+    } else if(num >= 1000 && num < 100_000) {
+        return `${Math.floor(num / 1000)}k+`;
+    } else if(num >= 100_000 && num < 1_000_000) {
+        return `${Math.floor(num / 1000)}k`;
+    } else if(num >= 1_000_000 && num < 100_000_000) {
+        return `${Math.floor(num / 1_000_000)}M+`;
+    } else if(num >= 100_000_000 && num < 1_000_000_000) {
+        return `${Math.floor(num / 1_000_000)}M`;
+    } else {
+        return `${Math.floor(num / 1_000_000_000)}B`;
+    }
+}
+
 router.get("/", async (ctx, next) => {
-    await ctx.render("index");
+    let stats: any = await getStats();
+    await ctx.render("index", {
+        stats: {
+            entries: formatNumber(stats.entries),
+            scouters: formatNumber(stats.scouters),
+            teams: stats.teams,
+            countries: stats.countries
+        }
+    });
 });
 
 router.get("/discord", async (ctx) => {
