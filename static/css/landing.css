@@ -32,7 +32,6 @@
 17. Responsive CSS
 -------------------------------------------------------------------*/
 
-
 /* ===================================
     1. 3rd Part CSS Libraries
 ====================================== */
@@ -53,7 +52,7 @@
 ====================================== */
 
 body {
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     font-size: 18px;
     line-height: 35px;
     font-weight: 400;
@@ -65,14 +64,14 @@ body {
 body a {
     text-decoration: none;
     color: var(--purple);
-    transition: color .3s ease;
+    transition: color 0.3s ease;
 }
 
 body a:hover {
-    color: var(--purple); 
+    color: var(--purple);
 }
 
-body p, 
+body p,
 body pre {
     margin-bottom: 13px;
 }
@@ -98,18 +97,19 @@ body pre {
     width: 100px;
     height: 100px;
     position: absolute;
-    top: 50%;    
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    filter: brightness(0) saturate(100%) invert(35%) sepia(59%) saturate(2204%) hue-rotate(260deg) brightness(93%) contrast(96%);
+    filter: brightness(0) saturate(100%) invert(35%) sepia(59%) saturate(2204%)
+        hue-rotate(260deg) brightness(93%) contrast(96%);
 }
 
 .content-1170 {
-    width: 1170px;    
+    width: 1170px;
 }
 
 .content-960 {
-    width: 960px;    
+    width: 960px;
 }
 
 .content-570 {
@@ -125,7 +125,6 @@ body pre {
     padding: 200px 0 115px 0;
 }
 
-
 /* ===================================
     2.1 Global Header Logo/Menu CSS
 ====================================== */
@@ -136,7 +135,7 @@ body pre {
     width: 100% !important;
     top: 0;
     position: fixed;
-    -webkit-transform: translateZ(0);    
+    -webkit-transform: translateZ(0);
 }
 
 .sticky-wrapper {
@@ -189,22 +188,22 @@ body pre {
 
 #toggle .second-menu-line {
     -webkit-transition: -webkit-transform 0.3s ease;
-    transition: transform 0.3s ease;    
-    -webkit-transform: translate3d(10px,0,0);
-    transform: translate3d(10px,0,0);
+    transition: transform 0.3s ease;
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
 }
 
 #toggle:hover .second-menu-line {
-    -webkit-transform: translate3d(0,0,0) !important;
-    transform: translate3d(0,0,0) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    transform: translate3d(0, 0, 0) !important;
 }
 
 #toggle.on .second-menu-line {
-    -webkit-transform: translate3d(-10px,0,0);
-    transform: translate3d(-10px,0,0);
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
 }
 
-#toggle .third-menu-line{        
+#toggle .third-menu-line {
     margin-bottom: 5px;
 }
 
@@ -229,23 +228,22 @@ body pre {
     padding: 15px;
 }
 
-.sm-clean a, 
-.sm-clean a:hover, 
-.sm-clean a:focus, 
+.sm-clean a,
+.sm-clean a:hover,
+.sm-clean a:focus,
 .sm-clean a:active {
     font-size: 14px;
     font-weight: 400;
-    transition: color .3s ease, 
-        background-color .3s ease;
+    transition: color 0.3s ease, background-color 0.3s ease;
     padding: 15px;
     letter-spacing: 0.5px;
     color: #fff;
 }
 
-.sm-clean ul a, 
-.sm-clean ul a:hover, 
-.sm-clean ul a:focus, 
-.sm-clean ul a:active {    
+.sm-clean ul a,
+.sm-clean ul a:hover,
+.sm-clean ul a:focus,
+.sm-clean ul a:active {
     font-size: 13px;
     line-height: 15px;
     padding: 10px;
@@ -254,15 +252,15 @@ body pre {
 }
 
 .sm-clean {
-    background-color: transparent;        
+    background-color: transparent;
     padding: 15px 0;
 }
 
-body .sm-clean a:hover, 
-body .main-menu.sm-clean .sub-menu li a:hover, 
-body .sm-clean li.active a, 
-body .sm-clean li.current-page-ancestor > a, 
-body .sm-clean li.current_page_ancestor > a, 
+body .sm-clean a:hover,
+body .main-menu.sm-clean .sub-menu li a:hover,
+body .sm-clean li.active a,
+body .sm-clean li.current-page-ancestor > a,
+body .sm-clean li.current_page_ancestor > a,
 body .sm-clean li.current_page_item > a {
     color: var(--purple);
 }
@@ -275,7 +273,7 @@ body .sm-clean li.current_page_item > a {
     margin-right: 0;
 }
 
-.sm-clean ul {    
+.sm-clean ul {
     background-color: #000;
 }
 
@@ -283,25 +281,24 @@ body .sm-clean li.current_page_item > a {
     padding-right: 24px;
 }
 
-.sub-menu a, 
+.sub-menu a,
 .children a {
     padding-left: 15px !important;
 }
 
-.sub-menu .sub-menu, 
+.sub-menu .sub-menu,
 .children .children {
     padding-top: 8px;
 }
 
-.sub-menu .sub-menu a, 
-.children .children a, 
-.sub-menu .sub-menu a:hover, 
+.sub-menu .sub-menu a,
+.children .children a,
+.sub-menu .sub-menu a:hover,
 .children .children a:hover {
     padding-top: 10px !important;
 }
 
 @media (min-width: 925px) {
-
     .sm-clean ul a span.sub-arrow {
         margin-top: 0;
     }
@@ -311,38 +308,98 @@ body .sm-clean li.current_page_item > a {
 }
 
 @media (max-width: 925px) {
-
     .sm-clean ul {
         background-color: #fff;
     }
-
 }
 
-.sm-clean > li:last-child > a, 
-.sm-clean > li:last-child > *:not(ul) a, 
-.sm-clean > li:last-child > ul, 
-.sm-clean > li:last-child > ul > li:last-child > a, 
-.sm-clean > li:last-child > ul > li:last-child > *:not(ul) a, 
-.sm-clean > li:last-child > ul > li:last-child > ul, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > a, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > *:not(ul) a, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > a, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > *:not(ul) a, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > ul, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > a, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > *:not(ul) a, 
-.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > ul > li:last-child > ul {
+.sm-clean > li:last-child > a,
+.sm-clean > li:last-child > *:not(ul) a,
+.sm-clean > li:last-child > ul,
+.sm-clean > li:last-child > ul > li:last-child > a,
+.sm-clean > li:last-child > ul > li:last-child > *:not(ul) a,
+.sm-clean > li:last-child > ul > li:last-child > ul,
+.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > a,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > *:not(ul)
+    a,
+.sm-clean > li:last-child > ul > li:last-child > ul > li:last-child > ul,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > a,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > *:not(ul)
+    a,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > a,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > *:not(ul)
+    a,
+.sm-clean
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul
+    > li:last-child
+    > ul {
     border-radius: 5px;
 }
-
 
 /* ===================================
     2.2 General Section CSS
 ====================================== */
 
 .section {
-    position: relative;    
+    position: relative;
 }
 
 .page-title-holder {
@@ -382,7 +439,7 @@ body .sm-clean li.current_page_item > a {
 
 .page .page-content {
     background-color: #fff;
-    padding: 75px;    
+    padding: 75px;
 }
 
 .no-padding .section-wrapper {
@@ -423,7 +480,7 @@ body .sm-clean li.current_page_item > a {
     line-height: 120%;
 }
 
-.info-code-content, 
+.info-code-content,
 .info-code-content a {
     color: #b3b3b3;
     margin-bottom: 30px;
@@ -435,7 +492,7 @@ body .sm-clean li.current_page_item > a {
 
 .isotope.no-transition,
 .isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {    
+.isotope .isotope-item.no-transition {
     transition-duration: 0s;
 }
 
@@ -447,22 +504,21 @@ body .sm-clean li.current_page_item > a {
 
 body .social a {
     color: #000 !important;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
 }
 
 body .social a:hover {
-    opacity: 0.5;    
+    opacity: 0.5;
 }
-
 
 /* ===================================
     2.3 Columns CSS
 ====================================== */
 
-.one_half,  
-.one_third,  
-.two_third,  
-.three_fourth, 
+.one_half,
+.one_third,
+.two_third,
+.three_fourth,
 .one_fourth {
     margin-right: 8%;
     float: left;
@@ -475,14 +531,14 @@ body .social a:hover {
     clear: right;
 }
 
-.one {    
+.one {
     display: block;
-    clear: both;    
+    clear: both;
     margin-bottom: 30px;
 }
 
 .one_half {
-    width: /*46*/39%;
+    width: /*46*/ 39%;
 }
 
 .one_third {
@@ -521,7 +577,6 @@ body .social a:hover {
     width: 75%;
 }
 
-
 /* ===================================
     2.4 Button CSS
 ====================================== */
@@ -535,7 +590,7 @@ body a.button {
     cursor: pointer;
     vertical-align: middle;
     text-decoration: none;
-    transition: all .2s linear;
+    transition: all 0.2s linear;
     margin-bottom: 17px;
     border: 2px solid var(--purple);
     border-radius: 50px;
@@ -549,7 +604,7 @@ a.button:hover {
     color: var(--purple);
 }
 
-a.discord-btn:hover  {
+a.discord-btn:hover {
     background-color: transparent !important;
     color: #7289da;
 }
@@ -561,11 +616,11 @@ a.button-dot {
 }
 
 a.button-dot:hover {
-    color: #fff;    
+    color: #fff;
 }
 
 a.button-dot span {
-    transition: .3s;
+    transition: 0.3s;
     display: inline-block;
     margin-left: 50px;
     letter-spacing: 2px;
@@ -584,7 +639,7 @@ a.button-dot:before {
     border-radius: 90%;
     top: -7px;
     position: absolute;
-    transition: .3s;
+    transition: 0.3s;
 }
 
 a.button-dot:hover:before {
@@ -593,7 +648,6 @@ a.button-dot:hover:before {
     border-radius: 50px;
     top: -18px;
 }
-
 
 /* ===================================
     2.5 Image/Text Slider CSS
@@ -619,7 +673,7 @@ a.button-dot:hover:before {
 .owl-theme .owl-dots .owl-dot span {
     margin: 0;
     background-color: rgba(255, 255, 255, 0.5);
-    transition: all .2s ease;
+    transition: all 0.2s ease;
     width: 17px;
     height: 17px;
     border-radius: 90%;
@@ -627,7 +681,7 @@ a.button-dot:hover:before {
 
 .owl-theme .owl-dots .owl-dot {
     border-radius: 90%;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     border: 2px solid #000;
     margin: 3px;
 }
@@ -711,7 +765,7 @@ a.button-dot:hover:before {
 }
 
 .text-slider-wrapper .owl-theme .owl-prev {
-    background-image: url('/img/landing/nav_left.png') !important;
+    background-image: url("/img/landing/nav_left.png") !important;
     background-color: transparent !important;
     font-size: 0;
     width: 30px;
@@ -719,7 +773,7 @@ a.button-dot:hover:before {
     height: 30px;
     background-repeat: no-repeat !important;
     background-size: 30px !important;
-    transition: .3s;
+    transition: 0.3s;
     opacity: 0.7;
     margin-right: 10px;
 }
@@ -729,7 +783,7 @@ a.button-dot:hover:before {
 }
 
 .text-slider-wrapper .owl-theme .owl-next {
-    background-image: url('img/landing/nav_right.png') !important;
+    background-image: url("img/landing/nav_right.png") !important;
     background-color: transparent !important;
     font-size: 0;
     width: 30px;
@@ -737,11 +791,11 @@ a.button-dot:hover:before {
     height: 30px;
     background-repeat: no-repeat !important;
     background-size: 30px !important;
-    transition: .3s;
+    transition: 0.3s;
     opacity: 0.7;
 }
 
-.text-slider-wrapper .owl-theme .owl-next:hover {    
+.text-slider-wrapper .owl-theme .owl-next:hover {
     opacity: 1;
 }
 
@@ -795,17 +849,17 @@ a.button-dot:hover:before {
     animation-name: fadeOut;
 }
 
-
 /* ===================================
     3. Home Section CSS
 ====================================== */
 
 #home {
-    background: linear-gradient(rgba(0, 0, 0, 0.40), rgba(0, 0, 0, 0.40)), url(/img/landing/quote_image_01.jpg);
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url(/img/landing/quote_image_01.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
-    min-height: calc(100vh - 77px);    
+    min-height: calc(100vh - 77px);
     display: flex;
 }
 
@@ -820,7 +874,6 @@ h1.big-text {
     line-height: 120%;
     margin-bottom: 40px;
 }
-
 
 /* ===================================
     4. Services Section CSS
@@ -841,7 +894,7 @@ h1.big-text {
 .service-holder:after {
     content: "";
     display: block;
-    clear: both;    
+    clear: both;
 }
 
 .service-txt h4 {
@@ -855,17 +908,13 @@ h1.big-text {
     font-size: 264px;
     font-weight: 700;
     color: #000000;
-    text-shadow: -1px 0 #b3b3b3, 
-        0 1px #b3b3b3, 
-        1px 0 #b3b3b3, 
-        0 -1px #b3b3b3;
+    text-shadow: -1px 0 #b3b3b3, 0 1px #b3b3b3, 1px 0 #b3b3b3, 0 -1px #b3b3b3;
     line-height: 100%;
     height: 165px;
     overflow: hidden;
     margin-bottom: -10px;
     -webkit-transform: translateZ(0);
 }
-
 
 /* ===================================
     5. About Section CSS
@@ -879,7 +928,6 @@ h1.big-text {
     background-size: auto;
 }
 
-
 /* ===================================
     6. Clients Section CSS
 ====================================== */
@@ -890,7 +938,6 @@ h1.big-text {
     background-repeat: no-repeat;
     background-size: cover;
 }
-
 
 /* ===================================
     7. News Section CSS
@@ -938,7 +985,7 @@ h1.big-text {
     font-size: 34px;
     line-height: 110%;
     font-weight: 700;
-    transition: .3s;
+    transition: 0.3s;
     letter-spacing: -1px;
 }
 
@@ -956,14 +1003,13 @@ h1.big-text {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    transition: .3s;
+    transition: 0.3s;
 }
 
 .latest-posts-background-featured-image-holder:hover {
     opacity: 0.8;
     transform: scale(1.1);
 }
-
 
 /* ===================================
     8. Portfolio Section CSS
@@ -1010,7 +1056,7 @@ h1.big-text {
 .grid-item img {
     width: 100% !important;
     height: auto;
-    display: block;    
+    display: block;
 }
 
 .grid-item .entry-holder {
@@ -1029,7 +1075,7 @@ h1.big-text {
     left: 0;
     top: 0;
     opacity: 0;
-    transition: opacity .3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .portfolio-text-holder {
@@ -1040,7 +1086,7 @@ h1.big-text {
     display: inline-block;
     z-index: 1;
     opacity: 0;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
 }
 
 .portfolio-title {
@@ -1059,7 +1105,7 @@ h1.big-text {
     margin-bottom: 0;
 }
 
-.grid-item a.item-link:hover:after, 
+.grid-item a.item-link:hover:after,
 .grid-item a.item-link:hover .portfolio-text-holder {
     opacity: 1;
 }
@@ -1073,7 +1119,7 @@ h1.big-text {
 .portfolio-load-content-holder {
     opacity: 0;
     transform: translateY(70px);
-    transition: all .5s ease;
+    transition: all 0.5s ease;
     width: 1170px;
     max-width: 75%;
     margin: 0 auto;
@@ -1091,7 +1137,7 @@ h1.big-text {
 
 .section.no-padding .portfolio-content-wrapper {
     padding: 195px 0 75px 0;
-}    
+}
 
 .portfolio-content-wrapper {
     display: none;
@@ -1102,14 +1148,14 @@ h1.big-text {
 }
 
 #portfolio-grid {
-    transition: all .5s ease;
+    transition: all 0.5s ease;
     opacity: 1;
     transform: translateY(0px);
 }
 
 #portfolio-grid.hide {
     opacity: 0;
-    transform: translateY(70px);    
+    transform: translateY(70px);
 }
 
 .close-icon {
@@ -1132,7 +1178,6 @@ h1.big-text {
     transform: translateX(-5px);
 }
 
-
 /* ===================================
     8.1 Single Portfolio
 ====================================== */
@@ -1141,7 +1186,6 @@ h1.big-text {
     margin-top: 100px;
     margin-bottom: 50px;
 }
-
 
 /* ===================================
     9. Pricing Section CSS
@@ -1183,10 +1227,7 @@ h1.big-text {
     font-size: 200px;
     font-weight: 700;
     color: #ffffff;
-    text-shadow: -1px 0 #b3b3b3, 
-        0 1px #b3b3b3, 
-        1px 0 #b3b3b3, 
-        0 -1px #b3b3b3;
+    text-shadow: -1px 0 #b3b3b3, 0 1px #b3b3b3, 1px 0 #b3b3b3, 0 -1px #b3b3b3;
     line-height: 100%;
     margin-bottom: -10px;
     position: absolute;
@@ -1234,14 +1275,14 @@ h1.big-text {
     margin-right: 25px;
 }
 
-.pricing-list.included-no, 
+.pricing-list.included-no,
 .pricing-list.included-no span.fa {
     color: gray;
 }
 
 .pricing-list.included-no span.fa:before {
     content: "\f00d";
-} 
+}
 
 .pricing-table-content-holder {
     margin-bottom: 40px;
@@ -1250,7 +1291,6 @@ h1.big-text {
 .pricing-button {
     text-align: center;
 }
-
 
 /* ===================================
     10. Team Section CSS
@@ -1322,13 +1362,12 @@ h1.big-text {
 
 .member-right .member-social-holder {
     left: auto;
-    right: -45px;    
+    right: -45px;
 }
 
 .member-social-holder .social a {
     color: #fff !important;
 }
-
 
 /* ===================================
     11. Skills Section CSS
@@ -1354,7 +1393,7 @@ h1.big-text {
     line-height: 100%;
     font-weight: 100;
     width: 100px;
-    display: inline-block;    
+    display: inline-block;
     vertical-align: text-top;
 }
 
@@ -1384,7 +1423,6 @@ h1.big-text {
     line-height: 35px;
 }
 
-
 /* ===================================
     12. Milestones Section CSS
 ====================================== */
@@ -1396,7 +1434,6 @@ h1.big-text {
     background-repeat: no-repeat;
     background-size: auto;
 }
-
 
 ul.milestones-holder {
     padding: 0;
@@ -1416,7 +1453,7 @@ li.milestone:nth-child(2n) {
 
 li.milestone > div {
     display: inline-block;
-    vertical-align: text-top;    
+    vertical-align: text-top;
 }
 
 li.milestone h5 {
@@ -1443,10 +1480,7 @@ p.milestone-num {
     position: relative;
     margin-bottom: 0;
     color: #000000;
-    text-shadow: -1px 0 #b3b3b3, 
-        0 1px #b3b3b3, 
-        1px 0 #b3b3b3, 
-        0 -1px #b3b3b3;
+    text-shadow: -1px 0 #b3b3b3, 0 1px #b3b3b3, 1px 0 #b3b3b3, 0 -1px #b3b3b3;
 }
 
 /* ===================================
@@ -1457,7 +1491,7 @@ body.blog {
     background-color: #fff;
 }
 
-.blog .site-content {    
+.blog .site-content {
     background-color: #fff;
 }
 
@@ -1465,7 +1499,7 @@ body.blog {
     text-align: center;
     display: table;
     margin: 50px auto;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     font-weight: 600;
     color: #fff;
     background-color: #f1576b;
@@ -1478,7 +1512,7 @@ body.blog {
 
 .blog-holder {
     width: 1170px;
-    max-width: 95%;    
+    max-width: 95%;
 }
 
 .blog-item-holder {
@@ -1519,19 +1553,19 @@ body.blog {
 }
 
 .post-thumbnail-image {
-    transition: .3s;
+    transition: 0.3s;
 }
 
 .post-thumbnail-image:hover {
-    opacity: 0.8;    
+    opacity: 0.8;
 }
 
-.blog-item-holder.has-post-thumbnail:nth-of-type(2n+1) .post-thumbnail {
+.blog-item-holder.has-post-thumbnail:nth-of-type(2n + 1) .post-thumbnail {
     float: left;
     text-align: right;
 }
 
-.blog-item-holder.has-post-thumbnail:nth-of-type(2n+1) .entry-holder {
+.blog-item-holder.has-post-thumbnail:nth-of-type(2n + 1) .entry-holder {
     float: left;
     position: relative;
     z-index: 31;
@@ -1544,7 +1578,7 @@ body.blog {
 }
 
 .blog-item-holder.has-post-thumbnail:nth-of-type(2n) .entry-holder {
-    float: right;    
+    float: right;
     position: relative;
     z-index: 31;
 }
@@ -1572,7 +1606,7 @@ body.blog {
 
 .blog-item-holder h2.entry-title a {
     color: #000 !important;
-    transition: .2s;
+    transition: 0.2s;
 }
 
 .blog-item-holder h2.entry-title a:hover {
@@ -1595,19 +1629,19 @@ body.blog {
 }
 
 .blog-item-holder .cat-links ul li:last-child a:after {
-    display: none
+    display: none;
 }
 
 .blog-item-holder .cat-links ul a {
     color: #000000 !important;
-    transition: .2s;
+    transition: 0.2s;
 }
 
 .blog-item-holder .cat-links ul a:hover {
     opacity: 0.8;
 }
 
-.blog-item-holder .entry-date.published, 
+.blog-item-holder .entry-date.published,
 .blog-item-holder .cat-links {
     display: inline-block;
     font-size: 12px;
@@ -1616,7 +1650,7 @@ body.blog {
     text-transform: uppercase;
 }
 
-.blog-item-holder .cat-links:after {   
+.blog-item-holder .cat-links:after {
     content: "\2022";
     display: inline-block;
     margin: 0 7px 0 10px;
@@ -1627,11 +1661,11 @@ body.blog {
     color: #fff;
     background-color: var(--purple);
     text-align: left;
-    padding: 10px 40px;    
+    padding: 10px 40px;
     cursor: pointer;
     vertical-align: middle;
     text-decoration: none;
-    transition: all .2s linear;
+    transition: all 0.2s linear;
     margin-bottom: 17px;
     border: 2px solid var(--purple);
     border-radius: 50px;
@@ -1645,8 +1679,6 @@ body.blog {
     background-color: #fff;
     color: var(--purple);
 }
-
-
 
 /* ===================================
     14. Single Post CSS
@@ -1786,7 +1818,7 @@ body.blog {
     margin: 0;
     display: inline;
     color: #fff !important;
-    transition: .3s;
+    transition: 0.3s;
 }
 
 .single .nav-links > a:hover {
@@ -1832,7 +1864,7 @@ body.blog {
 .tipper-caret {
     width: 0;
     height: 0;
-    content: '';
+    content: "";
     display: block;
     margin: 0;
     position: absolute;
@@ -1841,7 +1873,6 @@ body.blog {
 .tipper-left .tipper-content {
     box-shadow: -1px 0 5px rgba(0, 0, 0, 0.35);
 }
-
 
 /* ===================================
     15. Contact Section CSS
@@ -1858,10 +1889,10 @@ body.blog {
     margin-bottom: 0 !important;
 }
 
-.contact-form input[type=text], 
-.contact-form input[type=email], 
+.contact-form input[type="text"],
+.contact-form input[type="email"],
 .contact-form textarea {
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     font-weight: 500;
     border: 0;
     font-size: 15px;
@@ -1879,10 +1910,10 @@ body.blog {
     height: 150px;
 }
 
-.contact-form input[type=text]::placeholder, 
-.contact-form input[type=email]::placeholder, 
+.contact-form input[type="text"]::placeholder,
+.contact-form input[type="email"]::placeholder,
 .contact-form textarea::placeholder {
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     color: #000;
     font-weight: 500;
     font-size: 15px;
@@ -1890,20 +1921,20 @@ body.blog {
     opacity: 1;
 }
 
-.contact-form input[type=text]:ms-input-placeholder, 
-.contact-form input[type=email]:ms-input-placeholder, 
+.contact-form input[type="text"]:ms-input-placeholder,
+.contact-form input[type="email"]:ms-input-placeholder,
 .contact-form textarea:ms-input-placeholder {
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     color: #000;
     font-weight: 500;
     font-size: 15px;
-    line-height: 25px;    
+    line-height: 25px;
 }
 
-.contact-form input[type=text]::ms-input-placeholder, 
-.contact-form input[type=email]::ms-input-placeholder, 
+.contact-form input[type="text"]::ms-input-placeholder,
+.contact-form input[type="email"]::ms-input-placeholder,
 .contact-form textarea::ms-input-placeholder {
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     color: #000;
     font-weight: 500;
     font-size: 15px;
@@ -1911,7 +1942,7 @@ body.blog {
 }
 
 .contact-form input[name="your-name"] {
-    margin-top: 0;    
+    margin-top: 0;
 }
 
 .contact-submit-holder {
@@ -1919,15 +1950,15 @@ body.blog {
     margin-bottom: 25px;
 }
 
-.contact-form input[type=submit] {
+.contact-form input[type="submit"] {
     color: #fff;
     background-color: var(--purple);
     text-align: center;
-    padding: 10px 40px;    
+    padding: 10px 40px;
     cursor: pointer;
     vertical-align: middle;
     text-decoration: none;
-    transition: all .2s linear;
+    transition: all 0.2s linear;
     margin-bottom: 17px;
     display: block;
     width: 100%;
@@ -1939,11 +1970,10 @@ body.blog {
     box-sizing: border-box;
 }
 
-.contact-form input[type=submit]:hover {
+.contact-form input[type="submit"]:hover {
     background-color: #fff;
     color: var(--purple);
 }
-
 
 /* ===================================
     16. Footer CSS
@@ -1973,7 +2003,7 @@ footer ul {
     background-color: #111;
 }
 
-.footer-content {    
+.footer-content {
     width: 900px;
 }
 
@@ -2045,25 +2075,19 @@ footer .footer-social-divider:before {
     margin: 0;
 }
 
-
-
 /* ===================================
     17. Responsive CSS
 ====================================== */
 
-
-@media screen and (max-width: 1600px) { 
-
-    .content-1170, 
-    .content-960, 
+@media screen and (max-width: 1600px) {
+    .content-1170,
+    .content-960,
     .content-570 {
         max-width: 95%;
-    }               
-
+    }
 }
 
-@media screen and (max-width: 1366px) { 
-
+@media screen and (max-width: 1366px) {
     .blog-holder-scode {
         width: 100%;
         transform: none;
@@ -2079,49 +2103,42 @@ footer .footer-social-divider:before {
     }
 }
 
-@media screen and (max-width: 1360px) { 
-
+@media screen and (max-width: 1360px) {
     .blog-item-holder.has-post-thumbnail .entry-holder {
         width: 340px;
     }
-
 }
 
 @media screen and (max-width: 1270px) {
-
-    .member-info {    
-        padding: 65px 80px;    
+    .member-info {
+        padding: 65px 80px;
     }
-
 }
 
 @media screen and (max-width: 1220px) {
-
-    blockquote {    
+    blockquote {
         font-size: 17px;
-        line-height: 28px;    
-    }    
-
+        line-height: 28px;
+    }
 }
 
-@media screen and (max-width: 1024px) {   
-
+@media screen and (max-width: 1024px) {
     .sm-clean li {
         margin-right: 8px;
     }
 
-    .sm-clean a, 
-    .sm-clean a:hover, 
-    .sm-clean a:focus, 
-    .sm-clean a:active, 
+    .sm-clean a,
+    .sm-clean a:hover,
+    .sm-clean a:focus,
+    .sm-clean a:active,
     .sm-clean a.highlighted {
         padding: 15px 8px;
     }
 
-    .blog-holder, 
+    .blog-holder,
     .footer-content {
         width: 100%;
-    }            
+    }
 
     .single .post-info-wrapper {
         width: 100%;
@@ -2152,16 +2169,16 @@ footer .footer-social-divider:before {
     .single .entry-content {
         float: none;
         margin-left: auto;
-        margin-right: auto;   
-        max-width: 95%;     
+        margin-right: auto;
+        max-width: 95%;
     }
 
-    .one_half,  
-    .one_third,  
-    .two_third,  
+    .one_half,
+    .one_third,
+    .two_third,
     .one_fourth,
     .three_fourth {
-        margin-right: 6%;   
+        margin-right: 6%;
     }
 
     .one_half {
@@ -2185,8 +2202,8 @@ footer .footer-social-divider:before {
     }
 
     .section h3.entry-title {
-        margin-bottom: 0 !important;        
-    }        
+        margin-bottom: 0 !important;
+    }
 
     .sticky-spacer {
         height: auto !important;
@@ -2200,7 +2217,7 @@ footer .footer-social-divider:before {
 
     .latest-posts-background-featured-image-holder {
         height: 350px;
-    }                
+    }
 
     .pricing-wrapper {
         padding: 0 10%;
@@ -2220,11 +2237,9 @@ footer .footer-social-divider:before {
     li.milestone h5 {
         max-width: 100%;
     }
-
 }
 
-@media screen and (max-width: 1020px) {   
-
+@media screen and (max-width: 1020px) {
     #header-main-menu {
         padding-bottom: 70px;
     }
@@ -2235,7 +2250,7 @@ footer .footer-social-divider:before {
 
     .main-menu ul {
         width: 12em;
-    }        
+    }
 
     .toggle-holder {
         display: block;
@@ -2256,12 +2271,12 @@ footer .footer-social-divider:before {
         background-color: #000000;
         right: -100%;
         top: 77px;
-        transition: right .3s ease;
+        transition: right 0.3s ease;
         height: 100%;
         width: 300px;
         overflow: auto;
         max-width: 100%;
-    }    
+    }
 
     .header-holder {
         -webkit-transform: none;
@@ -2271,9 +2286,9 @@ footer .footer-social-divider:before {
         right: 0;
     }
 
-    .sm-clean ul ul a, 
-    .sm-clean ul ul a:hover, 
-    .sm-clean ul ul a:focus, 
+    .sm-clean ul ul a,
+    .sm-clean ul ul a:hover,
+    .sm-clean ul ul a:focus,
     .sm-clean ul ul a:active {
         border: none;
     }
@@ -2282,19 +2297,19 @@ footer .footer-social-divider:before {
         background: transparent;
     }
 
-    .sm-clean a, 
-    .sm-clean a:hover, 
-    .sm-clean a:focus, 
-    .sm-clean a:active, 
+    .sm-clean a,
+    .sm-clean a:hover,
+    .sm-clean a:focus,
+    .sm-clean a:active,
     .sm-clean a.highlighted {
         padding: 10px 18px 10px 18px;
         padding-left: 10px !important;
         margin-bottom: 5px;
-    }     
+    }
 
     h1.big-text {
         text-align: center;
-        font-size: 60px;        
+        font-size: 60px;
     }
 
     .section-wrapper {
@@ -2305,10 +2320,10 @@ footer .footer-social-divider:before {
         padding-top: 35px;
     }
 
-    .single h1.entry-title {    
+    .single h1.entry-title {
         font-size: 38px;
         line-height: 44px;
-    }       
+    }
 
     .single-post-header-content {
         margin-bottom: 35px;
@@ -2354,7 +2369,7 @@ footer .footer-social-divider:before {
         margin-left: auto !important;
         margin-right: auto !important;
         margin-bottom: 30px;
-        width: 95%;        
+        width: 95%;
         margin-top: 0;
     }
 
@@ -2366,7 +2381,7 @@ footer .footer-social-divider:before {
         max-width: 100%;
         width: 100%;
         padding: 0;
-    }    
+    }
 
     .blog-item-holder .cat-links ul {
         margin: 0;
@@ -2384,10 +2399,10 @@ footer .footer-social-divider:before {
         padding-bottom: 20px;
     }
 
-    .one_half, 
-    .one_third, 
-    .one_fourth, 
-    .two_third, 
+    .one_half,
+    .one_third,
+    .one_fourth,
+    .two_third,
     .three_fourth {
         width: 100% !important;
         float: none;
@@ -2400,10 +2415,10 @@ footer .footer-social-divider:before {
         width: 100% !important;
     }
 
-    .grid-item, 
+    .grid-item,
     .grid-sizer {
         width: 100% !important;
-    } 
+    }
 
     .button-holder {
         text-align: center !important;
@@ -2429,12 +2444,12 @@ footer .footer-social-divider:before {
     }
 
     .blog-item-holder-scode {
-        display: block;  
-        text-align: center; 
+        display: block;
+        text-align: center;
         width: 100%;
         margin-left: auto;
         margin-right: auto !important;
-        max-width: 400px;         
+        max-width: 400px;
     }
 
     .medium-text {
@@ -2506,7 +2521,7 @@ footer .footer-social-divider:before {
         max-width: 350px;
         margin-left: auto !important;
         margin-right: auto !important;
-    }  
+    }
 
     li.milestone:last-child {
         margin-bottom: 0;
@@ -2533,19 +2548,17 @@ footer .footer-social-divider:before {
         margin-top: 50px;
     }
 
-    .single .nav-links {     
-        transform: none;        
-        margin-top: 50px;        
+    .single .nav-links {
+        transform: none;
+        margin-top: 50px;
         text-align: center;
     }
-
 }
 
-@media screen and (max-width: 767px) {    
-
+@media screen and (max-width: 767px) {
     .page-title-holder {
         height: 100px;
-    }   
+    }
 
     .section h3.entry-title {
         margin-top: 18px;
@@ -2561,7 +2574,7 @@ footer .footer-social-divider:before {
 
     .page-title-holder:after {
         border-width: 100px 60px 0 0;
-    }  
+    }
 
     .blog-item-holder h2.entry-title {
         font-size: 34px;
@@ -2583,14 +2596,14 @@ footer .footer-social-divider:before {
         font-size: 180px;
         line-height: 37px;
         top: 0;
-    }    
+    }
 
     .blog-item-holder-scode .post-thumbnail {
         margin-top: 70px;
     }
 
     .blog-holder-scode > article:first-of-type .post-thumbnail {
-        margin-top: 0;   
+        margin-top: 0;
     }
 
     .latest-posts-background-featured-image-holder {
@@ -2613,7 +2626,7 @@ footer .footer-social-divider:before {
 
     .member-postition {
         font-size: 13px;
-    }   
+    }
 
     .text-slider-wrapper {
         width: 80%;
@@ -2638,50 +2651,43 @@ footer .footer-social-divider:before {
         font-size: 14px;
         line-height: 125%;
     }
-
 }
 
 @media screen and (max-width: 750px) {
-
     .blog-item-holder .entry-holder {
         max-width: 95%;
     }
-
 }
 
 @media screen and (max-width: 650px) {
-
-    .blog-item-holder .entry-date.published, 
-    .blog-item-holder .cat-links, 
-    .single .entry-info div, 
+    .blog-item-holder .entry-date.published,
+    .blog-item-holder .cat-links,
+    .single .entry-info div,
     .single .entry-info .cat-links ul {
         display: block;
     }
 
-    .blog-item-holder .entry-date.published:after, 
+    .blog-item-holder .entry-date.published:after,
     .single .entry-info div:after {
         display: none;
-    }    
+    }
 
     h1.big-text {
         text-align: center;
-        font-size: 40px;        
+        font-size: 40px;
     }
-
 }
 @media screen and (max-width: 485px) {
     .button-spacing {
         display: none;
     }
 }
-@media screen and (max-width: 400px) { 
-
-   .page-title-holder {
-       width: 200px;
-   }
+@media screen and (max-width: 400px) {
+    .page-title-holder {
+        width: 200px;
+    }
 
     .footer-mail {
         font-size: 28px;
     }
-
 }
