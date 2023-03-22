@@ -411,7 +411,7 @@ export async function getStats() {
     return {
         entries: await ScoutingEntry.countDocuments({}),
         scouters: [...users].length,
-        teams: await Team.countDocuments({}),
+        teams: await Team.countDocuments({teamNumber: {$ne: config.auth.scoutingInternal.teamNumber}}),
         countries: 3
     };
 }
