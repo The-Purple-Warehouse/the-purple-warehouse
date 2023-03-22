@@ -414,6 +414,6 @@ export async function getStats() {
         teams: await Team.countDocuments({
             teamNumber: { $ne: config.auth.scoutingInternal.teamNumber }
         }),
-        countries: 3
+        countries: (await Team.distinct("country")).length
     };
 }

@@ -5,6 +5,7 @@ export default mongoose.model(
     new mongoose.Schema({
         teamName: String,
         teamNumber: String,
-        accessToken: String
+        accessToken: String,
+        country: String
     })
 );

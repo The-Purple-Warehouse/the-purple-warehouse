@@ -22,14 +22,16 @@ export async function teamExistsByNumber(teamNumber: string) {
 export async function addTeam(
     teamName: string,
     teamNumber: string,
-    accessToken: string
+    accessToken: string,
+    country: string
 ) {
     let team = await getTeamByNumber(teamNumber);
     if (team == null) {
         team = new Team({
             teamName: teamName,
             teamNumber: teamNumber,
-            accessToken: hashAccessToken(accessToken)
+            accessToken: hashAccessToken(accessToken),
+            country: country
         });
         await team.save();
     }
