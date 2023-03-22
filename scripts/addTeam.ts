@@ -1,6 +1,6 @@
 import { addTeam, removeAllTeams } from "../helpers/teams";
 
-async function addTeamToDatabase(teamName, teamNumber, accessToken) {
+async function addTeamToDatabase(teamName, teamNumber, accessToken, country) {
     if (teamName == null) {
         console.log("Missing --teamName argument");
         return;
@@ -13,7 +13,11 @@ async function addTeamToDatabase(teamName, teamNumber, accessToken) {
         console.log("Missing --accessToken argument");
         return;
     }
-    let team = (await addTeam(teamName, teamNumber, accessToken)) as any;
+    if (country == null) {
+        console.log("Missing --country argument");
+        return;
+    }
+    let team = (await addTeam(teamName, teamNumber, accessToken, country)) as any;
     console.log(`Added team: ${team.teamName} (${team.teamNumber})`);
     return;
 }
@@ -30,7 +34,10 @@ for (let i = 0; i < rawArgs.length; i++) {
     } else if (rawArgs[i] == "--accessToken" && args["accessToken"] == null) {
         args["accessToken"] = rawArgs[i + 1];
         i++;
+    } else if (rawArgs[i] == "--country" && args["country"] == null) {
+        args["country"] = rawArgs[i + 1];
+        i++;
     }
 }
 
-addTeamToDatabase(args.teamName, args.teamNumber, args.accessToken);
+addTeamToDatabase(args.teamName, args.teamNumber, args.accessToken, args.country);
