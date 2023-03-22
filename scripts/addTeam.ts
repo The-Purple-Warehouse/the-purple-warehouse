@@ -17,7 +17,12 @@ async function addTeamToDatabase(teamName, teamNumber, accessToken, country) {
         console.log("Missing --country argument");
         return;
     }
-    let team = (await addTeam(teamName, teamNumber, accessToken, country)) as any;
+    let team = (await addTeam(
+        teamName,
+        teamNumber,
+        accessToken,
+        country
+    )) as any;
     console.log(`Added team: ${team.teamName} (${team.teamNumber})`);
     return;
 }
@@ -40,4 +45,9 @@ for (let i = 0; i < rawArgs.length; i++) {
     }
 }
 
-addTeamToDatabase(args.teamName, args.teamNumber, args.accessToken, args.country);
+addTeamToDatabase(
+    args.teamName,
+    args.teamNumber,
+    args.accessToken,
+    args.country
+);
