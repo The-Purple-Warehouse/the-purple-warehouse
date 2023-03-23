@@ -156,6 +156,12 @@ export function layout() {
                     }
                 },
                 {
+                    type: "checkbox",
+                    label: "Ground Pick-Up",
+                    default: false,
+                    data: "23-1"
+                },
+                {
                     type: "timer",
                     label: "Defense Time",
                     default: 0,
