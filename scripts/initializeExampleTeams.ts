@@ -7,7 +7,8 @@ async function initializeExampleTeams() {
             teamName: "Harker Robotics",
             teamNumber: "1072",
             accessToken: "123",
-            country: "USA"
+            country: "USA",
+            state: "California"
         }
     ];
     for (let i = 0; i < teams.length; i++) {
@@ -15,7 +16,8 @@ async function initializeExampleTeams() {
             teams[i].teamName,
             teams[i].teamNumber,
             teams[i].accessToken,
-            teams[i].country
+            teams[i].country,
+            teams[i].state
         )) as any;
         console.log(`Added team: ${team.teamName} (${team.teamNumber})`);
     }
