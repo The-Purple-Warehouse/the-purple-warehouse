@@ -144,23 +144,23 @@ function formatNumber(num) {
 
 function formatTime(num) {
     let indicator = "s";
-    if(num > 60) {
+    if (num > 60) {
         num = Math.floor(num / 60);
         indicator = "m";
     }
-    if(num > 60) {
+    if (num > 60) {
         num = Math.floor(num / 60);
         indicator = "h";
     }
-    if(num > 24) {
+    if (num > 24) {
         num = Math.floor(num / 24);
         indicator = "d";
     }
-    if(num > 30) {
+    if (num > 30) {
         num = Math.floor(num / 30);
         indicator = "m";
     }
-    if(num > 12) {
+    if (num > 12) {
         num = Math.floor(num / 12);
         indicator = "y";
     }

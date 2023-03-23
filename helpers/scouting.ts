@@ -415,6 +415,7 @@ export async function getStats() {
             teamNumber: { $ne: config.auth.scoutingInternal.teamNumber }
         }),
         countries: (await Team.distinct("country")).length,
-        states: (await Team.distinct("state")).filter(state => state != "").length
+        states: (await Team.distinct("state")).filter((state) => state != "")
+            .length
     };
 }
