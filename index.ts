@@ -142,13 +142,40 @@ function formatNumber(num) {
     }
 }
 
+function formatTime(num) {
+    let indicator = "s";
+    if(num > 60) {
+        num = Math.floor(num / 60);
+        indicator = "m";
+    }
+    if(num > 60) {
+        num = Math.floor(num / 60);
+        indicator = "h";
+    }
+    if(num > 24) {
+        num = Math.floor(num / 24);
+        indicator = "d";
+    }
+    if(num > 30) {
+        num = Math.floor(num / 30);
+        indicator = "m";
+    }
+    if(num > 12) {
+        num = Math.floor(num / 12);
+        indicator = "y";
+    }
+    return `${num}${indicator}+`;
+}
+
 router.get("/", async (ctx, next) => {
     let stats: any = await getStats();
     await ctx.render("index", {
         stats: {
             entries: formatNumber(stats.entries),
+            time: formatTime(stats.entries * 153),
             scouters: formatNumber(stats.scouters),
             teams: stats.teams,
+            states: stats.states,
             countries: stats.countries
         }
     });
