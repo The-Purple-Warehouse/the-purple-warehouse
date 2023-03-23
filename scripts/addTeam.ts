@@ -1,6 +1,12 @@
 import { addTeam, removeAllTeams } from "../helpers/teams";
 
-async function addTeamToDatabase(teamName, teamNumber, accessToken, country, state) {
+async function addTeamToDatabase(
+    teamName,
+    teamNumber,
+    accessToken,
+    country,
+    state
+) {
     if (teamName == null) {
         console.log("Missing --teamName argument");
         return;
