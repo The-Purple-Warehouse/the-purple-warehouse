@@ -147,18 +147,26 @@ function formatTime(num) {
     if (num >= 100) {
         num = Math.floor(num / 60);
         indicator = "min";
+    } else {
+        return `${num}${indicator}`;
     }
     if (num >= 10) {
         num = Math.ceil(num / 60);
         indicator = "hr";
+    } else {
+        return `${num}${indicator}`;
     }
     if (num >= 100) {
         num = Math.floor(num / 24);
         indicator = "d";
+    } else {
+        return `${num}${indicator}`;
     }
     if (num > 30) {
         num = Math.floor(num / 30);
         indicator = "mo";
+    } else {
+        return `${num}${indicator}`;
     }
     if (num > 12) {
         num = Math.floor(num / 12);
