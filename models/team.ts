@@ -6,6 +6,7 @@ export default mongoose.model(
         teamName: String,
         teamNumber: String,
         accessToken: String,
-        country: String
+        country: String,
+        state: String
     })
 );
