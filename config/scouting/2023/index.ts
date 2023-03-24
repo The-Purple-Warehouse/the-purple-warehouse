@@ -25,7 +25,7 @@ export function categories() {
         { name: "Auto Charge Station Level", identifier: "23-8" },
         { name: "Teleop Charge Station Level", identifier: "23-9" },
         { name: "Teleop Charge Station Time", identifier: "23-10" },
-        { name: "Break Time", identifier: "23-11" },
+        { name: "Brick Time", identifier: "23-11" },
         { name: "Defense Time", identifier: "23-12" },
         { name: "Drive Skill Rating", identifier: "23-13" },
         { name: "Defense Skill Rating", identifier: "23-14" },
@@ -63,7 +63,7 @@ export function layout() {
                 },
                 {
                     type: "timer",
-                    label: "Break Time",
+                    label: "Brick Time",
                     default: 0,
                     data: "23-11",
                     name: "break_time",
@@ -171,7 +171,7 @@ export function layout() {
                 },
                 {
                     type: "timer",
-                    label: "Break Time",
+                    label: "Brick Time",
                     default: 0,
                     data: "23-11",
                     name: "break_time",
@@ -525,7 +525,7 @@ let locationConversion = {
 };
 
 export function formatData(data, categories, teams) {
-    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments\n${data
+    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy\n${data
         .map((entry, i) => {
             let locations = [
                 ...find(entry, "data", categories, "23-2", []),
@@ -575,7 +575,8 @@ export function formatData(data, categories, teams) {
                         teams[entry.contributor.team] || 0
                     })`
                 ),
-                JSON.stringify(entry.comments || "")
+                JSON.stringify(entry.comments || ""),
+                (entry.accuracy && entry.accuracy.calculated) ? parseFloat(entry.accuracy.percentage.toFixed(4)) : ""
             ].join(",");
         })
         .join("\n")}`;

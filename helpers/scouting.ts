@@ -305,7 +305,11 @@ export async function getSummaryByEvent(event: string) {
     };
 }
 
-export async function getSharedData(event: string, teamNumber: string, threshold: number = 10) {
+export async function getSharedData(
+    event: string,
+    teamNumber: string,
+    threshold: number = 10
+) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
     if (!config.auth.scoutingAdmins.includes(teamNumber)) {
@@ -332,7 +336,10 @@ export async function getSharedData(event: string, teamNumber: string, threshold
         ].slice(
             0,
             Math.round(
-                (contributions.length > threshold ? threshold : contributions.length) * (16 / threshold)
+                (contributions.length > threshold
+                    ? threshold
+                    : contributions.length) *
+                    (16 / threshold)
             )
         );
         data = data
