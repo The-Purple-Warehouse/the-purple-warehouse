@@ -122,13 +122,15 @@ export async function getTotalIncentives(contributingTeam, contributingUser) {
     let entries = await ScoutingEntry.find({
         "contributor.team": (await getTeamByNumber(contributingTeam))._id,
         "contributor.username": contributingUser,
-        xp: {$exists: true}
-    }).select({xp: 1, nuts: 1, bolts: 1}).lean();
+        xp: { $exists: true }
+    })
+        .select({ xp: 1, nuts: 1, bolts: 1 })
+        .lean();
     return {
         xp: entries.reduce((total, current: any) => total + current.xp, 0),
         nuts: entries.reduce((total, current: any) => total + current.nuts, 0),
         bolts: entries.reduce((total, current: any) => total + current.bolts, 0)
-    }
+    };
 }
 
 export function randomBolts() {
@@ -230,8 +232,14 @@ export async function addEntry(
         if (event.endsWith("-prac")) {
             incentiveMultiplier = 0;
         }
-        let duplicate = await ScoutingEntry.findOne({ "contributor.team": (await getTeamByNumber(contributingTeam))._id, "contributor.username": contributingUsername, event, match, team });
-        if(duplicate != null) {
+        let duplicate = await ScoutingEntry.findOne({
+            "contributor.team": (await getTeamByNumber(contributingTeam))._id,
+            "contributor.username": contributingUsername,
+            event,
+            match,
+            team
+        });
+        if (duplicate != null) {
             incentiveMultiplier = 0;
         }
         entry = new ScoutingEntry({

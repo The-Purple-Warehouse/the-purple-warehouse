@@ -91,7 +91,10 @@ router.post(
                     xp: entry.accuracyBoosters.xp,
                     nuts: entry.accuracyBoosters.nuts
                 },
-                totals: await getTotalIncentives(ctx.session.scoutingTeamNumber, ctx.session.scoutingUsername)
+                totals: await getTotalIncentives(
+                    ctx.session.scoutingTeamNumber,
+                    ctx.session.scoutingUsername
+                )
             }
         };
     }
