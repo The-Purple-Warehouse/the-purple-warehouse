@@ -443,18 +443,22 @@ export async function getSummaryByEvent(event: string) {
         teamMatchesSorted.push({
             team: teamsWithEntries[i],
             amount: teamMatches[teamsWithEntries[i]]
-        })
+        });
         if (teamAccuracies[teamsWithEntries[i]].denominator > 0) {
             teamAccuraciesSorted.push({
                 team: teamsWithEntries[i],
-                amount: teamAccuracies[teamsWithEntries[i]].numerator / teamAccuracies[teamsWithEntries[i]].denominator
+                amount:
+                    teamAccuracies[teamsWithEntries[i]].numerator /
+                    teamAccuracies[teamsWithEntries[i]].denominator
             });
         }
     }
     matchesSorted = matchesSorted.sort((a, b) => b.amount - a.amount);
     accuraciesSorted = accuraciesSorted.sort((a, b) => b.amount - a.amount);
     teamMatchesSorted = teamMatchesSorted.sort((a, b) => b.amount - a.amount);
-    teamAccuraciesSorted = teamAccuraciesSorted.sort((a, b) => b.amount - a.amount);
+    teamAccuraciesSorted = teamAccuraciesSorted.sort(
+        (a, b) => b.amount - a.amount
+    );
     return {
         individual: {
             matches: matchesSorted,
