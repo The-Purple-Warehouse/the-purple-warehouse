@@ -339,8 +339,10 @@ export async function addEntry(
 
 export async function getAllRawDataByEvent(event: string) {
     let data;
-    if(event.endsWith("-prac")) {
-        data = await ScoutingEntry.find({ event }).sort({serverTimestamp: 1}).lean();
+    if (event.endsWith("-prac")) {
+        data = await ScoutingEntry.find({ event })
+            .sort({ serverTimestamp: 1 })
+            .lean();
     } else {
         data = await ScoutingEntry.find({ event })
             .sort([
