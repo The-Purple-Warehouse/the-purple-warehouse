@@ -576,7 +576,9 @@ export function formatData(data, categories, teams) {
                     })`
                 ),
                 JSON.stringify(entry.comments || ""),
-                (entry.accuracy && entry.accuracy.calculated) ? parseFloat(entry.accuracy.percentage.toFixed(4)) : ""
+                entry.accuracy && entry.accuracy.calculated
+                    ? parseFloat(entry.accuracy.percentage.toFixed(4))
+                    : ""
             ].join(",");
         })
         .join("\n")}`;
