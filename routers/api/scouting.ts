@@ -64,27 +64,33 @@ router.post(
     async (ctx, next) => {
         addAPIHeaders(ctx);
         let body = ctx.request.body as any;
+        let entry = (await addEntry(
+            ctx.session.scoutingTeamNumber,
+            (body.username as string) ||
+            ctx.session.scoutingUsername,
+            ctx.params.event,
+            parseInt(ctx.params.match),
+            ctx.params.team,
+            ctx.params.color,
+            body.data as [any],
+            body.abilities as [any],
+            body.counters as [any],
+            body.timers as [any],
+            body.ratings as [any],
+            body.comments as string,
+            body.timestamp as number
+        )) as any;
         ctx.body = {
             success: true,
             body: {
-                hash: (
-                    (await addEntry(
-                        ctx.session.scoutingTeamNumber,
-                        (body.username as string) ||
-                            ctx.session.scoutingUsername,
-                        ctx.params.event,
-                        parseInt(ctx.params.match),
-                        ctx.params.team,
-                        ctx.params.color,
-                        body.data as [any],
-                        body.abilities as [any],
-                        body.counters as [any],
-                        body.timers as [any],
-                        body.ratings as [any],
-                        body.comments as string,
-                        body.timestamp as number
-                    )) as any
-                ).hash
+                hash: entry.hash,
+                xp: entry.xp,
+                nuts: entry.nuts,
+                bolts: entry.bolts,
+                accuracyBoosters: {
+                    xp: entry.accuracyBoosters.xp,
+                    nuts: entry.accuracyBoosters.nuts
+                }
             }
         };
     }
