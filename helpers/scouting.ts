@@ -338,7 +338,13 @@ export async function addEntry(
 }
 
 export async function getAllRawDataByEvent(event: string) {
-    let data = await ScoutingEntry.find({ event }).sort([['match', 1], ['color', -1], ['team', 1]]).lean();
+    let data = await ScoutingEntry.find({ event })
+        .sort([
+            ["match", 1],
+            ["color", -1],
+            ["team", 1]
+        ])
+        .lean();
     let teamsFromDatabase = await Team.find({}).lean();
     let categoriesFromDatabase = await ScoutingCategory.find({}).lean();
     let teams = {};
