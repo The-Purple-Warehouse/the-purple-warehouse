@@ -375,50 +375,50 @@ export async function getAllDataByEvent(event: string) {
 export async function getSummaryByEvent(event: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let matches = {};
+    let teamMatches = {};
     let accuracies = {};
+    let teamAccuracies = {};
     for (let i = 0; i < data.length; i++) {
         let entry = data[i] as any;
-        if (matches[teams[entry.contributor.team._id.toString()]] == null) {
-            matches[teams[entry.contributor.team._id.toString()]] = {};
+        let team = teams[entry.contributor.team._id.toString()];
+        let username = entry.contributor.username;
+        if (matches[team] == null) {
+            matches[team] = {};
         }
-        if (
-            matches[teams[entry.contributor.team._id.toString()]][
-                entry.contributor.username
-            ] == null
-        ) {
-            matches[teams[entry.contributor.team._id.toString()]][
-                entry.contributor.username
-            ] = 0;
+        if (teamMatches[team] == null) {
+            teamMatches[team] = 0;
         }
-        matches[teams[entry.contributor.team._id.toString()]][
-            entry.contributor.username
-        ] += 1;
-        if (accuracies[teams[entry.contributor.team._id.toString()]] == null) {
-            accuracies[teams[entry.contributor.team._id.toString()]] = {};
+        if (matches[team][username] == null) {
+            matches[team][username] = 0;
         }
-        if (
-            accuracies[teams[entry.contributor.team._id.toString()]][
-                entry.contributor.username
-            ] == null
-        ) {
-            accuracies[teams[entry.contributor.team._id.toString()]][
-                entry.contributor.username
-            ] = {
+        matches[team][username] += 1;
+        teamMatches[team] += 1;
+        if (accuracies[team] == null) {
+            accuracies[team] = {};
+        }
+        if (teamAccuracies[team] == null) {
+            teamAccuracies[team] = {
+                numerator: 0,
+                denominator: 0
+            };
+        }
+        if (accuracies[team][username] == null) {
+            accuracies[team][username] = {
                 numerator: 0,
                 denominator: 0
             };
         }
         if (entry.accuracy && entry.accuracy.calculated) {
-            accuracies[teams[entry.contributor.team._id.toString()]][
-                entry.contributor.username
-            ].numerator += entry.accuracy.percentage;
-            accuracies[teams[entry.contributor.team._id.toString()]][
-                entry.contributor.username
-            ].denominator += 1;
+            accuracies[team][username].numerator += entry.accuracy.percentage;
+            accuracies[team][username].denominator += 1;
+            teamAccuracies[team].numerator += entry.accuracy.percentage;
+            teamAccuracies[team].denominator += 1;
         }
     }
     let matchesSorted = [];
     let accuraciesSorted = [];
+    let teamMatchesSorted = [];
+    let teamAccuraciesSorted = [];
     let teamsWithEntries = Object.keys(matches);
     for (let i = 0; i < teamsWithEntries.length; i++) {
         let usernames = Object.keys(matches[teamsWithEntries[i]]);
@@ -440,12 +440,30 @@ export async function getSummaryByEvent(event: string) {
                 });
             }
         }
+        teamMatchesSorted.push({
+            team: teamsWithEntries[i],
+            amount: teamMatches[teamsWithEntries[i]]
+        })
+        if (teamAccuracies[teamsWithEntries[i]].denominator > 0) {
+            teamAccuraciesSorted.push({
+                team: teamsWithEntries[i],
+                amount: teamAccuracies[teamsWithEntries[i]].numerator / teamAccuracies[teamsWithEntries[i]].denominator
+            });
+        }
     }
     matchesSorted = matchesSorted.sort((a, b) => b.amount - a.amount);
     accuraciesSorted = accuraciesSorted.sort((a, b) => b.amount - a.amount);
+    teamMatchesSorted = teamMatchesSorted.sort((a, b) => b.amount - a.amount);
+    teamAccuraciesSorted = teamAccuraciesSorted.sort((a, b) => b.amount - a.amount);
     return {
-        matches: matchesSorted,
-        accuracies: accuraciesSorted
+        individual: {
+            matches: matchesSorted,
+            accuracies: accuraciesSorted
+        },
+        team: {
+            matches: teamMatchesSorted,
+            accuracies: teamAccuraciesSorted
+        }
     };
 }
 

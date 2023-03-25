@@ -6,9 +6,9 @@ async function getSummary(event) {
         return;
     }
     let data = (await getSummaryByEvent(event)) as any;
-    console.log("MATCHES:");
+    console.log("INDIVIDUAL MATCHES:");
     console.log(
-        data.matches
+        data.individual.matches
             .map(
                 (match) =>
                     `${match.username} (${match.team}) - ${match.amount} match${
@@ -18,9 +18,9 @@ async function getSummary(event) {
             .join("\n")
     );
     console.log("");
-    console.log("ACCURACIES:");
+    console.log("INDIVIDUAL ACCURACIES:");
     console.log(
-        data.accuracies
+        data.individual.accuracies
             .map(
                 (accuracy) =>
                     `${accuracy.username} (${accuracy.team}) - ${
@@ -29,6 +29,12 @@ async function getSummary(event) {
             )
             .join("\n")
     );
+    console.log("");
+    console.log("TEAM MATCHES:");
+    console.log(data.team.matches.map((match) => `${match.team} - ${match.amount} match${match.amount > 1 ? "es" : ""}`).join("\n"));
+    console.log("");
+    console.log("TEAM ACCURACIES:");
+    console.log(data.team.accuracies.map((accuracy) => `${accuracy.team} - ${accuracy.amount * 100}% accuracy`).join("\n"));
     return;
 }
 
