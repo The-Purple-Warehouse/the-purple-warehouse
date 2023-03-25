@@ -61,6 +61,24 @@ let ScoutingAccuracy = new mongoose.Schema({
     }
 });
 
+let ScoutingBoosters = new mongoose.Schema({
+    xp: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    nuts: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    bolts: {
+        type: Number,
+        required: false,
+        default: 0
+    }
+})
+
 export default mongoose.model(
     "ScoutingEntry",
     new mongoose.Schema({
@@ -78,6 +96,22 @@ export default mongoose.model(
         clientTimestamp: Number,
         serverTimestamp: Number,
         hash: String,
-        accuracy: ScoutingAccuracy
+        accuracy: ScoutingAccuracy,
+        xp: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        nuts: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        bolts: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        accuracyBoosters: ScoutingBoosters
     })
 );
