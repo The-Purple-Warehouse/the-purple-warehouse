@@ -16,7 +16,8 @@ import {
     entryExistsByHash,
     getLatestMatch,
     getTeamEntriesByEvent,
-    getSharedData
+    getSharedData,
+    getTotalIncentives
 } from "../../helpers/scouting";
 import { getEvents, getMatches, getMatchesFull } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
@@ -89,7 +90,8 @@ router.post(
                 accuracyBoosters: {
                     xp: entry.accuracyBoosters.xp,
                     nuts: entry.accuracyBoosters.nuts
-                }
+                },
+                totals: await getTotalIncentives(ctx.session.scoutingTeamNumber, ctx.session.scoutingUsername)
             }
         };
     }
