@@ -31,10 +31,26 @@ async function getSummary(event) {
     );
     console.log("");
     console.log("TEAM MATCHES:");
-    console.log(data.team.matches.map((match) => `${match.team} - ${match.amount} match${match.amount > 1 ? "es" : ""}`).join("\n"));
+    console.log(
+        data.team.matches
+            .map(
+                (match) =>
+                    `${match.team} - ${match.amount} match${
+                        match.amount > 1 ? "es" : ""
+                    }`
+            )
+            .join("\n")
+    );
     console.log("");
     console.log("TEAM ACCURACIES:");
-    console.log(data.team.accuracies.map((accuracy) => `${accuracy.team} - ${accuracy.amount * 100}% accuracy`).join("\n"));
+    console.log(
+        data.team.accuracies
+            .map(
+                (accuracy) =>
+                    `${accuracy.team} - ${accuracy.amount * 100}% accuracy`
+            )
+            .join("\n")
+    );
     return;
 }
 
