@@ -1214,7 +1214,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     if (data.success) {
                         element.querySelector(".red").innerHTML = "&nbsp;";
                         let csv = data.body.csv;
-                        let download = "data:text/csv;charset=utf-8," + csv;
+                        let download = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
                         let link = document.createElement("a");
                         link.style.display = "none";
                         link.setAttribute("href", download);
