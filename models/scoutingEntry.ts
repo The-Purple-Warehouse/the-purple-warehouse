@@ -77,7 +77,7 @@ let ScoutingBoosters = new mongoose.Schema({
         required: false,
         default: 0
     }
-})
+});
 
 export default mongoose.model(
     "ScoutingEntry",

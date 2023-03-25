@@ -66,8 +66,7 @@ router.post(
         let body = ctx.request.body as any;
         let entry = (await addEntry(
             ctx.session.scoutingTeamNumber,
-            (body.username as string) ||
-            ctx.session.scoutingUsername,
+            (body.username as string) || ctx.session.scoutingUsername,
             ctx.params.event,
             parseInt(ctx.params.match),
             ctx.params.team,

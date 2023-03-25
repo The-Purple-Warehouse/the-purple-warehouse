@@ -75,24 +75,32 @@ export async function getTeamEntriesByEvent(
     }).lean();
 }
 
-export async function getAverageAccuracy(event: string, contributingTeam: string, contributingUser: string, limit: number) {
+export async function getAverageAccuracy(
+    event: string,
+    contributingTeam: string,
+    contributingUser: string,
+    limit: number
+) {
     let entries = await ScoutingEntry.find({
         event,
         "contributor.team": (await getTeamByNumber(contributingTeam))._id,
         "contributor.username": contributingUser,
-        accuracy: {$exists: true},
+        accuracy: { $exists: true },
         "accuracy.calculated": true
-    }).sort({match: -1}).limit(limit).lean();
+    })
+        .sort({ match: -1 })
+        .limit(limit)
+        .lean();
     let pending = await ScoutingEntry.countDocuments({
         event,
         "contributor.team": (await getTeamByNumber(contributingTeam))._id,
         "contributor.username": contributingUser,
         $or: [
-            {accuracy: {$exists: false}},
-            {"accuracy.calculated": false}
+            { accuracy: { $exists: false } },
+            { "accuracy.calculated": false }
         ]
     });
-    if(entries.length == 0) {
+    if (entries.length == 0) {
         return {
             accuracy: 0,
             total: 0,
@@ -100,7 +108,11 @@ export async function getAverageAccuracy(event: string, contributingTeam: string
         };
     }
     return {
-        accuracy: entries.map(entry => (entry as any).accuracy.percentage).reduce((total, current) => total + current, 0) / entries.length,
+        accuracy:
+            entries
+                .map((entry) => (entry as any).accuracy.percentage)
+                .reduce((total, current) => total + current, 0) /
+            entries.length,
         total: entries.length,
         pending
     };
@@ -108,15 +120,15 @@ export async function getAverageAccuracy(event: string, contributingTeam: string
 
 export function randomBolts() {
     let rand = Math.random() * 100;
-    if(rand < 2) {
+    if (rand < 2) {
         return 5;
-    } else if(rand < 6) {
+    } else if (rand < 6) {
         return 4;
-    } else if(rand > 13) {
+    } else if (rand > 13) {
         return 3;
-    } else if(rand > 23) {
+    } else if (rand > 23) {
         return 2;
-    } else if(rand > 45) {
+    } else if (rand > 45) {
         return 1;
     } else {
         return 0;
@@ -180,24 +192,29 @@ export async function addEntry(
     let hash = crypto.createHash("sha256").update(stringified).digest("hex");
     let entry = await getEntryByHash(hash);
     if (entry == null) {
-        let rollingAccuracy: any = await getAverageAccuracy(event, contributingTeam, contributingUsername, 5);
+        let rollingAccuracy: any = await getAverageAccuracy(
+            event,
+            contributingTeam,
+            contributingUsername,
+            5
+        );
         let incentiveMultiplier = 1;
-        if(rollingAccuracy.total > 3) {
-            if(rollingAccuracy.accuracy > 0.8) {
+        if (rollingAccuracy.total > 3) {
+            if (rollingAccuracy.accuracy > 0.8) {
                 incentiveMultiplier = 1;
-            } else if(rollingAccuracy.accuracy > 0.7) {
+            } else if (rollingAccuracy.accuracy > 0.7) {
                 incentiveMultiplier = 0.7;
-            } else if(rollingAccuracy.accuracy > 0.6) {
+            } else if (rollingAccuracy.accuracy > 0.6) {
                 incentiveMultiplier = 0.4;
-            } else if(rollingAccuracy.accuracy > 0.5) {
+            } else if (rollingAccuracy.accuracy > 0.5) {
                 incentiveMultiplier = 0.2;
             } else {
-                incentiveMultiplier = 0
+                incentiveMultiplier = 0;
             }
-        } else if(rollingAccuracy.pending > 3) {
+        } else if (rollingAccuracy.pending > 3) {
             incentiveMultiplier = 0;
         }
-        if(event.endsWith("-prac")) {
+        if (event.endsWith("-prac")) {
             incentiveMultiplier = 0;
         }
         entry = new ScoutingEntry({
@@ -267,12 +284,26 @@ export async function addEntry(
                 calculated: false,
                 percentage: 0
             },
-            xp: Math.round((((Math.random() * 100) + 100) * incentiveMultiplier) + (incentiveMultiplier > 0 ? (rollingAccuracy.accuracy * 50) : 0)),
-            nuts: Math.round((((Math.random() * 50) + 50) * incentiveMultiplier) + (incentiveMultiplier > 0 ? (rollingAccuracy.accuracy * 25) : 0)),
+            xp: Math.round(
+                (Math.random() * 100 + 100) * incentiveMultiplier +
+                    (incentiveMultiplier > 0
+                        ? rollingAccuracy.accuracy * 50
+                        : 0)
+            ),
+            nuts: Math.round(
+                (Math.random() * 50 + 50) * incentiveMultiplier +
+                    (incentiveMultiplier > 0
+                        ? rollingAccuracy.accuracy * 25
+                        : 0)
+            ),
             bolts: Math.round(randomBolts() * incentiveMultiplier),
             accuracyBoosters: {
-                xp: Math.round(incentiveMultiplier > 0 ? (rollingAccuracy.accuracy * 50) : 0),
-                nuts: Math.round(incentiveMultiplier > 0 ? (rollingAccuracy.accuracy * 25) : 0)
+                xp: Math.round(
+                    incentiveMultiplier > 0 ? rollingAccuracy.accuracy * 50 : 0
+                ),
+                nuts: Math.round(
+                    incentiveMultiplier > 0 ? rollingAccuracy.accuracy * 25 : 0
+                )
             }
         });
         await entry.save();
