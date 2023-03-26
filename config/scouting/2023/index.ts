@@ -525,7 +525,7 @@ let locationConversion = {
 };
 
 export function formatData(data, categories, teams) {
-    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy\n${data
+    return `,match,team,"team color","mobility","ground pick-up",locations,"game piece","auto count","auto climb","end climb","climb time","break time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             let locations = [
                 ...find(entry, "data", categories, "23-2", []),
@@ -578,7 +578,8 @@ export function formatData(data, categories, teams) {
                 JSON.stringify(entry.comments || ""),
                 entry.accuracy && entry.accuracy.calculated
                     ? parseFloat(entry.accuracy.percentage.toFixed(4))
-                    : ""
+                    : "",
+                entry.serverTimestamp
             ].join(",");
         })
         .join("\n")}`;
