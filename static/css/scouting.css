@@ -24,7 +24,7 @@ body {
 body {
     margin: 0;
     padding: 10px;
-    margin-top: 40px;
+    margin-top: 55px;
 }
 
 .app {
@@ -1012,6 +1012,68 @@ header .header-btn {
 
 .data-window .analysis > div rect.mpld3-axesbg {
     fill: var(--backgroundColor) !important;
+}
+
+.header-incentives .currency, .header-incentives .xp {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.header-incentives .nuts, .header-incentives .bolts {
+    text-align: right;
+}
+
+.header-incentives .bolts {
+    margin-top: 5px;
+}
+
+.header-incentives .nuts > img, .header-incentives .bolts > img {
+    width: 20px;
+    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg) brightness(102%) contrast(105%);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.header-incentives .nuts > p, .header-incentives .bolts > p {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+
+.header-incentives .xp {
+    margin-left: 5px;
+}
+
+.header-incentives .xp p {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: var(--backgroundColor);
+    font-size: 1rem;
+    font-weight: bold;
+    -webkit-text-stroke-width: thin;
+    -webkit-text-stroke-color: var(--primaryBackgroundColor);
+}
+
+.header-incentives .xp > .xp-container {
+    display: inline-block;
+    vertical-align: middle;
+    width: 40px;
+    height: 20px;
+    border: 2px solid var(--backgroundColor);
+    border-radius: 5px;
+    position: relative;
+}
+
+.header-incentives .xp > .xp-container > .xp-filled {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    height: calc(100% + 2px);
+    background-color: var(--backgroundColor);
+    border-radius: 5px;
 }
 
 @media (max-width: 650px) {

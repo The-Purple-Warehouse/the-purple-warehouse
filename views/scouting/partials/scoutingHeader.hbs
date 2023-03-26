@@ -11,8 +11,25 @@
 </nav>
 <header>
     <button class="navbar-open-btn"></button>
-    <h3>{{username}} ({{team}})</h3>
-    <button class="header-btn"></button>
+    <h3>{{shorten username 10}} ({{team}})</h3>
+    <div class="header-incentives">
+      <div class="currency">
+        <div class="nuts">
+          <p>{{ incentives.nuts }}</p>
+          <img src="/img/nuts.png" />
+        </div>
+        <div class="bolts">
+          <p>{{ incentives.bolts }}</p>
+          <img src="/img/bolts.png" />
+        </div>
+      </div>
+      <div class="xp">
+        <div class="xp-container">
+          <div class="xp-filled" style="width: {{ percent incentives.progress }};"></div>
+          <p>{{ incentives.level }}</p>
+        </div>
+      </div>
+    </div>
 </header>
 
 <script defer>

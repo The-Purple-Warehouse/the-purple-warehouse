@@ -281,6 +281,39 @@ const ScoutingAppSDK = function (element, config) {
         return stringified;
     };
 
+    _this.updateIncentives = (incentives) => {
+        function periodic(func, times, ms, timesDropoff = -1) {
+            if(timesDropoff == -1) {
+                timesDropoff = times;
+            }
+            if(times > 0) {
+                func();
+                setTimeout(() => {
+                    periodic(func, times - 1, ms, timesDropoff - 0.995);
+                }, Math.ceil(ms / timesDropoff));
+            }
+        }
+        let nutsElement = document.querySelector(".header-incentives .nuts > p");
+        let boltsElement = document.querySelector(".header-incentives .bolts > p");
+        let levelsElement = document.querySelector(".header-incentives .xp p");
+        let progressElement = document.querySelector(".header-incentives .xp .xp-filled");
+        let differenceNuts = incentives.totals.nuts - parseInt(nutsElement.innerHTML);
+        let differenceBolts = incentives.totals.bolts - parseInt(boltsElement.innerHTML);
+        let differenceLevels = incentives.totals.level - parseInt(levelsElement.innerHTML);
+        let differenceProgress = (100 * differenceLevels) + ((incentives.totals.progress * 100) - parseInt(progressElement.style.width.replace("%", "")));
+        periodic(() => {nutsElement.innerHTML = parseInt(nutsElement.innerHTML) + Math.abs(differenceNuts) / differenceNuts}, Math.abs(differenceNuts), 500);
+        periodic(() => {boltsElement.innerHTML = parseInt(boltsElement.innerHTML) + Math.abs(differenceBolts) / differenceBolts}, Math.abs(differenceBolts), 500);
+        if(differenceProgress > 0) {
+            periodic(() => {
+                progressElement.style.width = `${parseInt(progressElement.style.width.replace("%", "")) + 1}%`;
+                if (parseInt(progressElement.style.width.replace("%", "")) >= 100) {
+                    progressElement.style.width = "0%";
+                    levelsElement.innerHTML = parseInt(levelsElement.innerHTML) + 1;
+                }
+            }, differenceProgress, 500);
+        }
+    }
+
     let timers = {};
     window.t = timers;
 
@@ -548,6 +581,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).json();
                 if (verify.success && verify.body.verified) {
                     console.log("Success!");
+                    _this.updateIncentives(upload.body);
                 } else {
                     console.log(stringified);
                     console.log(
@@ -726,6 +760,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         `.scanner-view > .upload`
                                     ).innerHTML += `<h3 class="green">Success!</h3>`;
                                     jsConfetti.addConfetti();
+                                    _this.updateIncentives(upload.body);
                                 } else {
                                     console.log(stringified);
                                     const verifyBox = element.querySelector(
@@ -871,6 +906,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 element.querySelector(
                                     ".upload-view > button.upload-again"
                                 ).style.display = "block";
+                                _this.updateIncentives(upload.body);
                             } else {
                                 console.log(stringified);
                                 const verifyBox = element.querySelector(
@@ -2602,6 +2638,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     `[data-id="${_this.escape(id)}"]`
                                 ).innerHTML += `<h3 class="green">Success!</h3>`;
                                 jsConfetti.addConfetti();
+                                _this.updateIncentives(upload.body);
                             } else {
                                 console.log(stringified);
                                 const verifyBox = element.querySelector(
