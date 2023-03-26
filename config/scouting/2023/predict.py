@@ -249,9 +249,9 @@ def predict(b1, b2, b3, r1, r2, r3):
     redscore = (parsed_data[r1]['c-score'] + parsed_data[r2]['c-score'] + parsed_data[r3]['c-score'])/5 + 0.5*rms + rmd + 5*rml + 5*rmr
     #print(bluescore, redscore)
     if bluescore > redscore:
-        return ['blue', bluescore/(bluescore + redscore), redscore/(bluescore + redscore)]
+        return {'color-of-winner':'blue', 'blue-percent':bluescore/(bluescore + redscore), 'red-percent':redscore/(bluescore + redscore)}
     else:
-        return ['red', bluescore/(bluescore + redscore), redscore/(bluescore + redscore)]
+        return {'color-of-winner':'red', 'blue-percent':bluescore/(bluescore + redscore), 'red-percent':redscore/(bluescore + redscore)}
 
 results = predict(args["b1"], args["b2"], args["b3"], args["r1"], args["r2"], args["r3"])
 
