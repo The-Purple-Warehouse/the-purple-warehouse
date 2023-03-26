@@ -11,6 +11,7 @@ import requireScoutingAuth from "../middleware/requireScoutingAuth";
 import auth from "../helpers/auth";
 import { teamExistsByNumber } from "../helpers/teams";
 import scoutingConfig from "../config/scouting";
+import { getTotalIncentives } from "../helpers/scouting";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -19,7 +20,8 @@ router.get("/", requireScoutingAuth, async (ctx, next) => {
         preload: scoutingConfig.preload(),
         pages: scoutingConfig.layout(),
         username: ctx.session.scoutingUsername,
-        team: ctx.session.scoutingTeamNumber
+        team: ctx.session.scoutingTeamNumber,
+        incentives: await getTotalIncentives(ctx.session.scoutingTeamNumber, ctx.session.scoutingUsername)
     });
 });
 
