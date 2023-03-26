@@ -272,5 +272,5 @@ def predict(b1, b2, b3, r1, r2, r3):
 
 results = predict(args["b1"], args["b2"], args["b3"], args["r1"], args["r2"], args["r3"])
 
-with open(base + event + "-" + args["b1"] + "-" + args["b2"] + "-" + args["b3"] + "-" + args["r1"] + "-" + args["r2"] + "-" + args["r3"] + "-prediction.json", "w") as f:
+with open(base + event + "-" + args["r1"] + "-" + args["r2"] + "-" + args["r3"] + "-" + args["b1"] + "-" + args["b2"] + "-" + args["b3"] + "-prediction.json", "w") as f:
     json.dump(results, f)

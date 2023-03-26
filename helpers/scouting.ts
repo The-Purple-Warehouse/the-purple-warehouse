@@ -279,7 +279,9 @@ export async function addEntry(
             5
         );
         let incentiveMultiplier = 1;
-        if (rollingAccuracy.total > 3) {
+        if (rollingAccuracy.pending > 3) {
+            incentiveMultiplier = 0;
+        } else if (rollingAccuracy.total > 3) {
             if (rollingAccuracy.accuracy > 0.8) {
                 incentiveMultiplier = 1;
             } else if (rollingAccuracy.accuracy > 0.7) {
@@ -291,8 +293,6 @@ export async function addEntry(
             } else {
                 incentiveMultiplier = 0;
             }
-        } else if (rollingAccuracy.pending > 3) {
-            incentiveMultiplier = 0;
         }
         if (event.endsWith("-prac")) {
             incentiveMultiplier = 0;
