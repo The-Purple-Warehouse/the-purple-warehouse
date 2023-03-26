@@ -1994,10 +1994,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         try {
             let theadElements = document.querySelectorAll("thead");
             for (let i = 0; i < theadElements.length; i++) {
-                if (theadElements[i].getBoundingClientRect().bottom < 150) {
-                    theadElements[i].classList.add("fixed");
-                } else {
-                    theadElements[i].classList.remove("fixed");
+                try {
+                    if (theadElements[i].getBoundingClientRect().bottom < 150) {
+                        theadElements[i].classList.add("fixed");
+                    } else {
+                        theadElements[i].classList.remove("fixed");
+                    }
+                } catch(err) {
+
                 }
             }
         } catch (err) {}
