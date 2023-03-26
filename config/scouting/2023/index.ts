@@ -626,6 +626,9 @@ async function syncAnalysisCache(event, teamNumber) {
         pending.push(exec(rankingCommand));
         let graphsCommand = `python3 config/scouting/2023/graphs.py --event ${event} --teamNumber ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(exec(graphsCommand));
+        let radarCommand = `python3 config/scouting/2023/radarcharts.py --event ${event} --type 2 --t1 ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(exec(radarCommand));
+
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
             .filter(
@@ -704,10 +707,18 @@ async function syncAnalysisCache(event, teamNumber) {
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
             .toString();
+        let radar = fs
+            .readFileSync(`../${event}-${teamNumber}-single-radar.html`)
+            .toString();
         analyzed.push({
             type: "html",
             label: "Scoring Graph",
             value: graphs
+        });
+        analyzed.push({
+            type: "html",
+            label: "Radar Chart",
+            value: radar
         });
         analyzed.push({
             type: "predictions",
