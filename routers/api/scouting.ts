@@ -163,7 +163,7 @@ router.get(
             ctx.session.scoutingTeamNumber
         );
         let analysis: any = {};
-        if (entries.length >= 5) {
+        if (entries.length >= 5 || config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)) {
             analysis = await scoutingConfig.analysis(
                 ctx.params.event,
                 ctx.params.team

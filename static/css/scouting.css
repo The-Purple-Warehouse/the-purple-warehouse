@@ -888,7 +888,8 @@ header .header-btn {
 
 .component-upload > h3,
 .download-window > h3,
-.data-window h2 {
+.data-window h2,
+.data-window h3 {
     text-align: center;
     color: var(--contentColor);
     width: calc(100% - 20px);
@@ -999,19 +1000,54 @@ header .header-btn {
 .data-window table th {
     padding-top: 12px;
     padding-bottom: 12px;
-    text-align: left;
+    text-align: center;
     background-color: var(--primaryBackgroundColor);
     color: var(--backgroundColor);
 }
 
-.data-window .analysis > div {
+.data-window .analysis > div:not(.prediction-bar) {
     width: min-content;
     margin-left: 50%;
     transform: translate(-50%, 0);
 }
 
-.data-window .analysis > div rect.mpld3-axesbg {
+.data-window .analysis > div:not(.prediction-bar) rect.mpld3-axesbg {
     fill: var(--backgroundColor) !important;
+}
+
+.data-window .analysis > .prediction-bar {
+    width: 100%;
+    height: 50px;
+    border: 5px solid var(--primaryBackgroundColor);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--primaryBackgroundColor);
+}
+
+.data-window .analysis > .prediction-bar > div {
+    height: 100%;
+    display: inline-block;
+    color: var(--backgroundColor);
+    position: relative;
+}
+
+.data-window .analysis > .prediction-bar > div > p {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.data-window .analysis > .prediction-bar > .prediction-bar-red {
+    background-color: #ff6e6e;
+    border-radius: 3px 0 0 3px;
+}
+
+.data-window .analysis > .prediction-bar > .prediction-bar-blue {
+    background-color: #6a6afb;
+    border-radius: 0 3px 3px 0;
 }
 
 .header-incentives .currency,
@@ -1088,10 +1124,13 @@ header .header-btn {
         left: 50%;
         transform: translate(-50%, -50%);
     }
+    .header-incentives .xp {
+        margin-left: 10px;
+    }
 }
 
 @media (max-width: 650px) {
-    .data-window .analysis > div {
+    .data-window .analysis > div:not(.prediction-bar) {
         margin-left: 50%;
         transform: translate(-50%, 0) scale(0.8);
     }
@@ -1104,14 +1143,14 @@ header .header-btn {
     .data-window-visible {
         overflow-x: auto;
     }
-    .data-window .analysis > div {
+    .data-window .analysis > div:not(.prediction-bar) {
         margin-left: 50%;
         transform: translate(-50%, 0) scale(0.65);
     }
 }
 
 @media (max-width: 400px) {
-    .data-window .analysis > div {
+    .data-window .analysis > div:not(.prediction-bar) {
         margin-left: 50%;
         transform: translate(-50%, 0) scale(0.55);
     }
