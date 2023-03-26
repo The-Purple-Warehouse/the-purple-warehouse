@@ -621,42 +621,68 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).json();
                 if (verify.success && verify.body.verified) {
                     let incentives = [];
-                    if(upload.body.xp - upload.body.accuracyBoosters.xp > 0) {
-                        incentives.push(`+${upload.body.xp - upload.body.accuracyBoosters.xp} XP`);
+                    if (upload.body.xp - upload.body.accuracyBoosters.xp > 0) {
+                        incentives.push(
+                            `+${
+                                upload.body.xp - upload.body.accuracyBoosters.xp
+                            } XP`
+                        );
                     }
-                    if(upload.body.nuts - upload.body.accuracyBoosters.nuts > 0) {
-                        incentives.push(`+${upload.body.nuts - upload.body.accuracyBoosters.nuts} Nuts`);
+                    if (
+                        upload.body.nuts - upload.body.accuracyBoosters.nuts >
+                        0
+                    ) {
+                        incentives.push(
+                            `+${
+                                upload.body.nuts -
+                                upload.body.accuracyBoosters.nuts
+                            } Nuts`
+                        );
                     }
-                    if(upload.body.bolts - upload.body.accuracyBoosters.bolts > 0) {
-                        incentives.push(`+${upload.body.bolts - upload.body.accuracyBoosters.bolts} Bolts`);
+                    if (
+                        upload.body.bolts - upload.body.accuracyBoosters.bolts >
+                        0
+                    ) {
+                        incentives.push(
+                            `+${
+                                upload.body.bolts -
+                                upload.body.accuracyBoosters.bolts
+                            } Bolts`
+                        );
                     }
 
                     let offset = 0;
-                    if(incentives.length > 0) {
+                    if (incentives.length > 0) {
                         offset = 100;
                         setTimeout(() => {
                             console.log(`${incentives.join(", ")}`);
                         }, offset);
                     }
 
-                    if(upload.body.accuracyBoosters.xp > 0) {
+                    if (upload.body.accuracyBoosters.xp > 0) {
                         offset += 100;
                         setTimeout(() => {
-                            console.log(`+${upload.body.accuracyBoosters.xp} XP (Accuracy Boost)`);
+                            console.log(
+                                `+${upload.body.accuracyBoosters.xp} XP (Accuracy Boost)`
+                            );
                         }, offset);
                     }
 
-                    if(upload.body.accuracyBoosters.nuts > 0) {
+                    if (upload.body.accuracyBoosters.nuts > 0) {
                         offset += 100;
                         setTimeout(() => {
-                            console.log(`+${upload.body.accuracyBoosters.nuts} Nuts (Accuracy Boost)`);
+                            console.log(
+                                `+${upload.body.accuracyBoosters.nuts} Nuts (Accuracy Boost)`
+                            );
                         }, offset);
                     }
 
-                    if(upload.body.accuracyBoosters.bolts > 0) {
+                    if (upload.body.accuracyBoosters.bolts > 0) {
                         offset += 100;
                         setTimeout(() => {
-                            console.log(`+${upload.body.accuracyBoosters.bolts} Bolts (Accuracy Boost)`);
+                            console.log(
+                                `+${upload.body.accuracyBoosters.bolts} Bolts (Accuracy Boost)`
+                            );
                         }, offset);
                     }
 
@@ -839,27 +865,58 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     verifyBox.classList.remove("loading");
                                     verifyBox.classList.add("success");
                                     let incentives = [];
-                                    if(upload.body.xp - upload.body.accuracyBoosters.xp > 0) {
-                                        incentives.push(`+${upload.body.xp - upload.body.accuracyBoosters.xp} XP`);
+                                    if (
+                                        upload.body.xp -
+                                            upload.body.accuracyBoosters.xp >
+                                        0
+                                    ) {
+                                        incentives.push(
+                                            `+${
+                                                upload.body.xp -
+                                                upload.body.accuracyBoosters.xp
+                                            } XP`
+                                        );
                                     }
-                                    if(upload.body.nuts - upload.body.accuracyBoosters.nuts > 0) {
-                                        incentives.push(`+${upload.body.nuts - upload.body.accuracyBoosters.nuts} Nuts`);
+                                    if (
+                                        upload.body.nuts -
+                                            upload.body.accuracyBoosters.nuts >
+                                        0
+                                    ) {
+                                        incentives.push(
+                                            `+${
+                                                upload.body.nuts -
+                                                upload.body.accuracyBoosters
+                                                    .nuts
+                                            } Nuts`
+                                        );
                                     }
-                                    if(upload.body.bolts - upload.body.accuracyBoosters.bolts > 0) {
-                                        incentives.push(`+${upload.body.bolts - upload.body.accuracyBoosters.bolts} Bolts`);
+                                    if (
+                                        upload.body.bolts -
+                                            upload.body.accuracyBoosters.bolts >
+                                        0
+                                    ) {
+                                        incentives.push(
+                                            `+${
+                                                upload.body.bolts -
+                                                upload.body.accuracyBoosters
+                                                    .bolts
+                                            } Bolts`
+                                        );
                                     }
 
                                     let offset = 0;
-                                    if(incentives.length > 0) {
+                                    if (incentives.length > 0) {
                                         offset = 100;
                                         setTimeout(() => {
                                             element.querySelector(
                                                 ".scanner-view > .upload"
-                                            ).innerHTML += `<div class="status-box success" data-status="verify">${incentives.join(", ")}</div>`;
+                                            ).innerHTML += `<div class="status-box success" data-status="verify">${incentives.join(
+                                                ", "
+                                            )}</div>`;
                                         }, offset);
                                     }
 
-                                    if(upload.body.accuracyBoosters.xp > 0) {
+                                    if (upload.body.accuracyBoosters.xp > 0) {
                                         offset += 100;
                                         setTimeout(() => {
                                             element.querySelector(
@@ -868,7 +925,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         }, offset);
                                     }
 
-                                    if(upload.body.accuracyBoosters.nuts > 0) {
+                                    if (upload.body.accuracyBoosters.nuts > 0) {
                                         offset += 100;
                                         setTimeout(() => {
                                             element.querySelector(
@@ -877,7 +934,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         }, offset);
                                     }
 
-                                    if(upload.body.accuracyBoosters.bolts > 0) {
+                                    if (
+                                        upload.body.accuracyBoosters.bolts > 0
+                                    ) {
                                         offset += 100;
                                         setTimeout(() => {
                                             element.querySelector(
@@ -1033,27 +1092,56 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 verifyBox.classList.add("success");
 
                                 let incentives = [];
-                                if(upload.body.xp - upload.body.accuracyBoosters.xp > 0) {
-                                    incentives.push(`+${upload.body.xp - upload.body.accuracyBoosters.xp} XP`);
+                                if (
+                                    upload.body.xp -
+                                        upload.body.accuracyBoosters.xp >
+                                    0
+                                ) {
+                                    incentives.push(
+                                        `+${
+                                            upload.body.xp -
+                                            upload.body.accuracyBoosters.xp
+                                        } XP`
+                                    );
                                 }
-                                if(upload.body.nuts - upload.body.accuracyBoosters.nuts > 0) {
-                                    incentives.push(`+${upload.body.nuts - upload.body.accuracyBoosters.nuts} Nuts`);
+                                if (
+                                    upload.body.nuts -
+                                        upload.body.accuracyBoosters.nuts >
+                                    0
+                                ) {
+                                    incentives.push(
+                                        `+${
+                                            upload.body.nuts -
+                                            upload.body.accuracyBoosters.nuts
+                                        } Nuts`
+                                    );
                                 }
-                                if(upload.body.bolts - upload.body.accuracyBoosters.bolts > 0) {
-                                    incentives.push(`+${upload.body.bolts - upload.body.accuracyBoosters.bolts} Bolts`);
+                                if (
+                                    upload.body.bolts -
+                                        upload.body.accuracyBoosters.bolts >
+                                    0
+                                ) {
+                                    incentives.push(
+                                        `+${
+                                            upload.body.bolts -
+                                            upload.body.accuracyBoosters.bolts
+                                        } Bolts`
+                                    );
                                 }
 
                                 let offset = 0;
-                                if(incentives.length > 0) {
+                                if (incentives.length > 0) {
                                     offset = 100;
                                     setTimeout(() => {
                                         element.querySelector(
                                             ".upload-view > .upload"
-                                        ).innerHTML += `<div class="status-box success" data-status="verify">${incentives.join(", ")}</div>`;
+                                        ).innerHTML += `<div class="status-box success" data-status="verify">${incentives.join(
+                                            ", "
+                                        )}</div>`;
                                     }, offset);
                                 }
 
-                                if(upload.body.accuracyBoosters.xp > 0) {
+                                if (upload.body.accuracyBoosters.xp > 0) {
                                     offset += 100;
                                     setTimeout(() => {
                                         element.querySelector(
@@ -1062,7 +1150,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }, offset);
                                 }
 
-                                if(upload.body.accuracyBoosters.nuts > 0) {
+                                if (upload.body.accuracyBoosters.nuts > 0) {
                                     offset += 100;
                                     setTimeout(() => {
                                         element.querySelector(
@@ -1071,7 +1159,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }, offset);
                                 }
 
-                                if(upload.body.accuracyBoosters.bolts > 0) {
+                                if (upload.body.accuracyBoosters.bolts > 0) {
                                     offset += 100;
                                     setTimeout(() => {
                                         element.querySelector(
@@ -2818,27 +2906,56 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 verifyBox.classList.add("success");
 
                                 let incentives = [];
-                                if(upload.body.xp - upload.body.accuracyBoosters.xp > 0) {
-                                    incentives.push(`+${upload.body.xp - upload.body.accuracyBoosters.xp} XP`);
+                                if (
+                                    upload.body.xp -
+                                        upload.body.accuracyBoosters.xp >
+                                    0
+                                ) {
+                                    incentives.push(
+                                        `+${
+                                            upload.body.xp -
+                                            upload.body.accuracyBoosters.xp
+                                        } XP`
+                                    );
                                 }
-                                if(upload.body.nuts - upload.body.accuracyBoosters.nuts > 0) {
-                                    incentives.push(`+${upload.body.nuts - upload.body.accuracyBoosters.nuts} Nuts`);
+                                if (
+                                    upload.body.nuts -
+                                        upload.body.accuracyBoosters.nuts >
+                                    0
+                                ) {
+                                    incentives.push(
+                                        `+${
+                                            upload.body.nuts -
+                                            upload.body.accuracyBoosters.nuts
+                                        } Nuts`
+                                    );
                                 }
-                                if(upload.body.bolts - upload.body.accuracyBoosters.bolts > 0) {
-                                    incentives.push(`+${upload.body.bolts - upload.body.accuracyBoosters.bolts} Bolts`);
+                                if (
+                                    upload.body.bolts -
+                                        upload.body.accuracyBoosters.bolts >
+                                    0
+                                ) {
+                                    incentives.push(
+                                        `+${
+                                            upload.body.bolts -
+                                            upload.body.accuracyBoosters.bolts
+                                        } Bolts`
+                                    );
                                 }
 
                                 let offset = 0;
-                                if(incentives.length > 0) {
+                                if (incentives.length > 0) {
                                     offset = 100;
                                     setTimeout(() => {
                                         element.querySelector(
                                             `[data-id="${_this.escape(id)}"]`
-                                        ).innerHTML += `<div class="status-box success" data-status="verify">${incentives.join(", ")}</div>`;
+                                        ).innerHTML += `<div class="status-box success" data-status="verify">${incentives.join(
+                                            ", "
+                                        )}</div>`;
                                     }, offset);
                                 }
 
-                                if(upload.body.accuracyBoosters.xp > 0) {
+                                if (upload.body.accuracyBoosters.xp > 0) {
                                     offset += 100;
                                     setTimeout(() => {
                                         element.querySelector(
@@ -2847,7 +2964,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }, offset);
                                 }
 
-                                if(upload.body.accuracyBoosters.nuts > 0) {
+                                if (upload.body.accuracyBoosters.nuts > 0) {
                                     offset += 100;
                                     setTimeout(() => {
                                         element.querySelector(
@@ -2856,7 +2973,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }, offset);
                                 }
 
-                                if(upload.body.accuracyBoosters.bolts > 0) {
+                                if (upload.body.accuracyBoosters.bolts > 0) {
                                     offset += 100;
                                     setTimeout(() => {
                                         element.querySelector(
