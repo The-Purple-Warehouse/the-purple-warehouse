@@ -393,7 +393,8 @@ export async function addEntry(
                 ),
                 nuts: Math.round(
                     incentiveMultiplier > 0 ? rollingAccuracy.accuracy * 25 : 0
-                )
+                ),
+                bolts: 0
             }
         });
         await entry.save();
