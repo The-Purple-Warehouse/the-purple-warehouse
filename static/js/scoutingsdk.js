@@ -1074,10 +1074,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     return `<tr>${data
                                         .map(
                                             (cell, i) =>
-                                                `<td>${csv[0][i] == "timestamp" ? (new Date(parseInt(cell))).toLocaleString() : cell.replaceAll(
-                                                    "\\n",
-                                                    "<br>"
-                                                )}</td>`
+                                                `<td>${
+                                                    csv[0][i] == "timestamp"
+                                                        ? new Date(
+                                                              parseInt(cell)
+                                                          ).toLocaleString()
+                                                        : cell.replaceAll(
+                                                              "\\n",
+                                                              "<br>"
+                                                          )
+                                                }</td>`
                                         )
                                         .join("")}</tr>`;
                                 })
