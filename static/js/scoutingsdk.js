@@ -1075,6 +1075,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         .map(
                                             (cell) =>
                                                 `<td>${cell.replaceAll(
+                                            (cell, i) =>
+                                                `<td>${csv[0][i] == "timestamp" ? (new Date(parseInt(cell))).toLocaleString() : cell.replaceAll(
                                                     "\\n",
                                                     "<br>"
                                                 )}</td>`
