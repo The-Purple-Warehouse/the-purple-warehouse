@@ -21,7 +21,7 @@ import time
 #Using data from the scouting app it does analysis to help scouters during matches and for public scouting analyzer project!
 
 #Sets fileAddress, event key, and takes csv downloaded from tba
-apikey = 'Wqt2K6oW76k4u6iYqghgNb1R3uzKcDkVFFhSbLG0vR4qDsAVGdcei5noa1EKRvQO' #enter tba api key
+#apikey = 'Wqt2K6oW76k4u6iYqghgNb1R3uzKcDkVFFhSbLG0vR4qDsAVGdcei5noa1EKRvQO' #enter tba api key
 
 rawArgs = sys.argv[1:]
 
@@ -60,7 +60,7 @@ csv = args["csv"]
 data = pd.read_csv(fileAddress + csv)
 
 def tba_request(e):
-    '''
+    
     path = fileAddress + event + "-tba.json"
     if os.path.exists(path):
         with open(fileAddress + event + "-tba.json", "r") as file:
@@ -68,10 +68,12 @@ def tba_request(e):
     else:
         raise Exception("Could not find TBA file")
     return data
+
     '''
     res = rq.get('https://www.thebluealliance.com/api/v3/event/'+e+'/matches?X-TBA-Auth-Key='+apikey)
     data = res.json()
     return data
+    '''
 
 #event key for tba
 event = eventKeys[0]
@@ -815,9 +817,6 @@ def radarChartPISS(team, team2, team3):
     #fig.show()
     plotly.offline.plot(fig, filename=str(team)+"_"+str(team2)+"_"+str(team3)+'_PISSchart.html')
 
-
-
-# In[88]:
 
 
 #radarChartPISS("254", "1678", "1072")
