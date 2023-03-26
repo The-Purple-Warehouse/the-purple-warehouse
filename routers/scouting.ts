@@ -21,7 +21,10 @@ router.get("/", requireScoutingAuth, async (ctx, next) => {
         pages: scoutingConfig.layout(),
         username: ctx.session.scoutingUsername,
         team: ctx.session.scoutingTeamNumber,
-        incentives: await getTotalIncentives(ctx.session.scoutingTeamNumber, ctx.session.scoutingUsername)
+        incentives: await getTotalIncentives(
+            ctx.session.scoutingTeamNumber,
+            ctx.session.scoutingUsername
+        )
     });
 });
 
