@@ -84,12 +84,13 @@ router.post(
             success: true,
             body: {
                 hash: entry.hash,
-                xp: entry.xp,
-                nuts: entry.nuts,
-                bolts: entry.bolts,
+                xp: entry.xp || 0,
+                nuts: entry.nuts || 0,
+                bolts: entry.bolts || 0,
                 accuracyBoosters: {
-                    xp: entry.accuracyBoosters.xp,
-                    nuts: entry.accuracyBoosters.nuts
+                    xp: entry.accuracyBoosters.xp || 0,
+                    nuts: entry.accuracyBoosters.nuts || 0,
+                    bolts: entry.accuracyBoosters.bolts || 0
                 },
                 totals: await getTotalIncentives(
                     ctx.session.scoutingTeamNumber,

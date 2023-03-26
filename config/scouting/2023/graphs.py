@@ -83,8 +83,10 @@ teams = np.unique(np.array(tba_data[tba_data['level'] == 'qm'][['r1', 'r2', 'r3'
 #@return the specific data frame
 
 def specificTeam(teamNum):
-    team = int(teamNum)
-    team_data = data[data["team"] == team]
+    team = teamNum
+    team_data = data[data["team"] == int(team)]
+    if team_data == []:
+        team_data = data[data["team"] == (team)]
     # team_data.to_csv('specificTeam: ' + str(teamNum) + ".csv")
     return team_data
 
