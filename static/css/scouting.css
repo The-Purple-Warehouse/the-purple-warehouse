@@ -1028,6 +1028,10 @@ header .header-btn {
     background-color: var(--primaryBackgroundColor);
 }
 
+.data-window .analysis > div:not(.prediction-bar) .svg-container > .main-svg:nth-child(1) {
+    background: var(--backgroundColor) !important;
+}
+
 .data-window .analysis > .prediction-bar > div {
     height: 100%;
     display: inline-block;

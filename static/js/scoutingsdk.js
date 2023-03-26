@@ -1444,6 +1444,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ).json();
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
+                            let run = [];
                             element.querySelector(".analysis").innerHTML =
                                 data.body.display
                                     .map((item) => {
@@ -1515,11 +1516,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     .join("");
                             let scripts = [
                                 ...element.querySelectorAll(
-                                    ".analysis > script"
+                                    ".analysis script"
                                 )
                             ];
                             for (let i = 0; i < scripts.length; i++) {
-                                eval(scripts[i].innerHTML);
+                                if(!run.includes(scripts[i].innerHTML)) {
+                                    run.push(scripts[i].innerHTML);
+                                    eval(scripts[i].innerHTML);
+                                }
                             }
                             element
                                 .querySelector(".data-window")

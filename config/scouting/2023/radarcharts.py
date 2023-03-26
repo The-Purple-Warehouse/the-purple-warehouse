@@ -1,4 +1,4 @@
-# --event --baseFilePath -- csv --t1 --t2 --t3 --type
+# --event --baseFilePath --csv --t1 --t2 --t3 --type
 #imports
 import pandas as pd
 import numpy as np
@@ -16,12 +16,6 @@ import os
 import math
 import sys
 import time
-
-#This contains information for team 1072s: The Harker School 2023 Scouting Analyzer
-#Using data from the scouting app it does analysis to help scouters during matches and for public scouting analyzer project!
-
-#Sets fileAddress, event key, and takes csv downloaded from tba
-#apikey = 'Wqt2K6oW76k4u6iYqghgNb1R3uzKcDkVFFhSbLG0vR4qDsAVGdcei5noa1EKRvQO' #enter tba api key
 
 rawArgs = sys.argv[1:]
 
@@ -51,19 +45,19 @@ for i in range(len(rawArgs)):
 		i += 1
 
 eventKeys = [args["event"]]
-fileAddress = args["baseFilePath"]
+base = args["baseFilePath"]
 csv = args["csv"]
 
 #Where to find the data in google drive
 
 #imports data and assignes to data
-data = pd.read_csv(fileAddress + csv)
+data = pd.read_csv(base + csv)
 
 def tba_request(e):
     
-    path = fileAddress + event + "-tba.json"
+    path = base + event + "-tba.json"
     if os.path.exists(path):
-        with open(fileAddress + event + "-tba.json", "r") as file:
+        with open(base + event + "-tba.json", "r") as file:
             data = json.load(file)
     else:
         raise Exception("Could not find TBA file")
@@ -545,7 +539,7 @@ def graphing():
     )
 
     fig.show()
-    #plotly.offline.plot(fig, filename='graphing.html')
+    #plotly.offline.plot(fig, filename='graphing.html', auto_open=False)
 
 
 def averageTeam(team, name):
@@ -744,7 +738,7 @@ def radarChartPOOP(team, team2, team3):
 
 
     #fig.show()
-    plotly.offline.plot(fig, filename=str(team)+"_"+str(team2)+"_"+str(team3)+'_POOPchart.html')
+    plotly.offline.plot(fig, filename=base + event + "-" + str(team)+"-"+str(team2)+"-"+str(team3)+'-average-radar.html', auto_open=False)
 
 
 
@@ -815,7 +809,40 @@ def radarChartPISS(team, team2, team3):
 
 
     #fig.show()
-    plotly.offline.plot(fig, filename=str(team)+"_"+str(team2)+"_"+str(team3)+'_PISSchart.html')
+    plotly.offline.plot(fig, filename=base + event + "-" + str(team)+"-"+str(team2)+"-"+str(team3)+'-compare-radar.html', auto_open=False)
+
+def radarChartPISSS(team):
+    categories = ['auto points', 'teleop points', 'total points']
+
+    team = int(team)
+
+    points1 = total_avg(team)
+
+    s_team = [points1[0], points1[1], points1[2]]
+
+
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatterpolar(
+          r=s_team,
+          theta=categories,
+          fill='toself',
+          name=team
+    ))
+
+
+    '''fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 5])),showlegend=False)'''
+    fig.update_layout(
+        title_font_family="Sitka",
+        title_font_color="green",
+        title = "Point Spread",
+        width = 600,
+        height = 600)
+
+
+    #fig.show()
+    plotly.offline.plot(fig, filename=base + event + "-" + str(team) + '-single-radar.html', auto_open=False)
 
 
 
@@ -840,5 +867,7 @@ if str(args["type"]) == '0':
     radarChartPOOP(args["t1"], args["t2"], args["t3"])
 elif str(args["type"]) == '1':
     radarChartPISS(args["t1"], args["t2"], args["t3"])
+elif str(args["type"]) == '2':
+    radarChartPISSS(args["t1"])
 else:
     raise Exception("Command line arg 'type' was not passed correctly")
