@@ -21,15 +21,33 @@ import time
 #Using data from the scouting app it does analysis to help scouters during matches and for public scouting analyzer project!
 
 #Sets fileAddress, event key, and takes csv downloaded from tba
+apikey = 'Wqt2K6oW76k4u6iYqghgNb1R3uzKcDkVFFhSbLG0vR4qDsAVGdcei5noa1EKRvQO' #enter tba api key
 
 rawArgs = sys.argv[1:]
+
 args = {}
+
 for i in range(len(rawArgs)):
-	if rawArgs[i] == "--event" and "event" not in args:
+	if rawArgs[i] == "--csv" and "csv" not in args:
+		args["csv"] = rawArgs[i + 1]
+		i += 1
+	elif rawArgs[i] == "--event" and "event" not in args:
 		args["event"] = rawArgs[i + 1]
 		i += 1
 	elif rawArgs[i] == "--baseFilePath" and "baseFilePath" not in args:
 		args["baseFilePath"] = rawArgs[i + 1]
+		i += 1
+	elif rawArgs[i] == "--t1" and "t1" not in args:
+		args["t1"] = rawArgs[i + 1]
+		i += 1
+	elif rawArgs[i] == "--t2" and "t2" not in args:
+		args["t2"] = rawArgs[i + 1]
+		i += 1
+	elif rawArgs[i] == "--t3" and "t3" not in args:
+		args["t3"] = rawArgs[i + 1]
+		i += 1
+	elif rawArgs[i] == "--type" and "type" not in args:
+		args["type"] = rawArgs[i + 1]
 		i += 1
 
 eventKeys = [args["event"]]
@@ -39,15 +57,20 @@ csv = args["csv"]
 #Where to find the data in google drive
 
 #imports data and assignes to data
-data = pd.read_csv(base + csv)
+data = pd.read_csv(fileAddress + csv)
 
 def tba_request(e):
+    '''
     path = fileAddress + event + "-tba.json"
     if os.path.exists(path):
         with open(fileAddress + event + "-tba.json", "r") as file:
             data = json.load(file)
     else:
         raise Exception("Could not find TBA file")
+    return data
+    '''
+    res = rq.get('https://www.thebluealliance.com/api/v3/event/'+e+'/matches?X-TBA-Auth-Key='+apikey)
+    data = res.json()
     return data
 
 #event key for tba
@@ -75,8 +98,9 @@ def uniqueTeams():
 #@return the specific data frame
 
 def specificTeam(teamNum):
-    team = int(teamNum)
-    team_data = data[data['team'] == team]
+    team = (teamNum)
+    str_data = data.astype({"team": "string"})
+    team_data = str_data[str_data["team"] == str(team)]
     #print(team_data)
     return team_data
 
@@ -84,7 +108,7 @@ def specificTeam(teamNum):
 #Based on format by Timmy Chen
 #@param teamNum team number
 #@return a data frame of condensed information
-def shotSummary(teamNum ):
+def shotSummary(teamNum):
     team = teamNum
     team_data = specificTeam(team)
     game_pieces = pd.DataFrame(columns = ["Match", "Cones", "Cubes", "Missed", "Total Shots"])
@@ -156,13 +180,13 @@ def sortedShot(team, matchNum):
     return arr
 
 def specifAny(name, team):
-spec = specificTeam(team)
-x = pd.DataFrame(columns = [name])
-count = 0
-for r in spec[name]:
-    x.loc[count] = r
-    count+=1
-return x
+    spec = specificTeam(team)
+    x = pd.DataFrame(columns = [name])
+    count = 0
+    for r in spec[name]:
+        x.loc[count] = r
+        count+=1
+    return x
 
 #not for arrays
 #subfunction to grab data for specific team, for radar chart
@@ -170,14 +194,14 @@ return x
 #team: straightforward
 #match: relative to the total matches team plays, not global matches
 def MatchSpecAny(name, team, match):
-x = specifAny(name, team)[name]
+    x = specifAny(name, team)[name]
 
 
-arr = x[match]
+    arr = x[match]
 
-arr = str(arr)
-arr = data_format(arr)
-return arr
+    arr = str(arr)
+    arr = data_format(arr)
+    return arr
 
 def locationsOfMissed(team, matchNum):
     overallLoc = list(map(int, sortedArray(team, matchNum))) #locations as int list
@@ -475,7 +499,7 @@ def sortMethod(rowName, asc):
 
 
 def graphing():
-    #dataS = shotSummary(team)
+    dataS = shotSummary(args["t1"])
     match = dataS['Match'] #x var
     cone = dataS['Cones'] #y1
     cube = dataS['Cubes'] #y2
@@ -520,7 +544,6 @@ def graphing():
 
     fig.show()
     #plotly.offline.plot(fig, filename='graphing.html')
-graphing()
 
 
 def averageTeam(team, name):
@@ -543,6 +566,7 @@ def averageTeam(team, name):
 
 def total_avg(team): #average elements for each team
     match_count = len(shotSummary(team))
+    print('match count:', match_count)
     #print(match_count)
 
 
@@ -633,7 +657,7 @@ def BALLS():
     return avg_stats
 
 #REALLY IMPORTANT, ITS THE AVG VALUES FOR ALL TEAMS
-avg_lst = BALLS()
+
 
 #end = time.time()
 #print(end - start)
@@ -644,29 +668,9 @@ avg_lst = BALLS()
 
 #dataframe of all stats of each individual team
 df_team_stats = pd.DataFrame(total_team_stats, index = UQteams, columns = ["auto", "tele", "total", "scored", "drive", "def", "climb", "uptime", "speed", "acc"])
-display(df_team_stats)
 
 
 # In[45]:
-
-
-total_team_spread = []
-#spread for all teams compared to average
-def amogus():
-    #print(df_team_stats.loc['1072'][0])
-
-    for team in UQteams:
-        team_stats = df_team_stats.loc[team] #stats for that team
-        team_spread = [team_stats[i]/avg_lst[i] for i in range(categories)] #team stats/avg stats
-        total_team_spread.append(team_spread) #add that to a big list
-
-
-
-amogus()
-
-#print(total_team_spread)
-df_team_spread = pd.DataFrame(total_team_spread, index = UQteams, columns = ["auto", "tele", "total", "scored", "drive", "def", "climb", "uptime", "speed", "acc"])
-display(df_team_spread)
 
 
 # ### GRAPHICS START HERE
@@ -695,7 +699,6 @@ def radarChartPOOP(team, team2, team3):
     #display average values
     df_avg_spread = pd.DataFrame([avg_lst], columns = ["auto", "tele", "total", "scored", "drive", "def", "climb", "break", "speed", "acc"])
     df_avg_spread.index.name='Average'
-    display(df_avg_spread)
 
     #radar chart
     fig = go.Figure()
@@ -738,7 +741,7 @@ def radarChartPOOP(team, team2, team3):
         height = 600)
 
 
-    fig.show()
+    #fig.show()
     plotly.offline.plot(fig, filename=str(team)+"_"+str(team2)+"_"+str(team3)+'_POOPchart.html')
 
 
@@ -809,7 +812,7 @@ def radarChartPISS(team, team2, team3):
         height = 600)
 
 
-    fig.show()
+    #fig.show()
     plotly.offline.plot(fig, filename=str(team)+"_"+str(team2)+"_"+str(team3)+'_PISSchart.html')
 
 
@@ -819,9 +822,22 @@ def radarChartPISS(team, team2, team3):
 
 #radarChartPISS("254", "1678", "1072")
 #end = time.time()
-#print(end - start)    
+#print(end - start)
 
 if str(args["type"]) == '0':
+    avg_lst = BALLS()
+    total_team_spread = []
+    #spread for all teams compared to average
+    def amogus():
+        #print(df_team_stats.loc['1072'][0])
+
+        for team in UQteams:
+            team_stats = df_team_stats.loc[team] #stats for that team
+            team_spread = [team_stats[i]/avg_lst[i] for i in range(categories)] #team stats/avg stats
+            total_team_spread.append(team_spread) #add that to a big list
+    amogus()
+    #print(total_team_spread)
+    df_team_spread = pd.DataFrame(total_team_spread, index = UQteams, columns = ["auto", "tele", "total", "scored", "drive", "def", "climb", "uptime", "speed", "acc"])
     radarChartPOOP(args["t1"], args["t2"], args["t3"])
 elif str(args["type"]) == '1':
     radarChartPISS(args["t1"], args["t2"], args["t3"])
