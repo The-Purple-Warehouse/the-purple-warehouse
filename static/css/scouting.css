@@ -1028,7 +1028,11 @@ header .header-btn {
     background-color: var(--primaryBackgroundColor);
 }
 
-.data-window .analysis > div:not(.prediction-bar) .svg-container > .main-svg:nth-child(1) {
+.data-window
+    .analysis
+    > div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1) {
     background: var(--backgroundColor) !important;
 }
 
