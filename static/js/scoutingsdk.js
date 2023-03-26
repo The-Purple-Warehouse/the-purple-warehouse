@@ -1375,7 +1375,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .filter(
                                     (data) =>
                                         teamNumber == "" ||
-                                        data.includes(teamNumber)
+                                        data.slice(1).includes(`${teamNumber}`)
                                 )
                                 .map((data) => {
                                     return `<tr>${data
@@ -1989,6 +1989,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     let fieldOrientation = 0;
     let fieldOrientationSet = false;
+
+    document.addEventListener("scroll", (event) => {
+        try {
+            let theadElements = document.querySelectorAll("thead");
+            for(let i = 0; i < theadElements.length; i++) {
+                if (theadElements[i].getBoundingClientRect().bottom < 150) {
+                    theadElements[i].classList.add("fixed");
+                } else {
+                    theadElements[i].classList.remove("fixed");
+                }
+            }
+        } catch(err) {
+
+        }
+    });
 
     _this.compileComponent = (
         eventCode,
