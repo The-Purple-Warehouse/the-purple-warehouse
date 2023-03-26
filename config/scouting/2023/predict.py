@@ -18,22 +18,22 @@ for i in range(len(rawArgs)):
 		args["baseFilePath"] = rawArgs[i + 1]
 		i += 1
     elif rawArgs[i] == "--b1" and "b1" not in args:
-		args["baseFilePath"] = rawArgs[i + 1]
+		args["b1"] = rawArgs[i + 1]
 		i += 1
     elif rawArgs[i] == "--b2" and "b2" not in args:
-		args["baseFilePath"] = rawArgs[i + 1]
+		args["b2"] = rawArgs[i + 1]
 		i += 1
     elif rawArgs[i] == "--b3" and "b3" not in args:
-		args["baseFilePath"] = rawArgs[i + 1]
+		args["b3"] = rawArgs[i + 1]
 		i += 1
     elif rawArgs[i] == "--r1" and "r1" not in args:
-		args["baseFilePath"] = rawArgs[i + 1]
+		args["r1"] = rawArgs[i + 1]
 		i += 1
     elif rawArgs[i] == "--r2" and "r2" not in args:
-		args["baseFilePath"] = rawArgs[i + 1]
+		args["r2"] = rawArgs[i + 1]
 		i += 1
     elif rawArgs[i] == "--r3" and "r3" not in args:
-		args["baseFilePath"] = rawArgs[i + 1]
+		args["r3"] = rawArgs[i + 1]
 		i += 1
 
 eventKeys = [args["event"]]
