@@ -635,9 +635,7 @@ async function syncAnalysisCache(event, teamNumber) {
                     ) ||
                     match.alliances.red.team_keys.includes(`frc${teamNumber}`)
             )
-            .sort((a: any, b: any) => {
-                b.match_number - a.match_number;
-            });
+            .sort((a: any, b: any) => a.match_number - b.match_number);
         let predictions = [];
         for (let i = 0; i < matches.length; i++) {
             let match = matches[i] as any;
