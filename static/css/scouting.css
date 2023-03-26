@@ -1081,6 +1081,15 @@ header .header-btn {
     border-radius: 5px;
 }
 
+@media (min-width: 450px) {
+    header h3 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
 @media (max-width: 650px) {
     .data-window .analysis > div {
         margin-left: 50%;
