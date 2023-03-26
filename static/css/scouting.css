@@ -1005,6 +1005,10 @@ header .header-btn {
     color: var(--backgroundColor);
 }
 
+.data-window table td {
+    text-align: center;
+}
+
 .data-window .analysis > div:not(.prediction-bar) {
     width: min-content;
     margin-left: 50%;
