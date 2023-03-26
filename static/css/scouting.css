@@ -1014,12 +1014,14 @@ header .header-btn {
     fill: var(--backgroundColor) !important;
 }
 
-.header-incentives .currency, .header-incentives .xp {
+.header-incentives .currency,
+.header-incentives .xp {
     display: inline-block;
     vertical-align: middle;
 }
 
-.header-incentives .nuts, .header-incentives .bolts {
+.header-incentives .nuts,
+.header-incentives .bolts {
     text-align: right;
 }
 
@@ -1027,14 +1029,17 @@ header .header-btn {
     margin-top: 5px;
 }
 
-.header-incentives .nuts > img, .header-incentives .bolts > img {
+.header-incentives .nuts > img,
+.header-incentives .bolts > img {
     width: 20px;
-    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg) brightness(102%) contrast(105%);
+    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg)
+        brightness(102%) contrast(105%);
     display: inline-block;
     vertical-align: middle;
 }
 
-.header-incentives .nuts > p, .header-incentives .bolts > p {
+.header-incentives .nuts > p,
+.header-incentives .bolts > p {
     display: inline-block;
     vertical-align: middle;
     margin: 0;
