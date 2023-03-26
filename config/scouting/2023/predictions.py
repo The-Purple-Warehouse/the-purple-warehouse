@@ -2,7 +2,6 @@
 import numpy as np
 from collections import OrderedDict
 import requests as rq
-from alive_progress import alive_bar
 import json
 import os
 import math
@@ -267,11 +266,11 @@ def predict(b1, b2, b3, r1, r2, r3):
     redscore = (parsed_data[r1]['c-score'] + parsed_data[r2]['c-score'] + parsed_data[r3]['c-score'])/5 + 0.5*rms + rmd + 5*rml + 5*rmr
     #print(bluescore, redscore)
     if bluescore > redscore:
-        return {'color-of-winner':'blue', 'blue-percent':bluescore/(bluescore + redscore), 'red-percent':redscore/(bluescore + redscore)}
+        return {'winner':'blue', 'blue':bluescore/(bluescore + redscore), 'red':redscore/(bluescore + redscore)}
     else:
-        return {'color-of-winner':'red', 'blue-percent':bluescore/(bluescore + redscore), 'red-percent':redscore/(bluescore + redscore)}
+        return {'winner':'red', 'blue':bluescore/(bluescore + redscore), 'red':redscore/(bluescore + redscore)}
 
 results = predict(args["b1"], args["b2"], args["b3"], args["r1"], args["r2"], args["r3"])
 
-with open(base + event + "-" + args["b1"] + "-" + args["b2"] + "-" + args["b3"] + "-" + args["r1"] + "-" + args["r2"] + "-" + args["r3"] + "-prediction.json", "w") as f:
+with open(base + event + "-" + args["r1"] + "-" + args["r2"] + "-" + args["r3"] + "-" + args["b1"] + "-" + args["b2"] + "-" + args["b3"] + "-prediction.json", "w") as f:
     json.dump(results, f)

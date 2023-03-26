@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, exec } from "child_process";
 import * as fs from "fs";
 import { getMatchesFull } from "../../../helpers/tba";
 import { getAllDataByEvent } from "../../../helpers/scouting";
@@ -618,15 +618,47 @@ async function syncAnalysisCache(event, teamNumber) {
         defenseRankings: []
     };
     try {
+        let matchesFull = await getMatchesFull(event) as any;
+        let pending = [];
         fs.writeFileSync(
             `../${event}-tba.json`,
-            JSON.stringify(await getMatchesFull(event))
+            JSON.stringify(matchesFull)
         );
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
-        execSync(rankingCommand);
+        pending.push(exec(rankingCommand));
         let graphsCommand = `python3 config/scouting/2023/graphs.py --event ${event} --teamNumber ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        execSync(graphsCommand);
+        pending.push(exec(graphsCommand));
+        let matches = matchesFull.filter((match: any) => match.comp_level == "qm").filter((match: any) => match.alliances.blue.team_keys.includes(`frc${teamNumber}`) || match.alliances.red.team_keys.includes(`frc${teamNumber}`)).sort((a: any, b: any) => {b.match_number - a.match_number});
+        let predictions = [];
+        for(let i = 0; i < matches.length; i++) {
+            let match = matches[i] as any;
+            let r1 = match.alliances.red.team_keys[0].replace("frc", "");
+            let r2 = match.alliances.red.team_keys[1].replace("frc", "");
+            let r3 = match.alliances.red.team_keys[2].replace("frc", "");
+            let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
+            let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
+            let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
+            let predictionsCommand = `python3 config/scouting/2023/predictions.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+            pending.push(exec(predictionsCommand));
+        }
+
+        await Promise.all(pending);
+        
+        for(let i = 0; i < matches.length; i++) {
+            let match = matches[i] as any;
+            let r1 = match.alliances.red.team_keys[0].replace("frc", "");
+            let r2 = match.alliances.red.team_keys[1].replace("frc", "");
+            let r3 = match.alliances.red.team_keys[2].replace("frc", "");
+            let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
+            let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
+            let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
+            let prediction = JSON.parse(fs.readFileSync(`../${event}-${r1}-${r2}-${r3}-${b1}-${b2}-${b3}-prediction.json`).toString());
+            prediction.match = match.match_number;
+            prediction.win = match.alliances[prediction.winner].team_keys.includes(`frc${teamNumber}`);
+            predictions.push(prediction);
+        }
+
         let rankings = JSON.parse(
             fs.readFileSync(`../${event}-rankings.json`).toString()
         );
@@ -647,9 +679,11 @@ async function syncAnalysisCache(event, teamNumber) {
             .map((ranking) => ranking.teamNumber);
         data.offenseRankings = offense;
         data.defenseRankings = offense;
-        let tableRankings = [["Offense", "Defense"]];
+        // let tableRankings = [["Offense", "Defense"]];
+        let tableRankings = [["TPW Calculated Offense Rank<br>(NOT COMPETITION RANK)"]];
         for (let i = 0; i < offense.length; i++) {
-            tableRankings.push([offense[i], defense[i]]);
+            // tableRankings.push([offense[i], defense[i]]);
+            tableRankings.push([offense[i]]);
         }
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
@@ -660,11 +694,18 @@ async function syncAnalysisCache(event, teamNumber) {
             value: graphs
         });
         analyzed.push({
+            type: "predictions",
+            label: "Predictions",
+            values: predictions
+        });
+        analyzed.push({
             type: "table",
             label: "Rankings",
             values: tableRankings
         });
-    } catch (err) {}
+    } catch (err) {
+        console.error(err);
+    }
     cache[`${event}-${teamNumber}`] = {
         value: {
             display: analyzed,
@@ -676,7 +717,7 @@ async function syncAnalysisCache(event, teamNumber) {
 }
 
 export async function analysis(event, teamNumber) {
-    if (cache[`${event}-${teamNumber}`] == null) {
+    if (cache[`${event}-${teamNumber}`] == null || true) {
         await syncAnalysisCache(event, teamNumber);
     } else if (
         new Date().getTime() >
