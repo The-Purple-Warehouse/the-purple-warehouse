@@ -1483,17 +1483,31 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     .join("")}
                                             </tbody>
                                         </table>`;
-                                        } else if(item.type == "predictions") {
+                                        } else if (item.type == "predictions") {
                                             return `<h2>${item.label}</h2>
                                             ${item.values
                                                 .map((data) => {
-                                                    return `<h3>Match ${data.match} (Predicted ${data.win ? "Win" : "Loss"})</h3>
+                                                    return `<h3>Match ${
+                                                        data.match
+                                                    } (Predicted ${
+                                                        data.win
+                                                            ? "Win"
+                                                            : "Loss"
+                                                    })</h3>
                                                     <div class="prediction-bar">
-                                                        <div class="prediction-bar-red" style="width: calc(${data.red * 100}% - 2px);"><p>${Math.round(data.red * 100)}%</p></div>
-                                                        <div class="prediction-bar-blue" style="width: calc(${data.blue * 100}% - 3px);"><p>${Math.round(data.blue * 100)}%</p></div>
+                                                        <div class="prediction-bar-red" style="width: calc(${
+                                                            data.red * 100
+                                                        }% - 2px);"><p>${Math.round(
+                                                        data.red * 100
+                                                    )}%</p></div>
+                                                        <div class="prediction-bar-blue" style="width: calc(${
+                                                            data.blue * 100
+                                                        }% - 3px);"><p>${Math.round(
+                                                        data.blue * 100
+                                                    )}%</p></div>
                                                     </div>`;
                                                 })
-                                                .join("")}`
+                                                .join("")}`;
                                         } else if (item.type == "html") {
                                             return `<h2>${item.label}</h2>${item.value}`;
                                         }
@@ -2011,9 +2025,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } else {
                         theadElements[i].classList.remove("fixed");
                     }
-                } catch(err) {
-
-                }
+                } catch (err) {}
             }
         } catch (err) {}
     });
