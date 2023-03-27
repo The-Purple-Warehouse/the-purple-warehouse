@@ -1515,12 +1515,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     })
                                     .join("");
                             let scripts = [
-                                ...element.querySelectorAll(
-                                    ".analysis script"
-                                )
+                                ...element.querySelectorAll(".analysis script")
                             ];
                             for (let i = 0; i < scripts.length; i++) {
-                                if(!run.includes(scripts[i].innerHTML)) {
+                                if (!run.includes(scripts[i].innerHTML)) {
                                     run.push(scripts[i].innerHTML);
                                     eval(scripts[i].innerHTML);
                                 }

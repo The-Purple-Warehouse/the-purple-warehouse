@@ -899,6 +899,11 @@ header .header-btn {
     transform: translate(-50%, 0);
 }
 
+.data-window h3 {
+    margin-bottom: 5px;
+    margin-top: 25px;
+}
+
 .red {
     color: #ff0000 !important;
 }
@@ -1028,7 +1033,11 @@ header .header-btn {
     background-color: var(--primaryBackgroundColor);
 }
 
-.data-window .analysis > div:not(.prediction-bar) .svg-container > .main-svg:nth-child(1) {
+.data-window
+    .analysis
+    > div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1) {
     background: var(--backgroundColor) !important;
 }
 
