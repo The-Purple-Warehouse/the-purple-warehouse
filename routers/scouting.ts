@@ -45,6 +45,10 @@ router.get("/instructions", async (ctx) => {
     );
 });
 
+router.get("/feedback", async (ctx) => {
+    await ctx.render("scouting/feedback");
+})
+
 router.post("/login", bodyParser(), async (ctx) => {
     if (
         ctx.session.teamNumber &&
