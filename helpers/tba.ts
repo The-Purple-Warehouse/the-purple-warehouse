@@ -31,14 +31,14 @@ async function syncEventsCache(year) {
                 name: event.name
             };
         });
-        formatted.push({
-            key: "2023all-prac",
-            name: "2023 PRACTICE"
-        });
         cache.events[year] = {
             value: formatted.sort((a, b) => a.name.localeCompare(b.name)),
             timestamp: new Date().getTime()
         };
+        cache.events[year].value.unshift({
+            key: `${year}all-prac`,
+            name: "PRACTICE MATCHES"
+        });
         fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
     } catch (err) {}
 }
