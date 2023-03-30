@@ -345,7 +345,8 @@ export function layout() {
                 },
                 {
                     type: "textbox",
-                    placeholder: "Enter notes here (and include team number if scouting practice matches)...",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
                     default: "",
                     data: "comments"
                 },
