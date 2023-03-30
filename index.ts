@@ -180,7 +180,7 @@ router.get("/", async (ctx, next) => {
     await ctx.render("index", {
         stats: {
             entries: formatNumber(stats.entries),
-            time: formatNumber((stats.entries * 153) / 3600),
+            time: formatNumber(Math.ceil((stats.entries * 153) / 3600)),
             scouters: formatNumber(stats.scouters),
             teams: stats.teams,
             states: stats.states,
