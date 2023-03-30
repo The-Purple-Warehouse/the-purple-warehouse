@@ -472,7 +472,8 @@ const ScoutingAppSDK = function (element, config) {
                 };
             element.querySelector(".home-window > select.event-code").onchange =
                 async () => {
-                    element.querySelector(".home-window > .warning").innerHTML = "";
+                    element.querySelector(".home-window > .warning").innerHTML =
+                        "";
                     let eventCode = element.querySelector(
                         ".home-window > select.event-code"
                     ).value;
@@ -533,13 +534,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).innerHTML = teams;
                 }
             };
-            element.querySelector(".home-window > select.team").onchange = function() {
-                if(!element.querySelector(".home-window > select.event-code").value.endsWith("-prac") && ["1r", "2r", "3r", "1b", "2b", "3b"].includes(element.querySelector(".home-window > select.team").value)) {
-                    element.querySelector(".home-window > .warning").innerHTML = "WARNING: It appears like qualification matches have not yet begun for this event. If you are scouting practice matches, please use the PRACTICE MATCHES event. If qualification matches have indeed started, please connect to the internet briefly in order to download the list of teams.";
-                } else {
-                    element.querySelector(".home-window > .warning").innerHTML = "";
-                }
-            }
+            element.querySelector(".home-window > select.team").onchange =
+                function () {
+                    if (
+                        !element
+                            .querySelector(".home-window > select.event-code")
+                            .value.endsWith("-prac") &&
+                        ["1r", "2r", "3r", "1b", "2b", "3b"].includes(
+                            element.querySelector(".home-window > select.team")
+                                .value
+                        )
+                    ) {
+                        element.querySelector(
+                            ".home-window > .warning"
+                        ).innerHTML =
+                            "WARNING: It appears like qualification matches have not yet begun for this event. If you are scouting practice matches, please use the PRACTICE MATCHES event. If qualification matches have indeed started, please connect to the internet briefly in order to download the list of teams.";
+                    } else {
+                        element.querySelector(
+                            ".home-window > .warning"
+                        ).innerHTML = "";
+                    }
+                };
             element.querySelector(".home-window > input.match-number").onblur =
                 updateTeamsList;
             updateTeamsList();
@@ -1711,7 +1726,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 }
             } catch (err) {
                 console.log(err);
-                if (!err.toString().includes("Failed to fetch") && eventCode != "") {
+                if (
+                    !err.toString().includes("Failed to fetch") &&
+                    eventCode != ""
+                ) {
                     alert(
                         `/api/v1/scouting/matches/${encodeURIComponent(
                             eventCode
