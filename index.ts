@@ -125,10 +125,8 @@ if (config.features.includes("scouting")) {
 function formatNumber(num) {
     if (num < 10) {
         return num;
-    } else if (num < 100 && num >= 10) {
+    } else if (num >= 10 && num < 1000) {
         return `${Math.floor(num / 10) * 10}+`;
-    } else if (num >= 100 && num < 1000) {
-        return `${Math.floor(num / 100) * 100}+`;
     } else if (num >= 1000 && num < 100_000) {
         return `${Math.floor(num / 1000)}k+`;
     } else if (num >= 100_000 && num < 1_000_000) {
