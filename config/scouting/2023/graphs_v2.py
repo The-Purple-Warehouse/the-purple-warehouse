@@ -25,7 +25,6 @@ caches parsed data to json file:
 
 import numpy as np
 from collections import OrderedDict
-import requests as rq
 import json
 import os
 import math
@@ -34,7 +33,6 @@ import csv
 import matplotlib.pyplot as plt
 import mpld3
 from mpld3 import plugins
-import matplotlib
 import matplotlib.pyplot as plt
 import plotly
 import plotly.express as plty
@@ -49,8 +47,8 @@ for i in range(len(rawArgs)):
         args["event"] = rawArgs[i + 1]
         i += 1
     elif rawArgs[i] == "--csv" and "csv" not in args:
-		args["csv"] = rawArgs[i + 1]
-		i += 1
+        args["csv"] = rawArgs[i + 1]
+        i += 1
     elif rawArgs[i] == "--baseFilePath" and "baseFilePath" not in args:
         args["baseFilePath"] = rawArgs[i + 1]
         i += 1
@@ -69,7 +67,7 @@ for i in range(len(rawArgs)):
 
 event = args["event"]
 base = args["baseFilePath"]
-csv = args["csv"]
+tpw_csv = args["csv"]
 
 template = 'plotly'
 if 'theme' in args and int(args["theme"]) == 0:
@@ -105,7 +103,7 @@ def min(data):
     else:
         return 0
 
-tpw_path = base + csv
+tpw_path = base + tpw_csv
 
 def getData():
     path = base + event + "-tba.json"
@@ -277,6 +275,7 @@ def getData():
                 data_tpw['avg-inta'] = avg(inta)
                 data_tpw['avg-upt'] = avg(uptime)
                 data_tpw['matches'] = matches
+                data_tpw['tpw-std'] = data_tpw['std-auto'] + data_tpw['std-tele'] + data_tpw['std-auto-cs'] + data_tpw['std-end-cs']
                 data_tpw["tpw-score"] = data_tpw['avg-auto'] + data_tpw['avg-tele'] + data_tpw['avg-auto-cs'] + data_tpw['avg-end-cs']
                 parsed_tpw_data[team] = data_tpw # all team data stored to parsed_tpw_data OrderedDict
         else:
@@ -295,7 +294,6 @@ if os.path.exists(base + 'parsed_tpw_data_'+event+'.json'):
             f.close()
         else:
             f.close()
-            print('ReCACHING!')
             parsed_tpw_data = getData()
 else:
     parsed_tpw_data = getData()
