@@ -254,8 +254,8 @@ sorted_dict = OrderedDict(sorted(parsed_tpw_data.items(), key=lambda x: x[1]["r-
 public_dict = OrderedDict()
 
 for team, dict in sorted_dict.items():
-    print(team, dict["r-score"])
-    public_dict[team] = {"off-score": dict["r-score"]}
+    print(team, dict["r-score"], dict["avg-def"])
+    public_dict[team] = {"off-score": dict["r-score"], "def-score": dict["avg-def"]}
 
 with open(base + event + "-rankings.json", "w") as f:
     json.dump(public_dict, f)
