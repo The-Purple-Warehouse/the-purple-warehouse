@@ -568,9 +568,9 @@ export async function getSharedData(
         ].slice(
             0,
             Math.round(
-                ((contributions.length + 1) > threshold
+                (contributions.length + 1 > threshold
                     ? threshold
-                    : (contributions.length + 1)) *
+                    : contributions.length + 1) *
                     (16 / threshold)
             )
         );
