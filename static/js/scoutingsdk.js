@@ -544,7 +544,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(
                             ".home-window > .warning"
                         ).innerHTML =
-                            "WARNING: It appears like qualification matches have not yet begun for this event. If you are scouting practice matches, please use the PRACTICE MATCHES event. If qualification matches have indeed started, please connect to the internet briefly in order to download the list of teams.";
+                            "WARNING: It appears that qualification matches are not currently running for this event. If you are scouting practice matches, please use the PRACTICE MATCHES event. If qualification matches are indeed running, please connect to the internet briefly in order to download the list of teams.";
                     } else {
                         element.querySelector(
                             ".home-window > .warning"
@@ -566,7 +566,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(
                             ".home-window > .warning"
                         ).innerHTML =
-                            "WARNING: It appears like qualification matches have not yet begun for this event. If you are scouting practice matches, please use the PRACTICE MATCHES event. If qualification matches have indeed started, please connect to the internet briefly in order to download the list of teams.";
+                            "WARNING: It appears that qualification matches are not currently running for this event. If you are scouting practice matches, please use the PRACTICE MATCHES event. If qualification matches are indeed running, please connect to the internet briefly in order to download the list of teams.";
                     } else {
                         element.querySelector(
                             ".home-window > .warning"
