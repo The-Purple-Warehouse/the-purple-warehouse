@@ -540,7 +540,7 @@ export async function getSummaryByEvent(event: string) {
 export async function getSharedData(
     event: string,
     teamNumber: string,
-    threshold: number = 10
+    threshold: number = 11
 ) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
@@ -568,9 +568,9 @@ export async function getSharedData(
         ].slice(
             0,
             Math.round(
-                (contributions.length > threshold
+                ((contributions.length + 1) > threshold
                     ? threshold
-                    : contributions.length) *
+                    : (contributions.length + 1)) *
                     (16 / threshold)
             )
         );
