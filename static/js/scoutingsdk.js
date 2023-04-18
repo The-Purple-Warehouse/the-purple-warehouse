@@ -1675,7 +1675,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             try {
                 let events = await (
                     await fetch(
-                        `/api/v1/scouting/events/${encodeURIComponent(year)}`
+                        `/api/v1/scouting/events/${encodeURIComponent(year)}/team`
                     )
                 ).json();
                 if (events.success) {
@@ -1693,7 +1693,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     alert(
                         `/api/v1/scouting/events/${encodeURIComponent(
                             year
-                        )} ${err}`
+                        )}/team ${err}`
                     );
                 }
                 resolve(false);
