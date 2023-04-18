@@ -26,7 +26,7 @@ const EVENT_PRIORITY = {
     "Johnson Division": 1,
     "Milstein Division": 1,
     "Newton Division": 1
-}
+};
 
 async function syncEventsCache(year) {
     try {
@@ -43,14 +43,14 @@ async function syncEventsCache(year) {
                 name: event.name
             };
         });
-        if(cache.events == null) {
+        if (cache.events == null) {
             cache.teamEvents = {};
         }
         cache.events[year] = {
             value: formatted.sort((a, b) => {
                 let aPriority = EVENT_PRIORITY[a.name] || 0;
                 let bPriority = EVENT_PRIORITY[b.name] || 0;
-                if(aPriority == bPriority) {
+                if (aPriority == bPriority) {
                     return a.name.localeCompare(b.name);
                 } else {
                     return bPriority - aPriority;
@@ -83,17 +83,17 @@ async function syncTeamEventsCache(year, team) {
                 name: event.name
             };
         });
-        if(cache.teamEvents == null) {
+        if (cache.teamEvents == null) {
             cache.teamEvents = {};
         }
-        if(cache.teamEvents[year] == null) {
+        if (cache.teamEvents[year] == null) {
             cache.teamEvents[year] = {};
         }
         cache.teamEvents[year][team] = {
             value: formatted.sort((a, b) => {
                 let aPriority = EVENT_PRIORITY[a.name] || 0;
                 let bPriority = EVENT_PRIORITY[b.name] || 0;
-                if(aPriority == bPriority) {
+                if (aPriority == bPriority) {
                     return a.name.localeCompare(b.name);
                 } else {
                     return bPriority - aPriority;
@@ -111,7 +111,7 @@ async function syncTeamEventsCache(year, team) {
 
 export async function getEvents(year) {
     try {
-        if(cache.events == null) {
+        if (cache.events == null) {
             cache.events = {};
         }
         if (cache.events[year] == null) {
@@ -125,7 +125,7 @@ export async function getEvents(year) {
         return cache.events[year].value;
     } catch (err) {
         year = new Date().toLocaleDateString().split("/")[2];
-        if(cache.events == null) {
+        if (cache.events == null) {
             cache.events = {};
         }
         if (cache.events[year] == null) {
@@ -142,10 +142,13 @@ export async function getEvents(year) {
 
 export async function getTeamEvents(year, team) {
     try {
-        if(cache.teamEvents == null) {
+        if (cache.teamEvents == null) {
             cache.teamEvents = {};
         }
-        if (cache.teamEvents[year] == null || cache.teamEvents[year][team] == null) {
+        if (
+            cache.teamEvents[year] == null ||
+            cache.teamEvents[year][team] == null
+        ) {
             await syncTeamEventsCache(year, team);
         } else if (
             new Date().getTime() >
@@ -156,10 +159,13 @@ export async function getTeamEvents(year, team) {
         return cache.teamEvents[year][team].value;
     } catch (err) {
         year = new Date().toLocaleDateString().split("/")[2];
-        if(cache.teamEvents == null) {
+        if (cache.teamEvents == null) {
             cache.teamEvents = {};
         }
-        if (cache.teamEvents[year] == null || cache.teamEvents[year][team] == null) {
+        if (
+            cache.teamEvents[year] == null ||
+            cache.teamEvents[year][team] == null
+        ) {
             await syncTeamEventsCache(year, team);
         } else if (
             new Date().getTime() >
@@ -181,11 +187,11 @@ export async function getEventsSorted(year, team) {
         };
     });
     let eventInList = {};
-    for(let i = 0; i < teamEvents.length; i++) {
+    for (let i = 0; i < teamEvents.length; i++) {
         eventInList[teamEvents[i].key] = true;
     }
-    for(let i = 0; i < events.length; i++) {
-        if(!eventInList[events[i].key]) {
+    for (let i = 0; i < events.length; i++) {
+        if (!eventInList[events[i].key]) {
             eventInList[events[i].key] = true;
             sortedEvents.push(events[i]);
         }
@@ -209,7 +215,7 @@ async function syncMatchesCache(event) {
                 )
             ).json();
         }
-        if(cache.matches == null) {
+        if (cache.matches == null) {
             cache.matches = {};
         }
         cache.matches[event] = {
@@ -221,7 +227,7 @@ async function syncMatchesCache(event) {
 }
 
 export async function getMatches(event) {
-    if(cache.matches == null) {
+    if (cache.matches == null) {
         cache.matches = {};
     }
     if (cache.matches[event] == null) {
@@ -248,7 +254,7 @@ async function syncMatchesFullCache(event) {
                 )
             ).json();
         }
-        if(cache.matchesFull == null) {
+        if (cache.matchesFull == null) {
             cache.matchesFull = {};
         }
         cache.matchesFull[event] = {
@@ -260,7 +266,7 @@ async function syncMatchesFullCache(event) {
 }
 
 export async function getMatchesFull(event) {
-    if(cache.matchesFull == null) {
+    if (cache.matchesFull == null) {
         cache.matchesFull = {};
     }
     if (cache.matchesFull[event] == null) {

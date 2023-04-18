@@ -1675,7 +1675,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             try {
                 let events = await (
                     await fetch(
-                        `/api/v1/scouting/events/${encodeURIComponent(year)}/team`
+                        `/api/v1/scouting/events/${encodeURIComponent(
+                            year
+                        )}/team`
                     )
                 ).json();
                 if (events.success) {
