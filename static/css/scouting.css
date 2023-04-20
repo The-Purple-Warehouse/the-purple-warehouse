@@ -757,18 +757,19 @@ header .header-btn {
 }
 
 .match-window
-.component-locations
-> .component-locations-container
-> .grid
-> div.active {
+    .component-locations
+    > .component-locations-container
+    > .grid
+    > div.active {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 .match-window
-.component-locations
-> .component-locations-container
-> .grid[data-orientation="1"]
-> div > .marker {
+    .component-locations
+    > .component-locations-container
+    > .grid[data-orientation="1"]
+    > div
+    > .marker {
     transform: translate(-50%, -50%) rotate(180deg);
 }
 
