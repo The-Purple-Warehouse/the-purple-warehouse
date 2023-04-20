@@ -93,13 +93,16 @@ export function layout() {
                     marker: {
                         type: "function",
                         definition: ((state) => {
-                            return `${state.locations.slice(0, 2).map((location) => {
-                                if(location.value == "y") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
-                                } else if(location.value == "b") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
-                                }
-                            }).join("")}`;
+                            return `${state.locations
+                                .slice(0, 2)
+                                .map((location) => {
+                                    if (location.value == "y") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
+                                    } else if (location.value == "b") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
+                                    }
+                                })
+                                .join("")}`;
                         }).toString()
                     },
                     options: [
@@ -257,13 +260,16 @@ export function layout() {
                     marker: {
                         type: "function",
                         definition: ((state) => {
-                            return `${state.locations.slice(0, 2).map((location) => {
-                                if(location.value == "y") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
-                                } else if(location.value == "b") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
-                                }
-                            }).join("")}`;
+                            return `${state.locations
+                                .slice(0, 2)
+                                .map((location) => {
+                                    if (location.value == "y") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
+                                    } else if (location.value == "b") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
+                                    }
+                                })
+                                .join("")}`;
                         }).toString()
                     },
                     options: [
@@ -726,6 +732,14 @@ try {
     cache = {};
 }
 
+function run(command) {
+    return new Promise(async (resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            resolve({ error, stdout, stderr });
+        });
+    })
+}
+
 async function syncAnalysisCache(event, teamNumber) {
     let analyzed = [];
     let data: any = {
@@ -738,11 +752,11 @@ async function syncAnalysisCache(event, teamNumber) {
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
-        pending.push(exec(rankingCommand));
+        pending.push(run(rankingCommand));
         let graphsCommand = `python3 config/scouting/2023/graphs.py --event ${event} --teamNumber ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        pending.push(exec(graphsCommand));
+        pending.push(run(graphsCommand));
         let radarCommand = `python3 config/scouting/2023/radarcharts.py --event ${event} --type 2 --t1 ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        pending.push(exec(radarCommand));
+        pending.push(run(radarCommand));
 
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
