@@ -753,7 +753,7 @@ async function syncAnalysisCache(event, teamNumber) {
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
         let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
         pending.push(run(rankingCommand));
-        let graphsCommand = `python3 config/scouting/2023/graphs.py --event ${event} --teamNumber ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        let graphsCommand = `python3 config/scouting/2023/graphs_v2.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(run(graphsCommand));
         let radarCommand = `python3 config/scouting/2023/radarcharts.py --event ${event} --type 2 --t1 ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(run(radarCommand));
