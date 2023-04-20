@@ -1894,14 +1894,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 				${options
                     .map((option) => {
                         let show = true;
-                        if(option.show != null) {
+                        if (option.show != null) {
                             if (option.show.type == "function") {
-                                show = eval(option.show.definition)({ ...state, index }) ? true : false;
+                                show = eval(option.show.definition)({
+                                    ...state,
+                                    index
+                                })
+                                    ? true
+                                    : false;
                             } else {
                                 show = option.show ? true : false;
                             }
                         }
-                        if(!show) {
+                        if (!show) {
                             return "";
                         }
                         return `
@@ -1932,7 +1937,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               ? "Deselect"
                                               : "Select"
                                       }</button>`
-                                    : `<button data-increment="-1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
+                                    : `<button data-increment="-1"${
+                                          option.max
+                                              ? ` data-max="${option.max}"`
+                                              : ""
+                                      } data-type="${
                                           option.type
                                       }" data-value="${_this.escape(
                                           option.value
@@ -1948,9 +1957,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               (loc) => loc.value == option.value
                                           ).length
                                       } total</h3>
-							<button data-increment="1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
-                                option.type
-                            }" data-value="${_this.escape(
+							<button data-increment="1"${
+                                option.max ? ` data-max="${option.max}"` : ""
+                            } data-type="${
+                                          option.type
+                                      }" data-value="${_this.escape(
                                           option.value
                                       )}"><span>+</span></button>`
                             }
@@ -1992,22 +2003,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             elements[i].innerHTML = `[${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
+                                        loc.value ==
+                                            elements[i].getAttribute(
+                                                "data-value"
+                                            ) && loc.index == index
                                 ).length
                             }/${
                                 locationData.filter(
-                                    (loc) => loc.value == elements[i].getAttribute(
-                                        "data-value"
-                                    )
+                                    (loc) =>
+                                        loc.value ==
+                                        elements[i].getAttribute("data-value")
                                 ).length
                             }] ${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
+                                        loc.value ==
+                                            elements[i].getAttribute(
+                                                "data-value"
+                                            ) && loc.index == index
                                 ).length > 0
                                     ? "Deselect"
                                     : "Select"
@@ -2019,9 +2032,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             });
                             elements[i].innerHTML = `[1/${
                                 locationData.filter(
-                                    (loc) => loc.value == elements[i].getAttribute(
-                                        "data-value"
-                                    )
+                                    (loc) =>
+                                        loc.value ==
+                                        elements[i].getAttribute("data-value")
                                 ).length
                             }] Deselect`;
                         }
@@ -2031,22 +2044,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                         for (let j = 0; j < Math.abs(increment); j++) {
                             if (increment > 0) {
-                                let max = elements[i].getAttribute(
-                                    "data-max"
-                                );
-                                if(max != null) {
+                                let max = elements[i].getAttribute("data-max");
+                                if (max != null) {
                                     try {
                                         max = parseInt(max);
-                                    } catch(err) {
-
-                                    }
+                                    } catch (err) {}
                                 }
-                                if(max == null || isNaN(max) || isNaN(parseInt(max)) || max > locationData.filter(
-                                    (loc) =>
-                                        loc.value == elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
-                                ).length) {
+                                if (
+                                    max == null ||
+                                    isNaN(max) ||
+                                    isNaN(parseInt(max)) ||
+                                    max >
+                                        locationData.filter(
+                                            (loc) =>
+                                                loc.value ==
+                                                    elements[i].getAttribute(
+                                                        "data-value"
+                                                    ) && loc.index == index
+                                        ).length
+                                ) {
                                     locationData.push({
                                         value: elements[i].getAttribute(
                                             "data-value"
@@ -2071,14 +2087,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                     for (let j = 0; j < options.length; j++) {
                         let show = true;
-                        if(options[j].show != null) {
+                        if (options[j].show != null) {
                             if (options[j].show.type == "function") {
-                                show = eval(options[j].show.definition)({ ...state, index }) ? true : false;
+                                show = eval(options[j].show.definition)({
+                                    ...state,
+                                    index
+                                })
+                                    ? true
+                                    : false;
                             } else {
                                 show = options[j].show ? true : false;
                             }
                         }
-                        if(show) {
+                        if (show) {
                             if (options[j].type != "toggle") {
                                 element.querySelector(
                                     `.location-popup > div[data-option="${_this.escape(
