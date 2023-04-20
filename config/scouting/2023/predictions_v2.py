@@ -37,8 +37,14 @@ for i in range(len(rawArgs)):
     elif rawArgs[i] == "--r3" and "r3" not in args:
         args["r3"] = rawArgs[i + 1]
         i += 1
+    elif rawArgs[i] == "--match" and "match" not in args:
+        args["match"] = rawArgs[i + 1]
+        i += 1
 
-
+try:
+    match_num = args["match"]
+except:
+    match_num = 100000000
 event = args["event"]
 base = args["baseFilePath"]
 tpw_csv = args["csv"]
@@ -169,7 +175,7 @@ def getData():
             with open(tpw_path, "r") as file:
                 TPW_data = csv.DictReader(file)
                 for x in TPW_data:
-                    if x['team'] == str(team):
+                    if x['team'] == str(team) and x['match'] <= match_num:
                         game_piece = x['game piece'][1:len(x['game piece']) - 1].split(", ")
                         locs = x['locations'][1:len(x['locations']) - 1].split(", ")
                         game_piece = [s.replace("'", '') for s in game_piece]
@@ -448,7 +454,7 @@ def predict(b1, b2, b3, r1, r2, r3):
         rc += 1
 
     if bc > rc:
-        winner = 'red'
+        winner = 'blue'
         if bc == 3:
             bp = avg([bp1, bp2])
             rp = avg([rp1, rp2])
@@ -464,7 +470,7 @@ def predict(b1, b2, b3, r1, r2, r3):
             bp = bp2
             rp = rp2
     else:
-        winner = 'blue'
+        winner = 'red'
         if rc == 3:
             bp = avg([bp1, bp2])
             rp = avg([rp1, rp2])
@@ -480,7 +486,7 @@ def predict(b1, b2, b3, r1, r2, r3):
             bp = bp1
             rp = rp1
 
-    return {'winner': winner, 'blue': rp, 'red': bp}
+    return {'winner': winner, 'blue': bp, 'red': rp}
 
 results = predict(args["b1"], args["b2"], args["b3"], args["r1"], args["r2"], args["r3"])
 print(results)

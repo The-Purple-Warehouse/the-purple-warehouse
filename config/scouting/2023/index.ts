@@ -779,7 +779,7 @@ async function syncAnalysisCache(event, teamNumber) {
             let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
-            let predictionsCommand = `python3 config/scouting/2023/predictions_v2.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3} --csv ${event}.csv`;
+            let predictionsCommand = `python3 config/scouting/2023/predictions_v2.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3} --match ${match.match_number} --csv ${event}.csv`;
             pending.push(exec(predictionsCommand));
         }
 
@@ -804,11 +804,12 @@ async function syncAnalysisCache(event, teamNumber) {
             prediction.win = match.alliances[
                 prediction.winner
             ].team_keys.includes(`frc${teamNumber}`);
-            if(prediction.red > 0.85) {
+            if (prediction.red > 0.85) {
                 prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
                 prediction.blue = 1 - prediction.red;
-            } else if(prediction.blue > 0.85) {
-                prediction.blue = 0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
+            } else if (prediction.blue > 0.85) {
+                prediction.blue =
+                    0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
                 prediction.red = 1 - prediction.blue;
             }
             predictions.push(prediction);
