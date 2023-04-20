@@ -7,6 +7,7 @@
     <a class="active" data-page="home">Home</a>
     <a data-page="scan-data">Upload Data</a>
     <a data-page="view-data">View Data/Analysis</a>
+    <a data-page="compare-teams">Compare Teams</a>
     <a data-page="log-out">Log Out</a>
 </nav>
 <header>
@@ -58,22 +59,26 @@
     document.querySelector(".navbar-open-btn").onclick = openNavbar;
     document.querySelector(".navbar-close-btn").onclick = closeNavbar;
     backdrop.onclick = closeNavbar;
-    
-    document.querySelector(".navbar a[data-page='log-out']").onclick =
+
+    document.querySelector(".navbar a[data-page='home']").onclick =
         async () => {
-            window.location.href = "/scouting/logout";
-        };
-    document.querySelector(".navbar a[data-page='view-data']").onclick =
-        async () => {
-            await sdk.showDataPage();
+          await sdk.showHomePage();
         };
     document.querySelector(".navbar a[data-page='scan-data']").onclick =
         async () => {
-            reader = await sdk.showScannerPage();
+          reader = await sdk.showScannerPage();
         };
-    document.querySelector(".navbar a[data-page='home']").onclick =
+    document.querySelector(".navbar a[data-page='view-data']").onclick =
         async () => {
-           await sdk.showHomePage();
+          await sdk.showDataPage();
+        };
+    document.querySelector(".navbar a[data-page='compare-teams']").onclick =
+        async () => {
+          await sdk.showComparePage();
+        };
+    document.querySelector(".navbar a[data-page='log-out']").onclick =
+        async () => {
+            window.location.href = "/scouting/logout";
         };
 
     document.querySelectorAll(".navbar a").forEach((a) => {
