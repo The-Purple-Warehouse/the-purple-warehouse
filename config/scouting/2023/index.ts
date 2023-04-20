@@ -865,7 +865,7 @@ async function syncAnalysisCache(event, teamNumber) {
         });
         analyzed.push({
             type: "html",
-            label: "Radar Chart<br>(Compared to Best Team)",
+            label: "Radar Chart<br>(Compared to Best Scores)",
             value: radarMax
         });
         analyzed.push({
