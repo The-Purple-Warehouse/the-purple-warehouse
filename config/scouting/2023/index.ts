@@ -94,12 +94,16 @@ export function layout() {
                         {
                             label: "Cube",
                             value: "b",
-                            type: "toggle"
+                            // type: "toggle"
+                            type: "counter",
+                            max: 2
                         },
                         {
                             label: "Cone",
                             value: "y",
-                            type: "toggle"
+                            // type: "toggle"
+                            type: "counter",
+                            max: 2
                         },
                         {
                             label: "Missed",
@@ -201,12 +205,16 @@ export function layout() {
                         {
                             label: "Cube",
                             value: "b",
-                            type: "toggle"
+                            // type: "toggle"
+                            type: "counter",
+                            max: 2
                         },
                         {
                             label: "Cone",
                             value: "y",
-                            type: "toggle"
+                            // type: "toggle"
+                            type: "counter",
+                            max: 2
                         },
                         {
                             label: "Missed",

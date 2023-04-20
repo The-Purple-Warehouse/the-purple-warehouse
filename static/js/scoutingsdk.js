@@ -1921,7 +1921,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               ? "Deselect"
                                               : "Select"
                                       }</button>`
-                                    : `<button data-increment="-1" data-type="${
+                                    : `<button data-increment="-1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
                                           option.type
                                       }" data-value="${_this.escape(
                                           option.value
@@ -1937,7 +1937,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               (loc) => loc.value == option.value
                                           ).length
                                       } total</h3>
-							<button data-increment="1" data-type="${
+							<button data-increment="1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
                                 option.type
                             }" data-value="${_this.escape(
                                           option.value
@@ -2014,12 +2014,29 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                         for (let j = 0; j < Math.abs(increment); j++) {
                             if (increment > 0) {
-                                locationData.push({
-                                    value: elements[i].getAttribute(
-                                        "data-value"
-                                    ),
-                                    index: index
-                                });
+                                let max = elements[i].getAttribute(
+                                    "data-max"
+                                );
+                                if(max != null) {
+                                    try {
+                                        max = parseInt(max);
+                                    } catch(err) {
+
+                                    }
+                                }
+                                if(max == null || isNaN(max) || isNaN(parseInt(max)) || max > locationData.filter(
+                                    (loc) =>
+                                        loc.value == elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
+                                ).length) {
+                                    locationData.push({
+                                        value: elements[i].getAttribute(
+                                            "data-value"
+                                        ),
+                                        index: index
+                                    });
+                                }
                             } else {
                                 let indexToRemove = locationData.findIndex(
                                     (loc) =>
@@ -2035,21 +2052,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         }
                     }
 
-                    for (let i = 0; i < options.length; i++) {
-                        if (options[i].type != "toggle") {
+                    for (let j = 0; j < options.length; j++) {
+                        if (options[j].type != "toggle") {
                             element.querySelector(
                                 `.location-popup > div[data-option="${_this.escape(
-                                    options[i].value
+                                    options[j].value
                                 )}"] > h3`
                             ).innerHTML = `${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == options[i].value &&
+                                        loc.value == options[j].value &&
                                         loc.index == index
                                 ).length
                             } here<br>${
                                 locationData.filter(
-                                    (loc) => loc.value == options[i].value
+                                    (loc) => loc.value == options[j].value
                                 ).length
                             } total`;
                         }
