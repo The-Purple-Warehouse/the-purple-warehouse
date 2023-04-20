@@ -1647,6 +1647,222 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
+    _this.showComparePage = () => {
+        return new Promise(async (resolve, reject) => {
+            let year = new Date().toLocaleDateString().split("/")[2];
+            let events = await _this.getEvents(year);
+            element.innerHTML = `
+                <div class="data-window">
+                    <h2>Event:</h2>
+                    <select class="event-code">
+                        <option value=""${
+                _this.getEventCode() == null ||
+                _this.getEventCode() == ""
+                    ? " selected"
+                    : ""
+            }>Select an event...</option>
+                        ${events.map(
+                (event) =>
+                    `<option value="${event.key}"${
+                        _this.getEventCode() == event.key
+                            ? " selected"
+                            : ""
+                    }>${event.name}</option>`
+            )}
+                    </select>
+                    <h2>Team Numbers<br>(enter up to 5 teams):</h2>
+                    <input class="team-number-1" placeholder="1st Team Number" style="margin-bottom: 10px;" />
+                    <input class="team-number-2" placeholder="2nd Team Number" style="margin-bottom: 10px;" />
+                    <input class="team-number-3" placeholder="3rd Team Number" style="margin-bottom: 10px;" />
+                    <input class="team-number-4" placeholder="4th Team Number" style="margin-bottom: 10px;" />
+                    <input class="team-number-5" placeholder="5th Team Number" />
+                    <button class="show-comparison">Compare Teams</button>
+                    <h3 class="red">&nbsp;</h3>
+                    <div class="comparison" style="display: none;">
+                        
+                    </div>
+                    <div class="overlay" style="display: none;"></div>
+                </div>
+            `;
+            let overlayShown = false;
+            function showOverlay() {
+                overlayShown = true;
+                setTimeout(() => {
+                    if (overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "block";
+                    }
+                }, 500);
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                setTimeout(() => {
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
+                    }
+                }, 500);
+            }
+            element.querySelector("button.show-comparison").onclick =
+                async () => {
+                    showOverlay();
+                    let eventCode = element.querySelector(
+                        ".data-window > select.event-code"
+                    ).value;
+                    let teamNumber1 =
+                        element.querySelector(
+                            ".data-window > input.team-number-1"
+                        ).value || config.account.team;
+                    let teamNumber2 =
+                        element.querySelector(
+                            ".data-window > input.team-number-2"
+                        ).value || "";
+                    let teamNumber3 =
+                        element.querySelector(
+                            ".data-window > input.team-number-3"
+                        ).value || "";
+                    let teamNumber4 =
+                        element.querySelector(
+                            ".data-window > input.team-number-4"
+                        ).value || "";
+                    let teamNumber5 =
+                        element.querySelector(
+                            ".data-window > input.team-number-5"
+                        ).value || "";
+                    let teamNumbers = [teamNumber1, teamNumber2, teamNumber3, teamNumber4, teamNumber5].filter(teamNumber => teamNumber != "").join(",");
+                    element.querySelector(".comparison").innerHTML = "";
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/compare/event/${encodeURIComponent(
+                                    eventCode
+                                )}/${teamNumbers}`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML = "&nbsp;";
+                            let run = [];
+                            element.querySelector(".comparison").innerHTML =
+                                data.body.display
+                                    .map((item) => {
+                                        if (item.type == "table") {
+                                            return `<h2>${item.label}</h2>
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>${item.values[0]
+                                                .map(
+                                                    (cell) =>
+                                                        `<th>${cell
+                                                            .replaceAll(
+                                                                '"',
+                                                                ""
+                                                            )
+                                                            .replaceAll(
+                                                                "\\n",
+                                                                "<br>"
+                                                            )}</th>`
+                                                )
+                                                .join("")}</tr>
+                                            </thead>
+                                            <tbody>
+                                                ${item.values
+                                                .slice(1)
+                                                .map((data) => {
+                                                    return `<tr>${data
+                                                        .map(
+                                                            (cell) =>
+                                                                `<td>${cell.replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</td>`
+                                                        )
+                                                        .join("")}</tr>`;
+                                                })
+                                                .join("")}
+                                            </tbody>
+                                        </table>`;
+                                        } else if (item.type == "predictions") {
+                                            return `<h2>${item.label}</h2>
+                                            ${item.values
+                                                .map((data) => {
+                                                    let firstListed = "red";
+                                                    if (
+                                                        (data.win &&
+                                                            data.winner ==
+                                                            "blue") ||
+                                                        (!data.win &&
+                                                            data.winner ==
+                                                            "red")
+                                                    ) {
+                                                        firstListed = "blue";
+                                                    }
+                                                    return `<h3>Match ${
+                                                        data.match
+                                                    } (Predicted ${
+                                                        data.win
+                                                            ? "WIN"
+                                                            : "LOSS"
+                                                    })</h3>
+                                                    <div class="prediction-bar">
+                                                        <div class="prediction-bar-${
+                                                        firstListed == "red"
+                                                            ? "red"
+                                                            : "blue"
+                                                    }" style="width: calc(${
+                                                        firstListed == "red"
+                                                            ? data.red * 100
+                                                            : data.blue * 100
+                                                    }% - 2px);"><p>${Math.round(
+                                                        firstListed == "red"
+                                                            ? data.red * 100
+                                                            : data.blue * 100
+                                                    )}%</p></div>
+                                                        <div class="prediction-bar-${
+                                                        firstListed == "red"
+                                                            ? "blue"
+                                                            : "red"
+                                                    }" style="width: calc(${
+                                                        firstListed == "red"
+                                                            ? data.blue * 100
+                                                            : data.red * 100
+                                                    }% - 3px);"><p>${Math.round(
+                                                        firstListed == "red"
+                                                            ? data.blue * 100
+                                                            : data.red * 100
+                                                    )}%</p></div>
+                                                    </div>`;
+                                                })
+                                                .join("")}`;
+                                        } else if (item.type == "html") {
+                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        }
+                                    })
+                                    .join("");
+                            let scripts = [
+                                ...element.querySelectorAll(".comparison script")
+                            ];
+                            for (let i = 0; i < scripts.length; i++) {
+                                if (!run.includes(scripts[i].innerHTML)) {
+                                    run.push(scripts[i].innerHTML);
+                                    eval(scripts[i].innerHTML);
+                                }
+                            }
+                            element
+                                .querySelector(".data-window")
+                                .classList.add("data-window-visible");
+                            element.querySelector(".comparison").style.display =
+                                "block";
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {}
+                    hideOverlay();
+                };
+            resolve();
+        });
+    };
+
     _this.getQuote = () => {
         let possibleQuotes = importantQuotes.length * 3 + quotes.length;
         let randomQuoteID = Math.floor(Math.random() * possibleQuotes);

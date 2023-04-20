@@ -211,4 +211,45 @@ router.get(
     }
 );
 
+router.get(
+    "/entry/compare/event/:event/:teams",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        // let entries = await getTeamEntriesByEvent(
+        //     ctx.params.event,
+        //     ctx.session.scoutingTeamNumber
+        // );
+        let entries = await getNumberOfEntriesByEvent(ctx.params.event);
+        let comparison: any = {
+            display: [],
+            data: {}
+        };
+        if (
+            // entries.length >= 5 ||
+            // config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)
+            entries >= 1
+        ) {
+            comparison = await scoutingConfig.compare(
+                ctx.params.event,
+                ctx.params.teams.split(",")
+            );
+        }
+        if (comparison.display.length > 0) {
+            ctx.body = {
+                success: true,
+                body: {
+                    display: comparison.display,
+                    data: comparison.data
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Not enough data has been collected on these teams at this event to run comparisons on them. Please try entering different team numbers, or check back later after scouting more matches!`
+            };
+        }
+    }
+);
+
 export default router;
