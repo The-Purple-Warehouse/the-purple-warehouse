@@ -20,7 +20,7 @@ returns graph/chart to html file:
 
 caches parsed data to json file:
 
-    filename:   parsed_tpw_data_event.json
+    filename:   event-parsed-cache.json
 '''
 
 import numpy as np
@@ -185,15 +185,21 @@ def getData():
                         elif end_cs == 0:
                             ecspts.append(0)
                         try:
-                            defe.append(int(x["defense skill"]))
-                            speed.append(int(x["speed"]))
-                            stab.append(int(x["stability"]))
-                            inta.append(int(x["intake consistency"]))
-                            driver.append(int(x["drive skill"]))
+                            if x["defense skill"] != "":
+                                defe.append(int(x["defense skill"]))
+                            if x["speed"] != "":
+                                speed.append(int(x["speed"]))
+                            if x["stability"] != "":
+                                stab.append(int(x["stability"]))
+                            if x["intake consistency"] != "":
+                                inta.append(int(x["intake consistency"]))
+                            if x["drive skill"] != "":
+                                driver.append(int(x["drive skill"]))
                         except:
                             #print('passed')
                             legacy = True
-                        uptime.append(153 - int(x["break time"]))
+                        if(x["break time"] != ""):
+                            uptime.append(153 - int(x["break time"]))
 
                         try:
                             matches[x['match']][(x[''])] = game_piece
@@ -281,13 +287,13 @@ def getData():
         else:
             raise Exception("Could not find TPW file")
 
-    with open(base + 'parsed_tpw_data_'+event+'.json', 'w') as f:
+    with open(base + event + '-parsed-cache.json', 'w') as f:
         f.write(json.dumps({'lines': len(pd.read_csv(tpw_path)), 'data': parsed_tpw_data}, default=int))
         f.close()
     return parsed_tpw_data
 
-if os.path.exists(base + 'parsed_tpw_data_'+event+'.json'):
-    with open(base + 'parsed_tpw_data_'+event+'.json') as f:
+if os.path.exists(base + event + '-parsed-cache.json'):
+    with open(base + event + '-parsed-cache.json') as f:
         loaded = json.loads(f.read())
         if loaded['lines'] == len(pd.read_csv(tpw_path)):
             parsed_tpw_data = loaded['data']
@@ -336,7 +342,7 @@ def radarChartSpread(teams):
     fn = ''
     for team in teams:
         team = str(team)
-        fn += team + '_'
+        fn += team + '-'
 
         s_team = [parsed_tpw_data[team]["avg-auto"], parsed_tpw_data[team]["avg-auto-cs"], parsed_tpw_data[team]["avg-tele"], parsed_tpw_data[team]["avg-end-cs"], parsed_tpw_data[team]["tpw-score"], parsed_tpw_data[team]["avg-auto"]]
 
@@ -355,7 +361,7 @@ def radarChartSpread(teams):
         height = 600,
         template=template)
 
-    plotly.offline.plot(fig, filename=fn+'spreadChart.html')
+    plotly.offline.plot(fig, filename=base + event + "-" + fn + 'standard-radar.html', auto_open=False)
 
 def getBest():
     auto = 0
@@ -393,6 +399,9 @@ def getBest():
 def radarChartCTB(teams):
     categories = ["auto pts", "teleop pts", "total pts", "drive skill", "defense", "stability", "uptime", "speed", "intake", "auto pts"]
     maxes = getBest()
+    for i in range(len(maxes)):
+        if(maxes[i] == 0):
+            maxes[i] = 0.000000001
 
     fig = go.Figure()
     avgerage_spread = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -400,7 +409,7 @@ def radarChartCTB(teams):
 
     for team in teams:
         team = str(team)
-        fn += team + '_'
+        fn += team + '-'
 
         s_team = [parsed_tpw_data[team]["avg-auto"]/maxes[0], parsed_tpw_data[team]["avg-tele"]/maxes[1], parsed_tpw_data[team]["tpw-score"]/maxes[2], parsed_tpw_data[team]["avg-driv"]/maxes[3], parsed_tpw_data[team]["avg-def"]/maxes[4], parsed_tpw_data[team]["avg-stab"]/maxes[5], parsed_tpw_data[team]["avg-upt"]/maxes[6], parsed_tpw_data[team]["avg-speed"]/maxes[7], parsed_tpw_data[team]["avg-inta"]/maxes[8], parsed_tpw_data[team]["avg-auto"]/maxes[0]]
 
@@ -426,7 +435,7 @@ def radarChartCTB(teams):
         height = 600,
         template=template)
 
-    plotly.offline.plot(fig, filename=fn+'CTBchart.html')
+    plotly.offline.plot(fig, filename=base + event + "-" + fn + 'max-radar.html', auto_open=False)
 
 def overTimeChart(team):
     dataS = shotSummary(team)

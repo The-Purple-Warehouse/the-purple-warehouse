@@ -755,8 +755,10 @@ async function syncAnalysisCache(event, teamNumber) {
         pending.push(run(rankingCommand));
         let graphsCommand = `python3 config/scouting/2023/graphs_v2.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(run(graphsCommand));
-        let radarCommand = `python3 config/scouting/2023/radarcharts.py --event ${event} --type 2 --t1 ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        pending.push(run(radarCommand));
+        let radarStandardCommand = `python3 config/scouting/2023/graphs_v2.py --mode 1 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(run(radarStandardCommand));
+        let radarMaxCommand = `python3 config/scouting/2023/graphs_v2.py --mode 2 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(run(radarMaxCommand));
 
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
@@ -836,8 +838,11 @@ async function syncAnalysisCache(event, teamNumber) {
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
             .toString();
-        let radar = fs
-            .readFileSync(`../${event}-${teamNumber}-single-radar.html`)
+        let radarStandard = fs
+            .readFileSync(`../${event}-${teamNumber}-standard-radar.html`)
+            .toString();
+        let radarMax = fs
+            .readFileSync(`../${event}-${teamNumber}-max-radar.html`)
             .toString();
         analyzed.push({
             type: "html",
@@ -846,8 +851,13 @@ async function syncAnalysisCache(event, teamNumber) {
         });
         analyzed.push({
             type: "html",
-            label: "Radar Chart",
-            value: radar
+            label: "Radar Chart<br>(Single Team)",
+            value: radarStandard
+        });
+        analyzed.push({
+            type: "html",
+            label: "Radar Chart<br>(Compared to Best Team)",
+            value: radarMax
         });
         analyzed.push({
             type: "predictions",
