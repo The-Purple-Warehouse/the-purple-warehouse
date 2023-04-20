@@ -175,7 +175,7 @@ def getData():
             with open(tpw_path, "r") as file:
                 TPW_data = csv.DictReader(file)
                 for x in TPW_data:
-                    if x['team'] == str(team) and x['match'] <= match_num:
+                    if x['team'] == str(team) and x['match'] < match_num:
                         game_piece = x['game piece'][1:len(x['game piece']) - 1].split(", ")
                         locs = x['locations'][1:len(x['locations']) - 1].split(", ")
                         game_piece = [s.replace("'", '') for s in game_piece]
