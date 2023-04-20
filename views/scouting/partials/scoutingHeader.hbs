@@ -4,7 +4,7 @@
         <h1>TPW Scouting App</h1>
         <button class="navbar-close-btn"></button>
     </div>
-    <a class="active" data-page="home">Home</a>
+    <a data-page="home">Home</a>
     <a data-page="scan-data">Upload Data</a>
     <a data-page="view-data">View Data/Analysis</a>
     <a data-page="compare-teams">Compare Teams</a>
@@ -36,7 +36,9 @@
 <script defer>
     const navbar = document.querySelector(".navbar");
     const backdrop = document.querySelector(".navbar-backdrop");
-    let reader;
+    window.readerForNav = {
+      stop: () => {}
+    };
 
     function openNavbar() {
         navbar.classList.remove("hidden");
@@ -62,30 +64,60 @@
 
     document.querySelector(".navbar a[data-page='home']").onclick =
         async () => {
-          await sdk.showHomePage();
+          window.location.hash = "#/";
+          // await sdk.showHomePage();
         };
     document.querySelector(".navbar a[data-page='scan-data']").onclick =
         async () => {
-          reader = await sdk.showScannerPage();
+          window.location.hash = "#/scan-data";
+          // window.readerForNav = await sdk.showScannerPage();
         };
     document.querySelector(".navbar a[data-page='view-data']").onclick =
         async () => {
-          await sdk.showDataPage();
+          window.location.hash = "#/view-data";
+          // await sdk.showDataPage();
         };
     document.querySelector(".navbar a[data-page='compare-teams']").onclick =
         async () => {
-          await sdk.showComparePage();
+          window.location.hash = "#/compare-teams";
+          // await sdk.showComparePage();
         };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
         async () => {
-            window.location.href = "/scouting/logout";
+            window.location.href = "#/scouting/logout";
         };
+
+    async function updatePage() {
+        if(window.location.hash != null && window.location.hash.startsWith("#/")) {
+            let page = window.location.hash.substring(2);
+            if(page == "scan-data") {
+                document.querySelector(".navbar a[data-page='scan-data']").classList.add("active");
+                window.readerForNav = await sdk.showScannerPage();
+            } else if(page == "view-data") {
+                document.querySelector(".navbar a[data-page='view-data']").classList.add("active");
+                await sdk.showDataPage();
+            } else if(page == "compare-teams") {
+                document.querySelector(".navbar a[data-page='compare-teams']").classList.add("active");
+                await sdk.showComparePage();
+            } else {
+                document.querySelector(".navbar a[data-page='home']").classList.add("active");
+                await sdk.showHomePage();
+            }
+        } else {
+            document.querySelector(".navbar a[data-page='home']").classList.add("active");
+            await sdk.showHomePage();
+        }
+    }
+    window.onhashchange = () => {
+        updatePage();
+    }
+    updatePage();
 
     document.querySelectorAll(".navbar a").forEach((a) => {
         a.addEventListener("click", async () => {
-            if (reader) {
+            if (window.readerForNav) {
                 try {
-                    await reader.stop();
+                    await window.readerForNav.stop();
                 } catch (err) {}
             }
 
