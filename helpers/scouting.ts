@@ -6,7 +6,16 @@ import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
 
-const DIVISIONS = ["2023arc", "2023cur", "2023dal", "2023gal", "2023hop", "2023joh", "2023mil", "2023new"];
+const DIVISIONS = [
+    "2023arc",
+    "2023cur",
+    "2023dal",
+    "2023gal",
+    "2023hop",
+    "2023joh",
+    "2023mil",
+    "2023new"
+];
 
 export function getCategoryByIdentifier(identifier: string) {
     return ScoutingCategory.findOne({ identifier });
@@ -458,7 +467,10 @@ export async function getAllRawDataByEvent(event: string) {
 }
 
 export async function getWorldsContributions(contributingTeam: string) {
-    let contributions = await ScoutingEntry.countDocuments({ "contributor.team": (await getTeamByNumber(contributingTeam))._id, event: { $in: DIVISIONS } });
+    let contributions = await ScoutingEntry.countDocuments({
+        "contributor.team": (await getTeamByNumber(contributingTeam))._id,
+        event: { $in: DIVISIONS }
+    });
     return contributions;
 }
 
@@ -575,7 +587,7 @@ export async function getSharedData(
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
     if (!config.auth.scoutingAdmins.includes(teamNumber)) {
         let contributions;
-        if(DIVISIONS.includes(event)) {
+        if (DIVISIONS.includes(event)) {
             contributions = await getWorldsContributions(teamNumber);
         } else {
             contributions = data.filter(
