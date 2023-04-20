@@ -205,7 +205,7 @@ router.get(
         } else {
             ctx.body = {
                 success: false,
-                error: `Not enough data has been collected on team ${ctx.params.team} at this event to run the analyzer for this team. Please try entering a different team number or check back later after scouting more matches!`
+                error: `Not enough data has been collected on team ${ctx.params.team} at this event to run the analyzer for this team. Please try entering a different team number, or check back later after scouting more matches!`
             };
         }
     }
