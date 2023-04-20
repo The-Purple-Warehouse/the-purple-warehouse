@@ -732,6 +732,18 @@ try {
     cache = {};
 }
 
+function pruneCache() {
+    let cacheKeys = Object.keys(cache);
+    for(let i = 0; i < cacheKeys.length; i++) {
+        if(new Date().getTime() > cache[cacheKeys[i]].timestamp + 1000 * 60 * 60) {
+            delete cache[cacheKeys[i]];
+        }
+    }
+    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
+}
+
+pruneCache();
+
 function run(command) {
     return new Promise(async (resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -889,6 +901,7 @@ async function syncAnalysisCache(event, teamNumber) {
         timestamp: new Date().getTime()
     };
     fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
+    pruneCache();
 }
 
 export async function analysis(event, teamNumber) {
