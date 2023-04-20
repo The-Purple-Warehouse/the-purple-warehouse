@@ -1880,7 +1880,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         )}`;
     };
 
-    _this.showLocationPopup = (index, options, locations, values) => {
+    _this.showLocationPopup = (index, options, locations, values, state) => {
         return new Promise(async (resolve, reject) => {
             locations = [...locations];
             values = [...values];
@@ -1893,6 +1893,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             element.querySelector(".location-popup").innerHTML = `
 				${options
                     .map((option) => {
+                        let show = true;
+                        if(option.show != null) {
+                            if (option.show.type == "function") {
+                                show = eval(option.show.definition)({ ...state, index }) ? true : false;
+                            } else {
+                                show = option.show ? true : false;
+                            }
+                        }
+                        if(!show) {
+                            return "";
+                        }
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
@@ -2059,22 +2070,32 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
 
                     for (let j = 0; j < options.length; j++) {
-                        if (options[j].type != "toggle") {
-                            element.querySelector(
-                                `.location-popup > div[data-option="${_this.escape(
-                                    options[j].value
-                                )}"] > h3`
-                            ).innerHTML = `${
-                                locationData.filter(
-                                    (loc) =>
-                                        loc.value == options[j].value &&
-                                        loc.index == index
-                                ).length
-                            } here<br>${
-                                locationData.filter(
-                                    (loc) => loc.value == options[j].value
-                                ).length
-                            } total`;
+                        let show = true;
+                        if(options[j].show != null) {
+                            if (options[j].show.type == "function") {
+                                show = eval(options[j].show.definition)({ ...state, index }) ? true : false;
+                            } else {
+                                show = options[j].show ? true : false;
+                            }
+                        }
+                        if(show) {
+                            if (options[j].type != "toggle") {
+                                element.querySelector(
+                                    `.location-popup > div[data-option="${_this.escape(
+                                        options[j].value
+                                    )}"] > h3`
+                                ).innerHTML = `${
+                                    locationData.filter(
+                                        (loc) =>
+                                            loc.value == options[j].value &&
+                                            loc.index == index
+                                    ).length
+                                } here<br>${
+                                    locationData.filter(
+                                        (loc) => loc.value == options[j].value
+                                    ).length
+                                } total`;
+                            }
                         }
                     }
                 };
@@ -2115,13 +2136,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 teamNumber
             );
 
-            function getState() {
+            function getState(additional = {}) {
                 return {
                     eventCode: eventCode,
                     matchNumber: matchNumber,
                     teamNumber: teamNumber,
                     color: color,
-                    data: data
+                    data: data,
+                    ...additional
                 };
             }
 
@@ -2310,7 +2332,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 checkNull(
                                     data.data[component.data.values],
                                     defaultValue.values
-                                )
+                                ),
+                                getState()
                             );
                             if (result != null) {
                                 await _this.setData(
