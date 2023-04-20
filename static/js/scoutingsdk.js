@@ -1894,14 +1894,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 				${options
                     .map((option) => {
                         let show = true;
-                        if(option.show != null) {
+                        if (option.show != null) {
                             if (option.show.type == "function") {
-                                show = eval(option.show.definition)({ ...state, index }) ? true : false;
+                                show = eval(option.show.definition)({
+                                    ...state,
+                                    index
+                                })
+                                    ? true
+                                    : false;
                             } else {
                                 show = option.show ? true : false;
                             }
                         }
-                        if(!show) {
+                        if (!show) {
                             return "";
                         }
                         return `
@@ -1932,7 +1937,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               ? "Deselect"
                                               : "Select"
                                       }</button>`
-                                    : `<button data-increment="-1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
+                                    : `<button data-increment="-1"${
+                                          option.max
+                                              ? ` data-max="${option.max}"`
+                                              : ""
+                                      } data-type="${
                                           option.type
                                       }" data-value="${_this.escape(
                                           option.value
@@ -1948,9 +1957,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               (loc) => loc.value == option.value
                                           ).length
                                       } total</h3>
-							<button data-increment="1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
-                                option.type
-                            }" data-value="${_this.escape(
+							<button data-increment="1"${
+                                option.max ? ` data-max="${option.max}"` : ""
+                            } data-type="${
+                                          option.type
+                                      }" data-value="${_this.escape(
                                           option.value
                                       )}"><span>+</span></button>`
                             }
@@ -1992,22 +2003,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             elements[i].innerHTML = `[${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
+                                        loc.value ==
+                                            elements[i].getAttribute(
+                                                "data-value"
+                                            ) && loc.index == index
                                 ).length
                             }/${
                                 locationData.filter(
-                                    (loc) => loc.value == elements[i].getAttribute(
-                                        "data-value"
-                                    )
+                                    (loc) =>
+                                        loc.value ==
+                                        elements[i].getAttribute("data-value")
                                 ).length
                             }] ${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
+                                        loc.value ==
+                                            elements[i].getAttribute(
+                                                "data-value"
+                                            ) && loc.index == index
                                 ).length > 0
                                     ? "Deselect"
                                     : "Select"
@@ -2019,9 +2032,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             });
                             elements[i].innerHTML = `[1/${
                                 locationData.filter(
-                                    (loc) => loc.value == elements[i].getAttribute(
-                                        "data-value"
-                                    )
+                                    (loc) =>
+                                        loc.value ==
+                                        elements[i].getAttribute("data-value")
                                 ).length
                             }] Deselect`;
                         }
@@ -2031,22 +2044,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                         for (let j = 0; j < Math.abs(increment); j++) {
                             if (increment > 0) {
-                                let max = elements[i].getAttribute(
-                                    "data-max"
-                                );
-                                if(max != null) {
+                                let max = elements[i].getAttribute("data-max");
+                                if (max != null) {
                                     try {
                                         max = parseInt(max);
-                                    } catch(err) {
-
-                                    }
+                                    } catch (err) {}
                                 }
-                                if(max == null || isNaN(max) || isNaN(parseInt(max)) || max > locationData.filter(
-                                    (loc) =>
-                                        loc.value == elements[i].getAttribute(
-                                            "data-value"
-                                        ) && loc.index == index
-                                ).length) {
+                                if (
+                                    max == null ||
+                                    isNaN(max) ||
+                                    isNaN(parseInt(max)) ||
+                                    max >
+                                        locationData.filter(
+                                            (loc) =>
+                                                loc.value ==
+                                                    elements[i].getAttribute(
+                                                        "data-value"
+                                                    ) && loc.index == index
+                                        ).length
+                                ) {
                                     locationData.push({
                                         value: elements[i].getAttribute(
                                             "data-value"
@@ -2071,14 +2087,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                     for (let j = 0; j < options.length; j++) {
                         let show = true;
-                        if(options[j].show != null) {
+                        if (options[j].show != null) {
                             if (options[j].show.type == "function") {
-                                show = eval(options[j].show.definition)({ ...state, index }) ? true : false;
+                                show = eval(options[j].show.definition)({
+                                    ...state,
+                                    index
+                                })
+                                    ? true
+                                    : false;
                             } else {
                                 show = options[j].show ? true : false;
                             }
                         }
-                        if(show) {
+                        if (show) {
                             if (options[j].type != "toggle") {
                                 element.querySelector(
                                     `.location-popup > div[data-option="${_this.escape(
@@ -2318,12 +2339,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let gridElements = element.querySelectorAll(
                         `[data-id="${_this.escape(
                             id
-                        )}"] > .component-locations-container > .grid > div`
+                        )}"] > .component-locations-container > .grid > div.grid-item`
                     );
                     for (let i = 0; i < gridElements.length; i++) {
                         gridElements[i].onclick = async (e) => {
                             let result = await _this.showLocationPopup(
-                                parseInt(e.target.getAttribute("data-index")),
+                                parseInt(gridElements[i].getAttribute("data-index")),
                                 options,
                                 checkNull(
                                     data.data[component.data.locations],
@@ -2367,7 +2388,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             .querySelector(
                                                 `[data-id="${_this.escape(
                                                     id
-                                                )}"] > .component-locations-container > .grid > div[data-index="${_this.escape(
+                                                )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
                                                     index
                                                 )}"]`
                                             )
@@ -2377,12 +2398,46 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             .querySelector(
                                                 `[data-id="${_this.escape(
                                                     id
-                                                )}"] > .component-locations-container > .grid > div[data-index="${_this.escape(
+                                                )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
                                                     index
                                                 )}"]`
                                             )
                                             .classList.remove("active");
                                     }
+                                    let marker = "";
+                                    if (component.marker != null) {
+                                        if (component.marker.type == "function") {
+                                            let locs = checkNull(
+                                                data.data[component.data.locations],
+                                                defaultValue.locations
+                                            )
+                                            let vals = checkNull(
+                                                data.data[component.data.values],
+                                                defaultValue.values
+                                            )
+                                            let locations = [];
+                                            for(let j = 0; j < locs.length; j++) {
+                                                if(locs[j] == index) {
+                                                    locations.push({
+                                                        location: locs[j],
+                                                        value: vals[j]
+                                                    })
+                                                }
+                                            }
+                                            marker = eval(component.marker.definition)(getState({ locations }));
+                                        } else {
+                                            marker = component.marker.toString();
+                                        }
+                                    }
+                                    element
+                                        .querySelector(
+                                            `[data-id="${_this.escape(
+                                                id
+                                            )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
+                                                index
+                                            )}"]`
+                                        )
+                                        .innerHTML = `<div class="marker">${marker}</div>`;
                                 }
                             }
                         };
@@ -2415,15 +2470,40 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     .map((row, rowindex) => {
                                         return [...new Array(columns).keys()]
                                             .map((column, columnindex) => {
-                                                return `<div style="grid-area: ${
+                                                let index = rowindex * columns + columnindex;
+                                                let marker = "";
+                                                if (component.marker != null) {
+                                                    if (component.marker.type == "function") {
+                                                        let locs = checkNull(
+                                                            data.data[component.data.locations],
+                                                            defaultValue.locations
+                                                        )
+                                                        let vals = checkNull(
+                                                            data.data[component.data.values],
+                                                            defaultValue.values
+                                                        )
+                                                        let locations = [];
+                                                        for(let j = 0; j < locs.length; j++) {
+                                                            if(locs[j] == index) {
+                                                                locations.push({
+                                                                    location: locs[j],
+                                                                    value: vals[j]
+                                                                })
+                                                            }
+                                                        }
+                                                        marker = eval(component.marker.definition)(getState({ locations }));
+                                                    } else {
+                                                        marker = component.marker.toString();
+                                                    }
+                                                }
+                                                return `<div class="grid-item" style="grid-area: ${
                                                     rowindex + 1
                                                 } / ${columnindex + 1} / ${
                                                     rowindex + 2
                                                 } / ${
                                                     columnindex + 2
                                                 };" data-row="${rowindex}" data-column="${columnindex}" data-index="${
-                                                    rowindex * columns +
-                                                    columnindex
+                                                    index
                                                 }"${
                                                     checkNull(
                                                         data.data[
@@ -2439,7 +2519,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     ).length > 0
                                                         ? ` class="active"`
                                                         : ""
-                                                }></div>`;
+                                                }><div class="marker">${marker}</div></div>`;
                                             })
                                             .join("");
                                     })

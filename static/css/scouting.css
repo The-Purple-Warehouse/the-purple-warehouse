@@ -736,11 +736,28 @@ header .header-btn {
     > .component-locations-container
     > .grid
     > div {
+    position: relative;
     border: 1px solid var(--contentColor);
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.2s ease-in-out;
 }
+
+
+
+.match-window
+.component-locations
+> .component-locations-container
+> .grid
+> div
+> .marker {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+}
+
 .match-window
     .component-locations
     > .component-locations-container
