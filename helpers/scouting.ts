@@ -65,6 +65,22 @@ export async function getLatestMatch(event: string) {
     }
 }
 
+export async function getEntriesByEvent(
+    event: string
+) {
+    return ScoutingEntry.find({
+        event
+    }).lean();
+}
+
+export async function getNumberOfEntriesByEvent(
+    event: string
+) {
+    return ScoutingEntry.find({
+        event
+    }).countDocuments();
+}
+
 export async function getTeamEntriesByEvent(
     event: string,
     contributingTeam: string
@@ -73,6 +89,16 @@ export async function getTeamEntriesByEvent(
         event,
         "contributor.team": (await getTeamByNumber(contributingTeam))._id
     }).lean();
+}
+
+export async function getNumberOfTeamEntriesByEvent(
+    event: string,
+    contributingTeam: string
+) {
+    return ScoutingEntry.find({
+        event,
+        "contributor.team": (await getTeamByNumber(contributingTeam))._id
+    }).countDocuments();
 }
 
 export async function getAverageAccuracy(
