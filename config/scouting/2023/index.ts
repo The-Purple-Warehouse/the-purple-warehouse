@@ -751,12 +751,14 @@ async function syncAnalysisCache(event, teamNumber) {
         let pending = [];
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
-        let rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
+        let rankingCommand = `python3 config/scouting/2023/rankings_v2.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(run(rankingCommand));
         let graphsCommand = `python3 config/scouting/2023/graphs_v2.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(run(graphsCommand));
-        let radarCommand = `python3 config/scouting/2023/radarcharts.py --event ${event} --type 2 --t1 ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        pending.push(run(radarCommand));
+        let radarStandardCommand = `python3 config/scouting/2023/graphs_v2.py --mode 1 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(run(radarStandardCommand));
+        let radarMaxCommand = `python3 config/scouting/2023/graphs_v2.py --mode 2 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(run(radarMaxCommand));
 
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
@@ -777,7 +779,7 @@ async function syncAnalysisCache(event, teamNumber) {
             let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
-            let predictionsCommand = `python3 config/scouting/2023/predictions.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+            let predictionsCommand = `python3 config/scouting/2023/predictions_v2.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3} --csv ${event}.csv`;
             pending.push(exec(predictionsCommand));
         }
 
@@ -801,7 +803,7 @@ async function syncAnalysisCache(event, teamNumber) {
             prediction.match = match.match_number;
             prediction.win = match.alliances[
                 prediction.winner
-            ].team_keys.includes(`frc${teamNumber}`);
+                ].team_keys.includes(`frc${teamNumber}`);
             predictions.push(prediction);
         }
 
@@ -836,8 +838,11 @@ async function syncAnalysisCache(event, teamNumber) {
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
             .toString();
-        let radar = fs
-            .readFileSync(`../${event}-${teamNumber}-single-radar.html`)
+        let radarStandard = fs
+            .readFileSync(`../${event}-${teamNumber}-standard-radar.html`)
+            .toString();
+        let radarMax = fs
+            .readFileSync(`../${event}-${teamNumber}-max-radar.html`)
             .toString();
         analyzed.push({
             type: "html",
@@ -846,8 +851,13 @@ async function syncAnalysisCache(event, teamNumber) {
         });
         analyzed.push({
             type: "html",
-            label: "Radar Chart",
-            value: radar
+            label: "Radar Chart<br>(Single Team)",
+            value: radarStandard
+        });
+        analyzed.push({
+            type: "html",
+            label: "Radar Chart<br>(Compared to Best Team)",
+            value: radarMax
         });
         analyzed.push({
             type: "predictions",
