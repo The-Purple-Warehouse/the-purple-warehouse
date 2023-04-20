@@ -1675,7 +1675,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             try {
                 let events = await (
                     await fetch(
-                        `/api/v1/scouting/events/${encodeURIComponent(year)}/team`
+                        `/api/v1/scouting/events/${encodeURIComponent(
+                            year
+                        )}/team`
                     )
                 ).json();
                 if (events.success) {
@@ -1878,7 +1880,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         )}`;
     };
 
-    _this.showLocationPopup = (index, options, locations, values) => {
+    _this.showLocationPopup = (index, options, locations, values, state) => {
         return new Promise(async (resolve, reject) => {
             locations = [...locations];
             values = [...values];
@@ -1891,6 +1893,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             element.querySelector(".location-popup").innerHTML = `
 				${options
                     .map((option) => {
+                        let show = true;
+                        if(option.show != null) {
+                            if (option.show.type == "function") {
+                                show = eval(option.show.definition)({ ...state, index }) ? true : false;
+                            } else {
+                                show = option.show ? true : false;
+                            }
+                        }
+                        if(!show) {
+                            return "";
+                        }
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
@@ -1919,7 +1932,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               ? "Deselect"
                                               : "Select"
                                       }</button>`
-                                    : `<button data-increment="-1" data-type="${
+                                    : `<button data-increment="-1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
                                           option.type
                                       }" data-value="${_this.escape(
                                           option.value
@@ -1935,7 +1948,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               (loc) => loc.value == option.value
                                           ).length
                                       } total</h3>
-							<button data-increment="1" data-type="${
+							<button data-increment="1"${option.max ? ` data-max="${option.max}"` : ""} data-type="${
                                 option.type
                             }" data-value="${_this.escape(
                                           option.value
@@ -1979,18 +1992,22 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             elements[i].innerHTML = `[${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == options[i].value &&
-                                        loc.index == index
+                                        loc.value == elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
                                 ).length
                             }/${
                                 locationData.filter(
-                                    (loc) => loc.value == options[i].value
+                                    (loc) => loc.value == elements[i].getAttribute(
+                                        "data-value"
+                                    )
                                 ).length
                             }] ${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == options[i].value &&
-                                        loc.index == index
+                                        loc.value == elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
                                 ).length > 0
                                     ? "Deselect"
                                     : "Select"
@@ -2002,7 +2019,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             });
                             elements[i].innerHTML = `[1/${
                                 locationData.filter(
-                                    (loc) => loc.value == options[i].value
+                                    (loc) => loc.value == elements[i].getAttribute(
+                                        "data-value"
+                                    )
                                 ).length
                             }] Deselect`;
                         }
@@ -2012,12 +2031,29 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         );
                         for (let j = 0; j < Math.abs(increment); j++) {
                             if (increment > 0) {
-                                locationData.push({
-                                    value: elements[i].getAttribute(
-                                        "data-value"
-                                    ),
-                                    index: index
-                                });
+                                let max = elements[i].getAttribute(
+                                    "data-max"
+                                );
+                                if(max != null) {
+                                    try {
+                                        max = parseInt(max);
+                                    } catch(err) {
+
+                                    }
+                                }
+                                if(max == null || isNaN(max) || isNaN(parseInt(max)) || max > locationData.filter(
+                                    (loc) =>
+                                        loc.value == elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
+                                ).length) {
+                                    locationData.push({
+                                        value: elements[i].getAttribute(
+                                            "data-value"
+                                        ),
+                                        index: index
+                                    });
+                                }
                             } else {
                                 let indexToRemove = locationData.findIndex(
                                     (loc) =>
@@ -2033,23 +2069,33 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         }
                     }
 
-                    for (let i = 0; i < options.length; i++) {
-                        if (options[i].type != "toggle") {
-                            element.querySelector(
-                                `.location-popup > div[data-option="${_this.escape(
-                                    options[i].value
-                                )}"] > h3`
-                            ).innerHTML = `${
-                                locationData.filter(
-                                    (loc) =>
-                                        loc.value == options[i].value &&
-                                        loc.index == index
-                                ).length
-                            } here<br>${
-                                locationData.filter(
-                                    (loc) => loc.value == options[i].value
-                                ).length
-                            } total`;
+                    for (let j = 0; j < options.length; j++) {
+                        let show = true;
+                        if(options[j].show != null) {
+                            if (options[j].show.type == "function") {
+                                show = eval(options[j].show.definition)({ ...state, index }) ? true : false;
+                            } else {
+                                show = options[j].show ? true : false;
+                            }
+                        }
+                        if(show) {
+                            if (options[j].type != "toggle") {
+                                element.querySelector(
+                                    `.location-popup > div[data-option="${_this.escape(
+                                        options[j].value
+                                    )}"] > h3`
+                                ).innerHTML = `${
+                                    locationData.filter(
+                                        (loc) =>
+                                            loc.value == options[j].value &&
+                                            loc.index == index
+                                    ).length
+                                } here<br>${
+                                    locationData.filter(
+                                        (loc) => loc.value == options[j].value
+                                    ).length
+                                } total`;
+                            }
                         }
                     }
                 };
@@ -2090,13 +2136,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 teamNumber
             );
 
-            function getState() {
+            function getState(additional = {}) {
                 return {
                     eventCode: eventCode,
                     matchNumber: matchNumber,
                     teamNumber: teamNumber,
                     color: color,
-                    data: data
+                    data: data,
+                    ...additional
                 };
             }
 
@@ -2285,7 +2332,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 checkNull(
                                     data.data[component.data.values],
                                     defaultValue.values
-                                )
+                                ),
+                                getState()
                             );
                             if (result != null) {
                                 await _this.setData(
