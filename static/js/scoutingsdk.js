@@ -1981,18 +1981,22 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             elements[i].innerHTML = `[${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == options[i].value &&
-                                        loc.index == index
+                                        loc.value == elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
                                 ).length
                             }/${
                                 locationData.filter(
-                                    (loc) => loc.value == options[i].value
+                                    (loc) => loc.value == elements[i].getAttribute(
+                                        "data-value"
+                                    )
                                 ).length
                             }] ${
                                 locationData.filter(
                                     (loc) =>
-                                        loc.value == options[i].value &&
-                                        loc.index == index
+                                        loc.value == elements[i].getAttribute(
+                                            "data-value"
+                                        ) && loc.index == index
                                 ).length > 0
                                     ? "Deselect"
                                     : "Select"
@@ -2004,7 +2008,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             });
                             elements[i].innerHTML = `[1/${
                                 locationData.filter(
-                                    (loc) => loc.value == options[i].value
+                                    (loc) => loc.value == elements[i].getAttribute(
+                                        "data-value"
+                                    )
                                 ).length
                             }] Deselect`;
                         }
