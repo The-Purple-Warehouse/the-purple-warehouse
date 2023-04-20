@@ -6,6 +6,8 @@ import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
 
+const DIVISIONS = ["2023arc", "2023cur", "2023dal", "2023gal", "2023hop", "2023joh", "2023mil", "2023new"];
+
 export function getCategoryByIdentifier(identifier: string) {
     return ScoutingCategory.findOne({ identifier });
 }
@@ -65,20 +67,16 @@ export async function getLatestMatch(event: string) {
     }
 }
 
-export async function getEntriesByEvent(
-    event: string
-) {
+export async function getEntriesByEvent(event: string) {
     return ScoutingEntry.find({
         event
     }).lean();
 }
 
-export async function getNumberOfEntriesByEvent(
-    event: string
-) {
-    return ScoutingEntry.find({
+export async function getNumberOfEntriesByEvent(event: string) {
+    return ScoutingEntry.countDocuments({
         event
-    }).countDocuments();
+    });
 }
 
 export async function getTeamEntriesByEvent(
@@ -95,10 +93,10 @@ export async function getNumberOfTeamEntriesByEvent(
     event: string,
     contributingTeam: string
 ) {
-    return ScoutingEntry.find({
+    return ScoutingEntry.countDocuments({
         event,
         "contributor.team": (await getTeamByNumber(contributingTeam))._id
-    }).countDocuments();
+    });
 }
 
 export async function getAverageAccuracy(
@@ -459,6 +457,11 @@ export async function getAllRawDataByEvent(event: string) {
     return { data, categories, teams };
 }
 
+export async function getWorldsContributions(contributingTeam: string) {
+    let contributions = await ScoutingEntry.countDocuments({ "contributor.team": (await getTeamByNumber(contributingTeam))._id, event: { $in: DIVISIONS } });
+    return contributions;
+}
+
 export async function getAllDataByEvent(event: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     return scoutingConfig.formatData(data, categories, teams);
@@ -571,9 +574,14 @@ export async function getSharedData(
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
     if (!config.auth.scoutingAdmins.includes(teamNumber)) {
-        let contributions = data.filter(
-            (entry: any) => entry.contributor.team == team._id.toString()
-        );
+        let contributions;
+        if(DIVISIONS.includes(event)) {
+            contributions = await getWorldsContributions(teamNumber);
+        } else {
+            contributions = data.filter(
+                (entry: any) => entry.contributor.team == team._id.toString()
+            ).length;
+        }
         let hashStarts = [
             "0",
             "1",
@@ -594,9 +602,9 @@ export async function getSharedData(
         ].slice(
             0,
             Math.round(
-                (contributions.length + 1 > threshold
+                (contributions + 1 > threshold
                     ? threshold
-                    : contributions.length + 1) *
+                    : contributions + 1) *
                     (16 / threshold)
             )
         );

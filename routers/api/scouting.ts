@@ -179,9 +179,7 @@ router.get(
         //     ctx.params.event,
         //     ctx.session.scoutingTeamNumber
         // );
-        let entries = await getNumberOfEntriesByEvent(
-            ctx.params.event
-        );
+        let entries = await getNumberOfEntriesByEvent(ctx.params.event);
         let analysis: any = {
             display: [],
             data: {}
@@ -196,7 +194,7 @@ router.get(
                 ctx.params.team
             );
         }
-        if(analysis.display.length > 0) {
+        if (analysis.display.length > 0) {
             ctx.body = {
                 success: true,
                 body: {
