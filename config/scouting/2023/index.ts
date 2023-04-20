@@ -737,7 +737,7 @@ function run(command) {
         exec(command, (error, stdout, stderr) => {
             resolve({ error, stdout, stderr });
         });
-    })
+    });
 }
 
 async function syncAnalysisCache(event, teamNumber) {

@@ -65,17 +65,13 @@ export async function getLatestMatch(event: string) {
     }
 }
 
-export async function getEntriesByEvent(
-    event: string
-) {
+export async function getEntriesByEvent(event: string) {
     return ScoutingEntry.find({
         event
     }).lean();
 }
 
-export async function getNumberOfEntriesByEvent(
-    event: string
-) {
+export async function getNumberOfEntriesByEvent(event: string) {
     return ScoutingEntry.find({
         event
     }).countDocuments();
