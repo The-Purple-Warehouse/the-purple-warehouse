@@ -1531,7 +1531,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             ${item.values
                                                 .map((data) => {
                                                     let firstListed = "red";
-                                                    if((data.win && data.winner == "blue") || (!data.win && data.winner == "red")) {
+                                                    if (
+                                                        (data.win &&
+                                                            data.winner ==
+                                                                "blue") ||
+                                                        (!data.win &&
+                                                            data.winner ==
+                                                                "red")
+                                                    ) {
                                                         firstListed = "blue";
                                                     }
                                                     return `<h3>Match ${
@@ -1542,15 +1549,31 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             : "LOSS"
                                                     })</h3>
                                                     <div class="prediction-bar">
-                                                        <div class="prediction-bar-${firstListed == "red" ? "red" : "blue"}" style="width: calc(${
-                                                            firstListed == "red" ? data.red * 100 : data.blue * 100
-                                                        }% - 2px);"><p>${Math.round(
-                                                            firstListed == "red" ? data.red * 100 : data.blue * 100
+                                                        <div class="prediction-bar-${
+                                                            firstListed == "red"
+                                                                ? "red"
+                                                                : "blue"
+                                                        }" style="width: calc(${
+                                                        firstListed == "red"
+                                                            ? data.red * 100
+                                                            : data.blue * 100
+                                                    }% - 2px);"><p>${Math.round(
+                                                        firstListed == "red"
+                                                            ? data.red * 100
+                                                            : data.blue * 100
                                                     )}%</p></div>
-                                                        <div class="prediction-bar-${firstListed == "red" ? "blue" : "red"}" style="width: calc(${
-                                                            firstListed == "red" ? data.blue * 100 : data.red * 100
-                                                        }% - 3px);"><p>${Math.round(
-                                                            firstListed == "red" ? data.blue * 100 : data.red * 100
+                                                        <div class="prediction-bar-${
+                                                            firstListed == "red"
+                                                                ? "blue"
+                                                                : "red"
+                                                        }" style="width: calc(${
+                                                        firstListed == "red"
+                                                            ? data.blue * 100
+                                                            : data.red * 100
+                                                    }% - 3px);"><p>${Math.round(
+                                                        firstListed == "red"
+                                                            ? data.blue * 100
+                                                            : data.red * 100
                                                     )}%</p></div>
                                                     </div>`;
                                                 })

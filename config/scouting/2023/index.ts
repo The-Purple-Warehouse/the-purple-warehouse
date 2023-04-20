@@ -803,7 +803,7 @@ async function syncAnalysisCache(event, teamNumber) {
             prediction.match = match.match_number;
             prediction.win = match.alliances[
                 prediction.winner
-                ].team_keys.includes(`frc${teamNumber}`);
+            ].team_keys.includes(`frc${teamNumber}`);
             predictions.push(prediction);
         }
 
