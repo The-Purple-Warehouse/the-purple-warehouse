@@ -19,7 +19,12 @@ import {
     getSharedData,
     getTotalIncentives
 } from "../../helpers/scouting";
-import { getEvents, getEventsSorted, getMatches, getMatchesFull } from "../../helpers/tba";
+import {
+    getEvents,
+    getEventsSorted,
+    getMatches,
+    getMatchesFull
+} from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
@@ -45,7 +50,10 @@ router.get("/events/:year/team", requireScoutingAuth, async (ctx, next) => {
     ctx.body = {
         success: true,
         body: {
-            events: await getEventsSorted(ctx.params.year, ctx.session.scoutingTeamNumber)
+            events: await getEventsSorted(
+                ctx.params.year,
+                ctx.session.scoutingTeamNumber
+            )
         }
     };
 });
