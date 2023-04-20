@@ -743,14 +743,12 @@ header .header-btn {
     transition: background-color 0.2s ease-in-out;
 }
 
-
-
 .match-window
-.component-locations
-> .component-locations-container
-> .grid
-> div
-> .marker {
+    .component-locations
+    > .component-locations-container
+    > .grid
+    > div
+    > .marker {
     position: absolute;
     left: 50%;
     top: 50%;

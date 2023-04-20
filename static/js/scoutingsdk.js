@@ -2344,7 +2344,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     for (let i = 0; i < gridElements.length; i++) {
                         gridElements[i].onclick = async (e) => {
                             let result = await _this.showLocationPopup(
-                                parseInt(gridElements[i].getAttribute("data-index")),
+                                parseInt(
+                                    gridElements[i].getAttribute("data-index")
+                                ),
                                 options,
                                 checkNull(
                                     data.data[component.data.locations],
@@ -2406,38 +2408,49 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                     let marker = "";
                                     if (component.marker != null) {
-                                        if (component.marker.type == "function") {
+                                        if (
+                                            component.marker.type == "function"
+                                        ) {
                                             let locs = checkNull(
-                                                data.data[component.data.locations],
+                                                data.data[
+                                                    component.data.locations
+                                                ],
                                                 defaultValue.locations
-                                            )
+                                            );
                                             let vals = checkNull(
-                                                data.data[component.data.values],
+                                                data.data[
+                                                    component.data.values
+                                                ],
                                                 defaultValue.values
-                                            )
+                                            );
                                             let locations = [];
-                                            for(let j = 0; j < locs.length; j++) {
-                                                if(locs[j] == index) {
+                                            for (
+                                                let j = 0;
+                                                j < locs.length;
+                                                j++
+                                            ) {
+                                                if (locs[j] == index) {
                                                     locations.push({
                                                         location: locs[j],
                                                         value: vals[j]
-                                                    })
+                                                    });
                                                 }
                                             }
-                                            marker = eval(component.marker.definition)(getState({ locations }));
+                                            marker = eval(
+                                                component.marker.definition
+                                            )(getState({ locations }));
                                         } else {
-                                            marker = component.marker.toString();
+                                            marker =
+                                                component.marker.toString();
                                         }
                                     }
-                                    element
-                                        .querySelector(
-                                            `[data-id="${_this.escape(
-                                                id
-                                            )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
-                                                index
-                                            )}"]`
-                                        )
-                                        .innerHTML = `<div class="marker">${marker}</div>`;
+                                    element.querySelector(
+                                        `[data-id="${_this.escape(
+                                            id
+                                        )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
+                                            index
+                                        )}"]`
+                                    ).innerHTML = `<div class="marker">${marker}</div>`;
                                 }
                             }
                         };
@@ -2470,30 +2483,58 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     .map((row, rowindex) => {
                                         return [...new Array(columns).keys()]
                                             .map((column, columnindex) => {
-                                                let index = rowindex * columns + columnindex;
+                                                let index =
+                                                    rowindex * columns +
+                                                    columnindex;
                                                 let marker = "";
                                                 if (component.marker != null) {
-                                                    if (component.marker.type == "function") {
+                                                    if (
+                                                        component.marker.type ==
+                                                        "function"
+                                                    ) {
                                                         let locs = checkNull(
-                                                            data.data[component.data.locations],
+                                                            data.data[
+                                                                component.data
+                                                                    .locations
+                                                            ],
                                                             defaultValue.locations
-                                                        )
+                                                        );
                                                         let vals = checkNull(
-                                                            data.data[component.data.values],
+                                                            data.data[
+                                                                component.data
+                                                                    .values
+                                                            ],
                                                             defaultValue.values
-                                                        )
+                                                        );
                                                         let locations = [];
-                                                        for(let j = 0; j < locs.length; j++) {
-                                                            if(locs[j] == index) {
+                                                        for (
+                                                            let j = 0;
+                                                            j < locs.length;
+                                                            j++
+                                                        ) {
+                                                            if (
+                                                                locs[j] == index
+                                                            ) {
                                                                 locations.push({
-                                                                    location: locs[j],
-                                                                    value: vals[j]
-                                                                })
+                                                                    location:
+                                                                        locs[j],
+                                                                    value: vals[
+                                                                        j
+                                                                    ]
+                                                                });
                                                             }
                                                         }
-                                                        marker = eval(component.marker.definition)(getState({ locations }));
+                                                        marker = eval(
+                                                            component.marker
+                                                                .definition
+                                                        )(
+                                                            getState({
+                                                                locations
+                                                            })
+                                                        );
                                                     } else {
-                                                        marker = component.marker.toString();
+                                                        marker =
+                                                            component.marker.toString();
                                                     }
                                                 }
                                                 return `<div class="grid-item" style="grid-area: ${
@@ -2502,9 +2543,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     rowindex + 2
                                                 } / ${
                                                     columnindex + 2
-                                                };" data-row="${rowindex}" data-column="${columnindex}" data-index="${
-                                                    index
-                                                }"${
+                                                };" data-row="${rowindex}" data-column="${columnindex}" data-index="${index}"${
                                                     checkNull(
                                                         data.data[
                                                             component.data

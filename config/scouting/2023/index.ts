@@ -93,13 +93,16 @@ export function layout() {
                     marker: {
                         type: "function",
                         definition: ((state) => {
-                            return `${state.locations.slice(0, 2).map((location) => {
-                                if(location.value == "y") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
-                                } else if(location.value == "b") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
-                                }
-                            }).join("")}`;
+                            return `${state.locations
+                                .slice(0, 2)
+                                .map((location) => {
+                                    if (location.value == "y") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
+                                    } else if (location.value == "b") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
+                                    }
+                                })
+                                .join("")}`;
                         }).toString()
                     },
                     options: [
@@ -257,13 +260,16 @@ export function layout() {
                     marker: {
                         type: "function",
                         definition: ((state) => {
-                            return `${state.locations.slice(0, 2).map((location) => {
-                                if(location.value == "y") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
-                                } else if(location.value == "b") {
-                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
-                                }
-                            }).join("")}`;
+                            return `${state.locations
+                                .slice(0, 2)
+                                .map((location) => {
+                                    if (location.value == "y") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
+                                    } else if (location.value == "b") {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
+                                    }
+                                })
+                                .join("")}`;
                         }).toString()
                     },
                     options: [
