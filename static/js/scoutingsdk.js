@@ -1656,19 +1656,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <h2>Event:</h2>
                     <select class="event-code">
                         <option value=""${
-                _this.getEventCode() == null ||
-                _this.getEventCode() == ""
-                    ? " selected"
-                    : ""
-            }>Select an event...</option>
+                            _this.getEventCode() == null ||
+                            _this.getEventCode() == ""
+                                ? " selected"
+                                : ""
+                        }>Select an event...</option>
                         ${events.map(
-                (event) =>
-                    `<option value="${event.key}"${
-                        _this.getEventCode() == event.key
-                            ? " selected"
-                            : ""
-                    }>${event.name}</option>`
-            )}
+                            (event) =>
+                                `<option value="${event.key}"${
+                                    _this.getEventCode() == event.key
+                                        ? " selected"
+                                        : ""
+                                }>${event.name}</option>`
+                        )}
                     </select>
                     <h2>Team Numbers<br>(enter up to 5 teams):</h2>
                     <input class="team-number-1" placeholder="1st Team Number" style="margin-bottom: 10px;" />
@@ -1729,7 +1729,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(
                             ".data-window > input.team-number-5"
                         ).value || "";
-                    let teamNumbers = [teamNumber1, teamNumber2, teamNumber3, teamNumber4, teamNumber5].filter(teamNumber => teamNumber != "").join(",");
+                    let teamNumbers = [
+                        teamNumber1,
+                        teamNumber2,
+                        teamNumber3,
+                        teamNumber4,
+                        teamNumber5
+                    ]
+                        .filter((teamNumber) => teamNumber != "")
+                        .join(",");
                     element.querySelector(".comparison").innerHTML = "";
                     try {
                         let data = await (
@@ -1750,35 +1758,35 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         <table class="data-table">
                                             <thead>
                                                 <tr>${item.values[0]
-                                                .map(
-                                                    (cell) =>
-                                                        `<th>${cell
-                                                            .replaceAll(
-                                                                '"',
-                                                                ""
-                                                            )
-                                                            .replaceAll(
-                                                                "\\n",
-                                                                "<br>"
-                                                            )}</th>`
-                                                )
-                                                .join("")}</tr>
+                                                    .map(
+                                                        (cell) =>
+                                                            `<th>${cell
+                                                                .replaceAll(
+                                                                    '"',
+                                                                    ""
+                                                                )
+                                                                .replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</th>`
+                                                    )
+                                                    .join("")}</tr>
                                             </thead>
                                             <tbody>
                                                 ${item.values
-                                                .slice(1)
-                                                .map((data) => {
-                                                    return `<tr>${data
-                                                        .map(
-                                                            (cell) =>
-                                                                `<td>${cell.replaceAll(
-                                                                    "\\n",
-                                                                    "<br>"
-                                                                )}</td>`
-                                                        )
-                                                        .join("")}</tr>`;
-                                                })
-                                                .join("")}
+                                                    .slice(1)
+                                                    .map((data) => {
+                                                        return `<tr>${data
+                                                            .map(
+                                                                (cell) =>
+                                                                    `<td>${cell.replaceAll(
+                                                                        "\\n",
+                                                                        "<br>"
+                                                                    )}</td>`
+                                                            )
+                                                            .join("")}</tr>`;
+                                                    })
+                                                    .join("")}
                                             </tbody>
                                         </table>`;
                                         } else if (item.type == "predictions") {
@@ -1789,10 +1797,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     if (
                                                         (data.win &&
                                                             data.winner ==
-                                                            "blue") ||
+                                                                "blue") ||
                                                         (!data.win &&
                                                             data.winner ==
-                                                            "red")
+                                                                "red")
                                                     ) {
                                                         firstListed = "blue";
                                                     }
@@ -1805,10 +1813,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     })</h3>
                                                     <div class="prediction-bar">
                                                         <div class="prediction-bar-${
-                                                        firstListed == "red"
-                                                            ? "red"
-                                                            : "blue"
-                                                    }" style="width: calc(${
+                                                            firstListed == "red"
+                                                                ? "red"
+                                                                : "blue"
+                                                        }" style="width: calc(${
                                                         firstListed == "red"
                                                             ? data.red * 100
                                                             : data.blue * 100
@@ -1818,10 +1826,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             : data.blue * 100
                                                     )}%</p></div>
                                                         <div class="prediction-bar-${
-                                                        firstListed == "red"
-                                                            ? "blue"
-                                                            : "red"
-                                                    }" style="width: calc(${
+                                                            firstListed == "red"
+                                                                ? "blue"
+                                                                : "red"
+                                                        }" style="width: calc(${
                                                         firstListed == "red"
                                                             ? data.blue * 100
                                                             : data.red * 100
@@ -1839,7 +1847,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     })
                                     .join("");
                             let scripts = [
-                                ...element.querySelectorAll(".comparison script")
+                                ...element.querySelectorAll(
+                                    ".comparison script"
+                                )
                             ];
                             for (let i = 0; i < scripts.length; i++) {
                                 if (!run.includes(scripts[i].innerHTML)) {

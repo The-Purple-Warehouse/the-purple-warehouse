@@ -87,32 +87,6 @@
             window.location.href = "#/scouting/logout";
         };
 
-    async function updatePage() {
-        if(window.location.hash != null && window.location.hash.startsWith("#/")) {
-            let page = window.location.hash.substring(2);
-            if(page == "scan-data") {
-                document.querySelector(".navbar a[data-page='scan-data']").classList.add("active");
-                window.readerForNav = await sdk.showScannerPage();
-            } else if(page == "view-data") {
-                document.querySelector(".navbar a[data-page='view-data']").classList.add("active");
-                await sdk.showDataPage();
-            } else if(page == "compare-teams") {
-                document.querySelector(".navbar a[data-page='compare-teams']").classList.add("active");
-                await sdk.showComparePage();
-            } else {
-                document.querySelector(".navbar a[data-page='home']").classList.add("active");
-                await sdk.showHomePage();
-            }
-        } else {
-            document.querySelector(".navbar a[data-page='home']").classList.add("active");
-            await sdk.showHomePage();
-        }
-    }
-    window.onhashchange = () => {
-        updatePage();
-    }
-    updatePage();
-
     document.querySelectorAll(".navbar a").forEach((a) => {
         a.addEventListener("click", async () => {
             if (window.readerForNav) {
