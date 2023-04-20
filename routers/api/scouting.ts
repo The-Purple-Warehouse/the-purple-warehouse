@@ -15,7 +15,7 @@ import {
     addEntry,
     entryExistsByHash,
     getLatestMatch,
-    getTeamEntriesByEvent,
+    getNumberOfEntriesByEvent,
     getSharedData,
     getTotalIncentives
 } from "../../helpers/scouting";
@@ -175,27 +175,41 @@ router.get(
     requireScoutingAuth,
     async (ctx, next) => {
         addAPIHeaders(ctx);
-        let entries = await getTeamEntriesByEvent(
-            ctx.params.event,
-            ctx.session.scoutingTeamNumber
+        // let entries = await getTeamEntriesByEvent(
+        //     ctx.params.event,
+        //     ctx.session.scoutingTeamNumber
+        // );
+        let entries = await getNumberOfEntriesByEvent(
+            ctx.params.event
         );
-        let analysis: any = {};
+        let analysis: any = {
+            display: [],
+            data: {}
+        };
         if (
-            entries.length >= 5 ||
-            config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)
+            // entries.length >= 5 ||
+            // config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)
+            entries >= 1
         ) {
             analysis = await scoutingConfig.analysis(
                 ctx.params.event,
                 ctx.params.team
             );
         }
-        ctx.body = {
-            success: true,
-            body: {
-                display: analysis.display,
-                data: analysis.data
-            }
-        };
+        if(analysis.display.length > 0) {
+            ctx.body = {
+                success: true,
+                body: {
+                    display: analysis.display,
+                    data: analysis.data
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: "Not enough data has been collected to run the analyzer. Please continue to scout and check back later!"
+            };
+        }
     }
 );
 
