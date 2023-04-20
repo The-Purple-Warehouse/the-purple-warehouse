@@ -1044,17 +1044,17 @@ header .header-btn {
     text-align: center;
 }
 
-.data-window .analysis > div:not(.prediction-bar) {
+.data-window .analysis > div:not(.prediction-bar), .data-window .comparison > div:not(.prediction-bar) {
     width: min-content;
     margin-left: 50%;
     transform: translate(-50%, 0);
 }
 
-.data-window .analysis > div:not(.prediction-bar) rect.mpld3-axesbg {
+.data-window .analysis > div:not(.prediction-bar) rect.mpld3-axesbg, .data-window .comparison > div:not(.prediction-bar) rect.mpld3-axesbg {
     fill: var(--backgroundColor) !important;
 }
 
-.data-window .analysis > .prediction-bar {
+.data-window .analysis > .prediction-bar, .data-window .comparison > .prediction-bar {
     width: 100%;
     height: 50px;
     border: 5px solid var(--primaryBackgroundColor);
@@ -1067,18 +1067,23 @@ header .header-btn {
     .analysis
     > div:not(.prediction-bar)
     .svg-container
-    > .main-svg:nth-child(1) {
+    > .main-svg:nth-child(1),
+.data-window
+.comparison
+> div:not(.prediction-bar)
+.svg-container
+> .main-svg:nth-child(1){
     background: var(--backgroundColor) !important;
 }
 
-.data-window .analysis > .prediction-bar > div {
+.data-window .analysis > .prediction-bar > div, .data-window .comparison > .prediction-bar > div {
     height: 100%;
     display: inline-block;
     color: var(--backgroundColor);
     position: relative;
 }
 
-.data-window .analysis > .prediction-bar > div > p {
+.data-window .analysis > .prediction-bar > div > p, .data-window .comparison > .prediction-bar > div > p {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -1087,12 +1092,12 @@ header .header-btn {
     margin: 0;
 }
 
-.data-window .analysis > .prediction-bar > .prediction-bar-red {
+.data-window .analysis > .prediction-bar > .prediction-bar-red, .data-window .comparison > .prediction-bar > .prediction-bar-red {
     background-color: #ff6e6e;
     border-radius: 3px 0 0 3px;
 }
 
-.data-window .analysis > .prediction-bar > .prediction-bar-blue {
+.data-window .analysis > .prediction-bar > .prediction-bar-blue, .data-window .comparison > .prediction-bar > .prediction-bar-blue {
     background-color: #6a6afb;
     border-radius: 0 3px 3px 0;
 }
@@ -1177,7 +1182,7 @@ header .header-btn {
 }
 
 @media (max-width: 650px) {
-    .data-window .analysis > div:not(.prediction-bar) {
+    .data-window .analysis > div:not(.prediction-bar), .data-window .comparison > div:not(.prediction-bar) {
         margin-left: 50%;
         transform: translate(-50%, 0) scale(0.8);
     }
@@ -1190,14 +1195,14 @@ header .header-btn {
     .data-window-visible {
         overflow-x: auto;
     }
-    .data-window .analysis > div:not(.prediction-bar) {
+    .data-window .analysis > div:not(.prediction-bar), .data-window .comparison > div:not(.prediction-bar) {
         margin-left: 50%;
         transform: translate(-50%, 0) scale(0.65);
     }
 }
 
 @media (max-width: 400px) {
-    .data-window .analysis > div:not(.prediction-bar) {
+    .data-window .analysis > div:not(.prediction-bar), .data-window .comparison > div:not(.prediction-bar) {
         margin-left: 50%;
         transform: translate(-50%, 0) scale(0.55);
     }
