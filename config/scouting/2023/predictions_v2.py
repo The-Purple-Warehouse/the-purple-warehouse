@@ -448,7 +448,7 @@ def predict(b1, b2, b3, r1, r2, r3):
         rc += 1
 
     if bc > rc:
-        winner = 'blue'
+        winner = 'red'
         if bc == 3:
             bp = avg([bp1, bp2])
             rp = avg([rp1, rp2])
@@ -464,7 +464,7 @@ def predict(b1, b2, b3, r1, r2, r3):
             bp = bp2
             rp = rp2
     else:
-        winner = 'red'
+        winner = 'blue'
         if rc == 3:
             bp = avg([bp1, bp2])
             rp = avg([rp1, rp2])
@@ -480,7 +480,7 @@ def predict(b1, b2, b3, r1, r2, r3):
             bp = bp1
             rp = rp1
 
-    return {'winner': winner, 'blue': bp, 'red': rp}
+    return {'winner': winner, 'blue': rp, 'red': bp}
 
 results = predict(args["b1"], args["b2"], args["b3"], args["r1"], args["r2"], args["r3"])
 print(results)
