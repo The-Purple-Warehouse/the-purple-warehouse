@@ -90,6 +90,18 @@ export function layout() {
                     rows: 9,
                     columns: 3,
                     orientation: 0,
+                    marker: {
+                        type: "function",
+                        definition: ((state) => {
+                            return `${state.locations.slice(0, 2).map((location) => {
+                                if(location.value == "y") {
+                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
+                                } else if(location.value == "b") {
+                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
+                                }
+                            }).join("")}`;
+                        }).toString()
+                    },
                     options: [
                         {
                             label: "Cube",
@@ -101,10 +113,19 @@ export function layout() {
                                 type: "function",
                                 definition: ((state) => {
                                     return {
-                                        red: [0, 3, 4, 5, 6, 9, 12, 13, 14, 15, 18, 21, 22, 23, 24],
-                                        blue: [2, 3, 4, 5, 8, 11, 12, 13, 14, 17, 20, 21, 22, 23, 26],
-                                        unknown: [0, 3, 4, 5, 6, 9, 12, 13, 14, 15, 18, 21, 22, 23, 24]
-                                    }[state.color].includes(state.index)
+                                        red: [
+                                            0, 3, 4, 5, 6, 9, 12, 13, 14, 15,
+                                            18, 21, 22, 23, 24
+                                        ],
+                                        blue: [
+                                            2, 3, 4, 5, 8, 11, 12, 13, 14, 17,
+                                            20, 21, 22, 23, 26
+                                        ],
+                                        unknown: [
+                                            0, 3, 4, 5, 6, 9, 12, 13, 14, 15,
+                                            18, 21, 22, 23, 24
+                                        ]
+                                    }[state.color].includes(state.index);
                                 }).toString()
                             }
                         },
@@ -118,10 +139,22 @@ export function layout() {
                                 type: "function",
                                 definition: ((state) => {
                                     return {
-                                        red: [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26],
-                                        blue: [0, 1, 2, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 26],
-                                        unknown: [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26]
-                                    }[state.color].includes(state.index)
+                                        red: [
+                                            0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12,
+                                            15, 16, 17, 18, 19, 20, 21, 24, 25,
+                                            26
+                                        ],
+                                        blue: [
+                                            0, 1, 2, 5, 6, 7, 8, 9, 10, 11, 14,
+                                            15, 16, 17, 18, 19, 20, 23, 24, 25,
+                                            26
+                                        ],
+                                        unknown: [
+                                            0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12,
+                                            15, 16, 17, 18, 19, 20, 21, 24, 25,
+                                            26
+                                        ]
+                                    }[state.color].includes(state.index);
                                 }).toString()
                             }
                         },
@@ -221,6 +254,18 @@ export function layout() {
                     rows: 9,
                     columns: 3,
                     orientation: 0,
+                    marker: {
+                        type: "function",
+                        definition: ((state) => {
+                            return `${state.locations.slice(0, 2).map((location) => {
+                                if(location.value == "y") {
+                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 22px solid #fff600;"></div>`;
+                                } else if(location.value == "b") {
+                                    return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: 20px; height: 20px; background-color: #9000ff; border: 1px solid #ffffff; border-radius: 3px;"></div>`;
+                                }
+                            }).join("")}`;
+                        }).toString()
+                    },
                     options: [
                         {
                             label: "Cube",
@@ -232,10 +277,19 @@ export function layout() {
                                 type: "function",
                                 definition: ((state) => {
                                     return {
-                                        red: [0, 3, 4, 5, 6, 9, 12, 13, 14, 15, 18, 21, 22, 23, 24],
-                                        blue: [2, 3, 4, 5, 8, 11, 12, 13, 14, 17, 20, 21, 22, 23, 26],
-                                        unknown: [0, 3, 4, 5, 6, 9, 12, 13, 14, 15, 18, 21, 22, 23, 24]
-                                    }[state.color].includes(state.index)
+                                        red: [
+                                            0, 3, 4, 5, 6, 9, 12, 13, 14, 15,
+                                            18, 21, 22, 23, 24
+                                        ],
+                                        blue: [
+                                            2, 3, 4, 5, 8, 11, 12, 13, 14, 17,
+                                            20, 21, 22, 23, 26
+                                        ],
+                                        unknown: [
+                                            0, 3, 4, 5, 6, 9, 12, 13, 14, 15,
+                                            18, 21, 22, 23, 24
+                                        ]
+                                    }[state.color].includes(state.index);
                                 }).toString()
                             }
                         },
@@ -249,10 +303,22 @@ export function layout() {
                                 type: "function",
                                 definition: ((state) => {
                                     return {
-                                        red: [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26],
-                                        blue: [0, 1, 2, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 26],
-                                        unknown: [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26]
-                                    }[state.color].includes(state.index)
+                                        red: [
+                                            0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12,
+                                            15, 16, 17, 18, 19, 20, 21, 24, 25,
+                                            26
+                                        ],
+                                        blue: [
+                                            0, 1, 2, 5, 6, 7, 8, 9, 10, 11, 14,
+                                            15, 16, 17, 18, 19, 20, 23, 24, 25,
+                                            26
+                                        ],
+                                        unknown: [
+                                            0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12,
+                                            15, 16, 17, 18, 19, 20, 21, 24, 25,
+                                            26
+                                        ]
+                                    }[state.color].includes(state.index);
                                 }).toString()
                             }
                         },
