@@ -734,8 +734,11 @@ try {
 
 function pruneCache() {
     let cacheKeys = Object.keys(cache);
-    for(let i = 0; i < cacheKeys.length; i++) {
-        if(new Date().getTime() > cache[cacheKeys[i]].timestamp + 1000 * 60 * 60) {
+    for (let i = 0; i < cacheKeys.length; i++) {
+        if (
+            new Date().getTime() >
+            cache[cacheKeys[i]].timestamp + 1000 * 60 * 60
+        ) {
             delete cache[cacheKeys[i]];
         }
     }
