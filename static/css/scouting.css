@@ -413,6 +413,10 @@ header .header-btn {
     transform: translate(-50%, 0);
 }
 
+.match-window .component-separator {
+    margin-top: 10px;
+}
+
 .match-window .component-checkbox {
     text-align: center;
     margin: 10px;

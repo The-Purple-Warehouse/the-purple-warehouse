@@ -200,6 +200,37 @@ export function layout() {
                             page: 1
                         }
                     ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Back",
+                            page: -1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Teleop >",
+                            page: 1
+                        }
+                    ]
                 }
             ]
         },
@@ -350,6 +381,37 @@ export function layout() {
                             page: 2
                         }
                     ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Auto",
+                            page: 0
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Endgame >",
+                            page: 2
+                        }
+                    ]
                 }
             ]
         },
@@ -389,6 +451,37 @@ export function layout() {
                             label: "Level"
                         }
                     ]
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Teleop",
+                            page: 1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Notes >",
+                            page: 3
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
                 },
                 {
                     type: "layout",

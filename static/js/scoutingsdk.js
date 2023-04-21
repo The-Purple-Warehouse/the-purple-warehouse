@@ -2737,6 +2737,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         .escape(label)
                         .replace(new RegExp("\n", "g"), "<br>")}</p>`
                 );
+            } else if (component.type == "separator") {
+                let style = "solid";
+                if (component.style != null) {
+                    if (component.style.type == "function") {
+                        style = eval(component.style.definition)(getState());
+                    } else {
+                        style = component.style.toString();
+                    }
+                }
+                resolve(
+                    `<div class="component-separator" style="border-top: 2.5px ${style} var(--contentColor);"></div>`
+                );
             } else if (component.type == "locations") {
                 let id = _this.random();
                 let src = "";
