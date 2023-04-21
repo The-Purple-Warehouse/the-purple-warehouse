@@ -268,7 +268,7 @@ router.get(
         };
         let redTeamNumbers = [...new Set(ctx.params.redTeams)];
         let blueTeamNumbers = [...new Set(ctx.params.blueTeams)];
-        if(redTeamNumbers.length < 3 || blueTeamNumbers.length < 3) {
+        if (redTeamNumbers.length < 3 || blueTeamNumbers.length < 3) {
             ctx.body = {
                 success: false,
                 error: `Please enter all six team numbers!`

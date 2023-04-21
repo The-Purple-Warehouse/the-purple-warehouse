@@ -1882,19 +1882,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <h2>Event:</h2>
                     <select class="event-code">
                         <option value=""${
-                _this.getEventCode() == null ||
-                _this.getEventCode() == ""
-                    ? " selected"
-                    : ""
-            }>Select an event...</option>
+                            _this.getEventCode() == null ||
+                            _this.getEventCode() == ""
+                                ? " selected"
+                                : ""
+                        }>Select an event...</option>
                         ${events.map(
-                (event) =>
-                    `<option value="${event.key}"${
-                        _this.getEventCode() == event.key
-                            ? " selected"
-                            : ""
-                    }>${event.name}</option>`
-            )}
+                            (event) =>
+                                `<option value="${event.key}"${
+                                    _this.getEventCode() == event.key
+                                        ? " selected"
+                                        : ""
+                                }>${event.name}</option>`
+                        )}
                     </select>
                     <h2>Red Alliance:</h2>
                     <input class="team-number-red1" placeholder="Red 1" style="margin-bottom: 10px;" />
@@ -1962,11 +1962,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             ".data-window > input.team-number-blue3"
                         ).value || "";
                     let teamNumbers = {
-                        red: [teamNumberRed1, teamNumberRed2, teamNumberRed3].filter((teamNumber) => teamNumber != ""),
-                        blue: [teamNumberBlue1, teamNumberBlue2, teamNumberBlue3].filter((teamNumber) => teamNumber != "")
+                        red: [
+                            teamNumberRed1,
+                            teamNumberRed2,
+                            teamNumberRed3
+                        ].filter((teamNumber) => teamNumber != ""),
+                        blue: [
+                            teamNumberBlue1,
+                            teamNumberBlue2,
+                            teamNumberBlue3
+                        ].filter((teamNumber) => teamNumber != "")
                     };
-                    if(teamNumbers.red.length < 3 || teamNumbers.blue.length < 3) {
-                        element.querySelector(".red").innerHTML = "Please enter all six team numbers!"
+                    if (
+                        teamNumbers.red.length < 3 ||
+                        teamNumbers.blue.length < 3
+                    ) {
+                        element.querySelector(".red").innerHTML =
+                            "Please enter all six team numbers!";
                     }
                     element.querySelector(".prediction").innerHTML = "";
                     try {
@@ -1974,7 +1986,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             await fetch(
                                 `/api/v1/scouting/entry/predict/event/${encodeURIComponent(
                                     eventCode
-                                )}/${teamNumbers.red.join(",")}/${teamNumbers.blue.join(",")}`
+                                )}/${teamNumbers.red.join(
+                                    ","
+                                )}/${teamNumbers.blue.join(",")}`
                             )
                         ).json();
                         if (data.success) {
@@ -1988,49 +2002,50 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         <table class="data-table">
                                             <thead>
                                                 <tr>${item.values[0]
-                                                .map(
-                                                    (cell) =>
-                                                        `<th>${cell
-                                                            .replaceAll(
-                                                                '"',
-                                                                ""
-                                                            )
-                                                            .replaceAll(
-                                                                "\\n",
-                                                                "<br>"
-                                                            )}</th>`
-                                                )
-                                                .join("")}</tr>
+                                                    .map(
+                                                        (cell) =>
+                                                            `<th>${cell
+                                                                .replaceAll(
+                                                                    '"',
+                                                                    ""
+                                                                )
+                                                                .replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</th>`
+                                                    )
+                                                    .join("")}</tr>
                                             </thead>
                                             <tbody>
                                                 ${item.values
-                                                .slice(1)
-                                                .map((data) => {
-                                                    return `<tr>${data
-                                                        .map(
-                                                            (cell) =>
-                                                                `<td>${cell.replaceAll(
-                                                                    "\\n",
-                                                                    "<br>"
-                                                                )}</td>`
-                                                        )
-                                                        .join("")}</tr>`;
-                                                })
-                                                .join("")}
+                                                    .slice(1)
+                                                    .map((data) => {
+                                                        return `<tr>${data
+                                                            .map(
+                                                                (cell) =>
+                                                                    `<td>${cell.replaceAll(
+                                                                        "\\n",
+                                                                        "<br>"
+                                                                    )}</td>`
+                                                            )
+                                                            .join("")}</tr>`;
+                                                    })
+                                                    .join("")}
                                             </tbody>
                                         </table>`;
                                         } else if (item.type == "predictions") {
                                             return `<h2>${item.label}</h2>
                                             ${item.values
                                                 .map((data) => {
-                                                    let firstListed = data.winner;
+                                                    let firstListed =
+                                                        data.winner;
                                                     return `<h3>Predicted Winner: ${data.winner.toUpperCase()}</h3>
                                                     <div class="prediction-bar">
                                                         <div class="prediction-bar-${
-                                                        firstListed == "red"
-                                                            ? "red"
-                                                            : "blue"
-                                                    }" style="width: calc(${
+                                                            firstListed == "red"
+                                                                ? "red"
+                                                                : "blue"
+                                                        }" style="width: calc(${
                                                         firstListed == "red"
                                                             ? data.red * 100
                                                             : data.blue * 100
@@ -2040,10 +2055,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             : data.blue * 100
                                                     )}%</p></div>
                                                         <div class="prediction-bar-${
-                                                        firstListed == "red"
-                                                            ? "blue"
-                                                            : "red"
-                                                    }" style="width: calc(${
+                                                            firstListed == "red"
+                                                                ? "blue"
+                                                                : "red"
+                                                        }" style="width: calc(${
                                                         firstListed == "red"
                                                             ? data.blue * 100
                                                             : data.red * 100
