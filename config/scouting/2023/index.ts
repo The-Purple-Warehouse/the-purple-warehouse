@@ -200,6 +200,37 @@ export function layout() {
                             page: 1
                         }
                     ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Back",
+                            page: -1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Teleop >",
+                            page: 1
+                        }
+                    ]
                 }
             ]
         },
@@ -350,6 +381,37 @@ export function layout() {
                             page: 2
                         }
                     ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Auto",
+                            page: 0
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Endgame >",
+                            page: 2
+                        }
+                    ]
                 }
             ]
         },
@@ -389,6 +451,37 @@ export function layout() {
                             label: "Level"
                         }
                     ]
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Teleop",
+                            page: 1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Notes >",
+                            page: 3
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
                 },
                 {
                     type: "layout",
@@ -763,10 +856,22 @@ async function syncAnalysisCache(event, teamNumber) {
     };
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
+        let allScoutingData = await getAllDataByEvent(event);
+        let allScoutedTeams = [...new Set(allScoutingData.split("\n").slice(1).map(entry => entry.split(",")[2]))];
         let pending = [];
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
-        fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
-        let rankingCommand = `python3 config/scouting/2023/rankings_v2.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
+        fs.writeFileSync(`../${event}.csv`, allScoutingData);
+        let allTeams = [...new Set(matchesFull.map(match => `${match.alliances.red.team_keys.map(team => team.replace("frc", "")).join(",")},${match.alliances.blue.team_keys.map(team => team.replace("frc", "")).join(",")}`).join(",").split(","))];
+        let hasAllTeams = true;
+        for(let i = 0; i < allTeams.length && hasAllTeams; i++) {
+            hasAllTeams = allScoutedTeams.includes(allTeams[i]);
+        }
+        let rankingCommand;
+        if(hasAllTeams) {
+            rankingCommand = `python3 config/scouting/2023/rankings_v2.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
+        } else {
+            rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
+        }
         pending.push(run(rankingCommand));
         let graphsCommand = `python3 config/scouting/2023/graphs_v2.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         pending.push(run(graphsCommand));
@@ -857,13 +962,13 @@ async function syncAnalysisCache(event, teamNumber) {
             ["TPW Calculated Offense Rank<br>(NOT COMPETITION RANK)"]
         ];
         function ending(num) {
-            if(num % 100 >= 4 && num % 100 <= 20) {
+            if (num % 100 >= 4 && num % 100 <= 20) {
                 return "th";
-            } else if(num % 10 == 1) {
+            } else if (num % 10 == 1) {
                 return "st";
-            } else if(num % 10 == 2) {
+            } else if (num % 10 == 2) {
                 return "nd";
-            } else if(num % 10 == 3) {
+            } else if (num % 10 == 3) {
                 return "rd";
             } else {
                 return "th";
@@ -871,7 +976,9 @@ async function syncAnalysisCache(event, teamNumber) {
         }
         for (let i = 0; i < offense.length; i++) {
             // tableRankings.push([offense[i], defense[i]]);
-            tableRankings.push([`${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`]);
+            tableRankings.push([
+                `${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`
+            ]);
         }
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
