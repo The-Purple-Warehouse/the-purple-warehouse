@@ -325,6 +325,8 @@ header .header-btn {
 }
 
 .navbar a {
+    color: #ffffff;
+    text-decoration: none;
     display: block;
     padding: 0.75em 1em;
     margin: 0 -1em;
@@ -1075,15 +1077,15 @@ header .header-btn {
     .svg-container
     > .main-svg:nth-child(1),
 .data-window
-.comparison
-> div:not(.prediction-bar)
-.svg-container
-> .main-svg:nth-child(1),
+    .comparison
+    > div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1),
 .data-window
-.prediction
-> div:not(.prediction-bar)
-.svg-container
-> .main-svg:nth-child(1) {
+    .prediction
+    > div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1) {
     background: var(--backgroundColor) !important;
 }
 

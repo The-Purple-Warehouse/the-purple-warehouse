@@ -856,9 +856,22 @@ async function syncAnalysisCache(event, teamNumber) {
         let tableRankings = [
             ["TPW Calculated Offense Rank<br>(NOT COMPETITION RANK)"]
         ];
+        function ending(num) {
+            if(num % 100 >= 4 && num % 100 <= 20) {
+                return "th";
+            } else if(num % 10 == 1) {
+                return "st";
+            } else if(num % 10 == 2) {
+                return "nd";
+            } else if(num % 10 == 3) {
+                return "rd";
+            } else {
+                return "th";
+            }
+        }
         for (let i = 0; i < offense.length; i++) {
             // tableRankings.push([offense[i], defense[i]]);
-            tableRankings.push([offense[i]]);
+            tableRankings.push([`${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`]);
         }
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
@@ -962,7 +975,6 @@ async function syncCompareCache(event, teamNumbers) {
     pruneCache();
 }
 
-
 async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     let analyzed = [];
     let data: any = {
@@ -997,8 +1009,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
             prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
             prediction.blue = 1 - prediction.red;
         } else if (prediction.blue > 0.85) {
-            prediction.blue =
-                0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
+            prediction.blue = 0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
             prediction.red = 1 - prediction.blue;
         }
         predictions.push(prediction);
@@ -1013,7 +1024,11 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    cache[`${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`] = {
+    cache[
+        `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
+            ","
+        )}`
+    ] = {
         value: {
             display: analyzed,
             data: data
@@ -1055,18 +1070,34 @@ export async function predict(event, redTeamNumbers, blueTeamNumbers) {
     redTeamNumbers = [...new Set(redTeamNumbers)].sort((a: string, b: string) =>
         a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    blueTeamNumbers = [...new Set(blueTeamNumbers)].sort((a: string, b: string) =>
-        a.length != b.length ? a.length - b.length : a.localeCompare(b)
+    blueTeamNumbers = [...new Set(blueTeamNumbers)].sort(
+        (a: string, b: string) =>
+            a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    if (cache[`${event}-predict-${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`] == null) {
+    if (
+        cache[
+            `${event}-predict-${redTeamNumbers.join(
+                ","
+            )}-${blueTeamNumbers.join(",")}`
+        ] == null
+    ) {
         await syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
     } else if (
         new Date().getTime() >
-        cache[`${event}-predict-${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`].timestamp + 150000
+        cache[
+            `${event}-predict-${redTeamNumbers.join(
+                ","
+            )}-${blueTeamNumbers.join(",")}`
+        ].timestamp +
+            150000
     ) {
         syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
     }
-    return cache[`${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`].value;
+    return cache[
+        `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
+            ","
+        )}`
+    ].value;
 }
 
 export async function accuracy(event, matches, data, categories, teams) {
