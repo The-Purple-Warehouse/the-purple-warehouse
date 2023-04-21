@@ -201,7 +201,7 @@ export function getLevelAndProgress(xp) {
         return {
             level: 10 + Math.floor((xp - 10000) / 2500),
             progress: (xp % 2500) / 2500
-        }
+        };
     }
 }
 
