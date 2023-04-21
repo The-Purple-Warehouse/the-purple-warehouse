@@ -66,30 +66,73 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          window.location.hash = "#/";
-          // await sdk.showHomePage();
+          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes"].includes(window.location.hash)) {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+              // window.location.reload();
+          } else {
+              window.location.hash = "#/";
+              // await sdk.showHomePage();
+          }
         };
     document.querySelector(".navbar a[data-page='scan-data']").onclick =
         async (e) => {
           e.preventDefault();
-          window.location.hash = "#/scan-data";
-          // window.readerForNav = await sdk.showScannerPage();
+          if(window.location.hash == "#/scan-data") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+              // window.location.reload();
+          } else {
+              window.location.hash = "#/scan-data";
+              // window.readerForNav = await sdk.showScannerPage();
+          }
         };
     document.querySelector(".navbar a[data-page='view-data']").onclick =
         async (e) => {
           e.preventDefault();
-          window.location.hash = "#/view-data";
-          // await sdk.showDataPage();
+          if(window.location.hash == "#/view-data") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+              // window.location.reload();
+          } else {
+            window.location.hash = "#/view-data";
+            // await sdk.showDataPage();
+          }
         };
     document.querySelector(".navbar a[data-page='compare-teams']").onclick =
         async (e) => {
           e.preventDefault();
+          if(window.location.hash == "#/compare-teams") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+              // window.location.reload();
+          }
           window.location.hash = "#/compare-teams";
           // await sdk.showComparePage();
         };
     document.querySelector(".navbar a[data-page='predict-outcomes']").onclick =
         async (e) => {
           e.preventDefault();
+          if(window.location.hash == "#/predict-outcomes") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+              // window.location.reload();
+          }
           window.location.hash = "#/predict-outcomes";
           // await sdk.showPredictPage();
         };
