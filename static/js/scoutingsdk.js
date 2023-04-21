@@ -1516,7 +1516,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         return `<tr>${data
                                                             .map(
                                                                 (cell) =>
-                                                                    `<td>${cell.replaceAll(
+                                                                    `<td${cell.includes(`<b>${teamNumber}</b>`) ? ` style="background-color: yellow;"` : ""}>${cell.replaceAll(
                                                                         "\\n",
                                                                         "<br>"
                                                                     )}</td>`
