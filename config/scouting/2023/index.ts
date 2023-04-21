@@ -857,17 +857,38 @@ async function syncAnalysisCache(event, teamNumber) {
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
         let allScoutingData = await getAllDataByEvent(event);
-        let allScoutedTeams = [...new Set(allScoutingData.split("\n").slice(1).map(entry => entry.split(",")[2]))];
+        let allScoutedTeams = [
+            ...new Set(
+                allScoutingData
+                    .split("\n")
+                    .slice(1)
+                    .map((entry) => entry.split(",")[2])
+            )
+        ];
         let pending = [];
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, allScoutingData);
-        let allTeams = [...new Set(matchesFull.map(match => `${match.alliances.red.team_keys.map(team => team.replace("frc", "")).join(",")},${match.alliances.blue.team_keys.map(team => team.replace("frc", "")).join(",")}`).join(",").split(","))];
+        let allTeams = [
+            ...new Set(
+                matchesFull
+                    .map(
+                        (match) =>
+                            `${match.alliances.red.team_keys
+                                .map((team) => team.replace("frc", ""))
+                                .join(",")},${match.alliances.blue.team_keys
+                                .map((team) => team.replace("frc", ""))
+                                .join(",")}`
+                    )
+                    .join(",")
+                    .split(",")
+            )
+        ];
         let hasAllTeams = true;
-        for(let i = 0; i < allTeams.length && hasAllTeams; i++) {
+        for (let i = 0; i < allTeams.length && hasAllTeams; i++) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
         let rankingCommand;
-        if(hasAllTeams) {
+        if (hasAllTeams) {
             rankingCommand = `python3 config/scouting/2023/rankings_v2.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
         } else {
             rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;

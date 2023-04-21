@@ -172,40 +172,35 @@ export function getLevelAndProgress(xp) {
             level: 4,
             progress: (xp - 1000) / 1000
         };
-    } else if (xp < 3500) {
+    } else if (xp < 3000) {
         return {
             level: 5,
-            progress: (xp - 2000) / 1500
+            progress: (xp - 2000) / 1000
         };
-    } else if (xp < 5000) {
+    } else if (xp < 4500) {
         return {
             level: 6,
-            progress: (xp - 3500) / 1500
+            progress: (xp - 3000) / 1500
         };
-    } else if (xp < 7000) {
+    } else if (xp < 6000) {
         return {
             level: 7,
-            progress: (xp - 5000) / 2000
+            progress: (xp - 4500) / 1500
+        };
+    } else if (xp < 8000) {
+        return {
+            level: 8,
+            progress: (xp - 6000) / 2000
         };
     } else if (xp < 10000) {
         return {
-            level: 8,
-            progress: (xp - 7000) / 3000
-        };
-    } else if (xp < 15000) {
-        return {
             level: 9,
-            progress: (xp - 10000) / 5000
-        };
-    } else if (xp < 20000) {
-        return {
-            level: 10,
-            progress: (xp - 20000) / 5000
+            progress: (xp - 8000) / 2000
         };
     } else {
         return {
-            level: 10,
-            progress: 1
+            level: 10 + Math.floor((xp - 10000) / 2500),
+            progress: (xp % 2500) / 2500
         };
     }
 }
