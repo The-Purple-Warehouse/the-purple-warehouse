@@ -796,7 +796,7 @@ async function syncAnalysisCache(event, teamNumber) {
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
             // let predictionsCommand = `python3 config/scouting/2023/predictions_v2.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3} --match ${match.match_number} --csv ${event}.csv`;
             let predictionsCommand = `python3 config/scouting/2023/predictions.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
-            pending.push(exec(predictionsCommand));
+            pending.push(run(predictionsCommand));
         }
 
         await Promise.all(pending);
@@ -962,6 +962,68 @@ async function syncCompareCache(event, teamNumbers) {
     pruneCache();
 }
 
+
+async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
+    let analyzed = [];
+    let data: any = {
+        predictions: []
+    };
+    try {
+        let matchesFull = (await getMatchesFull(event)) as any;
+        let pending = [];
+        fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
+        fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
+
+        let predictions = [];
+        let r1 = redTeamNumbers[0];
+        let r2 = redTeamNumbers[1];
+        let r3 = redTeamNumbers[2];
+        let b1 = blueTeamNumbers[0];
+        let b2 = blueTeamNumbers[1];
+        let b3 = blueTeamNumbers[2];
+        let predictionsCommand = `python3 config/scouting/2023/predictions.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+        pending.push(run(predictionsCommand));
+
+        await Promise.all(pending);
+
+        let prediction = JSON.parse(
+            fs
+                .readFileSync(
+                    `../${event}-${r1}-${r2}-${r3}-${b1}-${b2}-${b3}-prediction.json`
+                )
+                .toString()
+        );
+        if (prediction.red > 0.85) {
+            prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
+            prediction.blue = 1 - prediction.red;
+        } else if (prediction.blue > 0.85) {
+            prediction.blue =
+                0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
+            prediction.red = 1 - prediction.blue;
+        }
+        predictions.push(prediction);
+
+        data.predictions = predictions;
+
+        analyzed.push({
+            type: "predictions",
+            label: "Prediction",
+            values: predictions
+        });
+    } catch (err) {
+        console.error(err);
+    }
+    cache[`${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`] = {
+        value: {
+            display: analyzed,
+            data: data
+        },
+        timestamp: new Date().getTime()
+    };
+    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
+    pruneCache();
+}
+
 export async function analysis(event, teamNumber) {
     if (cache[`${event}-${teamNumber}`] == null) {
         await syncAnalysisCache(event, teamNumber);
@@ -989,6 +1051,24 @@ export async function compare(event, teamNumbers) {
     return cache[`${event}-compare-${teamNumbers.join(",")}`].value;
 }
 
+export async function predict(event, redTeamNumbers, blueTeamNumbers) {
+    redTeamNumbers = [...new Set(redTeamNumbers)].sort((a: string, b: string) =>
+        a.length != b.length ? a.length - b.length : a.localeCompare(b)
+    );
+    blueTeamNumbers = [...new Set(blueTeamNumbers)].sort((a: string, b: string) =>
+        a.length != b.length ? a.length - b.length : a.localeCompare(b)
+    );
+    if (cache[`${event}-predict-${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`] == null) {
+        await syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
+    } else if (
+        new Date().getTime() >
+        cache[`${event}-predict-${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`].timestamp + 150000
+    ) {
+        syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
+    }
+    return cache[`${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(",")}`].value;
+}
+
 export async function accuracy(event, matches, data, categories, teams) {
     return await accuracy2023(event, matches, data, categories, teams);
 }
@@ -1001,6 +1081,7 @@ const scouting2023 = {
     notes,
     analysis,
     compare,
+    predict,
     accuracy
 };
 export default scouting2023;
