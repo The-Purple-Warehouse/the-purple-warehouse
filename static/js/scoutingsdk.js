@@ -1873,6 +1873,220 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
+    _this.showPredictPage = () => {
+        return new Promise(async (resolve, reject) => {
+            let year = new Date().toLocaleDateString().split("/")[2];
+            let events = await _this.getEvents(year);
+            element.innerHTML = `
+                <div class="data-window">
+                    <h2>Event:</h2>
+                    <select class="event-code">
+                        <option value=""${
+                _this.getEventCode() == null ||
+                _this.getEventCode() == ""
+                    ? " selected"
+                    : ""
+            }>Select an event...</option>
+                        ${events.map(
+                (event) =>
+                    `<option value="${event.key}"${
+                        _this.getEventCode() == event.key
+                            ? " selected"
+                            : ""
+                    }>${event.name}</option>`
+            )}
+                    </select>
+                    <h2>Red Alliance:</h2>
+                    <input class="team-number-red1" placeholder="Red 1" style="margin-bottom: 10px;" />
+                    <input class="team-number-red2" placeholder="Red 2" style="margin-bottom: 10px;" />
+                    <input class="team-number-red3" placeholder="Red 3" style="margin-bottom: 10px;" />
+                    <h2>Blue Alliance:</h2>
+                    <input class="team-number-blue1" placeholder="Blue 1" style="margin-bottom: 10px;" />
+                    <input class="team-number-blue2" placeholder="Blue 2" style="margin-bottom: 10px;" />
+                    <input class="team-number-blue3" placeholder="Blue 3" />
+                    <button class="show-prediction">Predict Winner</button>
+                    <h3 class="red">&nbsp;</h3>
+                    <div class="prediction" style="display: none;">
+                        
+                    </div>
+                    <div class="overlay" style="display: none;"></div>
+                </div>
+            `;
+            let overlayShown = false;
+            function showOverlay() {
+                overlayShown = true;
+                setTimeout(() => {
+                    if (overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "block";
+                    }
+                }, 500);
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                setTimeout(() => {
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
+                    }
+                }, 500);
+            }
+            element.querySelector("button.show-prediction").onclick =
+                async () => {
+                    showOverlay();
+                    let eventCode = element.querySelector(
+                        ".data-window > select.event-code"
+                    ).value;
+                    let teamNumberRed1 =
+                        element.querySelector(
+                            ".data-window > input.team-number-red1"
+                        ).value || "";
+                    let teamNumberRed2 =
+                        element.querySelector(
+                            ".data-window > input.team-number-red2"
+                        ).value || "";
+                    let teamNumberRed3 =
+                        element.querySelector(
+                            ".data-window > input.team-number-red3"
+                        ).value || "";
+                    let teamNumberBlue1 =
+                        element.querySelector(
+                            ".data-window > input.team-number-blue1"
+                        ).value || "";
+                    let teamNumberBlue2 =
+                        element.querySelector(
+                            ".data-window > input.team-number-blue2"
+                        ).value || "";
+                    let teamNumberBlue3 =
+                        element.querySelector(
+                            ".data-window > input.team-number-blue3"
+                        ).value || "";
+                    let teamNumbers = {
+                        red: [teamNumberRed1, teamNumberRed2, teamNumberRed3].filter((teamNumber) => teamNumber != ""),
+                        blue: [teamNumberBlue1, teamNumberBlue2, teamNumberBlue3].filter((teamNumber) => teamNumber != "")
+                    };
+                    if(teamNumbers.red.length < 3 || teamNumbers.blue.length < 3) {
+                        element.querySelector(".red").innerHTML = "Please enter all six team numbers!"
+                    }
+                    element.querySelector(".prediction").innerHTML = "";
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/predict/event/${encodeURIComponent(
+                                    eventCode
+                                )}/${teamNumbers.red.join(",")}/${teamNumbers.blue.join(",")}`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML = "&nbsp;";
+                            let run = [];
+                            element.querySelector(".prediction").innerHTML =
+                                data.body.display
+                                    .map((item) => {
+                                        if (item.type == "table") {
+                                            return `<h2>${item.label}</h2>
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>${item.values[0]
+                                                .map(
+                                                    (cell) =>
+                                                        `<th>${cell
+                                                            .replaceAll(
+                                                                '"',
+                                                                ""
+                                                            )
+                                                            .replaceAll(
+                                                                "\\n",
+                                                                "<br>"
+                                                            )}</th>`
+                                                )
+                                                .join("")}</tr>
+                                            </thead>
+                                            <tbody>
+                                                ${item.values
+                                                .slice(1)
+                                                .map((data) => {
+                                                    return `<tr>${data
+                                                        .map(
+                                                            (cell) =>
+                                                                `<td>${cell.replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</td>`
+                                                        )
+                                                        .join("")}</tr>`;
+                                                })
+                                                .join("")}
+                                            </tbody>
+                                        </table>`;
+                                        } else if (item.type == "predictions") {
+                                            return `<h2>${item.label}</h2>
+                                            ${item.values
+                                                .map((data) => {
+                                                    let firstListed = data.winner;
+                                                    return `<h3>Predicted Winner: ${data.winner.toUpperCase()}</h3>
+                                                    <div class="prediction-bar">
+                                                        <div class="prediction-bar-${
+                                                        firstListed == "red"
+                                                            ? "red"
+                                                            : "blue"
+                                                    }" style="width: calc(${
+                                                        firstListed == "red"
+                                                            ? data.red * 100
+                                                            : data.blue * 100
+                                                    }% - 2px);"><p>${Math.round(
+                                                        firstListed == "red"
+                                                            ? data.red * 100
+                                                            : data.blue * 100
+                                                    )}%</p></div>
+                                                        <div class="prediction-bar-${
+                                                        firstListed == "red"
+                                                            ? "blue"
+                                                            : "red"
+                                                    }" style="width: calc(${
+                                                        firstListed == "red"
+                                                            ? data.blue * 100
+                                                            : data.red * 100
+                                                    }% - 3px);"><p>${Math.round(
+                                                        firstListed == "red"
+                                                            ? data.blue * 100
+                                                            : data.red * 100
+                                                    )}%</p></div>
+                                                    </div>`;
+                                                })
+                                                .join("")}`;
+                                        } else if (item.type == "html") {
+                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        }
+                                    })
+                                    .join("");
+                            let scripts = [
+                                ...element.querySelectorAll(
+                                    ".prediction script"
+                                )
+                            ];
+                            for (let i = 0; i < scripts.length; i++) {
+                                if (!run.includes(scripts[i].innerHTML)) {
+                                    run.push(scripts[i].innerHTML);
+                                    eval(scripts[i].innerHTML);
+                                }
+                            }
+                            element
+                                .querySelector(".data-window")
+                                .classList.add("data-window-visible");
+                            element.querySelector(".prediction").style.display =
+                                "block";
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {}
+                    hideOverlay();
+                };
+            resolve();
+        });
+    };
+
     _this.getQuote = () => {
         let possibleQuotes = importantQuotes.length * 3 + quotes.length;
         let randomQuoteID = Math.floor(Math.random() * possibleQuotes);

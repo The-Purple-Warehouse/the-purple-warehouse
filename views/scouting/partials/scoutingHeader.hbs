@@ -8,6 +8,7 @@
     <a data-page="scan-data">Upload Data</a>
     <a data-page="view-data">View Data/Analysis</a>
     <a data-page="compare-teams">Compare Teams</a>
+    <a data-page="predict-outcomes">Predict Outcomes</a>
     <a data-page="log-out">Log Out</a>
 </nav>
 <header>
@@ -81,6 +82,11 @@
         async () => {
           window.location.hash = "#/compare-teams";
           // await sdk.showComparePage();
+        };
+    document.querySelector(".navbar a[data-page='predict-outcomes']").onclick =
+        async () => {
+          window.location.hash = "#/predict-outcomes";
+          // await sdk.showPredictPage();
         };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
         async () => {
