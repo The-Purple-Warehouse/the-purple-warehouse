@@ -856,9 +856,22 @@ async function syncAnalysisCache(event, teamNumber) {
         let tableRankings = [
             ["TPW Calculated Offense Rank<br>(NOT COMPETITION RANK)"]
         ];
+        function ending(num) {
+            if(num % 100 >= 4 && num % 100 <= 20) {
+                return "th";
+            } else if(num % 10 == 1) {
+                return "st";
+            } else if(num % 10 == 2) {
+                return "nd";
+            } else if(num % 10 == 3) {
+                return "rd";
+            } else {
+                return "th";
+            }
+        }
         for (let i = 0; i < offense.length; i++) {
             // tableRankings.push([offense[i], defense[i]]);
-            tableRankings.push([offense[i]]);
+            tableRankings.push([`${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`]);
         }
         let graphs = fs
             .readFileSync(`../${event}-${teamNumber}-analysis.html`)
