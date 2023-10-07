@@ -888,7 +888,7 @@ async function syncAnalysisCache(event, teamNumber) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
         let rankingCommand;
-        if (hasAllTeams) {
+        if (hasAllTeams && false) {
             rankingCommand = `python3 config/scouting/2023/rankings_v2.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
         } else {
             rankingCommand = `python3 config/scouting/2023/rankings.py --event ${event} --baseFilePath ../`;
