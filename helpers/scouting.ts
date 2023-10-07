@@ -232,11 +232,11 @@ export function randomBolts() {
         return 5;
     } else if (rand < 6) {
         return 4;
-    } else if (rand > 13) {
+    } else if (rand < 13) {
         return 3;
-    } else if (rand > 23) {
+    } else if (rand < 23) {
         return 2;
-    } else if (rand > 45) {
+    } else if (rand < 45) {
         return 1;
     } else {
         return 0;
