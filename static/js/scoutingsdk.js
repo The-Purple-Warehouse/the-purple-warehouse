@@ -2239,6 +2239,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 console.log(err);
                 if (
                     !err.toString().includes("Failed to fetch") &&
+                    !err.toString().toLowerCase().includes("load failed") &&
                     eventCode != ""
                 ) {
                     alert(
