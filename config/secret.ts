@@ -19,6 +19,9 @@ try {
         if (secretFile.production != null) {
             secret.production = secretFile.production;
         }
+        if (secretFile.production2023 != null) {
+            secret.production2023 = secretFile.production2023;
+        }
     }
 } catch (err) {}
 

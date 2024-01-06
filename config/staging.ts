@@ -10,7 +10,8 @@ const config: Config = {
     },
     db: secret.staging.db,
     auth: secret.staging.auth,
-    features: ["scouting"]
+    features: ["scouting"],
+    year: 2024
 };
 
 export default config;

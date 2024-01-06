@@ -124,7 +124,8 @@ export async function getEvents(year) {
         }
         return cache.events[year].value;
     } catch (err) {
-        year = new Date().toLocaleDateString().split("/")[2];
+        // year = new Date().toLocaleDateString().split("/")[2];
+        year = config.year;
         if (cache.events == null) {
             cache.events = {};
         }
@@ -158,7 +159,8 @@ export async function getTeamEvents(year, team) {
         }
         return cache.teamEvents[year][team].value;
     } catch (err) {
-        year = new Date().toLocaleDateString().split("/")[2];
+        // year = new Date().toLocaleDateString().split("/")[2];
+        year = config.year;
         if (cache.teamEvents == null) {
             cache.teamEvents = {};
         }

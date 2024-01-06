@@ -10,7 +10,8 @@ const config: Config = {
     },
     db: secret.production.db,
     auth: secret.production.auth,
-    features: ["scouting"]
+    features: ["scouting"],
+    year: 2024
 };
 
 export default config;
