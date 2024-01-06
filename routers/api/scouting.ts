@@ -82,6 +82,7 @@ router.post(
     async (ctx, next) => {
         addAPIHeaders(ctx);
         let body = ctx.request.body as any;
+        /*
         let entry = (await addEntry(
             ctx.session.scoutingTeamNumber,
             (body.username as string) || ctx.session.scoutingUsername,
@@ -115,6 +116,11 @@ router.post(
                 )
             }
         };
+        */
+        ctx.body = {
+            success: false,
+            error: "We are working to release the new data format for this year's scouting app on the same day as kickoff!"
+        }
     }
 );
 

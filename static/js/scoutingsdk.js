@@ -395,7 +395,7 @@ const ScoutingAppSDK = function (element, config) {
                     latestMatch = latestMatchData.body.latest + 1;
                 }
             }
-            let year = new Date().toLocaleDateString().split("/")[2];
+            let year = config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="home-window">
@@ -1329,7 +1329,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showDataPage = () => {
         return new Promise(async (resolve, reject) => {
-            let year = new Date().toLocaleDateString().split("/")[2];
+            let year = config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
@@ -1655,7 +1655,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showComparePage = () => {
         return new Promise(async (resolve, reject) => {
-            let year = new Date().toLocaleDateString().split("/")[2];
+            let year = config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
@@ -1881,7 +1881,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showPredictPage = () => {
         return new Promise(async (resolve, reject) => {
-            let year = new Date().toLocaleDateString().split("/")[2];
+            let year = config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
