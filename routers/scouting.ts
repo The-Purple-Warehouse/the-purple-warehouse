@@ -25,7 +25,7 @@ router.get("/", requireScoutingAuth, async (ctx, next) => {
         incentives: await getTotalIncentives(
             ctx.session.scoutingTeamNumber,
             ctx.session.scoutingUsername
-        )
+        ),
         year: config.year
     });
 });
