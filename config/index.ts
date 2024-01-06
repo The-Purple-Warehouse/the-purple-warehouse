@@ -43,4 +43,5 @@ export interface Config {
         };
     };
     features: string[];
+    year: number;
 }
