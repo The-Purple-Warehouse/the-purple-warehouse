@@ -34,7 +34,7 @@ const config: Config = {
         }
     },
     features: ["scouting", "resources"],
-    year: 2023
+    year: 2024
 };
 
 export default config;

@@ -1,8 +1,10 @@
 import scouting2023 from "./2023";
+import scouting2024 from "./2024";
 import config from "../";
 
 const scoutingConfig: any = {
-    "2023": scouting2023
+    "2023": scouting2023,
+    "2024": scouting2024
 };
 
 // let year = new Date().toLocaleDateString().split("/")[2];
