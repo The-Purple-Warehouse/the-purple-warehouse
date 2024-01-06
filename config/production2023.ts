@@ -3,13 +3,13 @@ import { Config } from ".";
 import secret from "./secret";
 
 const config: Config = {
-    branch: "staging",
+    branch: "2023",
     server: {
-        port: 8971,
-        domain: "staging.thepurplewarehouse.com"
+        port: 18923,
+        domain: "2023.thepurplewarehouse.com"
     },
-    db: secret.staging.db,
-    auth: secret.staging.auth,
+    db: secret.production2023.db,
+    auth: secret.production2023.auth,
     features: ["scouting"],
     year: 2023
 };

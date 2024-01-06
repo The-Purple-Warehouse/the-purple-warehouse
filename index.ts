@@ -182,7 +182,8 @@ router.get("/", async (ctx, next) => {
             scouters: formatNumber(stats.scouters),
             teams: stats.teams,
             states: stats.states,
-            countries: stats.countries
+            countries: stats.countries,
+            year: config.year
         }
     });
 });
