@@ -120,7 +120,7 @@ router.post(
         ctx.body = {
             success: false,
             error: "We are working to release the new data format for this year's scouting app on the same day as kickoff!"
-        }
+        };
     }
 );
 

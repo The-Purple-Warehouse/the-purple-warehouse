@@ -5,9 +5,7 @@ import { getAllDataByEvent } from "../../../helpers/scouting";
 import accuracy2024 from "./accuracy";
 
 export function categories() {
-    return [
-        
-    ];
+    return [];
 }
 
 export function layout() {
@@ -35,10 +33,7 @@ export function layout() {
 }
 
 export function preload() {
-    return [
-        "/img/star-outline.png",
-        "/img/star-filled.png"
-    ];
+    return ["/img/star-outline.png", "/img/star-filled.png"];
 }
 
 let categoriesInSingular = {
@@ -247,7 +242,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
         let b1 = blueTeamNumbers[0];
         let b2 = blueTeamNumbers[1];
         let b3 = blueTeamNumbers[2];
-        
+
         let prediction = {
             red: 0,
             blue: 0
