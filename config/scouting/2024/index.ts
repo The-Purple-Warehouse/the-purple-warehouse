@@ -826,7 +826,115 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 
 export function formatData(data, categories, teams) {
-    return `"coming soon"\n"We are working to release the new data format for this year's scouting app on the same day as kickoff!"`;
+    return `,match,team,alliance,leave,"ground pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+        .map((entry, i) => {
+            let locations = [
+                ...find(entry, "data", categories, "23-2", []),
+                ...find(entry, "data", categories, "23-4", [])
+            ];
+            let pieces = [
+                ...find(entry, "data", categories, "23-3", []),
+                ...find(entry, "data", categories, "23-5", [])
+            ];
+            return [
+                i,
+                entry.match || 0,
+                entry.team || 0,
+                entry.color || "unknown",
+                find(entry, "abilities", categories, "24-0", false)
+                    ? "true"
+                    : "false",
+                find(entry, "abilities", categories, "24-1", false)
+                    ? "true"
+                    : "false",
+                `"[${find(entry, "data", categories, "24-2", []).join(", ")}]"`,
+                `"[${find(entry, "data", categories, "24-3", []).join(", ")}]"`,
+                parseInt(find(entry, "abilities", categories, "24-4", 0)),
+                find(entry, "abilities", categories, "24-5", false)
+                    ? "true"
+                    : "false",
+                parseInt(find(entry, "timers", categories, "24-6", 0)),
+                parseInt(find(entry, "timers", categories, "24-7", 0)),
+                parseInt(find(entry, "timers", categories, "24-8", 0)),
+                parseInt(find(entry, "ratings", categories, "24-9", "")),
+                parseInt(find(entry, "ratings", categories, "24-10", "")),
+                parseInt(find(entry, "ratings", categories, "24-11", "")),
+                parseInt(find(entry, "ratings", categories, "24-12", "")),
+                parseInt(find(entry, "ratings", categories, "24-13", "")),
+                JSON.stringify(
+                    `${entry.contributor.username || "username"} (${
+                        teams[entry.contributor.team] || 0
+                    })`
+                ),
+                JSON.stringify(entry.comments || ""),
+                entry.accuracy && entry.accuracy.calculated
+                    ? parseFloat(entry.accuracy.percentage.toFixed(4))
+                    : "",
+                entry.serverTimestamp
+            ].join(",");
+        })
+        .join("\n")}`;
+}
+
+let parsedScoring = {
+    "as": "amp score",
+    "am": "amp missed",
+    "ss": "speaker score",
+    "sa": "speaker score (amplify)",
+    "sm": "speaker miss",
+    "ts": "trap score",
+    "tm": "trap miss"
+}
+
+export function formatParsedData(data, categories, teams) {
+    return `,match,team,alliance,leave,"ground pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+        .map((entry, i) => {
+            let locations = [
+                ...find(entry, "data", categories, "23-2", []),
+                ...find(entry, "data", categories, "23-4", [])
+            ];
+            let pieces = [
+                ...find(entry, "data", categories, "23-3", []),
+                ...find(entry, "data", categories, "23-5", [])
+            ];
+            return [
+                i,
+                entry.match || 0,
+                entry.team || 0,
+                entry.color || "unknown",
+                find(entry, "abilities", categories, "24-0", false)
+                    ? "yes"
+                    : "no",
+                find(entry, "abilities", categories, "24-1", false)
+                    ? "yes"
+                    : "no",
+                `"${find(entry, "data", categories, "24-2", []).map(entry => parsedScoring[entry]).join("\\n")}"`,
+                `"${find(entry, "data", categories, "24-3", []).map(entry => parsedScoring[entry]).join("\\n")}"`,
+                (["none", "parked", "on stage", "harmony"])[parseInt(find(entry, "abilities", categories, "24-4", 0))],
+                find(entry, "abilities", categories, "24-5", false)
+                    ? "yes"
+                    : "no",
+                `${(parseInt(find(entry, "timers", categories, "24-6", 0)) / 1000).toFixed(3)}s`,
+                `${(parseInt(find(entry, "timers", categories, "24-7", 0)) / 1000).toFixed(3)}s`,
+                `${(parseInt(find(entry, "timers", categories, "24-8", 0)) / 1000).toFixed(3)}s`,
+                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-9", "") + 1)),
+                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-10", "") + 1)),
+                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-11", "") + 1)),
+                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-12", "") + 1)),
+                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-13", "") + 1)),
+                JSON.stringify(
+                    `${entry.contributor.username || "username"} (${
+                        teams[entry.contributor.team] || 0
+                    })`
+                ),
+                JSON.stringify(entry.comments || ""),
+                entry.accuracy && entry.accuracy.calculated
+                    ? `${parseFloat((entry.accuracy.percentage * 100).toFixed(2))}%`
+                    : "",
+                entry.serverTimestamp
+            ].join(",");
+        })
+        .join("\n")}`;
 }
 
 export function notes() {
@@ -957,7 +1065,7 @@ async function syncAnalysisCache(event, teamNumber) {
     } catch (err) {
         console.error(err);
     }
-    /*cache[`${event}-${teamNumber}`] = {
+    cache[`${event}-${teamNumber}`] = {
         value: {
             display: analyzed,
             data: data
@@ -965,7 +1073,6 @@ async function syncAnalysisCache(event, teamNumber) {
         timestamp: new Date().getTime()
     };
     fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    */
     pruneCache();
 }
 
@@ -986,14 +1093,14 @@ async function syncCompareCache(event, teamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    /*cache[`${event}-compare-${teamNumbers.join(",")}`] = {
+    cache[`${event}-compare-${teamNumbers.join(",")}`] = {
         value: {
             display: comparison,
             data: {}
         },
         timestamp: new Date().getTime()
     };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));*/
+    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
     pruneCache();
 }
 
@@ -1039,7 +1146,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    /*cache[
+    cache[
         `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
             ","
         )}`
@@ -1050,7 +1157,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
         },
         timestamp: new Date().getTime()
     };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));*/
+    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
     pruneCache();
 }
 
@@ -1124,6 +1231,7 @@ const scouting2024 = {
     layout,
     preload,
     formatData,
+    formatParsedData,
     notes,
     analysis,
     compare,

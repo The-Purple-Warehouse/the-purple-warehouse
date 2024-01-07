@@ -1355,6 +1355,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <h2>Team Number<br>(leave blank to show all):</h2>
                     <input class="team-number" placeholder="Team Number" />
                     <button class="show-data">Show Data</button>
+                    <button class="show-parsed-data">Show Parsed Data</button>
                     <button class="show-analysis">Show Analysis</button>
                     <button class="download-csv">Download CSV</button>
                     <p class="notes"></p>
@@ -1425,7 +1426,81 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     return `<tr>${data
                                         .map(
                                             (cell, i) =>
-                                                `<td>${
+                                                `<td${cell.length > 40 ? ` style="min-width: 200px;"` : ""}>${
+                                                    csv[0][i] == "timestamp"
+                                                        ? new Date(
+                                                              parseInt(cell)
+                                                          ).toLocaleString()
+                                                        : cell.replaceAll(
+                                                              "\\n",
+                                                              "<br>"
+                                                          )
+                                                }</td>`
+                                        )
+                                        .join("")}</tr>`;
+                                })
+                                .join("");
+                        element.querySelector(
+                            ".data-table > thead"
+                        ).innerHTML = `<tr>${csv[0]
+                            .map(
+                                (cell) =>
+                                    `<th>${cell
+                                        .replaceAll('"', "")
+                                        .replaceAll("\\n", "<br>")}</th>`
+                            )
+                            .join("")}</tr>`;
+                        element.querySelector(
+                            ".data-window > .notes"
+                        ).innerHTML = data.body.notes.replaceAll("\n", "<br>");
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {}
+                hideOverlay();
+            };
+            element.querySelector("button.show-parsed-data").onclick = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                let teamNumber = element.querySelector(
+                    ".data-window > input.team-number"
+                ).value;
+                element.querySelector(".notes").innerHTML = "";
+                element.querySelector(".data-table > tbody").innerHTML = "";
+                element.querySelector(".analysis").innerHTML = "";
+                element.querySelector(".analysis").style.display = "none";
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                eventCode
+                            )}/csv/parsed`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = Papa.parse(data.body.csv).data;
+                        element.querySelector(".data-table > tbody").innerHTML =
+                            csv
+                                .slice(1)
+                                .filter(
+                                    (data) =>
+                                        teamNumber == "" ||
+                                        data.slice(1).includes(`${teamNumber}`)
+                                )
+                                .map((data) => {
+                                    return `<tr>${data
+                                        .map(
+                                            (cell, i) =>
+                                                `<td${cell.length > 40 ? ` style="min-width: 200px;"` : ""}>${
                                                     csv[0][i] == "timestamp"
                                                         ? new Date(
                                                               parseInt(cell)

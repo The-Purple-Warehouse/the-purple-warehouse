@@ -157,6 +157,25 @@ router.get(
 );
 
 router.get(
+    "/entry/data/event/:event/csv/parsed",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getSharedData(
+                    ctx.params.event,
+                    ctx.session.scoutingTeamNumber,
+                    true
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
     "/entry/data/event/:event/tba",
     requireScoutingAuth,
     async (ctx, next) => {
