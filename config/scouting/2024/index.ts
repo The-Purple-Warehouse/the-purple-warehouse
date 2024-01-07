@@ -6,7 +6,11 @@ import accuracy2024 from "./accuracy";
 
 export function categories() {
     return [
-        { name: "Leave Starting Zone", identifier: "24-0", dataType: "boolean" },
+        {
+            name: "Leave Starting Zone",
+            identifier: "24-0",
+            dataType: "boolean"
+        },
         { name: "Ground Pick-Up", identifier: "24-1", dataType: "boolean" },
         { name: "Auto Scoring", identifier: "24-2", dataType: "array" },
         { name: "Teleop Scoring", identifier: "24-3", dataType: "array" },
@@ -20,9 +24,17 @@ export function categories() {
         { name: "Robot Speed Rating", identifier: "24-11" },
         { name: "Robot Stability Rating", identifier: "24-12" },
         { name: "Intake Consistency Rating", identifier: "24-13" },
-        { name: "Auto Scoring Locations", identifier: "24-14", dataType: "array" },
+        {
+            name: "Auto Scoring Locations",
+            identifier: "24-14",
+            dataType: "array"
+        },
         { name: "Auto Count", identifier: "24-15" },
-        { name: "Teleop Scoring Locations", identifier: "24-16", dataType: "array" },
+        {
+            name: "Teleop Scoring Locations",
+            identifier: "24-16",
+            dataType: "array"
+        },
         { name: "Teleop Count", identifier: "24-17" }
     ];
 }
@@ -86,89 +98,165 @@ export function layout() {
                         type: "function",
                         definition: ((state) => {
                             return `${state.locations
-                                .filter(location => ["as", "ss", "sa", "ts"].includes(location.value))
+                                .filter((location) =>
+                                    ["as", "ss", "sa", "ts"].includes(
+                                        location.value
+                                    )
+                                )
                                 .map((location, i, arr) => {
-                                    if(i > 4) {
+                                    if (i > 4) {
                                         return "";
-                                    } else if(["ts"].includes(location.value)) {
+                                    } else if (
+                                        ["ts"].includes(location.value)
+                                    ) {
                                         return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(3px + 7vw); height: calc(3px + 7vw); background-color: rgba(0, 0, 0, 0); border: calc(3px + 1vw) solid #fd910d; border-radius: 50%;"></div>`;
-                                    } else if(["as", "ss", "sa"].includes(location.value)) {
-                                        let colors = ["#fd910d", "#fd3f0d", "#b700ff", "#5300ff", "#000000"];
-                                        if(arr.length > 100 || i + 95 < arr.length) {
+                                    } else if (
+                                        ["as", "ss", "sa"].includes(
+                                            location.value
+                                        )
+                                    ) {
+                                        let colors = [
+                                            "#fd910d",
+                                            "#fd3f0d",
+                                            "#b700ff",
+                                            "#5300ff",
+                                            "#000000"
+                                        ];
+                                        if (
+                                            arr.length > 100 ||
+                                            i + 95 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[4]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 95 || i + 90 < arr.length) {
+                                        } else if (
+                                            arr.length > 95 ||
+                                            i + 90 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 90 || i + 85 < arr.length) {
+                                        } else if (
+                                            arr.length > 90 ||
+                                            i + 85 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 85 || i + 80 < arr.length) {
+                                        } else if (
+                                            arr.length > 85 ||
+                                            i + 80 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;"></div>`;
-                                        } else if(arr.length > 80 || i + 75 < arr.length) {
+                                        } else if (
+                                            arr.length > 80 ||
+                                            i + 75 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 75 || i + 70 < arr.length) {
+                                        } else if (
+                                            arr.length > 75 ||
+                                            i + 70 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 70 || i + 65 < arr.length) {
+                                        } else if (
+                                            arr.length > 70 ||
+                                            i + 65 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 65 || i + 60 < arr.length) {
+                                        } else if (
+                                            arr.length > 65 ||
+                                            i + 60 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;"></div>`;
-                                        } else if(arr.length > 60 || i + 55 < arr.length) {
+                                        } else if (
+                                            arr.length > 60 ||
+                                            i + 55 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 55 || i + 50 < arr.length) {
+                                        } else if (
+                                            arr.length > 55 ||
+                                            i + 50 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 50 || i + 45 < arr.length) {
+                                        } else if (
+                                            arr.length > 50 ||
+                                            i + 45 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 45 || i + 40 < arr.length) {
+                                        } else if (
+                                            arr.length > 45 ||
+                                            i + 40 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;"></div>`;
-                                        } else if(arr.length > 40 || i + 35 < arr.length) {
+                                        } else if (
+                                            arr.length > 40 ||
+                                            i + 35 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 35 || i + 30 < arr.length) {
+                                        } else if (
+                                            arr.length > 35 ||
+                                            i + 30 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 30 || i + 25 < arr.length) {
+                                        } else if (
+                                            arr.length > 30 ||
+                                            i + 25 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 25 || i + 20 < arr.length) {
+                                        } else if (
+                                            arr.length > 25 ||
+                                            i + 20 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;"></div>`;
-                                        } else if(arr.length > 20 || i + 15 < arr.length) {
+                                        } else if (
+                                            arr.length > 20 ||
+                                            i + 15 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 15 || i + 10 < arr.length) {
+                                        } else if (
+                                            arr.length > 15 ||
+                                            i + 10 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 10 || i + 5 < arr.length) {
+                                        } else if (
+                                            arr.length > 10 ||
+                                            i + 5 < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                             </div>`;
-                                        } else if(arr.length > 5 || i < arr.length) {
+                                        } else if (
+                                            arr.length > 5 ||
+                                            i < arr.length
+                                        ) {
                                             return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
                                         }
                                     }
                                     return "";
                                 })
-                                .filter(marker => marker != "")
+                                .filter((marker) => marker != "")
                                 .slice(0, 5)
                                 .join("")}`;
                         }).toString()
@@ -371,7 +459,11 @@ export function layout() {
                             return `${state.locations
                                 .slice(0, 3)
                                 .map((location) => {
-                                    if (["as", "ss", "sa", "ts"].includes(location.value)) {
+                                    if (
+                                        ["as", "ss", "sa", "ts"].includes(
+                                            location.value
+                                        )
+                                    ) {
                                         return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(3px + 7vw); height: calc(3px + 7vw); background-color: rgba(0, 0, 0, 0); border: calc(3px + 1vw) solid #fd910d; border-radius: 50%;"></div>`;
                                     }
                                 })
@@ -877,14 +969,14 @@ export function formatData(data, categories, teams) {
 }
 
 let parsedScoring = {
-    "as": "amp score",
-    "am": "amp missed",
-    "ss": "speaker score",
-    "sa": "speaker score (amplify)",
-    "sm": "speaker miss",
-    "ts": "trap score",
-    "tm": "trap miss"
-}
+    as: "amp score",
+    am: "amp missed",
+    ss: "speaker score",
+    sa: "speaker score (amplify)",
+    sm: "speaker miss",
+    ts: "trap score",
+    tm: "trap miss"
+};
 
 export function formatParsedData(data, categories, teams) {
     return `,match,team,alliance,leave,"ground pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
@@ -908,20 +1000,53 @@ export function formatParsedData(data, categories, teams) {
                 find(entry, "abilities", categories, "24-1", false)
                     ? "yes"
                     : "no",
-                `"${find(entry, "data", categories, "24-2", []).map(entry => parsedScoring[entry]).join("\\n")}"`,
-                `"${find(entry, "data", categories, "24-3", []).map(entry => parsedScoring[entry]).join("\\n")}"`,
-                (["none", "parked", "on stage", "harmony"])[parseInt(find(entry, "abilities", categories, "24-4", 0))],
+                `"${find(entry, "data", categories, "24-2", [])
+                    .map((entry) => parsedScoring[entry])
+                    .join("\\n")}"`,
+                `"${find(entry, "data", categories, "24-3", [])
+                    .map((entry) => parsedScoring[entry])
+                    .join("\\n")}"`,
+                ["none", "parked", "on stage", "harmony"][
+                    parseInt(find(entry, "abilities", categories, "24-4", 0))
+                ],
                 find(entry, "abilities", categories, "24-5", false)
                     ? "yes"
                     : "no",
-                `${(parseInt(find(entry, "timers", categories, "24-6", 0)) / 1000).toFixed(3)}s`,
-                `${(parseInt(find(entry, "timers", categories, "24-7", 0)) / 1000).toFixed(3)}s`,
-                `${(parseInt(find(entry, "timers", categories, "24-8", 0)) / 1000).toFixed(3)}s`,
-                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-9", "") + 1)),
-                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-10", "") + 1)),
-                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-11", "") + 1)),
-                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-12", "") + 1)),
-                "⭐".repeat(parseInt(find(entry, "ratings", categories, "24-13", "") + 1)),
+                `${(
+                    parseInt(find(entry, "timers", categories, "24-6", 0)) /
+                    1000
+                ).toFixed(3)}s`,
+                `${(
+                    parseInt(find(entry, "timers", categories, "24-7", 0)) /
+                    1000
+                ).toFixed(3)}s`,
+                `${(
+                    parseInt(find(entry, "timers", categories, "24-8", 0)) /
+                    1000
+                ).toFixed(3)}s`,
+                "⭐".repeat(
+                    parseInt(find(entry, "ratings", categories, "24-9", "") + 1)
+                ),
+                "⭐".repeat(
+                    parseInt(
+                        find(entry, "ratings", categories, "24-10", "") + 1
+                    )
+                ),
+                "⭐".repeat(
+                    parseInt(
+                        find(entry, "ratings", categories, "24-11", "") + 1
+                    )
+                ),
+                "⭐".repeat(
+                    parseInt(
+                        find(entry, "ratings", categories, "24-12", "") + 1
+                    )
+                ),
+                "⭐".repeat(
+                    parseInt(
+                        find(entry, "ratings", categories, "24-13", "") + 1
+                    )
+                ),
                 JSON.stringify(
                     `${entry.contributor.username || "username"} (${
                         teams[entry.contributor.team] || 0
@@ -929,7 +1054,9 @@ export function formatParsedData(data, categories, teams) {
                 ),
                 JSON.stringify(entry.comments || ""),
                 entry.accuracy && entry.accuracy.calculated
-                    ? `${parseFloat((entry.accuracy.percentage * 100).toFixed(2))}%`
+                    ? `${parseFloat(
+                          (entry.accuracy.percentage * 100).toFixed(2)
+                      )}%`
                     : "",
                 entry.serverTimestamp
             ].join(",");
