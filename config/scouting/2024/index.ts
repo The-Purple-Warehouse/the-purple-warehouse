@@ -530,7 +530,7 @@ export function layout() {
                             label: "Scored",
                             value: "ts",
                             type: "counter",
-                            max: 0,
+                            max: 3,
                             show: {
                                 type: "function",
                                 definition: ((state) => {
