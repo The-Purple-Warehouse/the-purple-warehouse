@@ -457,16 +457,166 @@ export function layout() {
                         type: "function",
                         definition: ((state) => {
                             return `${state.locations
-                                .slice(0, 3)
-                                .map((location) => {
-                                    if (
-                                        ["as", "ss", "sa", "ts"].includes(
+                                .filter((location) =>
+                                    ["as", "ss", "sa", "ts"].includes(
+                                        location.value
+                                    )
+                                )
+                                .map((location, i, arr) => {
+                                    if (i > 4) {
+                                        return "";
+                                    } else if (
+                                        ["ts"].includes(location.value)
+                                    ) {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(3px + 7vw); height: calc(3px + 7vw); background-color: rgba(0, 0, 0, 0); border: calc(3px + 1vw) solid #fd910d; border-radius: 50%;"></div>`;
+                                    } else if (
+                                        ["as", "ss", "sa"].includes(
                                             location.value
                                         )
                                     ) {
-                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(3px + 7vw); height: calc(3px + 7vw); background-color: rgba(0, 0, 0, 0); border: calc(3px + 1vw) solid #fd910d; border-radius: 50%;"></div>`;
+                                        let colors = [
+                                            "#fd910d",
+                                            "#fd3f0d",
+                                            "#b700ff",
+                                            "#5300ff",
+                                            "#000000"
+                                        ];
+                                        if (
+                                            arr.length > 100 ||
+                                            i + 95 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[4]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 95 ||
+                                            i + 90 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 90 ||
+                                            i + 85 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 85 ||
+                                            i + 80 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;"></div>`;
+                                        } else if (
+                                            arr.length > 80 ||
+                                            i + 75 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 75 ||
+                                            i + 70 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 70 ||
+                                            i + 65 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 65 ||
+                                            i + 60 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;"></div>`;
+                                        } else if (
+                                            arr.length > 60 ||
+                                            i + 55 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 55 ||
+                                            i + 50 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 50 ||
+                                            i + 45 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 45 ||
+                                            i + 40 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;"></div>`;
+                                        } else if (
+                                            arr.length > 40 ||
+                                            i + 35 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 35 ||
+                                            i + 30 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 30 ||
+                                            i + 25 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 25 ||
+                                            i + 20 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;"></div>`;
+                                        } else if (
+                                            arr.length > 20 ||
+                                            i + 15 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 15 ||
+                                            i + 10 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 10 ||
+                                            i + 5 < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if (
+                                            arr.length > 5 ||
+                                            i < arr.length
+                                        ) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
+                                        }
                                     }
+                                    return "";
                                 })
+                                .filter((marker) => marker != "")
+                                .slice(0, 5)
                                 .join("")}`;
                         }).toString()
                     },
