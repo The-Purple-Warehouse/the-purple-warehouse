@@ -35,7 +35,8 @@ export function categories() {
             identifier: "24-16",
             dataType: "array"
         },
-        { name: "Teleop Count", identifier: "24-17" }
+        { name: "Teleop Count", identifier: "24-17" },
+        { name: "Center Line Pick-Up", identifier: "24-18" }
     ];
 }
 
@@ -64,6 +65,12 @@ export function layout() {
                     label: "Ground Pick-Up",
                     default: false,
                     data: "24-1"
+                },
+                {
+                    type: "checkbox",
+                    label: "Center Line Pick-Up",
+                    default: false,
+                    data: "24-18"
                 },
                 {
                     type: "timer",
@@ -1068,16 +1075,8 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 
 export function formatData(data, categories, teams) {
-    return `,match,team,alliance,leave,"ground pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `,match,team,alliance,leave,"ground pick-up","center line pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
-            let locations = [
-                ...find(entry, "data", categories, "23-2", []),
-                ...find(entry, "data", categories, "23-4", [])
-            ];
-            let pieces = [
-                ...find(entry, "data", categories, "23-3", []),
-                ...find(entry, "data", categories, "23-5", [])
-            ];
             return [
                 i,
                 entry.match || 0,
@@ -1087,6 +1086,9 @@ export function formatData(data, categories, teams) {
                     ? "true"
                     : "false",
                 find(entry, "abilities", categories, "24-1", false)
+                    ? "true"
+                    : "false",
+                find(entry, "abilities", categories, "24-18", false)
                     ? "true"
                     : "false",
                 `"[${find(entry, "data", categories, "24-2", []).join(", ")}]"`,
@@ -1129,16 +1131,8 @@ let parsedScoring = {
 };
 
 export function formatParsedData(data, categories, teams) {
-    return `,match,team,alliance,leave,"ground pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `,match,team,alliance,leave,"ground pick-up","center line pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
-            let locations = [
-                ...find(entry, "data", categories, "23-2", []),
-                ...find(entry, "data", categories, "23-4", [])
-            ];
-            let pieces = [
-                ...find(entry, "data", categories, "23-3", []),
-                ...find(entry, "data", categories, "23-5", [])
-            ];
             return [
                 i,
                 entry.match || 0,
@@ -1148,6 +1142,9 @@ export function formatParsedData(data, categories, teams) {
                     ? "yes"
                     : "no",
                 find(entry, "abilities", categories, "24-1", false)
+                    ? "yes"
+                    : "no",
+                find(entry, "abilities", categories, "24-18", false)
                     ? "yes"
                     : "no",
                 `"${find(entry, "data", categories, "24-2", [])
