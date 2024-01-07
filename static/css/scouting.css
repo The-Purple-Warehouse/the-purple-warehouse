@@ -723,8 +723,8 @@ header .header-btn {
 
 .small-grid-x .grid {
     width: calc(50vw) !important;
-    max-width: 450px !important;
-    max-height: 450px !important;
+    max-width: 600px !important;
+    max-height: 600px !important;
 }
 
 .large-grid-y.small-grid-x .grid {
