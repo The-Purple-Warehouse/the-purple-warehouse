@@ -576,6 +576,7 @@ export async function getSummaryByEvent(event: string) {
 export async function getSharedData(
     event: string,
     teamNumber: string,
+    parsed: boolean = false,
     threshold: number = 11
 ) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
@@ -633,7 +634,11 @@ export async function getSharedData(
             })
             .filter((entry: any) => entry != null);
     }
-    return scoutingConfig.formatData(data, categories, teams);
+    if(parsed) {
+        return scoutingConfig.formatParsedData(data, categories, teams);
+    } else {
+        return scoutingConfig.formatData(data, categories, teams);
+    }
 }
 
 export async function updateAccuracy(event: string) {

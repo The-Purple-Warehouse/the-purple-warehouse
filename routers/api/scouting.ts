@@ -82,7 +82,6 @@ router.post(
     async (ctx, next) => {
         addAPIHeaders(ctx);
         let body = ctx.request.body as any;
-        /*
         let entry = (await addEntry(
             ctx.session.scoutingTeamNumber,
             (body.username as string) || ctx.session.scoutingUsername,
@@ -116,11 +115,6 @@ router.post(
                 )
             }
         };
-        */
-        ctx.body = {
-            success: false,
-            error: "We are working to release the new data format for this year's scouting app on the same day as kickoff!"
-        }
     }
 );
 
@@ -155,6 +149,25 @@ router.get(
                 csv: await getSharedData(
                     ctx.params.event,
                     ctx.session.scoutingTeamNumber
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
+    "/entry/data/event/:event/csv/parsed",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getSharedData(
+                    ctx.params.event,
+                    ctx.session.scoutingTeamNumber,
+                    true
                 ),
                 notes: scoutingConfig.notes()
             }
