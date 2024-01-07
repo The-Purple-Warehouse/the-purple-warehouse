@@ -13,7 +13,7 @@ scoutingConfig.categories = scoutingConfig[year].categories;
 scoutingConfig.layout = scoutingConfig[year].layout;
 scoutingConfig.preload = scoutingConfig[year].preload;
 scoutingConfig.formatData = scoutingConfig[year].formatData;
-if(scoutingConfig[year].formatParsedData != null) {
+if (scoutingConfig[year].formatParsedData != null) {
     scoutingConfig.formatParsedData = scoutingConfig[year].formatParsedData;
 } else {
     scoutingConfig.formatParsedData = scoutingConfig[year].formatData;

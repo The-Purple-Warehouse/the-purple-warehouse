@@ -634,7 +634,7 @@ export async function getSharedData(
             })
             .filter((entry: any) => entry != null);
     }
-    if(parsed) {
+    if (parsed) {
         return scoutingConfig.formatParsedData(data, categories, teams);
     } else {
         return scoutingConfig.formatData(data, categories, teams);
