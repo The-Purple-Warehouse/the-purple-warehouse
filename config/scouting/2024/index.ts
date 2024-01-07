@@ -5,7 +5,26 @@ import { getAllDataByEvent } from "../../../helpers/scouting";
 import accuracy2024 from "./accuracy";
 
 export function categories() {
-    return [];
+    return [
+        { name: "Leave Starting Zone", identifier: "24-0", dataType: "boolean" },
+        { name: "Ground Pick-Up", identifier: "24-1", dataType: "boolean" },
+        { name: "Auto Scoring", identifier: "24-2", dataType: "array" },
+        { name: "Teleop Scoring", identifier: "24-3", dataType: "array" },
+        { name: "Stage Level", identifier: "24-4" },
+        { name: "Spotlight", identifier: "24-5", dataType: "boolean" },
+        { name: "Stage Time", identifier: "24-6" },
+        { name: "Brick Time", identifier: "24-7" },
+        { name: "Defense Time", identifier: "24-8" },
+        { name: "Drive Skill Rating", identifier: "24-9" },
+        { name: "Defense Skill Rating", identifier: "24-10" },
+        { name: "Robot Speed Rating", identifier: "24-11" },
+        { name: "Robot Stability Rating", identifier: "24-12" },
+        { name: "Intake Consistency Rating", identifier: "24-13" },
+        { name: "Auto Scoring Locations", identifier: "24-14", dataType: "array" },
+        { name: "Auto Count", identifier: "24-15" },
+        { name: "Teleop Scoring Locations", identifier: "24-16", dataType: "array" },
+        { name: "Teleop Count", identifier: "24-17" }
+    ];
 }
 
 export function layout() {
@@ -16,16 +35,766 @@ export function layout() {
             components: [
                 {
                     type: "title",
-                    label: "COMING SOON"
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `AUTO (${state.teamNumber})`).toString()
+                    }
+                },
+                {
+                    type: "checkbox",
+                    label: "Leave Starting Zone",
+                    default: false,
+                    data: "24-0"
+                },
+                {
+                    type: "checkbox",
+                    label: "Ground Pick-Up",
+                    default: false,
+                    data: "24-1"
+                },
+                {
+                    type: "timer",
+                    label: "Brick Time",
+                    default: 0,
+                    data: "24-7",
+                    name: "brick_time",
+                    restricts: ["stage_time", "defense_time"]
+                },
+                {
+                    type: "locations",
+                    src: {
+                        type: "function",
+                        definition: ((state) =>
+                            `/img/2024grid-red.png`).toString()
+                    },
+                    default: {
+                        locations: [],
+                        values: [],
+                        counter: 0
+                    },
+                    data: {
+                        values: "24-2",
+                        locations: "24-14",
+                        counter: "24-15"
+                    },
+                    rows: 3,
+                    columns: 1,
+                    orientation: 0,
+                    flip: false,
+                    marker: {
+                        type: "function",
+                        definition: ((state) => {
+                            return `${state.locations
+                                .filter(location => ["as", "ss", "sa", "ts"].includes(location.value))
+                                .map((location, i, arr) => {
+                                    if(i > 4) {
+                                        return "";
+                                    } else if(["ts"].includes(location.value)) {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(3px + 7vw); height: calc(3px + 7vw); background-color: rgba(0, 0, 0, 0); border: calc(3px + 1vw) solid #fd910d; border-radius: 50%;"></div>`;
+                                    } else if(["as", "ss", "sa"].includes(location.value)) {
+                                        let colors = ["#fd910d", "#fd3f0d", "#b700ff", "#5300ff", "#000000"];
+                                        if(arr.length > 100 || i + 95 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[4]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 95 || i + 90 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 90 || i + 85 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 85 || i + 80 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;"></div>`;
+                                        } else if(arr.length > 80 || i + 75 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 75 || i + 70 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 70 || i + 65 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 65 || i + 60 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;"></div>`;
+                                        } else if(arr.length > 60 || i + 55 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 55 || i + 50 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 50 || i + 45 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 45 || i + 40 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;"></div>`;
+                                        } else if(arr.length > 40 || i + 35 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 35 || i + 30 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 30 || i + 25 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 25 || i + 20 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;"></div>`;
+                                        } else if(arr.length > 20 || i + 15 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 15 || i + 10 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 10 || i + 5 < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
+                                            </div>`;
+                                        } else if(arr.length > 5 || i < arr.length) {
+                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
+                                        }
+                                    }
+                                    return "";
+                                })
+                                .filter(marker => marker != "")
+                                .slice(0, 5)
+                                .join("")}`;
+                        }).toString()
+                    },
+                    options: [
+                        {
+                            label: "Scored",
+                            value: "as",
+                            tracks: ["ss", "sa", "ts"],
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 0;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Missed",
+                            value: "am",
+                            tracks: ["sm", "tm"],
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 0;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Scored",
+                            value: "ss",
+                            tracks: ["as", "sa", "ts"],
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 1;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Scored (Amplify)",
+                            value: "sa",
+                            tracks: ["as", "ss", "ts"],
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 1;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Missed",
+                            value: "sm",
+                            tracks: ["am", "tm"],
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 1;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Scored",
+                            value: "ts",
+                            tracks: ["as", "ss", "sa"],
+                            type: "counter",
+                            max: 3,
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 2;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Missed",
+                            value: "tm",
+                            tracks: ["am", "sm"],
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 2;
+                                }).toString()
+                            }
+                        }
+                    ]
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Back",
+                            page: -1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Teleop >",
+                            page: 1
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Back",
+                            page: -1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Teleop >",
+                            page: 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "title",
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `TELEOP (${state.teamNumber})`).toString()
+                    }
+                },
+                {
+                    type: "checkbox",
+                    label: "Ground Pick-Up",
+                    default: false,
+                    data: "24-1"
+                },
+                {
+                    type: "timer",
+                    label: "Defense Time",
+                    default: 0,
+                    data: "24-8",
+                    name: "defense_time",
+                    restricts: ["stage_time", "brick_time"]
+                },
+                {
+                    type: "timer",
+                    label: "Brick Time",
+                    default: 0,
+                    data: "24-7",
+                    name: "brick_time",
+                    restricts: ["stage_time", "defense_time"]
+                },
+                {
+                    type: "locations",
+                    src: {
+                        type: "function",
+                        definition: ((state) =>
+                            `/img/2024grid-red.png`).toString()
+                    },
+                    default: {
+                        locations: [],
+                        values: [],
+                        counter: 0
+                    },
+                    data: {
+                        values: "24-3",
+                        locations: "24-16",
+                        counter: "24-17"
+                    },
+                    rows: 3,
+                    columns: 1,
+                    orientation: 0,
+                    flip: false,
+                    marker: {
+                        type: "function",
+                        definition: ((state) => {
+                            return `${state.locations
+                                .slice(0, 3)
+                                .map((location) => {
+                                    if (["as", "ss", "sa", "ts"].includes(location.value)) {
+                                        return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(3px + 7vw); height: calc(3px + 7vw); background-color: rgba(0, 0, 0, 0); border: calc(3px + 1vw) solid #fd910d; border-radius: 50%;"></div>`;
+                                    }
+                                })
+                                .join("")}`;
+                        }).toString()
+                    },
+                    options: [
+                        {
+                            label: "Scored",
+                            value: "as",
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 0;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Missed",
+                            value: "am",
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 0;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Scored",
+                            value: "ss",
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 1;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Scored (Amplify)",
+                            value: "sa",
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 1;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Missed",
+                            value: "sm",
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 1;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Scored",
+                            value: "ts",
+                            type: "counter",
+                            max: 0,
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 2;
+                                }).toString()
+                            }
+                        },
+                        {
+                            label: "Missed",
+                            value: "tm",
+                            type: "counter",
+                            show: {
+                                type: "function",
+                                definition: ((state) => {
+                                    return state.index == 2;
+                                }).toString()
+                            }
+                        }
+                    ]
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Auto",
+                            page: 0
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Stage >",
+                            page: 2
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Auto",
+                            page: 0
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Stage >",
+                            page: 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "title",
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `STAGE (${state.teamNumber})`).toString()
+                    }
+                },
+                {
+                    type: "checkbox",
+                    label: "Spotlight",
+                    default: false,
+                    data: "24-5"
+                },
+                {
+                    type: "timer",
+                    label: "Stage Time",
+                    default: 0,
+                    data: "24-6",
+                    name: "stage_time",
+                    restricts: ["defense_time", "brick_time"]
+                },
+                {
+                    type: "select",
+                    label: "Stage Level",
+                    data: "24-4",
+                    default: 0,
+                    options: [
+                        {
+                            label: "None"
+                        },
+                        {
+                            label: "Parked"
+                        },
+                        {
+                            label: "On Stage"
+                        },
+                        {
+                            label: "Harmony"
+                        }
+                    ]
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Teleop",
+                            page: 1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Notes >",
+                            page: 3
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    style: "dashed"
+                },
+                {
+                    type: "header",
+                    label: "Notes (Optional)"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Teleop",
+                            page: 1
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Notes >",
+                            page: 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "title",
+                    label: {
+                        type: "function",
+                        definition: ((state) =>
+                            `NOTES (${state.teamNumber})`).toString()
+                    }
+                },
+                {
+                    type: "rating",
+                    label: "Drive Skill Rating",
+                    default: 0,
+                    data: "24-9",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Defense Skill Rating",
+                    default: 0,
+                    data: "24-10",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Robot Speed Rating",
+                    default: 0,
+                    data: "24-11",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Robot Stability Rating",
+                    default: 0,
+                    data: "24-12",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "rating",
+                    label: "Intake Consistency Rating",
+                    default: 0,
+                    data: "24-13",
+                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                },
+                {
+                    type: "header",
+                    label: "Other Notes"
                 },
                 {
                     type: "text",
-                    label: "We are working to release the new interface for this year's scouting app on the same day as kickoff!"
+                    label: "Please give any important information about this robot or its performance in the match including:\n\n- Ability to score against defense\n- Robot stability\n- Fouls or other issues\n- Team number (for practice matches only)\n- Anything else that is relevant\n"
+                },
+                {
+                    type: "textbox",
+                    placeholder:
+                        "Enter notes here (and include team number if scouting practice matches)...",
+                    default: "",
+                    data: "comments"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Stage",
+                            page: 2
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Send >",
+                            page: 4
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "pagebutton",
+                    label: "Upload (Online)",
+                    page: 5
                 },
                 {
                     type: "pagebutton",
-                    label: "Home",
-                    page: -2
+                    label: "QR Code (Offline)",
+                    page: 6
+                },
+                {
+                    type: "pagebutton",
+                    label: "Copy Data (Offline)",
+                    page: 7
+                },
+                {
+                    type: "pagebutton",
+                    label: "< Notes",
+                    page: 3
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "title",
+                    label: "UPLOAD"
+                },
+                {
+                    type: "upload"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Send",
+                            page: 4
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Home",
+                            page: -2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "title",
+                    label: "QR CODE"
+                },
+                {
+                    type: "qrcode",
+                    chunkLength: 30,
+                    interval: 500
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Send",
+                            page: 4
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Home",
+                            page: -2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: "layout",
+            direction: "rows",
+            components: [
+                {
+                    type: "title",
+                    label: "COPY DATA"
+                },
+                {
+                    type: "data"
+                },
+                {
+                    type: "layout",
+                    direction: "columns",
+                    components: [
+                        {
+                            type: "pagebutton",
+                            label: "< Send",
+                            page: 4
+                        },
+                        {
+                            type: "pagebutton",
+                            label: "Home",
+                            page: -2
+                        }
+                    ]
                 }
             ]
         }
@@ -33,7 +802,11 @@ export function layout() {
 }
 
 export function preload() {
-    return ["/img/star-outline.png", "/img/star-filled.png"];
+    return [
+        "/img/2024grid-red.png",
+        "/img/star-outline.png",
+        "/img/star-filled.png"
+    ];
 }
 
 let categoriesInSingular = {

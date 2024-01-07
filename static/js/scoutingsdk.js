@@ -2405,6 +2405,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!show) {
                             return "";
                         }
+                        let tracks = [];
+                        if(typeof option.tracks == "object") {
+                            tracks = option.tracks;
+                        }
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
@@ -2450,7 +2454,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ).length
                             } here<br>${
                                           locationData.filter(
-                                              (loc) => loc.value == option.value
+                                              (loc) => loc.value == option.value || tracks.includes(loc.value)
                                           ).length
                                       } total</h3>
 							<button data-increment="1"${
@@ -2595,6 +2599,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 show = options[j].show ? true : false;
                             }
                         }
+                        let tracks = [];
+                        if(typeof options[j].tracks == "object") {
+                            tracks = options[j].tracks;
+                        }
                         if (show) {
                             if (options[j].type != "toggle") {
                                 element.querySelector(
@@ -2609,7 +2617,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ).length
                                 } here<br>${
                                     locationData.filter(
-                                        (loc) => loc.value == options[j].value
+                                        (loc) => loc.value == options[j].value || tracks.includes(loc.value)
                                     ).length
                                 } total`;
                             }
@@ -2785,6 +2793,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (typeof component.orientation == "number") {
                     orientation = component.orientation;
                 }
+                let flip = true;
+                if (typeof component.flip == "boolean") {
+                    flip = component.flip;
+                }
                 let options = [];
                 if (component.options instanceof Array) {
                     options = component.options;
@@ -2822,28 +2834,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             defaultValue.counter
                         )
                     );
-                    element.querySelector(
-                        `[data-id="${_this.escape(id)}"] > button`
-                    ).onclick = async () => {
-                        let grid = element.querySelector(
-                            `[data-id="${_this.escape(
-                                id
-                            )}"] > .component-locations-container > .grid`
-                        );
-                        if (
-                            parseInt(grid.getAttribute("data-orientation")) == 0
-                        ) {
-                            grid.style.transform = "scaleX(-1) scaleY(-1)";
-                            fieldOrientation = 1;
-                            fieldOrientationSet = true;
-                            grid.setAttribute("data-orientation", 1);
-                        } else {
-                            grid.style.transform = "";
-                            fieldOrientation = 0;
-                            fieldOrientationSet = true;
-                            grid.setAttribute("data-orientation", 0);
-                        }
-                    };
+                    if(flip) {
+                        element.querySelector(
+                            `[data-id="${_this.escape(id)}"] > button`
+                        ).onclick = async () => {
+                            let grid = element.querySelector(
+                                `[data-id="${_this.escape(
+                                    id
+                                )}"] > .component-locations-container > .grid`
+                            );
+                            if (
+                                parseInt(grid.getAttribute("data-orientation")) == 0
+                            ) {
+                                grid.style.transform = "scaleX(-1) scaleY(-1)";
+                                fieldOrientation = 1;
+                                fieldOrientationSet = true;
+                                grid.setAttribute("data-orientation", 1);
+                            } else {
+                                grid.style.transform = "";
+                                fieldOrientation = 0;
+                                fieldOrientationSet = true;
+                                grid.setAttribute("data-orientation", 0);
+                            }
+                        };
+                    }
                     let gridElements = element.querySelectorAll(
                         `[data-id="${_this.escape(
                             id
@@ -3073,7 +3087,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     .join("")}
 							</div>
 						</div>
-						<button>Flip</button>
+						${flip ? `<button>Flip</button>` : ""}
 					</div>
 				`);
             } else if (component.type == "pagebutton") {

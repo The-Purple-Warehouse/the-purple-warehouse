@@ -16,4 +16,4 @@ async function initializeCategories(year) {
     return;
 }
 
-initializeCategories(2023);
+initializeCategories(2024);
