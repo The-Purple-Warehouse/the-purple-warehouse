@@ -395,7 +395,8 @@ const ScoutingAppSDK = function (element, config) {
                     latestMatch = latestMatchData.body.latest + 1;
                 }
             }
-            let year = config.year || new Date().toLocaleDateString().split("/")[2];
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="home-window">
@@ -1329,7 +1330,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showDataPage = () => {
         return new Promise(async (resolve, reject) => {
-            let year = config.year || new Date().toLocaleDateString().split("/")[2];
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
@@ -1353,6 +1355,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <h2>Team Number<br>(leave blank to show all):</h2>
                     <input class="team-number" placeholder="Team Number" />
                     <button class="show-data">Show Data</button>
+                    <button class="show-parsed-data">Show Parsed Data</button>
                     <button class="show-analysis">Show Analysis</button>
                     <button class="download-csv">Download CSV</button>
                     <p class="notes"></p>
@@ -1423,7 +1426,81 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     return `<tr>${data
                                         .map(
                                             (cell, i) =>
-                                                `<td>${
+                                                `<td${cell.length > 40 ? ` style="min-width: 200px;"` : ""}>${
+                                                    csv[0][i] == "timestamp"
+                                                        ? new Date(
+                                                              parseInt(cell)
+                                                          ).toLocaleString()
+                                                        : cell.replaceAll(
+                                                              "\\n",
+                                                              "<br>"
+                                                          )
+                                                }</td>`
+                                        )
+                                        .join("")}</tr>`;
+                                })
+                                .join("");
+                        element.querySelector(
+                            ".data-table > thead"
+                        ).innerHTML = `<tr>${csv[0]
+                            .map(
+                                (cell) =>
+                                    `<th>${cell
+                                        .replaceAll('"', "")
+                                        .replaceAll("\\n", "<br>")}</th>`
+                            )
+                            .join("")}</tr>`;
+                        element.querySelector(
+                            ".data-window > .notes"
+                        ).innerHTML = data.body.notes.replaceAll("\n", "<br>");
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {}
+                hideOverlay();
+            };
+            element.querySelector("button.show-parsed-data").onclick = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                let teamNumber = element.querySelector(
+                    ".data-window > input.team-number"
+                ).value;
+                element.querySelector(".notes").innerHTML = "";
+                element.querySelector(".data-table > tbody").innerHTML = "";
+                element.querySelector(".analysis").innerHTML = "";
+                element.querySelector(".analysis").style.display = "none";
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                eventCode
+                            )}/csv/parsed`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = Papa.parse(data.body.csv).data;
+                        element.querySelector(".data-table > tbody").innerHTML =
+                            csv
+                                .slice(1)
+                                .filter(
+                                    (data) =>
+                                        teamNumber == "" ||
+                                        data.slice(1).includes(`${teamNumber}`)
+                                )
+                                .map((data) => {
+                                    return `<tr>${data
+                                        .map(
+                                            (cell, i) =>
+                                                `<td${cell.length > 40 ? ` style="min-width: 200px;"` : ""}>${
                                                     csv[0][i] == "timestamp"
                                                         ? new Date(
                                                               parseInt(cell)
@@ -1655,7 +1732,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showComparePage = () => {
         return new Promise(async (resolve, reject) => {
-            let year = config.year || new Date().toLocaleDateString().split("/")[2];
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
@@ -1881,7 +1959,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showPredictPage = () => {
         return new Promise(async (resolve, reject) => {
-            let year = config.year || new Date().toLocaleDateString().split("/")[2];
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
@@ -2401,6 +2480,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!show) {
                             return "";
                         }
+                        let tracks = [];
+                        if(typeof option.tracks == "object") {
+                            tracks = option.tracks;
+                        }
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
@@ -2446,7 +2529,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ).length
                             } here<br>${
                                           locationData.filter(
-                                              (loc) => loc.value == option.value
+                                              (loc) => loc.value == option.value || tracks.includes(loc.value)
                                           ).length
                                       } total</h3>
 							<button data-increment="1"${
@@ -2591,6 +2674,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 show = options[j].show ? true : false;
                             }
                         }
+                        let tracks = [];
+                        if(typeof options[j].tracks == "object") {
+                            tracks = options[j].tracks;
+                        }
                         if (show) {
                             if (options[j].type != "toggle") {
                                 element.querySelector(
@@ -2605,7 +2692,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ).length
                                 } here<br>${
                                     locationData.filter(
-                                        (loc) => loc.value == options[j].value
+                                        (loc) => loc.value == options[j].value || tracks.includes(loc.value)
                                     ).length
                                 } total`;
                             }
@@ -2781,6 +2868,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (typeof component.orientation == "number") {
                     orientation = component.orientation;
                 }
+                let flip = true;
+                if (typeof component.flip == "boolean") {
+                    flip = component.flip;
+                }
                 let options = [];
                 if (component.options instanceof Array) {
                     options = component.options;
@@ -2818,28 +2909,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             defaultValue.counter
                         )
                     );
-                    element.querySelector(
-                        `[data-id="${_this.escape(id)}"] > button`
-                    ).onclick = async () => {
-                        let grid = element.querySelector(
-                            `[data-id="${_this.escape(
-                                id
-                            )}"] > .component-locations-container > .grid`
-                        );
-                        if (
-                            parseInt(grid.getAttribute("data-orientation")) == 0
-                        ) {
-                            grid.style.transform = "scaleX(-1) scaleY(-1)";
-                            fieldOrientation = 1;
-                            fieldOrientationSet = true;
-                            grid.setAttribute("data-orientation", 1);
-                        } else {
-                            grid.style.transform = "";
-                            fieldOrientation = 0;
-                            fieldOrientationSet = true;
-                            grid.setAttribute("data-orientation", 0);
-                        }
-                    };
+                    if(flip) {
+                        element.querySelector(
+                            `[data-id="${_this.escape(id)}"] > button`
+                        ).onclick = async () => {
+                            let grid = element.querySelector(
+                                `[data-id="${_this.escape(
+                                    id
+                                )}"] > .component-locations-container > .grid`
+                            );
+                            if (
+                                parseInt(grid.getAttribute("data-orientation")) == 0
+                            ) {
+                                grid.style.transform = "scaleX(-1) scaleY(-1)";
+                                fieldOrientation = 1;
+                                fieldOrientationSet = true;
+                                grid.setAttribute("data-orientation", 1);
+                            } else {
+                                grid.style.transform = "";
+                                fieldOrientation = 0;
+                                fieldOrientationSet = true;
+                                grid.setAttribute("data-orientation", 0);
+                            }
+                        };
+                    }
                     let gridElements = element.querySelectorAll(
                         `[data-id="${_this.escape(
                             id
@@ -3069,7 +3162,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     .join("")}
 							</div>
 						</div>
-						<button>Flip</button>
+						${flip ? `<button>Flip</button>` : ""}
 					</div>
 				`);
             } else if (component.type == "pagebutton") {
