@@ -1427,7 +1427,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         .map(
                                             (cell, i) =>
                                                 `<td${
-                                                    (cell.length > 40 || cell.includes("\\n"))
+                                                    cell.length > 40 ||
+                                                    cell.includes("\\n")
                                                         ? ` style="min-width: 200px;"`
                                                         : ""
                                                 }>${
@@ -1507,7 +1508,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         .map(
                                             (cell, i) =>
                                                 `<td${
-                                                    (cell.length > 40 || cell.includes("\\n"))
+                                                    cell.length > 40 ||
+                                                    cell.includes("\\n")
                                                         ? ` style="min-width: 200px;"`
                                                         : ""
                                                 }>${
