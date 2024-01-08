@@ -85,7 +85,7 @@ export function layout() {
                     src: {
                         type: "function",
                         definition: ((state) =>
-                            `/img/2024grid-red.png`).toString()
+                            `/img/2024grid-auto-red.png`).toString()
                     },
                     default: {
                         locations: [],
@@ -101,6 +101,7 @@ export function layout() {
                     columns: 1,
                     orientation: 0,
                     flip: false,
+                    disabled: [2],
                     marker: {
                         type: "function",
                         definition: ((state) => {
@@ -272,7 +273,7 @@ export function layout() {
                         {
                             label: "Scored",
                             value: "as",
-                            tracks: ["ss", "sa", "ts"],
+                            tracks: ["ss", "ts"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -296,19 +297,7 @@ export function layout() {
                         {
                             label: "Scored",
                             value: "ss",
-                            tracks: ["as", "sa", "ts"],
-                            type: "counter",
-                            show: {
-                                type: "function",
-                                definition: ((state) => {
-                                    return state.index == 1;
-                                }).toString()
-                            }
-                        },
-                        {
-                            label: "Scored (Amplify)",
-                            value: "sa",
-                            tracks: ["as", "ss", "ts"],
+                            tracks: ["as", "ts"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -332,7 +321,7 @@ export function layout() {
                         {
                             label: "Scored",
                             value: "ts",
-                            tracks: ["as", "ss", "sa"],
+                            tracks: ["as", "ss"],
                             type: "counter",
                             max: 3,
                             show: {
@@ -631,6 +620,7 @@ export function layout() {
                         {
                             label: "Scored",
                             value: "as",
+                            tracks: ["ss", "sa", "ts"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -642,6 +632,7 @@ export function layout() {
                         {
                             label: "Missed",
                             value: "am",
+                            tracks: ["sm", "tm"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -653,6 +644,7 @@ export function layout() {
                         {
                             label: "Scored",
                             value: "ss",
+                            tracks: ["as", "sa", "ts"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -664,6 +656,7 @@ export function layout() {
                         {
                             label: "Scored (Amplify)",
                             value: "sa",
+                            tracks: ["as", "ss", "ts"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -675,6 +668,7 @@ export function layout() {
                         {
                             label: "Missed",
                             value: "sm",
+                            tracks: ["am", "tm"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -686,6 +680,7 @@ export function layout() {
                         {
                             label: "Scored",
                             value: "ts",
+                            tracks: ["as", "ss", "sa"],
                             type: "counter",
                             max: 3,
                             show: {
@@ -698,6 +693,7 @@ export function layout() {
                         {
                             label: "Missed",
                             value: "tm",
+                            tracks: ["am", "sm"],
                             type: "counter",
                             show: {
                                 type: "function",
@@ -1053,6 +1049,7 @@ export function layout() {
 export function preload() {
     return [
         "/img/2024grid-red.png",
+        "/img/2024grid-auto-red.png",
         "/img/star-outline.png",
         "/img/star-filled.png"
     ];

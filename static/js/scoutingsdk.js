@@ -2891,6 +2891,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (typeof component.flip == "boolean") {
                     flip = component.flip;
                 }
+                let disabled = [];
+                if (typeof component.disabled == "object") {
+                    disabled = component.disabled;
+                }
                 let options = [];
                 if (component.options instanceof Array) {
                     options = component.options;
@@ -2960,118 +2964,120 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         )}"] > .component-locations-container > .grid > div.grid-item`
                     );
                     for (let i = 0; i < gridElements.length; i++) {
-                        gridElements[i].onclick = async (e) => {
-                            let result = await _this.showLocationPopup(
-                                parseInt(
-                                    gridElements[i].getAttribute("data-index")
-                                ),
-                                options,
-                                checkNull(
-                                    data.data[component.data.locations],
-                                    defaultValue.locations
-                                ),
-                                checkNull(
-                                    data.data[component.data.values],
-                                    defaultValue.values
-                                ),
-                                getState()
-                            );
-                            if (result != null) {
-                                await _this.setData(
-                                    "data",
-                                    component.data.locations,
-                                    result.map((entry) => entry.index)
+                        if(!disabled.includes(i)) {
+                            gridElements[i].onclick = async (e) => {
+                                let result = await _this.showLocationPopup(
+                                    parseInt(
+                                        gridElements[i].getAttribute("data-index")
+                                    ),
+                                    options,
+                                    checkNull(
+                                        data.data[component.data.locations],
+                                        defaultValue.locations
+                                    ),
+                                    checkNull(
+                                        data.data[component.data.values],
+                                        defaultValue.values
+                                    ),
+                                    getState()
                                 );
-                                await _this.setData(
-                                    "data",
-                                    component.data.values,
-                                    result.map((entry) => entry.value)
-                                );
-                                await _this.setData(
-                                    "counters",
-                                    component.data.counter,
-                                    result.length
-                                );
-                                for (
-                                    let index = 0;
-                                    index < rows * columns;
-                                    index++
-                                ) {
-                                    if (
-                                        checkNull(
-                                            data.data[component.data.locations],
-                                            defaultValue.locations
-                                        ).filter((loc) => loc == index).length >
-                                        0
+                                if (result != null) {
+                                    await _this.setData(
+                                        "data",
+                                        component.data.locations,
+                                        result.map((entry) => entry.index)
+                                    );
+                                    await _this.setData(
+                                        "data",
+                                        component.data.values,
+                                        result.map((entry) => entry.value)
+                                    );
+                                    await _this.setData(
+                                        "counters",
+                                        component.data.counter,
+                                        result.length
+                                    );
+                                    for (
+                                        let index = 0;
+                                        index < rows * columns;
+                                        index++
                                     ) {
-                                        element
-                                            .querySelector(
-                                                `[data-id="${_this.escape(
-                                                    id
-                                                )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
-                                                    index
-                                                )}"]`
-                                            )
-                                            .classList.add("active");
-                                    } else {
-                                        element
-                                            .querySelector(
-                                                `[data-id="${_this.escape(
-                                                    id
-                                                )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
-                                                    index
-                                                )}"]`
-                                            )
-                                            .classList.remove("active");
-                                    }
-                                    let marker = "";
-                                    if (component.marker != null) {
                                         if (
-                                            component.marker.type == "function"
-                                        ) {
-                                            let locs = checkNull(
-                                                data.data[
-                                                    component.data.locations
-                                                ],
+                                            checkNull(
+                                                data.data[component.data.locations],
                                                 defaultValue.locations
-                                            );
-                                            let vals = checkNull(
-                                                data.data[
-                                                    component.data.values
-                                                ],
-                                                defaultValue.values
-                                            );
-                                            let locations = [];
-                                            for (
-                                                let j = 0;
-                                                j < locs.length;
-                                                j++
-                                            ) {
-                                                if (locs[j] == index) {
-                                                    locations.push({
-                                                        location: locs[j],
-                                                        value: vals[j]
-                                                    });
-                                                }
-                                            }
-                                            marker = eval(
-                                                component.marker.definition
-                                            )(getState({ locations }));
+                                            ).filter((loc) => loc == index).length >
+                                            0
+                                        ) {
+                                            element
+                                                .querySelector(
+                                                    `[data-id="${_this.escape(
+                                                        id
+                                                    )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
+                                                        index
+                                                    )}"]`
+                                                )
+                                                .classList.add("active");
                                         } else {
-                                            marker =
-                                                component.marker.toString();
+                                            element
+                                                .querySelector(
+                                                    `[data-id="${_this.escape(
+                                                        id
+                                                    )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
+                                                        index
+                                                    )}"]`
+                                                )
+                                                .classList.remove("active");
                                         }
+                                        let marker = "";
+                                        if (component.marker != null) {
+                                            if (
+                                                component.marker.type == "function"
+                                            ) {
+                                                let locs = checkNull(
+                                                    data.data[
+                                                        component.data.locations
+                                                    ],
+                                                    defaultValue.locations
+                                                );
+                                                let vals = checkNull(
+                                                    data.data[
+                                                        component.data.values
+                                                    ],
+                                                    defaultValue.values
+                                                );
+                                                let locations = [];
+                                                for (
+                                                    let j = 0;
+                                                    j < locs.length;
+                                                    j++
+                                                ) {
+                                                    if (locs[j] == index) {
+                                                        locations.push({
+                                                            location: locs[j],
+                                                            value: vals[j]
+                                                        });
+                                                    }
+                                                }
+                                                marker = eval(
+                                                    component.marker.definition
+                                                )(getState({ locations }));
+                                            } else {
+                                                marker =
+                                                    component.marker.toString();
+                                            }
+                                        }
+                                        element.querySelector(
+                                            `[data-id="${_this.escape(
+                                                id
+                                            )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
+                                                index
+                                            )}"]`
+                                        ).innerHTML = `<div class="marker">${marker}</div>`;
                                     }
-                                    element.querySelector(
-                                        `[data-id="${_this.escape(
-                                            id
-                                        )}"] > .component-locations-container > .grid > div.grid-item[data-index="${_this.escape(
-                                            index
-                                        )}"]`
-                                    ).innerHTML = `<div class="marker">${marker}</div>`;
                                 }
-                            }
-                        };
+                            };
+                        }
                     }
                 });
                 let additionalClasses = [];
@@ -3155,13 +3161,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             component.marker.toString();
                                                     }
                                                 }
-                                                return `<div class="grid-item" style="grid-area: ${
-                                                    rowindex + 1
-                                                } / ${columnindex + 1} / ${
-                                                    rowindex + 2
-                                                } / ${
-                                                    columnindex + 2
-                                                };" data-row="${rowindex}" data-column="${columnindex}" data-index="${index}"${
+                                                return `<div class="grid-item${
                                                     checkNull(
                                                         data.data[
                                                             component.data
@@ -3174,9 +3174,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             rowindex * columns +
                                                                 columnindex
                                                     ).length > 0
-                                                        ? ` class="active"`
+                                                        ? ` active`
                                                         : ""
-                                                }><div class="marker">${marker}</div></div>`;
+                                                }" style="grid-area: ${
+                                                    rowindex + 1
+                                                } / ${columnindex + 1} / ${
+                                                    rowindex + 2
+                                                } / ${
+                                                    columnindex + 2
+                                                };${disabled.includes(index) ? ` cursor: not-allowed;` : ""}" data-row="${rowindex}" data-column="${columnindex}" data-index="${index}"><div class="marker">${marker}</div></div>`;
                                             })
                                             .join("");
                                     })
