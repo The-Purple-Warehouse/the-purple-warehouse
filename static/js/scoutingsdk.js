@@ -2964,11 +2964,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         )}"] > .component-locations-container > .grid > div.grid-item`
                     );
                     for (let i = 0; i < gridElements.length; i++) {
-                        if(!disabled.includes(i)) {
+                        if (!disabled.includes(i)) {
                             gridElements[i].onclick = async (e) => {
                                 let result = await _this.showLocationPopup(
                                     parseInt(
-                                        gridElements[i].getAttribute("data-index")
+                                        gridElements[i].getAttribute(
+                                            "data-index"
+                                        )
                                     ),
                                     options,
                                     checkNull(
@@ -3004,10 +3006,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ) {
                                         if (
                                             checkNull(
-                                                data.data[component.data.locations],
+                                                data.data[
+                                                    component.data.locations
+                                                ],
                                                 defaultValue.locations
-                                            ).filter((loc) => loc == index).length >
-                                            0
+                                            ).filter((loc) => loc == index)
+                                                .length > 0
                                         ) {
                                             element
                                                 .querySelector(
@@ -3032,7 +3036,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         let marker = "";
                                         if (component.marker != null) {
                                             if (
-                                                component.marker.type == "function"
+                                                component.marker.type ==
+                                                "function"
                                             ) {
                                                 let locs = checkNull(
                                                     data.data[
@@ -3180,9 +3185,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     rowindex + 1
                                                 } / ${columnindex + 1} / ${
                                                     rowindex + 2
-                                                } / ${
-                                                    columnindex + 2
-                                                };${disabled.includes(index) ? ` cursor: not-allowed;` : ""}" data-row="${rowindex}" data-column="${columnindex}" data-index="${index}"><div class="marker">${marker}</div></div>`;
+                                                } / ${columnindex + 2};${
+                                                    disabled.includes(index)
+                                                        ? ` cursor: not-allowed;`
+                                                        : ""
+                                                }" data-row="${rowindex}" data-column="${columnindex}" data-index="${index}"><div class="marker">${marker}</div></div>`;
                                             })
                                             .join("");
                                     })
