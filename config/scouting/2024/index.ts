@@ -19,7 +19,7 @@ export function categories() {
         { name: "Stage Time", identifier: "24-6" },
         { name: "Brick Time", identifier: "24-7" },
         { name: "Defense Time", identifier: "24-8" },
-        { name: "Drive Skill Rating", identifier: "24-9" },
+        { name: "Driver Skill Rating", identifier: "24-9" },
         { name: "Defense Skill Rating", identifier: "24-10" },
         { name: "Robot Speed Rating", identifier: "24-11" },
         { name: "Robot Stability Rating", identifier: "24-12" },
@@ -705,67 +705,6 @@ export function layout() {
                     ]
                 },
                 {
-                    type: "layout",
-                    direction: "columns",
-                    components: [
-                        {
-                            type: "pagebutton",
-                            label: "< Auto",
-                            page: 0
-                        },
-                        {
-                            type: "pagebutton",
-                            label: "Stage >",
-                            page: 2
-                        }
-                    ]
-                },
-                {
-                    type: "separator",
-                    style: "dashed"
-                },
-                {
-                    type: "header",
-                    label: "Notes (Optional)"
-                },
-                {
-                    type: "textbox",
-                    placeholder:
-                        "Enter notes here (and include team number if scouting practice matches)...",
-                    default: "",
-                    data: "comments"
-                },
-                {
-                    type: "layout",
-                    direction: "columns",
-                    components: [
-                        {
-                            type: "pagebutton",
-                            label: "< Auto",
-                            page: 0
-                        },
-                        {
-                            type: "pagebutton",
-                            label: "Stage >",
-                            page: 2
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            type: "layout",
-            direction: "rows",
-            components: [
-                {
-                    type: "title",
-                    label: {
-                        type: "function",
-                        definition: ((state) =>
-                            `STAGE (${state.teamNumber})`).toString()
-                    }
-                },
-                {
                     type: "checkbox",
                     label: "Spotlight",
                     default: false,
@@ -805,13 +744,13 @@ export function layout() {
                     components: [
                         {
                             type: "pagebutton",
-                            label: "< Teleop",
-                            page: 1
+                            label: "< Auto",
+                            page: 0
                         },
                         {
                             type: "pagebutton",
                             label: "Notes >",
-                            page: 3
+                            page: 2
                         }
                     ]
                 },
@@ -836,13 +775,13 @@ export function layout() {
                     components: [
                         {
                             type: "pagebutton",
-                            label: "< Teleop",
-                            page: 1
+                            label: "< Auto",
+                            page: 0
                         },
                         {
                             type: "pagebutton",
                             label: "Notes >",
-                            page: 3
+                            page: 2
                         }
                     ]
                 }
@@ -862,7 +801,7 @@ export function layout() {
                 },
                 {
                     type: "rating",
-                    label: "Drive Skill Rating",
+                    label: "Driver Skill Rating",
                     default: 0,
                     data: "24-9",
                     src: ["/img/star-outline.png", "/img/star-filled.png"]
@@ -916,13 +855,13 @@ export function layout() {
                     components: [
                         {
                             type: "pagebutton",
-                            label: "< Stage",
-                            page: 2
+                            label: "< Teleop",
+                            page: 1
                         },
                         {
                             type: "pagebutton",
                             label: "Send >",
-                            page: 4
+                            page: 3
                         }
                     ]
                 }
@@ -935,22 +874,22 @@ export function layout() {
                 {
                     type: "pagebutton",
                     label: "Upload (Online)",
-                    page: 5
+                    page: 4
                 },
                 {
                     type: "pagebutton",
                     label: "QR Code (Offline)",
-                    page: 6
+                    page: 5
                 },
                 {
                     type: "pagebutton",
                     label: "Copy Data (Offline)",
-                    page: 7
+                    page: 6
                 },
                 {
                     type: "pagebutton",
                     label: "< Notes",
-                    page: 3
+                    page: 2
                 }
             ]
         },
@@ -972,7 +911,7 @@ export function layout() {
                         {
                             type: "pagebutton",
                             label: "< Send",
-                            page: 4
+                            page: 3
                         },
                         {
                             type: "pagebutton",
@@ -1003,7 +942,7 @@ export function layout() {
                         {
                             type: "pagebutton",
                             label: "< Send",
-                            page: 4
+                            page: 3
                         },
                         {
                             type: "pagebutton",
@@ -1032,7 +971,7 @@ export function layout() {
                         {
                             type: "pagebutton",
                             label: "< Send",
-                            page: 4
+                            page: 3
                         },
                         {
                             type: "pagebutton",
@@ -1072,7 +1011,7 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 
 export function formatData(data, categories, teams) {
-    return `,match,team,alliance,leave,"ground pick-up","center line pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `,match,team,alliance,leave,"ground pick-up","center line pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
@@ -1128,7 +1067,7 @@ let parsedScoring = {
 };
 
 export function formatParsedData(data, categories, teams) {
-    return `,match,team,alliance,leave,"ground pick-up","center line pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","drive skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `,match,team,alliance,leave,"ground pick-up","center line pick-up","auto scoring","teleop scoring","stage level",spotlight,"stage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
