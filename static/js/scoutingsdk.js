@@ -1436,10 +1436,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         ? new Date(
                                                               parseInt(cell)
                                                           ).toLocaleString()
-                                                        : _this.escape(cell).replaceAll(
-                                                              "\\n",
-                                                              "<br>"
-                                                          )
+                                                        : _this
+                                                              .escape(cell)
+                                                              .replaceAll(
+                                                                  "\\n",
+                                                                  "<br>"
+                                                              )
                                                 }</td>`
                                         )
                                         .join("")}</tr>`;
