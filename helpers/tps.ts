@@ -3,8 +3,11 @@ import { sortedStringify } from "./utils";
 import TPSEntry from "../models/tpsEntry";
 
 export async function addEntry(data: any, serverTimestamp: number) {
-    let hash = crypto.createHash("sha256").update(sortedStringify(data)).digest("hex");
-    let entry = await getEntryByHash(hash) as any;
+    let hash = crypto
+        .createHash("sha256")
+        .update(sortedStringify(data))
+        .digest("hex");
+    let entry = (await getEntryByHash(hash)) as any;
     if (entry == null) {
         data.serverTimestamp = serverTimestamp;
         data.hash = hash;
