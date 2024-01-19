@@ -25,7 +25,14 @@ export function getEntries(query: any) {
     if (query == null || typeof query !== "object") {
         return Promise.resolve([]);
     }
-    return TPSEntry.find(query).lean();
+    const whitelist = ["metadata.event", "metadata.match.level", "metadata.match.number", "metadata.match.set", "metadata.bot", "metadata.scouter.team", "metadata.scouter.name", "metadata.scouter.app"];
+    let filter = {};
+    for (let key of Object.keys(query)) {
+        if (whitelist.includes(key) && (typeof query[key] === "string" || typeof query[key] === "number")) {
+            filter[key] = query[key];
+        }
+    }
+    return TPSEntry.find(filter).lean();
 }
 
 export function removeAll() {
