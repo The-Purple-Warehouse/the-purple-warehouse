@@ -25,7 +25,7 @@ export function getEntries(query: any) {
     if (query == null || typeof query !== "object") {
         return Promise.resolve([]);
     }
-    const whitelist = [
+    let whitelist = [
         "metadata.event",
         "metadata.match.level",
         "metadata.match.number",
