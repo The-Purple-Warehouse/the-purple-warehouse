@@ -1,16 +1,16 @@
 import mongoose from "../db";
 
 export interface key {
-    apiKey: string,
-    name: string,
-    team: string,
-    app: string,
-    scopes: string[],
-    expiration: number,
-    creation: number,
-    source: string,
-    live: boolean,
-    hashType: string
+    apiKey: string;
+    name: string;
+    team: string;
+    app: string;
+    scopes: string[];
+    expiration: number;
+    creation: number;
+    source: string;
+    live: boolean;
+    hashType: string;
 }
 
 export default mongoose.model(
@@ -38,12 +38,14 @@ export default mongoose.model(
         },
         expiration: Number,
         creation: Number,
-        source: { // "login flow" or "manual"
+        source: {
+            // "login flow" or "manual"
             required: true,
             type: String
         },
         live: Boolean,
-        hashType: { // "sha256"
+        hashType: {
+            // "sha256"
             required: true,
             type: String
         }

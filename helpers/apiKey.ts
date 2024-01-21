@@ -7,8 +7,14 @@ function ensureType(data: any): key | null {
     if (data == null || typeof data !== "object") {
         return null;
     }
-    if (typeof data.name !== "string" || typeof data.team !== "string" || typeof data.app !== "string"
-        || !Array.isArray(data.scopes) || typeof data.expiration !== "number" || typeof data.source !== "string") {
+    if (
+        typeof data.name !== "string" ||
+        typeof data.team !== "string" ||
+        typeof data.app !== "string" ||
+        !Array.isArray(data.scopes) ||
+        typeof data.expiration !== "number" ||
+        typeof data.source !== "string"
+    ) {
         return null;
     }
     let obj: key = {} as key;
@@ -49,12 +55,12 @@ export async function addAPIKey(data: any) {
         console.error(err);
         return null;
     }
-    return { key: unhashed, ...apiKey};
+    return { key: unhashed, ...apiKey };
 }
 
 export function enableAPIKey(key: string) {
     return APIKey.findOneAndUpdate(
-        { apiKey: hashKey(key, "sha256") }, 
+        { apiKey: hashKey(key, "sha256") },
         { live: true },
         { new: true }
     );
@@ -62,17 +68,30 @@ export function enableAPIKey(key: string) {
 
 export function disableAPIKey(key: string) {
     return APIKey.findOneAndUpdate(
-        { apiKey: hashKey(key, "sha256") }, 
+        { apiKey: hashKey(key, "sha256") },
         { live: false },
         { new: true }
     );
 }
 
-export async function verifyAPIKey(key: string, expiration: number, scouter: string, app: string, team: string, scopes: string[]) {
+export async function verifyAPIKey(
+    key: string,
+    expiration: number,
+    scouter: string,
+    app: string,
+    team: string,
+    scopes: string[]
+) {
     if (key == null) {
         return false;
     }
-    const apiKey = await APIKey.findOne({ apiKey: hashKey(key, "sha256"), expiration, scouter, app, team });
+    const apiKey = await APIKey.findOne({
+        apiKey: hashKey(key, "sha256"),
+        expiration,
+        scouter,
+        app,
+        team
+    });
     if (apiKey == null) {
         return false;
     }
