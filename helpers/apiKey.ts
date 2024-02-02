@@ -7,8 +7,14 @@ function ensureType(data: any): APIKeyType | null {
     if (data == null || typeof data !== "object") {
         return null;
     }
-    if (typeof data.name !== "string" || typeof data.team !== "string" || typeof data.app !== "string"
-        || !Array.isArray(data.scopes) || typeof data.expiration !== "number" || typeof data.source !== "string") {
+    if (
+        typeof data.name !== "string" ||
+        typeof data.team !== "string" ||
+        typeof data.app !== "string" ||
+        !Array.isArray(data.scopes) ||
+        typeof data.expiration !== "number" ||
+        typeof data.source !== "string"
+    ) {
         return null;
     }
     let obj: APIKeyType = {} as APIKeyType;
@@ -59,7 +65,7 @@ export async function addAPIKey(rawOptions: any) {
 
 export async function enableAPIKey(identifier: string) {
     await APIKey.findOneAndUpdate(
-        { apiIdentifier: identifier }, 
+        { apiIdentifier: identifier },
         { live: true }
     );
     return true;
@@ -67,17 +73,29 @@ export async function enableAPIKey(identifier: string) {
 
 export async function disableAPIKey(identifier: string) {
     await APIKey.findOneAndUpdate(
-        { apiIdentifier: identifier }, 
+        { apiIdentifier: identifier },
         { live: false }
     );
     return true;
 }
 
-export async function verifyAPIKey(key: string, scouter: string, app: string, team: string, scopes: string[]) {
+export async function verifyAPIKey(
+    key: string,
+    scouter: string,
+    app: string,
+    team: string,
+    scopes: string[]
+) {
     if (key == null) {
         return false;
     }
-    const apiKey = (await APIKey.findOne({ apiKey: hashKey(key, "sha256"), name: scouter, app, team, hashType: "sha256"})) as any;
+    const apiKey = (await APIKey.findOne({
+        apiKey: hashKey(key, "sha256"),
+        name: scouter,
+        app,
+        team,
+        hashType: "sha256"
+    })) as any;
     if (apiKey == null) {
         return false;
     }
