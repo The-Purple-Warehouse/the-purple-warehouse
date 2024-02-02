@@ -1,7 +1,8 @@
 import mongoose from "../db";
 
-export interface key {
+export interface APIKeyType {
     apiKey: string,
+    apiIdentifier: string,
     name: string,
     team: string,
     app: string,
@@ -17,6 +18,10 @@ export default mongoose.model(
     "APIKey",
     new mongoose.Schema({
         apiKey: {
+            required: true,
+            type: String
+        },
+        apiIdentifier: {
             required: true,
             type: String
         },
@@ -38,7 +43,7 @@ export default mongoose.model(
         },
         expiration: Number,
         creation: Number,
-        source: { // "login flow" or "manual"
+        source: { // "login" | "manual"
             required: true,
             type: String
         },

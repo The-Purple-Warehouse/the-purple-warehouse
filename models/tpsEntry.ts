@@ -28,6 +28,10 @@ export default mongoose.model(
             type: mongoose.Schema.Types.Mixed
         },
         serverTimestamp: Number,
-        hash: String
+        hash: String,
+        privacy: {
+            required: false,
+            type: mongoose.Schema.Types.Mixed
+        }
     })
 );
