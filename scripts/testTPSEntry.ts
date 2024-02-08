@@ -4,8 +4,10 @@ import {
     getEntryByHash,
     addEntry,
     removeAll,
-    getAll
+    getAll,
+    retrieveEntry,
 } from "../helpers/tps";
+import { TPSEntryType, TPSPrivacyRule } from "../models/tpsEntry";
 
 const example = JSON.parse(
     JSON.stringify({
@@ -48,12 +50,57 @@ const example = JSON.parse(
             "brick-time": 1500,
             "defense-time": 6745,
             "stage-time-2024": 12815
-        }
+        },
+        privacy: [
+            {
+                path: "abilities.teleop-stage-level-2024",
+                private: true,
+                teams: ["254", "1678"],
+                type: "excluded"
+            },
+            {
+                path: "metadata.scouter.name",
+                private: true,
+                type: "redacted"
+            },
+            {
+                path: "metadata.event",
+                private: true
+            },
+            {
+                path: "metadata.match.level",
+                private: true,
+                type: "scrambled"
+            }
+        ]
     })
 );
 
 let example2 = JSON.parse(JSON.stringify(example));
 example2.metadata.event = "2023camb";
+
+async function testPrivacy() {
+    await removeAll();
+    const timestamp = 1711729092182;
+    let newEntry = await addEntry(example, timestamp);
+    console.log("\nPrivacy Testing ...\n-------------------");
+    console.log(`Added entry: ${newEntry.hash}, ${example.metadata.event}`);
+    console.assert(newEntry.serverTimestamp == timestamp, "Example timestamps do not match: " + newEntry.serverTimestamp + " vs " + timestamp);
+    console.assert(newEntry.hash != null, "Example entry's hash is null");
+    let entries = await getEntries({ "metadata.event": example.metadata.event });
+    console.assert(entries.length == 1, "Entries getEntries is not 1");
+    console.assert((entries[0] as any).hash == (newEntry as any).hash, "Entries from getEntries is not the same as entry from getEntryByHash");
+
+    let tpsEntry: TPSEntryType = (await getAll())[0] as any as TPSEntryType;
+    console.assert(tpsEntry != null, "Entry from getAll is null");
+    const returnedEntry = retrieveEntry(tpsEntry, "1072");
+    console.assert(returnedEntry.metadata.scouter.name == "[redacted for privacy]", "Scouter name is not redacted");
+    console.assert(returnedEntry.abilities["teleop-stage-level-2024"] == undefined, "Teleop stage level is not excluded");
+    console.assert(returnedEntry.metadata.event == undefined, "Event is not redacted");
+    console.assert(returnedEntry.metadata.match.level != undefined, "Match level is not scrambled");
+    console.assert(returnedEntry.privacy == null, "Privacy rules are not removed");
+    console.log(returnedEntry);
+}
 
 async function testExampleEntry(ex) {
     const timestamp = 1711729092182;
@@ -91,6 +138,7 @@ async function test() {
     );
     await testGetEntry(entry.hash, { "metadata.event": "2024camb" });
     await testGetEntry(entry2.hash, { "metadata.event": "2023camb" });
+    await testPrivacy();
 }
 
 test();
