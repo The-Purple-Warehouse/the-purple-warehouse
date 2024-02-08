@@ -5,7 +5,7 @@ import {
     addEntry,
     removeAll,
     getAll,
-    retrieveEntry,
+    retrieveEntry
 } from "../helpers/tps";
 import { TPSEntryType, TPSPrivacyRule } from "../models/tpsEntry";
 
@@ -85,20 +85,46 @@ async function testPrivacy() {
     let newEntry = await addEntry(example, timestamp);
     console.log("\nPrivacy Testing ...\n-------------------");
     console.log(`Added entry: ${newEntry.hash}, ${example.metadata.event}`);
-    console.assert(newEntry.serverTimestamp == timestamp, "Example timestamps do not match: " + newEntry.serverTimestamp + " vs " + timestamp);
+    console.assert(
+        newEntry.serverTimestamp == timestamp,
+        "Example timestamps do not match: " +
+            newEntry.serverTimestamp +
+            " vs " +
+            timestamp
+    );
     console.assert(newEntry.hash != null, "Example entry's hash is null");
-    let entries = await getEntries({ "metadata.event": example.metadata.event });
+    let entries = await getEntries({
+        "metadata.event": example.metadata.event
+    });
     console.assert(entries.length == 1, "Entries getEntries is not 1");
-    console.assert((entries[0] as any).hash == (newEntry as any).hash, "Entries from getEntries is not the same as entry from getEntryByHash");
+    console.assert(
+        (entries[0] as any).hash == (newEntry as any).hash,
+        "Entries from getEntries is not the same as entry from getEntryByHash"
+    );
 
     let tpsEntry: TPSEntryType = (await getAll())[0] as any as TPSEntryType;
     console.assert(tpsEntry != null, "Entry from getAll is null");
     const returnedEntry = retrieveEntry(tpsEntry, "1072");
-    console.assert(returnedEntry.metadata.scouter.name == "[redacted for privacy]", "Scouter name is not redacted");
-    console.assert(returnedEntry.abilities["teleop-stage-level-2024"] == undefined, "Teleop stage level is not excluded");
-    console.assert(returnedEntry.metadata.event == undefined, "Event is not redacted");
-    console.assert(returnedEntry.metadata.match.level != undefined, "Match level is not scrambled");
-    console.assert(returnedEntry.privacy == null, "Privacy rules are not removed");
+    console.assert(
+        returnedEntry.metadata.scouter.name == "[redacted for privacy]",
+        "Scouter name is not redacted"
+    );
+    console.assert(
+        returnedEntry.abilities["teleop-stage-level-2024"] == undefined,
+        "Teleop stage level is not excluded"
+    );
+    console.assert(
+        returnedEntry.metadata.event == undefined,
+        "Event is not redacted"
+    );
+    console.assert(
+        returnedEntry.metadata.match.level != undefined,
+        "Match level is not scrambled"
+    );
+    console.assert(
+        returnedEntry.privacy == null,
+        "Privacy rules are not removed"
+    );
     console.log(returnedEntry);
 }
 

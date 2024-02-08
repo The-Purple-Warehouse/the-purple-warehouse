@@ -1,15 +1,15 @@
 import mongoose from "../db";
 
 export interface TPSEntryType {
-    metadata: any,
-    abilities: any,
-    counters: any,
-    data: any,
-    ratings: any,
-    timers: any,
-    serverTimestamp: number,
-    hash: string,
-    privacy: TPSPrivacyRule[]
+    metadata: any;
+    abilities: any;
+    counters: any;
+    data: any;
+    ratings: any;
+    timers: any;
+    serverTimestamp: number;
+    hash: string;
+    privacy: TPSPrivacyRule[];
 }
 
 export interface TPSPrivacyRule {
