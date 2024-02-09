@@ -31,6 +31,10 @@ function scramble(value: any) {
         .substring(0, 16);
 }
 
+function cloneObject(value: any) {
+    return JSON.parse(JSON.stringify(value));
+}
+
 export function retrieveEntry(
     tps: TPSEntryType,
     teamNumber: string
@@ -49,6 +53,8 @@ export function retrieveEntry(
     });
 
     const privacyRules = validatePrivacyRules(rules);
+
+    const tpsPrivate = cloneObject(tps);
 
     privacyRules.forEach((rule) => {
         let pathSegments = rule.path.split(".");
@@ -71,20 +77,20 @@ export function retrieveEntry(
         ) {
             switch (rule.type) {
                 case "scrambled":
-                    current[key] = scramble(current[key]);
+                    tpsPrivate[key] = scramble(current[key]);
                     break;
                 case "redacted":
-                    current[key] = "[redacted for privacy]";
+                    tpsPrivate[key] = "[redacted for privacy]";
                     break;
                 case "excluded":
-                    delete current[key];
+                    delete tpsPrivate[key];
                     break;
             }
         }
     });
 
-    if (tps.privacy) delete tps.privacy; // do not pass the privacy rules to the requester
-    return tps;
+    if (tpsPrivate.privacy) delete tpsPrivate.privacy; // do not pass the privacy rules to the requester
+    return tpsPrivate;
 }
 
 export async function addEntry(data: any, serverTimestamp: number) {
