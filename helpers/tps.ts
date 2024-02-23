@@ -24,7 +24,7 @@ function validatePrivacyRules(value: any): TPSPrivacyRule[] {
     });
 }
 
-function scramble(value: any) {
+function scramble(value: any, length: number) {
     if (value == null || typeof value !== "string") {
         return null;
     }
@@ -32,7 +32,7 @@ function scramble(value: any) {
         .createHmac("sha256", config.auth.scoutingKeys[1])
         .update(value)
         .digest("hex")
-        .substring(0, 16);
+        .substring(0, length);
 }
 
 function cloneObject(value: any) {
@@ -46,8 +46,8 @@ export function retrieveEntry(
     const rules = checkNull(tps.privacy, []); // privacy rules are stored with the data
 
     const defaultRules: TPSPrivacyRule[] = [
-        { path: "data.notes", private: true, type: "redacted" },
-        { path: "metadata.scouter.name", private: true, type: "scrambled" }
+        { path: "data.notes", private: true, type: "redacted", detail: "[redacted for privacy]" },
+        { path: "metadata.scouter.name", private: true, type: "scrambled", detail: 16 }
     ];
 
     defaultRules.forEach((defaultRule) => {
@@ -83,10 +83,10 @@ export function retrieveEntry(
         ) {
             switch (rule.type) {
                 case "scrambled":
-                    tpsPrivateCurrent[key] = scramble(current[key]);
+                    tpsPrivateCurrent[key] = scramble(current[key], checkNull(rule.detail, 16));
                     break;
                 case "redacted":
-                    tpsPrivateCurrent[key] = "[redacted for privacy]";
+                    tpsPrivateCurrent[key] = checkNull(rule.detail, "[redacted for privacy]");
                     break;
                 case "excluded":
                     delete tpsPrivateCurrent[key];

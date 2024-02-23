@@ -17,6 +17,7 @@ export interface TPSPrivacyRule {
     private?: boolean;
     teams?: string[];
     type?: "scrambled" | "redacted" | "excluded";
+    detail?: any;
 }
 
 export default mongoose.model(
