@@ -3,6 +3,10 @@ import { sortedStringify } from "./utils";
 import TPSEntry, { TPSEntryType, TPSPrivacyRule } from "../models/tpsEntry";
 import config from "../config";
 
+function checkNull(object1, object2) {
+    return object1 !== null && object1 !== undefined ? object1 : object2;
+}
+
 function validatePrivacyRules(value: any): TPSPrivacyRule[] {
     if (!Array.isArray(value)) {
         return [];
@@ -13,9 +17,9 @@ function validatePrivacyRules(value: any): TPSPrivacyRule[] {
         }
         return {
             path: rule.path,
-            private: rule.private ?? false, // default to false
-            teams: rule.teams ?? [], // default to empty array
-            type: rule.type ?? "excluded" // default to "excluded"
+            private: checkNull(rule.private, false), // default to false
+            teams: checkNull(rule.teams, []), // default to empty array
+            type: checkNull(rule.type, "excluded") // default to "excluded"
         };
     });
 }
@@ -39,7 +43,7 @@ export function retrieveEntry(
     tps: TPSEntryType,
     teamNumber: string
 ): TPSEntryType {
-    const rules = tps.privacy ?? []; // privacy rules are stored with the data
+    const rules = checkNull(tps.privacy, []); // privacy rules are stored with the data
 
     const defaultRules: TPSPrivacyRule[] = [
         { path: "data.notes", private: true, type: "redacted" },
