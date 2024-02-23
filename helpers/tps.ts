@@ -51,7 +51,7 @@ export function retrieveEntry(
     ];
 
     defaultRules.forEach((defaultRule) => {
-        if (!rules.some((rule) => defaultRule.path.startsWith(rule.path))) {
+        if (!rules.some((rule) => defaultRule.path == rule.path || defaultRule.path.startsWith(`${rule.path}.`))) {
             rules.push(defaultRule);
         }
     });
