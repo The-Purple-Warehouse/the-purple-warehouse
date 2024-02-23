@@ -47,7 +47,7 @@ export function retrieveEntry(
     ];
 
     defaultRules.forEach((defaultRule) => {
-        if (!rules.some((rule) => rule.path === defaultRule.path)) {
+        if (!rules.some((rule) => defaultRule.path.startsWith(rule.path))) {
             rules.push(defaultRule);
         }
     });
@@ -59,15 +59,17 @@ export function retrieveEntry(
     privacyRules.forEach((rule) => {
         let pathSegments = rule.path.split(".");
         let current: any = tps;
+        let tpsPrivateCurrent: any = tpsPrivate;
         for (let i = 0; i < pathSegments.length - 1; ++i) {
-            if (current[pathSegments[i]] === undefined) {
+            if (current[pathSegments[i]] === undefined || tpsPrivateCurrent[currentSegments[i]] === undefined) {
                 return;
             }
             current = current[pathSegments[i]];
+            tpsPrivateCurrent = tpsPrivateCurrent[pathSegments[i]];
         }
 
         const key = pathSegments[pathSegments.length - 1];
-        if (current[key] === undefined) {
+        if (current[key] === undefined || tpsPrivateCurrent[key] === undefined) {
             return;
         }
 
@@ -77,13 +79,13 @@ export function retrieveEntry(
         ) {
             switch (rule.type) {
                 case "scrambled":
-                    tpsPrivate[key] = scramble(current[key]);
+                    tpsPrivateCurrent[key] = scramble(current[key]);
                     break;
                 case "redacted":
-                    tpsPrivate[key] = "[redacted for privacy]";
+                    tpsPrivateCurrent[key] = "[redacted for privacy]";
                     break;
                 case "excluded":
-                    delete tpsPrivate[key];
+                    delete tpsPrivateCurrent[key];
                     break;
             }
         }
