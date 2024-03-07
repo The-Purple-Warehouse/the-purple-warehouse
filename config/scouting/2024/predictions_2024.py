@@ -1,3 +1,29 @@
+'''
+python predictions_2024.py
+
+    --event         tba/frc event key
+    --csv           filename of tpw data
+    --baseFilePath  base filesystem path
+    --b1            blue team 1
+    --b2            blue team 2
+    --b3            blue team 3
+    --r1            red team 1
+    --r2            red team 2
+    --r3            red team 3
+    --match         the match number up to which data should be used
+
+tba cached data must be in file named: [event]-tba.json
+
+stores prediction in json file:
+
+    filename: [event]-[r1]-[r2]-[r3]-[b1]-[b2]-[b3]-prediction.json
+
+caches parsed data to json file:
+
+    filename:   parsed_tpw_data_[event].json
+'''
+
+
 import numpy as np
 from collections import OrderedDict
 import json
@@ -191,6 +217,7 @@ def getData():
         uptime = list()
         avg_auto_points = list()
         avg_tele_points = list()
+        matches = {}
         if os.path.exists(tpw_path):
             with open(tpw_path, "r") as file:
                 TPW_data = csv.DictReader(file)
@@ -198,6 +225,7 @@ def getData():
                     if x['team'] == str(team) and int(x['match']) <= match_num:
                         auto_pieces = x['auto scoring'][1:len(x['auto scoring']) - 1].split(", ")
                         tele_pieces = x['teleop scoring'][1:len(x['teleop scoring']) - 1].split(", ")
+                        game_pieces = auto_pieces + tele_pieces
                         agps.append(auto_pieces)
                         tgps.append(tele_pieces)
 
@@ -217,7 +245,12 @@ def getData():
                         stab.append(int(x["stability"]))
                         inta.append(int(x["intake consistency"]))
                         driver.append(int(x["driver skill"]))
-                        uptime.append(153 - int(x["brick time"]))
+                        uptime.append(153000 - int(x["brick time"]))
+
+                        try:
+                            matches[x['match']][(x[''])] = game_pieces
+                        except:
+                            matches[x['match']] = {x['']: game_pieces}
 
                 for i in range(0, len(agps)):
                     for j in range(0, len(agps[i])):
@@ -267,15 +300,17 @@ def getData():
                 data_tpw = OrderedDict()
                 data_tpw['avg-tele'] = avg(avg_tele_points)
                 data_tpw['avg-auto'] = avg(avg_auto_points)
+                data_tpw['avg-stage'] = avg(tstpts)
                 data_tpw['avg-def'] = avg(defe)
                 data_tpw['avg-driv'] = avg(driver)
                 data_tpw['avg-speed'] = avg(speed)
                 data_tpw['avg-stab'] = avg(stab)
                 data_tpw['avg-inta'] = avg(inta)
                 data_tpw['avg-upt'] = avg(uptime)
+                data_tpw['matches'] = matches
                 data_tpw['tpw-std'] = std(avg_auto_points) + std(avg_tele_points) + std(tstpts)
-                data_tpw["tpw-score"] = data_tpw['avg-auto'] + data_tpw['avg-tele'] + avg(tstpts)
-                parsed_tpw_data[team] = data_tpw # all team data stored to parsed_tpw_data OrderedDict
+                data_tpw["tpw-score"] = data_tpw['avg-auto'] + data_tpw['avg-tele'] + data_tpw['avg-stage']
+                parsed_tpw_data[team] = data_tpw #all team data stored to parsed_tpw_data OrderedDict
         else:
             raise Exception("Could not find TPW file")
 
@@ -295,6 +330,7 @@ if os.path.exists(base + 'parsed_tpw_data_'+event+'.json'):
             parsed_tpw_data = getData()
 else:
     parsed_tpw_data = getData()
+
 
 def tba_predict(b1, b2, b3, r1, r2, r3):
     b1 = str(b1)
@@ -404,8 +440,8 @@ def predict(b1, b2, b3, r1, r2, r3):
     rs2 = tpw["red-predicted"]
     rs3 = tpw["rp"]
 
-    bp = (bs1 - rs1) + (bs2 - rs2) + 5*(bs3 - rs3)
-    rp = (rs1 - bs1) + (rs2 - bs2) + 5*(rs3 - bs3)
+    bp = bs1 + bs2 + 5*(bs3 - rs3)
+    rp = rs1 + rs2 + 5*(rs3 - bs3)
 
     if bp > rp:
         winner = 'blue'
@@ -415,7 +451,7 @@ def predict(b1, b2, b3, r1, r2, r3):
     return {'winner': winner, 'blue': bp, 'red': rp}
 
 results = predict(args["b1"], args["b2"], args["b3"], args["r1"], args["r2"], args["r3"])
-print(results)
+#print(results)
 
 with open(base + event + "-" + args["r1"] + "-" + args["r2"] + "-" + args["r3"] + "-" + args["b1"] + "-" + args["b2"] + "-" + args["b3"] + "-prediction.json", "w") as f:
     json.dump(results, f)
