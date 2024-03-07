@@ -23,6 +23,7 @@ import resourcesRouter from "./routers/resources";
 import resourcesAPIRouter from "./routers/api/resources";
 import scoutingRouter from "./routers/scouting";
 import scoutingAPIRouter from "./routers/api/scouting";
+import tpsAPIRouter from "./routers/api/tps";
 
 const app = new Koa();
 
@@ -120,6 +121,9 @@ if (config.features.includes("resources")) {
 if (config.features.includes("scouting")) {
     router.use("/scouting", scoutingRouter.routes());
     router.use("/api/v1/scouting", scoutingAPIRouter.routes());
+}
+if(config.features.includes("tps")) {
+    router.use("/api/v1/tps", tpsAPIRouter.routes());
 }
 
 function formatNumber(num) {

@@ -3,17 +3,24 @@ import { sortedStringify } from "./utils";
 import TPSEntry, { TPSEntryType, TPSPrivacyRule } from "../models/tpsEntry";
 import config from "../config";
 
+const interfaces = ["abilities", "counters", "data", "metadata", "ratings", "timers"];
+const serverInterfaces = ["abilities", "counters", "data", "metadata", "ratings", "timers", "server"];
+
 function checkNull(object1, object2) {
     return object1 !== null && object1 !== undefined ? object1 : object2;
 }
 
-function validatePrivacyRules(value: any): TPSPrivacyRule[] {
+function validatePrivacyRules(value: any, useServerInterfaces: boolean = false): TPSPrivacyRule[] {
     if (!Array.isArray(value)) {
         return [];
     }
+    let interfacesList = interfaces;
+    if(useServerInterfaces) {
+        interfacesList = serverInterfaces;
+    }
     return value.map((rule) => {
-        if (typeof rule.path !== "string") {
-            throw new Error("Invalid 'path' in privacy rule.");
+        if (typeof rule.path !== "string" || !interfacesList.includes(rule.path.split(".")[0])) {
+            return null;
         }
         return {
             path: rule.path,
@@ -21,7 +28,7 @@ function validatePrivacyRules(value: any): TPSPrivacyRule[] {
             teams: checkNull(rule.teams, []), // default to empty array
             type: checkNull(rule.type, "excluded") // default to "excluded"
         };
-    });
+    }).filter(rule => rule != null);
 }
 
 function scramble(value: any, length: number) {
@@ -37,6 +44,20 @@ function scramble(value: any, length: number) {
 
 function cloneObject(value: any) {
     return JSON.parse(JSON.stringify(value));
+}
+
+export function format(tps: any, useServerInterfaces: boolean = false) {
+    let interfacesList = interfaces;
+    if(useServerInterfaces) {
+        interfacesList = serverInterfaces;
+    }
+    let formatted = {};
+    for(let i = 0; i < interfacesList.length; i++) {
+        if(tps[interfacesList[i]] != null) {
+            formatted[interfacesList[i]] = tps[interfacesList[i]];
+        }
+    }
+    return formatted;
 }
 
 export function retrieveEntry(
@@ -56,9 +77,13 @@ export function retrieveEntry(
         }
     });
 
-    const privacyRules = validatePrivacyRules(rules);
+    const privacyRules = validatePrivacyRules(rules, true);
 
-    const tpsPrivate = cloneObject(tps);
+    const tpsPrivate = format(cloneObject(tps), false);
+    tpsPrivate.server = {
+        timestamp: tps.serverTimestamp,
+        accuracy: tps.accuracy
+    }
 
     privacyRules.forEach((rule) => {
         let pathSegments = rule.path.split(".");
@@ -95,7 +120,6 @@ export function retrieveEntry(
         }
     });
 
-    if (tpsPrivate.privacy) delete tpsPrivate.privacy; // do not pass the privacy rules to the requester
     return tpsPrivate;
 }
 
@@ -116,6 +140,32 @@ export async function addEntry(data: any, serverTimestamp: number) {
 
 export function getEntryByHash(hash: string) {
     return TPSEntry.findOne({ hash });
+}
+
+export async function entryExistsByHash(hash: string) {
+    return (await getEntryByHash(hash)) != null;
+}
+
+export async function getLatestMatch(event: string) {
+    let entries = (await TPSEntry.find({ "metadata.event": event })
+        .sort({ "metadata.match.number": -1 })
+        .lean()) as any;
+    if (entries != null) {
+        entries = entries.filter(entry => entry != null && entry.metadata != null && entry.metadata.match != null);
+        let finals = entries.filter(entry => entry.metadata.match.level == "f");
+        let semifinals = entries.filter(entry => entry.metadata.match.level == "sf");
+        let quals = entries.filter(entry => entry.metadata.match.level == "qm");
+        if(finals.length > 0) {
+            return finals[0].metadata.match;
+        } else if(semifinals.length > 0) {
+            semifinals = semifinals.sort((a, b) => b.metadata.match.set - a.metadata.match.set);
+            return semifinals[0].metadata.match;
+        } else if(quals.length > 0) {
+            return quals[0].metadata.match;
+        }
+    } else {
+        return {level: "qm", number: 0, set: 1};
+    }
 }
 
 export function getEntries(query: any) {

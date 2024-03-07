@@ -52,6 +52,7 @@ export async function addAPIKey(rawOptions: any) {
     options.hashType = "sha256";
     options.apiKey = hashKey(unhashed, options.hashType);
     options.apiIdentifier = generateAPIIdentifier();
+    options.name = options.name || `${options.app} (${options.apiIdentifier.split("-")[0]})`;
 
     let apiKey;
     try {
@@ -88,33 +89,40 @@ export async function verifyAPIKey(
     scopes: string[]
 ) {
     if (key == null) {
-        return false;
+        return {verified: false};
     }
-    const apiKey = (await APIKey.findOne({
+    let query = {
         apiKey: hashKey(key, "sha256"),
-        username,
-        app,
-        team,
         hashType: "sha256"
-    })) as any;
+    };
+    if(username) {
+        query.username = username;
+    }
+    if(app) {
+        query.app = app;
+    }
+    if(team) {
+        query.team = team;
+    }
+    const apiKey = (await APIKey.findOne(query)) as any;
     if (apiKey == null) {
-        return false;
+        return {verified: false};
     }
     if (apiKey.expiration < Date.now()) {
-        return false;
+        return {verified: false};
     }
     if (!apiKey.live) {
-        return false;
+        return {verified: false};
     }
     if (!scopes || !Array.isArray(scopes)) {
-        return false;
+        return {verified: false};
     }
     for (let scope of scopes) {
         if (!apiKey.scopes.includes(scope)) {
-            return false;
+            return {verified: false};
         }
     }
-    return true;
+    return {verified: true, key: apiKey};
 }
 
 export function removeAll() {

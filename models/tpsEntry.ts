@@ -48,6 +48,10 @@ export default mongoose.model(
             type: mongoose.Schema.Types.Mixed
         },
         serverTimestamp: Number,
+        accuracy: {
+            required: false,
+            type: Number
+        }
         hash: String,
         privacy: {
             required: false,
