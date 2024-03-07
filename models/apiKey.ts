@@ -4,6 +4,7 @@ export interface APIKeyType {
     apiKey: string;
     apiIdentifier: string;
     name: string;
+    username: string;
     team: string;
     app: string;
     scopes: string[];
@@ -26,6 +27,10 @@ export default mongoose.model(
             type: String
         },
         name: {
+            required: true,
+            type: String
+        },
+        username: {
             required: true,
             type: String
         },

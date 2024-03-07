@@ -19,6 +19,7 @@ function ensureType(data: any): APIKeyType | null {
     }
     let obj: APIKeyType = {} as APIKeyType;
     obj.name = data.name;
+    obj.username = data.username;
     obj.team = data.team;
     obj.app = data.app;
     obj.scopes = data.scopes;
@@ -81,7 +82,7 @@ export async function disableAPIKey(identifier: string) {
 
 export async function verifyAPIKey(
     key: string,
-    scouter: string,
+    username: string,
     app: string,
     team: string,
     scopes: string[]
@@ -91,7 +92,7 @@ export async function verifyAPIKey(
     }
     const apiKey = (await APIKey.findOne({
         apiKey: hashKey(key, "sha256"),
-        name: scouter,
+        username,
         app,
         team,
         hashType: "sha256"

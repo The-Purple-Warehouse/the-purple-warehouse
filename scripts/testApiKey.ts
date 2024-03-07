@@ -10,12 +10,13 @@ import {
 } from "../helpers/apiKey";
 
 const keyOptions = {
-    name: "Daniel Gergov",
+    username: "guest",
     team: "1072",
     app: "TPW",
     scopes: ["request", "write"],
     expiration: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    source: "manual"
+    source: "manual",
+    name: "test"
 };
 
 async function testGenerateKey() {
@@ -47,7 +48,7 @@ async function testKeyVerification() {
     assert(
         !(await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             properties.scopes.concat(["everything"])
@@ -57,7 +58,7 @@ async function testKeyVerification() {
     assert(
         !(await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             properties.scopes.concat(["everything, read"])
@@ -69,7 +70,7 @@ async function testKeyVerification() {
     assert(
         await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             properties.scopes
@@ -79,7 +80,7 @@ async function testKeyVerification() {
     assert(
         await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             [properties.scopes[0]]
@@ -89,7 +90,7 @@ async function testKeyVerification() {
     assert(
         await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             [properties.scopes[1]]
@@ -101,7 +102,7 @@ async function testKeyVerification() {
     assert(
         await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             []
@@ -114,7 +115,7 @@ async function testKeyVerification() {
     assert(
         !(await verifyAPIKey(
             unhashedKey,
-            properties.name,
+            properties.username,
             properties.app,
             properties.team,
             properties.scopes
