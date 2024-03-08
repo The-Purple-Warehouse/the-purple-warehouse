@@ -10,7 +10,7 @@ function checkNull(object1, object2) {
     return object1 !== null && object1 !== undefined ? object1 : object2;
 }
 
-function validatePrivacyRules(value: any, useServerInterfaces: boolean = false): TPSPrivacyRule[] {
+export function validatePrivacyRules(value: any, useServerInterfaces: boolean = false): TPSPrivacyRule[] {
     if (!Array.isArray(value)) {
         return [];
     }
@@ -61,9 +61,9 @@ export function format(tps: any, useServerInterfaces: boolean = false) {
 }
 
 export function retrieveEntry(
-    tps: TPSEntryType,
+    tps: any,
     teamNumber: string
-): TPSEntryType {
+): any {
     const rules = checkNull(tps.privacy, []); // privacy rules are stored with the data
 
     const defaultRules: TPSPrivacyRule[] = [
@@ -79,7 +79,7 @@ export function retrieveEntry(
 
     const privacyRules = validatePrivacyRules(rules, true);
 
-    const tpsPrivate = format(cloneObject(tps), false);
+    const tpsPrivate = format(cloneObject(tps), false) as any;
     tpsPrivate.server = {
         timestamp: tps.serverTimestamp,
         accuracy: tps.accuracy
@@ -90,7 +90,7 @@ export function retrieveEntry(
         let current: any = tps;
         let tpsPrivateCurrent: any = tpsPrivate;
         for (let i = 0; i < pathSegments.length - 1; ++i) {
-            if (current[pathSegments[i]] === undefined || tpsPrivateCurrent[currentSegments[i]] === undefined) {
+            if (current[pathSegments[i]] === undefined || tpsPrivateCurrent[pathSegments[i]] === undefined) {
                 return;
             }
             current = current[pathSegments[i]];

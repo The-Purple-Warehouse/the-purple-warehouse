@@ -8,6 +8,7 @@ export interface TPSEntryType {
     ratings: any;
     timers: any;
     serverTimestamp: number;
+    accuracy: number;
     hash: string;
     privacy: TPSPrivacyRule[];
 }
@@ -51,7 +52,7 @@ export default mongoose.model(
         accuracy: {
             required: false,
             type: Number
-        }
+        },
         hash: String,
         privacy: {
             required: false,

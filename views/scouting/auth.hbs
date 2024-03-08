@@ -10,7 +10,7 @@
   <main>
     <form autocomplete="off" method="POST" action="/scouting/auth/generate/{{ details.original }}">
       <div class="login-window">
-        {{#if auth.valid}}
+        {{#if valid}}
           <h1>Authorize {{ details.site }}</h1>
           <p>By continuing, you authorize {{ details.site }} to perform the following actions through your account:<br>
             <br>
@@ -19,7 +19,13 @@
             {{/each}}
           </p>
           <button id="submit" type="submit">Confirm</button><br>
-          <button id="cancel" onclick="window.location.href = '{{ details.redirect }}'">Cancel</button><br>
+          <button id="cancel" onclick="">Cancel</button><br>
+          <script>
+            document.getElementById("cancel").addEventListener("click", function (e) {
+              e.preventDefault();
+              window.location.href = decodeURI("{{{ details.redirectEmpty }}}");
+            });
+          </script>
         {{else}}
           <h1>Invalid Request</h1>
           <p>Please go back and try again.</p>

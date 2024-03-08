@@ -51,7 +51,8 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
-            properties.scopes.concat(["everything"])
+            properties.scopes.concat(["everything"]),
+            []
         )),
         "Verification passed with extra scopes"
     );
@@ -61,7 +62,8 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
-            properties.scopes.concat(["everything, read"])
+            properties.scopes.concat(["everything, read"]),
+            []
         )),
         "Verification passed with 2 extra scopes"
     );
@@ -73,7 +75,8 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
-            properties.scopes
+            properties.scopes,
+            []
         ),
         "Verification failed with given scopes"
     );
@@ -83,7 +86,8 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
-            [properties.scopes[0]]
+            [properties.scopes[0]],
+            []
         ),
         "Verification failed with 1 scope"
     );
@@ -93,7 +97,8 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
-            [properties.scopes[1]]
+            [properties.scopes[1]],
+            []
         ),
         "Verification failed with 1 scope"
     );
@@ -105,6 +110,7 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
+            [],
             []
         ),
         "Verification failed with no scopes"
@@ -118,7 +124,8 @@ async function testKeyVerification() {
             properties.username,
             properties.app,
             properties.team,
-            properties.scopes
+            properties.scopes,
+            []
         )),
         "Verification passed with disabled key"
     );

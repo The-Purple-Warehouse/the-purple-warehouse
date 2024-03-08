@@ -12,26 +12,15 @@ import requireScoutingAuth from "../../middleware/requireScoutingAuth";
 import config from "../../config";
 import { addAPIHeaders } from "../../helpers/utils";
 import {
-    getEntries,
     addEntry,
-    removeAll,
-    getAll,
     retrieveEntry,
     getEntryByHash,
     entryExistsByHash,
     getLatestMatch,
-    format
-} from "../helpers/tps";
-import {
-    generateAPIKey,
-    addAPIKey,
-    enableAPIKey,
-    disableAPIKey,
-    verifyAPIKey,
-    removeAll,
-    getAll
-} from "../helpers/apiKey";
-import scoutingConfig from "../../config/scouting";
+    format,
+    validatePrivacyRules
+} from "../../helpers/tps";
+import { verifyAPIKey } from "../../helpers/apiKey";
 
 function checkNull(object1, object2) {
     return object1 !== null && object1 !== undefined ? object1 : object2;
@@ -43,10 +32,10 @@ router.post("/entry/add", async (ctx, next) => {
     addAPIHeaders(ctx);
     const query = ctx.query as any;
     const body = ctx.request.body as any;
-    let tps = format(body.entry, false);
+    let tps = format(body.entry, false) as any;
     tps.privacy = validatePrivacyRules(body.privacy);
     let scouter = checkNull(checkNull(tps.metadata, {}).scouter, {});
-    if(verifyAPIKey(query.key, scouter.name, scouter.app, scouter.team, ["tps.entry.add"])) {
+    if(verifyAPIKey(query.key, scouter.name, scouter.app, scouter.team, ["tps.entry.add"], ["username", "app", "team"])) {
         let entry = await addEntry(tps, (new Date()).getTime());
         if(entry == null) {
             ctx.body = {
@@ -77,18 +66,19 @@ router.get("/entry/verify/:hash", async (ctx, next) => {
 
 router.get("/entry/get/:hash", async (ctx, next) => {
     addAPIHeaders(ctx);
-    let entry = await getEntryByHash();
+    const query = ctx.query as any;
+    let entry = await getEntryByHash(ctx.params.hash);
     if(entry == null) {
         ctx.body = {
             success: false
         };
     } else {
-        let verify = verifyAPIKey(query.key, false, false, false, ["tps.entry.get"]);
+        let verify = verifyAPIKey(query.key, "", "", "", ["tps.entry.get"], []) as any;
         if(verify.verified) {
             ctx.body = {
                 success: true,
                 body: {
-                    entry: retrieveEntry(entry, key.team)
+                    entry: retrieveEntry(entry as any, verify.key.team)
                 }
             };
         } else {

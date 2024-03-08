@@ -3,19 +3,20 @@ import APIKey from "../models/apiKey";
 import { APIKeyType } from "../models/apiKey";
 import * as crypto from "crypto";
 
-function ensureType(data: any): APIKeyType | null {
+function ensureType(data: any): any {
+    console.log(data);
     if (data == null || typeof data !== "object") {
-        return null;
+        return {};
     }
     if (
-        typeof data.name !== "string" ||
+        typeof data.username !== "string" ||
         typeof data.team !== "string" ||
         typeof data.app !== "string" ||
         !Array.isArray(data.scopes) ||
         typeof data.expiration !== "number" ||
         typeof data.source !== "string"
     ) {
-        return null;
+        return {};
     }
     let obj: APIKeyType = {} as APIKeyType;
     obj.name = data.name;
@@ -86,22 +87,23 @@ export async function verifyAPIKey(
     username: string,
     app: string,
     team: string,
-    scopes: string[]
+    scopes: string[],
+    verify: string[]
 ) {
     if (key == null) {
         return {verified: false};
     }
-    let query = {
+    let query: any = {
         apiKey: hashKey(key, "sha256"),
         hashType: "sha256"
     };
-    if(username) {
+    if(verify.includes("username")) {
         query.username = username;
     }
-    if(app) {
+    if(verify.includes("app")) {
         query.app = app;
     }
-    if(team) {
+    if(verify.includes("team")) {
         query.team = team;
     }
     const apiKey = (await APIKey.findOne(query)) as any;
