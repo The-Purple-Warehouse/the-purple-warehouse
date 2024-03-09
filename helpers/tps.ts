@@ -27,6 +27,7 @@ function checkNull(object1, object2) {
 
 export function validatePrivacyRules(
     value: any,
+    teams: string[],
     useServerInterfaces: boolean = false
 ): TPSPrivacyRule[] {
     if (!Array.isArray(value)) {
@@ -46,9 +47,9 @@ export function validatePrivacyRules(
             }
             return {
                 path: rule.path,
-                private: checkNull(rule.private, false), // default to false
-                teams: checkNull(rule.teams, []), // default to empty array
-                type: checkNull(rule.type, "excluded"), // default to "excluded"
+                private: checkNull(rule.private, true),
+                teams: checkNull(rule.teams, teams),
+                type: checkNull(rule.type, "excluded"),
                 detail: rule.detail
             };
         })
@@ -125,7 +126,7 @@ export function retrieveEntry(tps: any, teamNumber: string): any {
         }
     });
 
-    const privacyRules = validatePrivacyRules(rules, true);
+    const privacyRules = validatePrivacyRules(rules, defaultTeams, true);
 
     const tpsPrivate = format(cloneObject(tps), false) as any;
     tpsPrivate.server = {

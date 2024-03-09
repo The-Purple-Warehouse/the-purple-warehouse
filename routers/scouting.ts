@@ -164,7 +164,9 @@ router.post(
                     btoa(
                         JSON.stringify({
                             success: true,
-                            details
+                            body: {
+                                details
+                            }
                         })
                     )
                 )

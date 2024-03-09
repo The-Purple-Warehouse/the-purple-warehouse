@@ -33,8 +33,12 @@ router.post("/entry/add", async (ctx, next) => {
     const query = ctx.query as any;
     const body = ctx.request.body as any;
     let tps = format(body.entry, false) as any;
-    let privacy = validatePrivacyRules(body.privacy);
     let scouter = checkNull(checkNull(tps.metadata, {}).scouter, {});
+    let defaultTeams = [];
+    if (scouter.team != null) {
+        defaultTeams.push(scouter.team);
+    }
+    let privacy = validatePrivacyRules(body.privacy, defaultTeams);
     let verify = (await verifyAPIKey(
         query.key,
         scouter.name,
