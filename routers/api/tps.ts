@@ -33,25 +33,40 @@ router.post("/entry/add", async (ctx, next) => {
     const query = ctx.query as any;
     const body = ctx.request.body as any;
     let tps = format(body.entry, false) as any;
-    let privacy = validatePrivacyRules(body.privacy);
     let scouter = checkNull(checkNull(tps.metadata, {}).scouter, {});
-    let verify = await verifyAPIKey(query.key, scouter.name, scouter.app, scouter.team, ["tps.entry.add"], ["app", "team"]) as any;
-    if(verify.verified && (verify.key.username == scouter.name || verify.key.scopes.includes("tpw.scouting.impersonate"))) {
-        let entry = await addEntry(tps, privacy, (new Date()).getTime());
-        if(entry == null) {
+    let defaultTeams = [];
+    if (scouter.team != null) {
+        defaultTeams.push(scouter.team);
+    }
+    let privacy = validatePrivacyRules(body.privacy, defaultTeams);
+    let verify = (await verifyAPIKey(
+        query.key,
+        scouter.name,
+        scouter.app,
+        scouter.team,
+        ["tps.entry.add"],
+        ["app", "team"]
+    )) as any;
+    if (
+        verify.verified &&
+        (verify.key.username == scouter.name ||
+            verify.key.scopes.includes("tpw.scouting.impersonate"))
+    ) {
+        let entry = await addEntry(tps, privacy, new Date().getTime());
+        if (entry == null) {
             ctx.body = {
-                success: false,
-            }
+                success: false
+            };
         } else {
             ctx.body = {
                 success: true,
                 hash: entry.hash
-            }
+            };
         }
     } else {
         ctx.body = {
-            success: false,
-        }
+            success: false
+        };
     }
 });
 
@@ -69,13 +84,20 @@ router.get("/entry/get/:hash", async (ctx, next) => {
     addAPIHeaders(ctx);
     const query = ctx.query as any;
     let entry = await getEntryByHash(ctx.params.hash);
-    if(entry == null) {
+    if (entry == null) {
         ctx.body = {
             success: false
         };
     } else {
-        let verify = await verifyAPIKey(query.key, "", "", "", ["tps.entry.get"], []) as any;
-        if(verify.verified) {
+        let verify = (await verifyAPIKey(
+            query.key,
+            "",
+            "",
+            "",
+            ["tps.entry.get"],
+            []
+        )) as any;
+        if (verify.verified) {
             ctx.body = {
                 success: true,
                 body: {
@@ -88,7 +110,6 @@ router.get("/entry/get/:hash", async (ctx, next) => {
             };
         }
     }
-    
 });
 
 router.post("/entry/list", async (ctx, next) => {
