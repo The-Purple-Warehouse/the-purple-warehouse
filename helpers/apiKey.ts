@@ -53,7 +53,9 @@ export async function addAPIKey(rawOptions: any) {
     options.hashType = "sha256";
     options.apiKey = hashKey(unhashed, options.hashType);
     options.apiIdentifier = generateAPIIdentifier();
-    options.name = options.name || `${options.app} (${options.apiIdentifier.split("-")[0]})`;
+    options.name =
+        options.name ||
+        `${options.app} (${options.apiIdentifier.split("-")[0]})`;
 
     let apiKey;
     try {
@@ -91,40 +93,40 @@ export async function verifyAPIKey(
     verify: string[]
 ) {
     if (key == null) {
-        return {verified: false};
+        return { verified: false };
     }
     let query: any = {
         apiKey: hashKey(key, "sha256"),
         hashType: "sha256"
     };
-    if(verify.includes("username")) {
+    if (verify.includes("username")) {
         query.username = username;
     }
-    if(verify.includes("app")) {
+    if (verify.includes("app")) {
         query.app = app;
     }
-    if(verify.includes("team")) {
+    if (verify.includes("team")) {
         query.team = team;
     }
     const apiKey = (await APIKey.findOne(query)) as any;
     if (apiKey == null) {
-        return {verified: false};
+        return { verified: false };
     }
     if (apiKey.expiration < Date.now()) {
-        return {verified: false};
+        return { verified: false };
     }
     if (!apiKey.live) {
-        return {verified: false};
+        return { verified: false };
     }
     if (!scopes || !Array.isArray(scopes)) {
-        return {verified: false};
+        return { verified: false };
     }
     for (let scope of scopes) {
         if (!apiKey.scopes.includes(scope)) {
-            return {verified: false};
+            return { verified: false };
         }
     }
-    return {verified: true, key: apiKey};
+    return { verified: true, key: apiKey };
 }
 
 export function removeAll() {

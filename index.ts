@@ -35,11 +35,11 @@ const sessionConfig: Partial<session.opts> = {
 
 app.keys = config.auth.cookieKeys.slice(1);
 app.use(async (ctx, next) => {
-    if(ctx.request.url.startsWith("/api/")) {
+    if (ctx.request.url.startsWith("/api/")) {
         addAPIHeaders(ctx);
     }
     return await next();
-})
+});
 app.use(session(sessionConfig, app));
 app.use(json());
 app.use(logger());
@@ -129,7 +129,7 @@ if (config.features.includes("scouting")) {
     router.use("/scouting", scoutingRouter.routes());
     router.use("/api/v1/scouting", scoutingAPIRouter.routes());
 }
-if(config.features.includes("tps")) {
+if (config.features.includes("tps")) {
     router.use("/api/v1/tps", tpsAPIRouter.routes());
 }
 
