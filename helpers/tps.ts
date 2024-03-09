@@ -3,33 +3,56 @@ import { sortedStringify } from "./utils";
 import TPSEntry, { TPSEntryType, TPSPrivacyRule } from "../models/tpsEntry";
 import config from "../config";
 
-const interfaces = ["abilities", "counters", "data", "metadata", "ratings", "timers"];
-const serverInterfaces = ["abilities", "counters", "data", "metadata", "ratings", "timers", "server"];
+const interfaces = [
+    "abilities",
+    "counters",
+    "data",
+    "metadata",
+    "ratings",
+    "timers"
+];
+const serverInterfaces = [
+    "abilities",
+    "counters",
+    "data",
+    "metadata",
+    "ratings",
+    "timers",
+    "server"
+];
 
 function checkNull(object1, object2) {
     return object1 !== null && object1 !== undefined ? object1 : object2;
 }
 
-export function validatePrivacyRules(value: any, useServerInterfaces: boolean = false): TPSPrivacyRule[] {
+export function validatePrivacyRules(
+    value: any,
+    useServerInterfaces: boolean = false
+): TPSPrivacyRule[] {
     if (!Array.isArray(value)) {
         return [];
     }
     let interfacesList = interfaces;
-    if(useServerInterfaces) {
+    if (useServerInterfaces) {
         interfacesList = serverInterfaces;
     }
-    return value.map((rule) => {
-        if (typeof rule.path !== "string" || !interfacesList.includes(rule.path.split(".")[0])) {
-            return null;
-        }
-        return {
-            path: rule.path,
-            private: checkNull(rule.private, false), // default to false
-            teams: checkNull(rule.teams, []), // default to empty array
-            type: checkNull(rule.type, "excluded"), // default to "excluded"
-            detail: rule.detail
-        };
-    }).filter(rule => rule != null);
+    return value
+        .map((rule) => {
+            if (
+                typeof rule.path !== "string" ||
+                !interfacesList.includes(rule.path.split(".")[0])
+            ) {
+                return null;
+            }
+            return {
+                path: rule.path,
+                private: checkNull(rule.private, false), // default to false
+                teams: checkNull(rule.teams, []), // default to empty array
+                type: checkNull(rule.type, "excluded"), // default to "excluded"
+                detail: rule.detail
+            };
+        })
+        .filter((rule) => rule != null);
 }
 
 function scramble(value: any, length: number) {
@@ -49,36 +72,55 @@ function cloneObject(value: any) {
 
 export function format(tps: any, useServerInterfaces: boolean = false) {
     let interfacesList = interfaces;
-    if(useServerInterfaces) {
+    if (useServerInterfaces) {
         interfacesList = serverInterfaces;
     }
     let formatted = {};
-    for(let i = 0; i < interfacesList.length; i++) {
-        if(tps[interfacesList[i]] != null) {
+    for (let i = 0; i < interfacesList.length; i++) {
+        if (tps[interfacesList[i]] != null) {
             formatted[interfacesList[i]] = tps[interfacesList[i]];
         }
     }
     return formatted;
 }
 
-export function retrieveEntry(
-    tps: any,
-    teamNumber: string
-): any {
+export function retrieveEntry(tps: any, teamNumber: string): any {
     const rules = checkNull(tps.privacy, []); // privacy rules are stored with the data
 
     let defaultTeams = [];
-    if(tps.metadata != null && tps.metadata.scouter != null && tps.metadata.scouter.team != null) {
+    if (
+        tps.metadata != null &&
+        tps.metadata.scouter != null &&
+        tps.metadata.scouter.team != null
+    ) {
         defaultTeams.push(tps.metadata.scouter.team);
     }
 
     const defaultRules: TPSPrivacyRule[] = [
-        { path: "data.notes", private: true, type: "redacted", detail: "[redacted for privacy]", teams: defaultTeams },
-        { path: "metadata.scouter.name", private: true, type: "scrambled", detail: 16, teams: defaultTeams }
+        {
+            path: "data.notes",
+            private: true,
+            type: "redacted",
+            detail: "[redacted for privacy]",
+            teams: defaultTeams
+        },
+        {
+            path: "metadata.scouter.name",
+            private: true,
+            type: "scrambled",
+            detail: 16,
+            teams: defaultTeams
+        }
     ];
 
     defaultRules.forEach((defaultRule) => {
-        if (!rules.some((rule) => defaultRule.path == rule.path || defaultRule.path.startsWith(`${rule.path}.`))) {
+        if (
+            !rules.some(
+                (rule) =>
+                    defaultRule.path == rule.path ||
+                    defaultRule.path.startsWith(`${rule.path}.`)
+            )
+        ) {
             rules.push(defaultRule);
         }
     });
@@ -89,13 +131,16 @@ export function retrieveEntry(
     tpsPrivate.server = {
         timestamp: tps.serverTimestamp,
         accuracy: tps.accuracy
-    }
+    };
     privacyRules.forEach((rule) => {
         let pathSegments = rule.path.split(".");
         let current: any = tps;
         let tpsPrivateCurrent: any = tpsPrivate;
         for (let i = 0; i < pathSegments.length - 1; ++i) {
-            if (current[pathSegments[i]] === undefined || tpsPrivateCurrent[pathSegments[i]] === undefined) {
+            if (
+                current[pathSegments[i]] === undefined ||
+                tpsPrivateCurrent[pathSegments[i]] === undefined
+            ) {
                 return;
             }
             current = current[pathSegments[i]];
@@ -103,7 +148,10 @@ export function retrieveEntry(
         }
 
         const key = pathSegments[pathSegments.length - 1];
-        if (current[key] === undefined || tpsPrivateCurrent[key] === undefined) {
+        if (
+            current[key] === undefined ||
+            tpsPrivateCurrent[key] === undefined
+        ) {
             return;
         }
 
@@ -113,10 +161,16 @@ export function retrieveEntry(
         ) {
             switch (rule.type) {
                 case "scrambled":
-                    tpsPrivateCurrent[key] = scramble(current[key], checkNull(rule.detail, 16));
+                    tpsPrivateCurrent[key] = scramble(
+                        current[key],
+                        checkNull(rule.detail, 16)
+                    );
                     break;
                 case "redacted":
-                    tpsPrivateCurrent[key] = checkNull(rule.detail, "[redacted for privacy]");
+                    tpsPrivateCurrent[key] = checkNull(
+                        rule.detail,
+                        "[redacted for privacy]"
+                    );
                     break;
                 case "excluded":
                     delete tpsPrivateCurrent[key];
@@ -128,7 +182,11 @@ export function retrieveEntry(
     return tpsPrivate;
 }
 
-export async function addEntry(data: any, privacy: any, serverTimestamp: number) {
+export async function addEntry(
+    data: any,
+    privacy: any,
+    serverTimestamp: number
+) {
     let hash = crypto
         .createHash("sha256")
         .update(sortedStringify(data))
@@ -157,20 +215,33 @@ export async function getLatestMatch(event: string) {
         .sort({ "metadata.match.number": -1 })
         .lean()) as any;
     if (entries != null) {
-        entries = entries.filter(entry => entry != null && entry.metadata != null && entry.metadata.match != null);
-        let finals = entries.filter(entry => entry.metadata.match.level == "f");
-        let semifinals = entries.filter(entry => entry.metadata.match.level == "sf");
-        let quals = entries.filter(entry => entry.metadata.match.level == "qm");
-        if(finals.length > 0) {
+        entries = entries.filter(
+            (entry) =>
+                entry != null &&
+                entry.metadata != null &&
+                entry.metadata.match != null
+        );
+        let finals = entries.filter(
+            (entry) => entry.metadata.match.level == "f"
+        );
+        let semifinals = entries.filter(
+            (entry) => entry.metadata.match.level == "sf"
+        );
+        let quals = entries.filter(
+            (entry) => entry.metadata.match.level == "qm"
+        );
+        if (finals.length > 0) {
             return finals[0].metadata.match;
-        } else if(semifinals.length > 0) {
-            semifinals = semifinals.sort((a, b) => b.metadata.match.set - a.metadata.match.set);
+        } else if (semifinals.length > 0) {
+            semifinals = semifinals.sort(
+                (a, b) => b.metadata.match.set - a.metadata.match.set
+            );
             return semifinals[0].metadata.match;
-        } else if(quals.length > 0) {
+        } else if (quals.length > 0) {
             return quals[0].metadata.match;
         }
     } else {
-        return {level: "qm", number: 0, set: 1};
+        return { level: "qm", number: 0, set: 1 };
     }
 }
 

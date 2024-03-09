@@ -44,9 +44,17 @@ router.get("/logout", async (ctx) => {
 
 function filterScopes(scopes) {
     let filtered = [];
-    let available = ["tpw.teamNumber", "tpw.scouting.username", "tpw.scouting.impersonate", "tps.entry.add", "tps.entry.get", "tps.entry.edit", "tps.entry.delete"];
-    for(let i = 0; i < scopes.length; i++) {
-        if(available.includes(scopes[i])) {
+    let available = [
+        "tpw.teamNumber",
+        "tpw.scouting.username",
+        "tpw.scouting.impersonate",
+        "tps.entry.add",
+        "tps.entry.get",
+        "tps.entry.edit",
+        "tps.entry.delete"
+    ];
+    for (let i = 0; i < scopes.length; i++) {
+        if (available.includes(scopes[i])) {
             filtered.push(scopes[i]);
         }
     }
@@ -57,13 +65,14 @@ function prettyScopes(scopes) {
     let pretty = {
         "tpw.teamNumber": "See TPW team number",
         "tpw.scouting.username": "See TPW scouting username",
-        "tpw.scouting.impersonate": "Perform actions on behalf of other scouters on your team",
+        "tpw.scouting.impersonate":
+            "Perform actions on behalf of other scouters on your team",
         "tps.entry.add": "Add TPS scouting entries",
         "tps.entry.get": "Get TPS scouting entries",
         "tps.entry.edit": "Edit TPS scouting entries",
-        "tps.entry.delete": "Delete TPS scouting entries",
+        "tps.entry.delete": "Delete TPS scouting entries"
     };
-    return scopes.map(scope => pretty[scope]);
+    return scopes.map((scope) => pretty[scope]);
 }
 
 function getAuthDetails(original) {
@@ -72,26 +81,38 @@ function getAuthDetails(original) {
     } as any;
     try {
         let details = JSON.parse(atob(original));
-        if(details.scopes == null) {
+        if (details.scopes == null) {
             details.scopes = [];
         }
         details.scopes = filterScopes(details.scopes);
-        if(details.site != null && details.redirect != null) {
-            let splitDomain = (new URL(details.redirect)).hostname.split(".");
+        if (details.site != null && details.redirect != null) {
+            let splitDomain = new URL(details.redirect).hostname.split(".");
             let ending = splitDomain.pop();
             let secondEnding = splitDomain.pop();
-            if(["co", "com", "org", "net", "edu"].includes(secondEnding)) {
+            if (["co", "com", "org", "net", "edu"].includes(secondEnding)) {
                 ending = `${secondEnding}.${ending}`;
             }
-            let redirectHostname = (new URL(details.redirect)).hostname;
-            let siteHostname = (new URL("http://" + details.site)).hostname;
-            if(redirectHostname == siteHostname || (redirectHostname.endsWith(`.${siteHostname}`) && siteHostname != ending && !siteHostname.startsWith("."))) {
+            let redirectHostname = new URL(details.redirect).hostname;
+            let siteHostname = new URL("http://" + details.site).hostname;
+            if (
+                redirectHostname == siteHostname ||
+                (redirectHostname.endsWith(`.${siteHostname}`) &&
+                    siteHostname != ending &&
+                    !siteHostname.startsWith("."))
+            ) {
                 auth.details = {
                     site: siteHostname,
                     redirect: details.redirect,
-                    redirectEmpty: encodeURI(details.redirect.replaceAll("<DATA>", btoa(JSON.stringify({
-                        success: false
-                    })))),
+                    redirectEmpty: encodeURI(
+                        details.redirect.replaceAll(
+                            "<DATA>",
+                            btoa(
+                                JSON.stringify({
+                                    success: false
+                                })
+                            )
+                        )
+                    ),
                     expiration: details.expiration,
                     scopes: details.scopes,
                     prettyScopes: prettyScopes(details.scopes),
@@ -100,44 +121,59 @@ function getAuthDetails(original) {
                 auth.valid = true;
             }
         }
-    } catch(err) {
-
-    }
+    } catch (err) {}
     return auth;
 }
 
-router.get("/auth/generate/:details", requireScoutingAuth, async (ctx, next) => {
-    await ctx.render("scouting/auth", getAuthDetails(ctx.params.details));
-});
-
-router.post("/auth/generate/:details", requireScoutingAuth, async (ctx, next) => {
-    let auth = getAuthDetails(ctx.params.details) as any;
-    if(auth.valid) {
-        let apiKey = await addAPIKey({
-            username: ctx.session.scoutingUsername,
-            team: ctx.session.scoutingTeamNumber,
-            app: auth.details.site,
-            scopes: auth.details.scopes,
-            expiration: auth.details.expiration || (new Date()).getTime() + (1000 * 60 * 60 * 24 * 365 * 10),
-            source: "login"
-        });
-        let details: any = {
-            key: apiKey.key
-        };
-        if(auth.details.scopes.includes("tpw.scouting.username")) {
-            details.scoutingUsername = ctx.session.scoutingUsername;
-        }
-        if(auth.details.scopes.includes("tpw.teamNumber")) {
-            details.teamNumber = ctx.session.scoutingTeamNumber;
-        }
-        await ctx.redirect(auth.details.redirect.replaceAll("<DATA>", btoa(JSON.stringify({
-            success: true,
-            details
-        }))));
-    } else {
-        await ctx.render("scouting/auth", auth);
+router.get(
+    "/auth/generate/:details",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        await ctx.render("scouting/auth", getAuthDetails(ctx.params.details));
     }
-});
+);
+
+router.post(
+    "/auth/generate/:details",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        let auth = getAuthDetails(ctx.params.details) as any;
+        if (auth.valid) {
+            let apiKey = await addAPIKey({
+                username: ctx.session.scoutingUsername,
+                team: ctx.session.scoutingTeamNumber,
+                app: auth.details.site,
+                scopes: auth.details.scopes,
+                expiration:
+                    auth.details.expiration ||
+                    new Date().getTime() + 1000 * 60 * 60 * 24 * 365 * 10,
+                source: "login"
+            });
+            let details: any = {
+                key: apiKey.key
+            };
+            if (auth.details.scopes.includes("tpw.scouting.username")) {
+                details.scoutingUsername = ctx.session.scoutingUsername;
+            }
+            if (auth.details.scopes.includes("tpw.teamNumber")) {
+                details.teamNumber = ctx.session.scoutingTeamNumber;
+            }
+            await ctx.redirect(
+                auth.details.redirect.replaceAll(
+                    "<DATA>",
+                    btoa(
+                        JSON.stringify({
+                            success: true,
+                            details
+                        })
+                    )
+                )
+            );
+        } else {
+            await ctx.render("scouting/auth", auth);
+        }
+    }
+);
 
 router.get("/instructions", async (ctx) => {
     ctx.redirect(
