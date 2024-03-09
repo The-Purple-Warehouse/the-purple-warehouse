@@ -11,6 +11,7 @@ import { createServer } from "http";
 import * as crypto from "crypto";
 
 import registerHelpers from "./helpers/hbsHelpers";
+import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
@@ -33,6 +34,12 @@ const sessionConfig: Partial<session.opts> = {
 };
 
 app.keys = config.auth.cookieKeys.slice(1);
+app.use(async (ctx, next) => {
+    if(ctx.request.url.startsWith("/api/")) {
+        addAPIHeaders(ctx);
+    }
+    return await next();
+})
 app.use(session(sessionConfig, app));
 app.use(json());
 app.use(logger());
@@ -196,6 +203,7 @@ router.get("/discord", async (ctx) => {
 });
 
 app.use(router.routes());
+app.use(router.allowedMethods());
 app.use(serve("./static", {}));
 
 const httpServer = createServer(app.callback());
