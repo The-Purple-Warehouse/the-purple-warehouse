@@ -33,7 +33,7 @@ const config: Config = {
             accessToken: "admin"
         }
     },
-    features: ["scouting", "resources"],
+    features: ["scouting", "resources", "tps"],
     year: 2024
 };
 
