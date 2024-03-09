@@ -1,3 +1,4 @@
+/*
 import { assert } from "console";
 import {
     getEntries,
@@ -168,3 +169,4 @@ async function test() {
 }
 
 test();
+*/

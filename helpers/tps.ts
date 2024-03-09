@@ -26,7 +26,8 @@ export function validatePrivacyRules(value: any, useServerInterfaces: boolean = 
             path: rule.path,
             private: checkNull(rule.private, false), // default to false
             teams: checkNull(rule.teams, []), // default to empty array
-            type: checkNull(rule.type, "excluded") // default to "excluded"
+            type: checkNull(rule.type, "excluded"), // default to "excluded"
+            detail: rule.detail
         };
     }).filter(rule => rule != null);
 }
@@ -66,9 +67,14 @@ export function retrieveEntry(
 ): any {
     const rules = checkNull(tps.privacy, []); // privacy rules are stored with the data
 
+    let defaultTeams = [];
+    if(tps.metadata != null && tps.metadata.scouter != null && tps.metadata.scouter.team != null) {
+        defaultTeams.push(tps.metadata.scouter.team);
+    }
+
     const defaultRules: TPSPrivacyRule[] = [
-        { path: "data.notes", private: true, type: "redacted", detail: "[redacted for privacy]" },
-        { path: "metadata.scouter.name", private: true, type: "scrambled", detail: 16 }
+        { path: "data.notes", private: true, type: "redacted", detail: "[redacted for privacy]", teams: defaultTeams },
+        { path: "metadata.scouter.name", private: true, type: "scrambled", detail: 16, teams: defaultTeams }
     ];
 
     defaultRules.forEach((defaultRule) => {
@@ -84,7 +90,6 @@ export function retrieveEntry(
         timestamp: tps.serverTimestamp,
         accuracy: tps.accuracy
     }
-
     privacyRules.forEach((rule) => {
         let pathSegments = rule.path.split(".");
         let current: any = tps;
@@ -123,13 +128,14 @@ export function retrieveEntry(
     return tpsPrivate;
 }
 
-export async function addEntry(data: any, serverTimestamp: number) {
+export async function addEntry(data: any, privacy: any, serverTimestamp: number) {
     let hash = crypto
         .createHash("sha256")
         .update(sortedStringify(data))
         .digest("hex");
     let entry = (await getEntryByHash(hash)) as any;
     if (entry == null) {
+        data.privacy = privacy;
         data.serverTimestamp = serverTimestamp;
         data.hash = hash;
         entry = new TPSEntry(data);

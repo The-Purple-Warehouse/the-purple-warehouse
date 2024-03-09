@@ -44,7 +44,7 @@ router.get("/logout", async (ctx) => {
 
 function filterScopes(scopes) {
     let filtered = [];
-    let available = ["tpw.username", "tpw.teamNumber", "tps.entry.add", "tps.entry.get", "tps.entry.edit", "tps.entry.delete"];
+    let available = ["tpw.teamNumber", "tpw.scouting.username", "tpw.scouting.impersonate", "tps.entry.add", "tps.entry.get", "tps.entry.edit", "tps.entry.delete"];
     for(let i = 0; i < scopes.length; i++) {
         if(available.includes(scopes[i])) {
             filtered.push(scopes[i]);
@@ -55,8 +55,9 @@ function filterScopes(scopes) {
 
 function prettyScopes(scopes) {
     let pretty = {
-        "tpw.username": "See TPW username",
         "tpw.teamNumber": "See TPW team number",
+        "tpw.scouting.username": "See TPW scouting username",
+        "tpw.scouting.impersonate": "Perform actions on behalf of other scouters on your team",
         "tps.entry.add": "Add TPS scouting entries",
         "tps.entry.get": "Get TPS scouting entries",
         "tps.entry.edit": "Edit TPS scouting entries",
@@ -123,8 +124,8 @@ router.post("/auth/generate/:details", requireScoutingAuth, async (ctx, next) =>
         let details: any = {
             key: apiKey.key
         };
-        if(auth.details.scopes.includes("tpw.username")) {
-            details.username = ctx.session.scoutingUsername;
+        if(auth.details.scopes.includes("tpw.scouting.username")) {
+            details.scoutingUsername = ctx.session.scoutingUsername;
         }
         if(auth.details.scopes.includes("tpw.teamNumber")) {
             details.teamNumber = ctx.session.scoutingTeamNumber;

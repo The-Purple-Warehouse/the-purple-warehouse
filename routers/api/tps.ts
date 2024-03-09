@@ -33,10 +33,11 @@ router.post("/entry/add", async (ctx, next) => {
     const query = ctx.query as any;
     const body = ctx.request.body as any;
     let tps = format(body.entry, false) as any;
-    tps.privacy = validatePrivacyRules(body.privacy);
+    let privacy = validatePrivacyRules(body.privacy);
     let scouter = checkNull(checkNull(tps.metadata, {}).scouter, {});
-    if(verifyAPIKey(query.key, scouter.name, scouter.app, scouter.team, ["tps.entry.add"], ["username", "app", "team"])) {
-        let entry = await addEntry(tps, (new Date()).getTime());
+    let verify = await verifyAPIKey(query.key, scouter.name, scouter.app, scouter.team, ["tps.entry.add"], ["app", "team"]) as any;
+    if(verify.verified && (verify.key.username == scouter.name || verify.key.scopes.includes("tpw.scouting.impersonate"))) {
+        let entry = await addEntry(tps, privacy, (new Date()).getTime());
         if(entry == null) {
             ctx.body = {
                 success: false,
@@ -73,7 +74,7 @@ router.get("/entry/get/:hash", async (ctx, next) => {
             success: false
         };
     } else {
-        let verify = verifyAPIKey(query.key, "", "", "", ["tps.entry.get"], []) as any;
+        let verify = await verifyAPIKey(query.key, "", "", "", ["tps.entry.get"], []) as any;
         if(verify.verified) {
             ctx.body = {
                 success: true,
