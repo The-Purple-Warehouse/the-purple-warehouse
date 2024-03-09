@@ -60,7 +60,9 @@ router.post("/entry/add", async (ctx, next) => {
         } else {
             ctx.body = {
                 success: true,
-                hash: entry.hash
+                body: {
+                    hash: entry.hash
+                }
             };
         }
     } else {
