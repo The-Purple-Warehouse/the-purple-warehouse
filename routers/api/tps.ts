@@ -41,7 +41,7 @@ router.post("/entry/add", async (ctx, next) => {
     }
     let privacy = validatePrivacyRules(body.privacy, defaultTeams);
     let threshold = 10;
-    if(body.threshold != null && typeof body.threshold == "number") {
+    if (body.threshold != null && typeof body.threshold == "number") {
         threshold = body.threshold;
     }
     let verify = (await verifyAPIKey(
@@ -57,7 +57,12 @@ router.post("/entry/add", async (ctx, next) => {
         (verify.key.username == scouter.name ||
             verify.key.scopes.includes("tpw.scouting.impersonate"))
     ) {
-        let entry = await addEntry(tps, privacy, threshold, new Date().getTime());
+        let entry = await addEntry(
+            tps,
+            privacy,
+            threshold,
+            new Date().getTime()
+        );
         if (entry == null) {
             ctx.body = {
                 success: false
@@ -100,7 +105,7 @@ router.get("/entry/get/:hash", async (ctx, next) => {
     )) as any;
     if (verify.verified) {
         let entry = await getEntryByHash(ctx.params.hash);
-        if(entry == null) {
+        if (entry == null) {
             ctx.body = {
                 success: false
             };
@@ -142,16 +147,21 @@ router.get("/entry/event/:event", async (ctx, next) => {
     )) as any;
     if (verify.verified) {
         let entries = await getEntriesByEvent(ctx.params.event);
-        if(entries == null) {
+        if (entries == null) {
             ctx.body = {
                 success: false
             };
         } else {
             let contributions = 0;
-            let teamEntries = entries.filter((entry: any) => entry.metadata != null && entry.metadata.scouter != null && entry.metadata.scouter.team == verify.key.team);
-            for(let i = 0; i < teamEntries.length; i++) {
+            let teamEntries = entries.filter(
+                (entry: any) =>
+                    entry.metadata != null &&
+                    entry.metadata.scouter != null &&
+                    entry.metadata.scouter.team == verify.key.team
+            );
+            for (let i = 0; i < teamEntries.length; i++) {
                 let threshold = (teamEntries[i] as any).threshold;
-                if(threshold > 10) {
+                if (threshold > 10) {
                     contributions += 10 / threshold;
                 } else {
                     contributions += 1;
@@ -160,49 +170,62 @@ router.get("/entry/event/:event", async (ctx, next) => {
             ctx.body = {
                 success: true,
                 body: {
-                    entries: entries.map((entry: any) => {
-                        let threshold = entry.threshold;
-                        if(threshold == null || typeof threshold != "number") {
-                            threshold = 10;
-                        }
-                        let hashStarts = [
-                            "0",
-                            "1",
-                            "2",
-                            "3",
-                            "4",
-                            "5",
-                            "6",
-                            "7",
-                            "8",
-                            "9",
-                            "a",
-                            "b",
-                            "c",
-                            "d",
-                            "e",
-                            "f"
-                        ].slice(
-                            0,
-                            threshold > 0 ? Math.floor(
-                                (contributions > threshold
-                                    ? threshold
-                                    : contributions) *
-                                    (16 / threshold)
-                            ): 16
-                        );
-                        let scouter: any = {};
-                        if(entry.metadata != null && entry.metadata.scouter != null) {
-                            scouter = entry.metadata.scouter;
-                        }
-                        if(scouter.team != verify.key.team && !hashStarts.includes(entry.hash[0])) {
-                            return null;
-                        }
-                        return {
-                            entry: retrieveEntry(entry, verify.key.team),
-                            hash: entry.hash
-                        }
-                    }).filter(entry => entry != null)
+                    entries: entries
+                        .map((entry: any) => {
+                            let threshold = entry.threshold;
+                            if (
+                                threshold == null ||
+                                typeof threshold != "number"
+                            ) {
+                                threshold = 10;
+                            }
+                            let hashStarts = [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6",
+                                "7",
+                                "8",
+                                "9",
+                                "a",
+                                "b",
+                                "c",
+                                "d",
+                                "e",
+                                "f"
+                            ].slice(
+                                0,
+                                threshold > 0
+                                    ? Math.floor(
+                                          (contributions > threshold
+                                              ? threshold
+                                              : contributions) *
+                                              (16 / threshold)
+                                      )
+                                    : 16
+                            );
+                            let scouter: any = {};
+                            if (
+                                entry.metadata != null &&
+                                entry.metadata.scouter != null
+                            ) {
+                                scouter = entry.metadata.scouter;
+                            }
+                            if (
+                                scouter.team != verify.key.team &&
+                                !hashStarts.includes(entry.hash[0])
+                            ) {
+                                return null;
+                            }
+                            return {
+                                entry: retrieveEntry(entry, verify.key.team),
+                                hash: entry.hash
+                            };
+                        })
+                        .filter((entry) => entry != null)
                 }
             };
         }

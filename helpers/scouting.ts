@@ -609,12 +609,12 @@ export async function getSharedData(
             "f"
         ].slice(
             0,
-            threshold > 0 ? Math.floor(
-                (contributions > threshold
-                    ? threshold
-                    : contributions) *
-                    (16 / threshold)
-            ): 16
+            threshold > 0
+                ? Math.floor(
+                      (contributions > threshold ? threshold : contributions) *
+                          (16 / threshold)
+                  )
+                : 16
         );
         data = data
             .map((entry: any) => {
