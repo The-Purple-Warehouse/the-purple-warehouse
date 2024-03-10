@@ -148,9 +148,9 @@ router.get("/entry/event/:event", async (ctx, next) => {
             };
         } else {
             let contributions = 0;
-            let teamEntries = entries.filter(entry => entry.metadata != null && entry.metadata.scouter != null && entry.metadata.scouter.team == verify.key.team);
+            let teamEntries = entries.filter((entry: any) => entry.metadata != null && entry.metadata.scouter != null && entry.metadata.scouter.team == verify.key.team);
             for(let i = 0; i < teamEntries.length; i++) {
-                let threshold = teamEntries[i].threshold;
+                let threshold = (teamEntries[i] as any).threshold;
                 if(threshold > 10) {
                     contributions += 10 / threshold;
                 } else {
