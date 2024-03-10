@@ -186,6 +186,7 @@ export function retrieveEntry(tps: any, teamNumber: string): any {
 export async function addEntry(
     data: any,
     privacy: any,
+    threshold: number,
     serverTimestamp: number
 ) {
     let hash = crypto
@@ -195,6 +196,7 @@ export async function addEntry(
     let entry = (await getEntryByHash(hash)) as any;
     if (entry == null) {
         data.privacy = privacy;
+        entry.threshold = threshold;
         data.serverTimestamp = serverTimestamp;
         data.hash = hash;
         entry = new TPSEntry(data);
@@ -205,6 +207,10 @@ export async function addEntry(
 
 export function getEntryByHash(hash: string) {
     return TPSEntry.findOne({ hash });
+}
+
+export async function getEntriesByEvent(event: string) {
+    return TPSEntry.find({ "metadata.event": event }).sort({ "server.timestamp": -1 }).lean();
 }
 
 export async function entryExistsByHash(hash: string) {

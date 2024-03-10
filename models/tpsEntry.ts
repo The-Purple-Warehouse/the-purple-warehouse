@@ -11,6 +11,7 @@ export interface TPSEntryType {
     accuracy: number;
     hash: string;
     privacy: TPSPrivacyRule[];
+    threshold: number;
 }
 
 export interface TPSPrivacyRule {
@@ -57,6 +58,10 @@ export default mongoose.model(
         privacy: {
             required: false,
             type: mongoose.Schema.Types.Mixed
+        },
+        threshold: {
+            required: false,
+            type: Number
         }
     })
 );
