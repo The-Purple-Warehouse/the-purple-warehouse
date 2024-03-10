@@ -134,7 +134,7 @@ router.post("/entry/list", async (ctx, next) => {
     };
 });
 
-router.get("/entry/event/:event", async (ctx, next) => {
+router.get("/entry/list/event/:event", async (ctx, next) => {
     addAPIHeaders(ctx);
     const query = ctx.query as any;
     let verify = (await verifyAPIKey(
