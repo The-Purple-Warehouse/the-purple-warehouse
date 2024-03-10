@@ -210,7 +210,9 @@ export function getEntryByHash(hash: string) {
 }
 
 export async function getEntriesByEvent(event: string) {
-    return TPSEntry.find({ "metadata.event": event }).sort({ "server.timestamp": -1 }).lean();
+    return TPSEntry.find({ "metadata.event": event })
+        .sort({ "server.timestamp": -1 })
+        .lean();
 }
 
 export async function entryExistsByHash(hash: string) {
