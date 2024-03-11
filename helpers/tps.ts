@@ -196,7 +196,7 @@ export async function addEntry(
     let entry = (await getEntryByHash(hash)) as any;
     if (entry == null) {
         data.privacy = privacy;
-        entry.threshold = threshold;
+        data.threshold = threshold;
         data.serverTimestamp = serverTimestamp;
         data.hash = hash;
         entry = new TPSEntry(data);
