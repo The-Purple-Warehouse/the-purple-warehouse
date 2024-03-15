@@ -569,7 +569,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         let newTeam = prompt(
                             `Please enter a team number or leave this field blank to use ${team} as the team number`
                         );
-                        newTeam = newTeam.replaceAll(" ", "");
+                        newTeam = newTeam.replaceAll(" ", "").toUpperCase();
                         if (newTeam != "" && !isNaN(parseInt(newTeam))) {
                             document.querySelector(
                                 `.home-window > select.team > option[value="${team}"]`
