@@ -556,7 +556,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             element.querySelector(".home-window > select.team").onchange =
                 function () {
                     let team = element.querySelector(".home-window > select.team").value;
-                    if(["1r", "2r", "3r", "1b", "2b", "3b"].includes(team) || element.querySelector(".home-window > select.team > option[value="${team}"]").innerHTML.includes("Override")) {
+                    if(["1r", "2r", "3r", "1b", "2b", "3b"].includes(team) || element.querySelector(`.home-window > select.team > option[value="${team}"]`).innerHTML.includes("Override")) {
                         let newTeam = prompt(`Please enter a team number or leave this field blank to use ${team} as the team number`);
                         newTeam = newTeam.replaceAll(" ", "");
                         if(newTeam != "") {
