@@ -158,7 +158,8 @@ export function retrieveEntry(tps: any, teamNumber: string): any {
 
         if (
             rule.private &&
-            (!rule.teams.length || !rule.teams.includes(teamNumber))
+            (rule.teams.length == 0 || !rule.teams.includes(teamNumber)) &&
+            !config.auth.scoutingAdmins.includes(teamNumber)
         ) {
             switch (rule.type) {
                 case "scrambled":
