@@ -627,7 +627,7 @@ export async function getSharedData(
                         .createHmac("sha256", config.auth.scoutingKeys[1])
                         .update(entry.contributor.username)
                         .digest("hex")
-                        .substring(0, 8);
+                        .substring(0, 16);
                     entry.ratings = [];
                 }
                 return entry;
