@@ -2410,26 +2410,35 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 predicted_time: 0,
                 actual_time: 0
             };
-            let match = (matches.filter(
-                (match) =>
-                    matchNumber == match.match_number &&
-                    setNumber == match.set_number &&
-                    compLevel == match.comp_level
-            ) || [fallback])[0] || fallback;
-            if(match.alliances == null) {
+            let match =
+                (matches.filter(
+                    (match) =>
+                        matchNumber == match.match_number &&
+                        setNumber == match.set_number &&
+                        compLevel == match.comp_level
+                ) || [fallback])[0] || fallback;
+            if (match.alliances == null) {
                 match.alliances = fallback.alliances;
             }
-            if(match.alliances.red == null) {
+            if (match.alliances.red == null) {
                 match.alliances.red = fallback.alliances.red;
             }
-            if(match.alliances.red.team_keys == null || match.alliances.red.team_keys.length == 0) {
-                match.alliances.red.team_keys = fallback.alliances.red.team_keys;
+            if (
+                match.alliances.red.team_keys == null ||
+                match.alliances.red.team_keys.length == 0
+            ) {
+                match.alliances.red.team_keys =
+                    fallback.alliances.red.team_keys;
             }
-            if(match.alliances.blue == null) {
+            if (match.alliances.blue == null) {
                 match.alliances.blue = fallback.alliances.blue;
             }
-            if(match.alliances.blue.team_keys == null || match.alliances.blue.team_keys.length == 0) {
-                match.alliances.blue.team_keys = fallback.alliances.blue.team_keys;
+            if (
+                match.alliances.blue.team_keys == null ||
+                match.alliances.blue.team_keys.length == 0
+            ) {
+                match.alliances.blue.team_keys =
+                    fallback.alliances.blue.team_keys;
             }
             resolve(match);
         });
