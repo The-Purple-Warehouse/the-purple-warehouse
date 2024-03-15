@@ -1647,7 +1647,7 @@ const scouting2024 = {
     analysis,
     compare,
     predict,
-    accuracy/*,
+    accuracy /*,
     tps*/
 };
 export default scouting2024;

@@ -134,12 +134,20 @@ def getData():
                         elif tele_st >= 3:
                             tstpts.append(4)
 
-                        defe.append(int(x["defense skill"]))
-                        speed.append(int(x["speed"]))
-                        stab.append(int(x["stability"]))
-                        inta.append(int(x["intake consistency"]))
-                        driver.append(int(x["driver skill"]))
-                        uptime.append(153000 - int(x["brick time"]))
+                        try:
+                            defe.append(int(x["defense skill"]))
+                            speed.append(int(x["speed"]))
+                            stab.append(int(x["stability"]))
+                            inta.append(int(x["intake consistency"]))
+                            driver.append(int(x["driver skill"]))
+                            uptime.append(153000 - int(x["brick time"]))
+                        except:
+                            defe.append(3)
+                            speed.append(3)
+                            stab.append(3)
+                            inta.append(3)
+                            driver.append(3)
+                            uptime.append(100)
 
                         try:
                             matches[x['match']][(x[''])] = game_pieces
