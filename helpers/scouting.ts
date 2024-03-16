@@ -684,18 +684,38 @@ export async function updateAccuracy(event: string) {
     );
 }
 
+function getDataPoints(data) {
+    let dataPoints = 0;
+    if(data instanceof Array) {
+        for(let i = 0; i < data.length; i++) {
+            dataPoints += getDataPoints(data[i]);
+        }
+    } else if(typeof data == "object") {
+        let keys = Object.keys(data).filter(key => !key.startsWith("_") && !["category", "hash"].includes(key);
+        for(let i = 0; i < keys.length; i++) {
+            dataPoints += getDataPoints(data[keys[i]]);
+        }
+    } else {
+        dataPoints = 1;
+    }
+    return dataPoints;
+}
+
 export async function getStats() {
     let entries = await ScoutingEntry.find({}, { contributor: 1 }).lean();
     let users = new Set();
+    let dataPoints = 0;
     for (let i = 0; i < entries.length; i++) {
         let entry = entries[i] as any;
         users.add(
             `${entry.contributor.team.toString()}-${entry.contributor.username}`
         );
+        dataPoints += getDataPoints(entry);
     }
     return {
         entries: await ScoutingEntry.countDocuments({}),
         scouters: [...users].length,
+        dataPoints,
         teams: await Team.countDocuments({
             teamNumber: { $ne: config.auth.scoutingInternal.teamNumber }
         }),
