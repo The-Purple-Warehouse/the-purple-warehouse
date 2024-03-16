@@ -121,44 +121,46 @@ team_data = OrderedDict()
 matches_data = OrderedDict()
 
 for x in (data):
-    if x["comp_level"] == "qm":
+    try:
         blue_teams = x["alliances"]["blue"]["team_keys"]
         red_teams = x["alliances"]["red"]["team_keys"]
-
+    
         blue_score = x["alliances"]["blue"]["score"]
         red_score = x["alliances"]["red"]["score"]
-
+    
         blue_fouls = x["score_breakdown"]["blue"]["foulCount"] + x["score_breakdown"]["blue"]["techFoulCount"]
         red_fouls = x["score_breakdown"]["red"]["foulCount"] + x["score_breakdown"]["red"]["techFoulCount"]
-
+    
         blue_teleop = x["score_breakdown"]["blue"]["teleopPoints"]
         red_teleop = x["score_breakdown"]["red"]["teleopPoints"]
-
+    
         for y in blue_teams:
             match_data = OrderedDict()
             match_data["score"] = blue_score
             match_data["fouls"] = blue_fouls
             match_data["teleop"] = blue_teleop
-
+    
             try:
                 count = len(team_data[y[3:]])
                 team_data[y[3:]][count] = match_data
             except:
                 team_data[y[3:]] = OrderedDict()
                 team_data[y[3:]][0] = match_data
-
+    
         for y in red_teams:
             match_data = OrderedDict()
             match_data["score"] = red_score
             match_data["fouls"] = red_fouls
             match_data["teleop"] = red_teleop
-
+    
             try:
                 count = len(team_data[y[3:]])
                 team_data[y[3:]][count] = match_data
             except:
                 team_data[y[3:]] = OrderedDict()
                 team_data[y[3:]][0] = match_data
+    except:
+        continue
 
 for team, dict in team_data.items():
     scores = list()
