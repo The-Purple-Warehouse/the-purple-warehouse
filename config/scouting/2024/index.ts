@@ -1222,12 +1222,16 @@ async function syncAnalysisCache(event, teamNumber) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
         let rankingCommand = `python3 config/scouting/2024/rankings_2024.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(rankingCommand);
         pending.push(run(rankingCommand));
         let graphsCommand = `python3 config/scouting/2024/graphs_2024.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(graphsCommand);
         pending.push(run(graphsCommand));
         let radarStandardCommand = `python3 config/scouting/2024/graphs_2024.py --mode 1 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(radarStandardCommand);
         pending.push(run(radarStandardCommand));
         let radarMaxCommand = `python3 config/scouting/2024/graphs_2024.py --mode 2 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(radarMaxCommand);
         pending.push(run(radarMaxCommand));
 
         let matches = matchesFull
@@ -1250,6 +1254,7 @@ async function syncAnalysisCache(event, teamNumber) {
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
             let predictionsCommand = `python3 config/scouting/2024/predictions_2024.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+            console.log(predictionsCommand);
             pending.push(run(predictionsCommand));
         }
 
