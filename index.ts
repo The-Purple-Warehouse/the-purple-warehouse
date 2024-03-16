@@ -190,6 +190,7 @@ router.get("/", async (ctx, next) => {
         stats: {
             entries: formatNumber(stats.entries),
             time: formatNumber(Math.ceil((stats.entries * 153) / 3600)),
+            dataPoints: formatNumber(stats.dataPoints),
             scouters: formatNumber(stats.scouters),
             teams: stats.teams,
             states: stats.states,
