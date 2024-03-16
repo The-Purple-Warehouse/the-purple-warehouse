@@ -691,7 +691,7 @@ function getDataPoints(data) {
             dataPoints += getDataPoints(data[i]);
         }
     } else if(typeof data == "object") {
-        let keys = Object.keys(data).filter(key => !key.startsWith("_") && !["category", "hash"].includes(key);
+        let keys = Object.keys(data).filter(key => !key.startsWith("_") && !["category", "hash"].includes(key));
         for(let i = 0; i < keys.length; i++) {
             dataPoints += getDataPoints(data[keys[i]]);
         }
