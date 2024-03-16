@@ -1290,11 +1290,9 @@ async function syncAnalysisCache(event, teamNumber) {
                 predictionBlue = 0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
                 predictionRed = 1 - predictionBlue;
             }
-            predictions.push({
-                winner: prediction.winner,
-                red: predictionRed,
-                blue: predictionBlue
-            });
+            prediction.red = predictionRed;
+            prediction.blue = predictionBlue;
+            predictions.push(prediction);
         }
 
         data.predictions = predictions;
