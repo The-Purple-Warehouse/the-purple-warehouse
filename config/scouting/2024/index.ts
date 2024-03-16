@@ -1279,15 +1279,21 @@ async function syncAnalysisCache(event, teamNumber) {
             prediction.win = match.alliances[
                 prediction.winner
             ].team_keys.includes(`frc${teamNumber}`);
-            if (prediction.red > 0.85) {
-                prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
-                prediction.blue = 1 - prediction.red;
-            } else if (prediction.blue > 0.85) {
-                prediction.blue =
-                    0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
-                prediction.red = 1 - prediction.blue;
+            let predictionRed = prediction.red / (prediction.red + prediction.blue);
+            let predictionBlue = prediction.red / (prediction.red + prediction.blue);
+            if (predictionRed > 0.85) {
+                predictionRed = 0.75 + ((predictionRed - 0.85) / 0.15) * 0.1;
+                predictionBlue = 1 - predictionRed;
+            } else if (predictionBlue > 0.85) {
+                predictionBlue =
+                    0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
+                predictionRed = 1 - predictionBlue;
             }
-            predictions.push(prediction);
+            predictions.push({
+                winner: prediction.winner,
+                red: predictionRed,
+                blue: predictionBlue
+            });
         }
 
         data.predictions = predictions;
