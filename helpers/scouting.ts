@@ -66,6 +66,7 @@ export async function entryExistsByHash(hash: string) {
 
 export async function getLatestMatch(event: string) {
     let entry = (await ScoutingEntry.find({ event })
+    let entry = (await ScoutingEntry.find({ event, match: {$lt: 1000} })
         .sort({ match: -1 })
         .limit(1)
         .lean()) as any;
