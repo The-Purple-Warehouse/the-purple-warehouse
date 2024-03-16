@@ -221,7 +221,7 @@ export async function entryExistsByHash(hash: string) {
 }
 
 export async function getLatestMatch(event: string) {
-    let entries = (await TPSEntry.find({ "metadata.event": event })
+    let entries = (await TPSEntry.find({ "metadata.event": event, "metadata.match.number": {$lt: 1000} })
         .sort({ "metadata.match.number": -1 })
         .lean()) as any;
     if (entries != null) {
