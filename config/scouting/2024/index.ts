@@ -1253,7 +1253,7 @@ async function syncAnalysisCache(event, teamNumber) {
             let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
-            let predictionsCommand = `python3 config/scouting/2024/predictions_2024.py --event ${event} --baseFilePath ../ --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+            let predictionsCommand = `python3 config/scouting/2024/predictions_2024.py --event ${event} --baseFilePath ../ --csv ${event}.csv --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
             console.log(predictionsCommand);
             pending.push(run(predictionsCommand));
         }
