@@ -1435,7 +1435,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).json();
                     if (data.success) {
                         element.querySelector(".red").innerHTML = "&nbsp;";
-                        let csv = Papa.parse(data.body.csv.replaceAll("\\\"", "&quot;")).data;
+                        let csv = Papa.parse(
+                            data.body.csv.replaceAll('\\"', "&quot;")
+                        ).data;
                         element.querySelector(".data-table > tbody").innerHTML =
                             csv
                                 .slice(1)
@@ -1459,7 +1461,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                               parseInt(cell)
                                                           ).toLocaleString()
                                                         : _this
-                                                              .escape(cell.replaceAll("&quot;", "\""))
+                                                              .escape(
+                                                                  cell.replaceAll(
+                                                                      "&quot;",
+                                                                      '"'
+                                                                  )
+                                                              )
                                                               .replaceAll(
                                                                   "\\n",
                                                                   "<br>"
@@ -1517,7 +1524,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ).json();
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = Papa.parse(data.body.csv).data;
+                            let csv = Papa.parse(data.body.csv.replaceAll("\\\"", "&quot;")).data;
                             element.querySelector(
                                 ".data-table > tbody"
                             ).innerHTML = csv
@@ -1541,10 +1548,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         ? new Date(
                                                               parseInt(cell)
                                                           ).toLocaleString()
-                                                        : cell.replaceAll(
-                                                              "\\n",
-                                                              "<br>"
-                                                          )
+                                                        : _this
+                                                              .escape(cell.replaceAll("&quot;", "\""))
+                                                              .replaceAll(
+                                                                  "\\n",
+                                                                  "<br>"
+                                                              )
                                                 }</td>`
                                         )
                                         .join("")}</tr>`;
