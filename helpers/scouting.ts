@@ -686,13 +686,15 @@ export async function updateAccuracy(event: string) {
 
 function getDataPoints(data) {
     let dataPoints = 0;
-    if(data instanceof Array) {
-        for(let i = 0; i < data.length; i++) {
+    if (data instanceof Array) {
+        for (let i = 0; i < data.length; i++) {
             dataPoints += getDataPoints(data[i]);
         }
-    } else if(typeof data == "object") {
-        let keys = Object.keys(data).filter(key => !key.startsWith("_") && !["category", "hash"].includes(key));
-        for(let i = 0; i < keys.length; i++) {
+    } else if (typeof data == "object") {
+        let keys = Object.keys(data).filter(
+            (key) => !key.startsWith("_") && !["category", "hash"].includes(key)
+        );
+        for (let i = 0; i < keys.length; i++) {
             dataPoints += getDataPoints(data[keys[i]]);
         }
     } else {
