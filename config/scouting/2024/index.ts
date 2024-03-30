@@ -1471,10 +1471,6 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
                 )
                 .toString()
         );
-        prediction.match = match.match_number;
-        prediction.win = match.alliances[
-            prediction.winner
-        ].team_keys.includes(`frc${teamNumber}`);
         let predictionRed =
             prediction.red / (prediction.red + prediction.blue);
         let predictionBlue =
