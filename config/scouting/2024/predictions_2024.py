@@ -124,35 +124,35 @@ for x in (data):
     try:
         blue_teams = x["alliances"]["blue"]["team_keys"]
         red_teams = x["alliances"]["red"]["team_keys"]
-    
+
         blue_score = x["alliances"]["blue"]["score"]
         red_score = x["alliances"]["red"]["score"]
-    
+
         blue_fouls = x["score_breakdown"]["blue"]["foulCount"] + x["score_breakdown"]["blue"]["techFoulCount"]
         red_fouls = x["score_breakdown"]["red"]["foulCount"] + x["score_breakdown"]["red"]["techFoulCount"]
-    
+
         blue_teleop = x["score_breakdown"]["blue"]["teleopPoints"]
         red_teleop = x["score_breakdown"]["red"]["teleopPoints"]
-    
+
         for y in blue_teams:
             match_data = OrderedDict()
             match_data["score"] = blue_score
             match_data["fouls"] = blue_fouls
             match_data["teleop"] = blue_teleop
-    
+
             try:
                 count = len(team_data[y[3:]])
                 team_data[y[3:]][count] = match_data
             except:
                 team_data[y[3:]] = OrderedDict()
                 team_data[y[3:]][0] = match_data
-    
+
         for y in red_teams:
             match_data = OrderedDict()
             match_data["score"] = red_score
             match_data["fouls"] = red_fouls
             match_data["teleop"] = red_teleop
-    
+
             try:
                 count = len(team_data[y[3:]])
                 team_data[y[3:]][count] = match_data
@@ -182,27 +182,18 @@ for team, dict in team_data.items():
 
 
 def getData():
-    path = base + event + "-tba.json"
-    if os.path.exists(path):
-        with open(base + event + "-tba.json", "r") as file:
-            data = json.load(file)
-    else:
-        raise Exception("Could not find TBA file")
-
     team_data = OrderedDict()
-    for x in (data):
-        if x["comp_level"] == "qm":
-            blue_teams = x["alliances"]["blue"]["team_keys"]
-            red_teams = x["alliances"]["red"]["team_keys"]
 
-            blue_score = x["alliances"]["blue"]["score"]
-            red_score = x["alliances"]["red"]["score"]
-
-            for y in blue_teams:
-                team_data[y[3:]] = ''
-
-            for y in red_teams:
-                team_data[y[3:]] = ''
+    if os.path.exists(tpw_path):
+        with open(tpw_path, "r") as file:
+            TPW_data = csv.DictReader(file)
+            for x in TPW_data:
+                if x['team'] not in team_data:
+                    team_data[x['team']] = [x]
+                else:
+                    team_data[x['team']].append(x)
+    else:
+        raise Exception("Could not find TPW file")
 
     parsed_tpw_data = OrderedDict()
     for team, dict in team_data.items(): # team_data is tba data in an OrderedDict, just used to get list of teams
@@ -220,114 +211,110 @@ def getData():
         avg_auto_points = list()
         avg_tele_points = list()
         matches = {}
-        if os.path.exists(tpw_path):
-            with open(tpw_path, "r") as file:
-                TPW_data = csv.DictReader(file)
-                for x in TPW_data:
-                    if x['team'] == str(team) and int(x['match']) <= match_num:
-                        auto_pieces = x['auto scoring'][1:len(x['auto scoring']) - 1].split(", ")
-                        tele_pieces = x['teleop scoring'][1:len(x['teleop scoring']) - 1].split(", ")
-                        game_pieces = auto_pieces + tele_pieces
-                        agps.append(auto_pieces)
-                        tgps.append(tele_pieces)
 
-                        tele_st = int(x['stage level'])
+        for x in TPW_data:
+            auto_pieces = x['auto scoring'][1:len(x['auto scoring']) - 1].split(", ")
+            tele_pieces = x['teleop scoring'][1:len(x['teleop scoring']) - 1].split(", ")
+            game_pieces = auto_pieces + tele_pieces
+            agps.append(auto_pieces)
+            tgps.append(tele_pieces)
 
-                        if tele_st == 0:
-                            tstpts.append(0)
-                        elif tele_st == 1:
-                            tstpts.append(1)
-                        elif tele_st == 2:
-                            tstpts.append(3)
-                        elif tele_st >= 3:
-                            tstpts.append(4)
+            tele_st = int(x['stage level'])
 
-                        try:
-                            defe.append(int(x["defense skill"]))
-                            speed.append(int(x["speed"]))
-                            stab.append(int(x["stability"]))
-                            inta.append(int(x["intake consistency"]))
-                            driver.append(int(x["driver skill"]))
-                            uptime.append(153000 - int(x["brick time"]))
-                        except:
-                            defe.append(3)
-                            speed.append(3)
-                            stab.append(3)
-                            inta.append(3)
-                            driver.append(3)
-                            uptime.append(100)
+            if tele_st == 0:
+                tstpts.append(0)
+            elif tele_st == 1:
+                tstpts.append(1)
+            elif tele_st == 2:
+                tstpts.append(3)
+            elif tele_st >= 3:
+                tstpts.append(4)
 
-                        try:
-                            matches[x['match']][(x[''])] = game_pieces
-                        except:
-                            matches[x['match']] = {x['']: game_pieces}
+            try:
+                defe.append(int(x["defense skill"]))
+                speed.append(int(x["speed"]))
+                stab.append(int(x["stability"]))
+                inta.append(int(x["intake consistency"]))
+                driver.append(int(x["driver skill"]))
+                uptime.append(153000 - int(x["brick time"]))
+            except:
+                defe.append(3)
+                speed.append(3)
+                stab.append(3)
+                inta.append(3)
+                driver.append(3)
+                uptime.append(100)
 
-                for i in range(0, len(agps)):
-                    for j in range(0, len(agps[i])):
-                        val = agps[i][j]
-                        if val == 'as':
-                            try:
-                                agpts[i] += 2
-                            except:
-                                agpts[i] = 2
-                        elif val == 'ss':
-                            try:
-                                agpts[i] += 5
-                            except:
-                                agpts[i] = 5
-                        else:
-                            try:
-                                agpts[i] += 0
-                            except:
-                                agpts[i] = 0
-                    avg_auto_points.append(agpts[i])
+            try:
+                matches[x['match']][(x[''])] = game_pieces
+            except:
+                matches[x['match']] = {x['']: game_pieces}
 
-                for i in range(0, len(tgps)):
-                    for j in range(0, len(tgps[i])):
-                        val = tgps[i][j]
-                        if val == 'as':
-                            try:
-                                tgpts[i] += 1
-                            except:
-                                tgpts[i] = 1
-                        elif val == 'ss':
-                            try:
-                                tgpts[i] += 2
-                            except:
-                                tgpts[i] = 2
-                        elif val in ['sa', 'ts']:
-                            try:
-                                tgpts[i] += 5
-                            except:
-                                tgpts[i] = 5
-                        else:
-                            try:
-                                tgpts[i] += 0
-                            except:
-                                tgpts[i] = 0
-                    avg_tele_points.append(tgpts[i])
+        for i in range(0, len(agps)):
+            for j in range(0, len(agps[i])):
+                val = agps[i][j]
+                if val == 'as':
+                    try:
+                        agpts[i] += 2
+                    except:
+                        agpts[i] = 2
+                elif val == 'ss':
+                    try:
+                        agpts[i] += 5
+                    except:
+                        agpts[i] = 5
+                else:
+                    try:
+                        agpts[i] += 0
+                    except:
+                        agpts[i] = 0
+            avg_auto_points.append(agpts[i])
 
-                data_tpw = OrderedDict()
-                data_tpw['avg-tele'] = avg(avg_tele_points)
-                data_tpw['avg-auto'] = avg(avg_auto_points)
-                data_tpw['avg-stage'] = avg(tstpts)
-                data_tpw['avg-def'] = avg(defe)
-                data_tpw['avg-driv'] = avg(driver)
-                data_tpw['avg-speed'] = avg(speed)
-                data_tpw['avg-stab'] = avg(stab)
-                data_tpw['avg-inta'] = avg(inta)
-                data_tpw['avg-upt'] = avg(uptime)
-                data_tpw['matches'] = matches
-                data_tpw['tpw-std'] = std(avg_auto_points) + std(avg_tele_points) + std(tstpts)
-                data_tpw["tpw-score"] = data_tpw['avg-auto'] + data_tpw['avg-tele'] + data_tpw['avg-stage']
-                parsed_tpw_data[team] = data_tpw #all team data stored to parsed_tpw_data OrderedDict
-        else:
-            raise Exception("Could not find TPW file")
+        for i in range(0, len(tgps)):
+            for j in range(0, len(tgps[i])):
+                val = tgps[i][j]
+                if val == 'as':
+                    try:
+                        tgpts[i] += 1
+                    except:
+                        tgpts[i] = 1
+                elif val == 'ss':
+                    try:
+                        tgpts[i] += 2
+                    except:
+                        tgpts[i] = 2
+                elif val in ['sa', 'ts']:
+                    try:
+                        tgpts[i] += 5
+                    except:
+                        tgpts[i] = 5
+                else:
+                    try:
+                        tgpts[i] += 0
+                    except:
+                        tgpts[i] = 0
+            avg_tele_points.append(tgpts[i])
+
+        data_tpw = OrderedDict()
+        data_tpw['avg-tele'] = avg(avg_tele_points)
+        data_tpw['avg-auto'] = avg(avg_auto_points)
+        data_tpw['avg-stage'] = avg(tstpts)
+        data_tpw['avg-def'] = avg(defe)
+        data_tpw['avg-driv'] = avg(driver)
+        data_tpw['avg-speed'] = avg(speed)
+        data_tpw['avg-stab'] = avg(stab)
+        data_tpw['avg-inta'] = avg(inta)
+        data_tpw['avg-upt'] = avg(uptime)
+        data_tpw['matches'] = matches
+        data_tpw['tpw-std'] = std(avg_auto_points) + std(avg_tele_points) + std(tstpts)
+        data_tpw["tpw-score"] = data_tpw['avg-auto'] + data_tpw['avg-tele'] + data_tpw['avg-stage']
+        parsed_tpw_data[team] = data_tpw #all team data stored to parsed_tpw_data OrderedDict
 
     with open(base + 'parsed_tpw_data_'+event+'.json', 'w') as f:
         f.write(json.dumps({'lines': len(pd.read_csv(tpw_path)), 'data': parsed_tpw_data}, default=int))
         f.close()
     return parsed_tpw_data
+
 
 if os.path.exists(base + 'parsed_tpw_data_'+event+'.json'):
     with open(base + 'parsed_tpw_data_'+event+'.json') as f:
@@ -439,19 +426,24 @@ def predict(b1, b2, b3, r1, r2, r3):
     r2 = str(r2)
     r3 = str(r3)
 
-    tba = tba_predict(b1, b2, b3, r1, r2, r3)
     tpw = tpw_predict(b1, b2, b3, r1, r2, r3)
 
-    bs1 = tba["blue-predicted"]
-    bs2 = tpw["blue-predicted"]
-    bs3 = tpw["bp"]
+    if len(parsed_data) >= len(parsed_tpw_data):
+        tba = tba_predict(b1, b2, b3, r1, r2, r3)
 
-    rs1 = tba["red-predicted"]
-    rs2 = tpw["red-predicted"]
-    rs3 = tpw["rp"]
+        bs1 = tba["blue-predicted"]
+        bs2 = tpw["blue-predicted"]
+        bs3 = tpw["bp"]
 
-    bp = bs1 + bs2 + 5*(bs3 - rs3)
-    rp = rs1 + rs2 + 5*(rs3 - bs3)
+        rs1 = tba["red-predicted"]
+        rs2 = tpw["red-predicted"]
+        rs3 = tpw["rp"]
+
+        bp = bs1 + bs2 + 5*(bs3 - rs3)
+        rp = rs1 + rs2 + 5*(rs3 - bs3)
+    else:
+        bp = tpw["blue-predicted"]
+        rp = tpw["red-predicted"]
 
     if bp > rp:
         winner = 'blue'
