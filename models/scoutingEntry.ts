@@ -112,11 +112,6 @@ export default mongoose.model(
             required: false,
             default: 0
         },
-        accuracyBoosters: ScoutingBoosters,
-        tps {
-            type: Booelan,
-            required: false,
-            default: false
-        }
+        accuracyBoosters: ScoutingBoosters
     })
 );
