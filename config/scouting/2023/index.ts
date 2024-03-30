@@ -1228,15 +1228,6 @@ export async function predict(event, redTeamNumbers, blueTeamNumbers) {
     ].value;
 }
 
-export async function tps(data, categories, teams) {
-    return data.map((entry) => {
-        return {
-            silentlyFail: true,
-            hash: event.hash
-        };
-    }
-}
-
 export async function accuracy(event, matches, data, categories, teams) {
     return await accuracy2023(event, matches, data, categories, teams);
 }
@@ -1250,7 +1241,6 @@ const scouting2023 = {
     analysis,
     compare,
     predict,
-    accuracy,
-    tps
+    accuracy
 };
 export default scouting2023;
