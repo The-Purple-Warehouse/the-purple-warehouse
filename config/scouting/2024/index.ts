@@ -1471,13 +1471,23 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
                 )
                 .toString()
         );
-        if (prediction.red > 0.85) {
-            prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
-            prediction.blue = 1 - prediction.red;
-        } else if (prediction.blue > 0.85) {
-            prediction.blue = 0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
-            prediction.red = 1 - prediction.blue;
+        prediction.match = match.match_number;
+        prediction.win = match.alliances[
+            prediction.winner
+        ].team_keys.includes(`frc${teamNumber}`);
+        let predictionRed =
+            prediction.red / (prediction.red + prediction.blue);
+        let predictionBlue =
+            prediction.blue / (prediction.blue + prediction.red);
+        if (predictionRed > 0.85) {
+            predictionRed = 0.75 + ((predictionRed - 0.85) / 0.15) * 0.1;
+            predictionBlue = 1 - predictionRed;
+        } else if (predictionBlue > 0.85) {
+            predictionBlue = 0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
+            predictionRed = 1 - predictionBlue;
         }
+        prediction.red = predictionRed;
+        prediction.blue = predictionBlue;
         predictions.push(prediction);
 
         data.predictions = predictions;
