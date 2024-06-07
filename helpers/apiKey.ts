@@ -136,3 +136,16 @@ export function removeAll() {
 export async function getAll() {
     return await APIKey.find({}).lean();
 }
+
+/**
+ * Retrive the rate limit and team number for a given API key.
+ * @param apiKey the API key to verify
+ * @returns the team number and rate limit for the given API key
+ */
+export async function retrieveRateLimit(apiKey) {
+    const info = await verifyAPIKey(apiKey, null, null, null, [], []); // verification already happened, just retrieve the team # + rate limit
+    if (!info.verified) {
+        return { teamNumber: "", rateLimit: 0 };
+    }
+    return { teamNumber: info.key.team, rateLimit: info.key.rateLimit };
+}

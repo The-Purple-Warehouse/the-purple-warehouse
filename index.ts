@@ -1,5 +1,7 @@
 import Koa from "koa";
 import Router from "koa-router";
+import ratelimit from 'koa-ratelimit';
+import Redis from 'ioredis';
 import json from "koa-json";
 import logger from "koa-logger";
 import views from "koa-views";
@@ -12,6 +14,7 @@ import * as crypto from "crypto";
 
 import registerHelpers from "./helpers/hbsHelpers";
 import { addAPIHeaders } from "./helpers/utils";
+import { retrieveRateLimit } from "./helpers/apiKey"
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
@@ -27,6 +30,8 @@ import scoutingAPIRouter from "./routers/api/scouting";
 import tpsAPIRouter from "./routers/api/tps";
 
 const app = new Koa();
+
+const redis = new Redis();
 
 const sessionConfig: Partial<session.opts> = {
     key: config.auth.cookieKeys[0],
@@ -201,6 +206,23 @@ router.get("/", async (ctx, next) => {
 
 router.get("/discord", async (ctx) => {
     ctx.redirect("https://discord.gg/gT9ZZDqTyx");
+});
+
+export const rateLimiter = ratelimit({
+    driver: "redis",
+    db: redis,
+    duration: 1000, // 1 second
+    id: async (ctx) => {
+        const apiKey = ctx.query.key;
+        const rateInfo = await retrieveRateLimit(apiKey);
+        return rateInfo.teamNumber; // team number is id
+    },
+    max: async (ctx) => {
+        const apiKey = ctx.query.key;
+        const rateInfo = await retrieveRateLimit(apiKey);
+        return rateInfo.rateLimit;
+    },
+    errorMessage: "Exceeded the rate limit. Try again later."
 });
 
 app.use(router.routes());
