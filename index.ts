@@ -1,7 +1,6 @@
 import Koa from "koa";
 import Router from "koa-router";
-import ratelimit from 'koa-ratelimit';
-import Redis from 'ioredis';
+import { RateLimit, Stores } from 'koa2-ratelimit';
 import json from "koa-json";
 import logger from "koa-logger";
 import views from "koa-views";
@@ -11,6 +10,7 @@ import session from "koa-session";
 import auth from "koa-basic-auth";
 import { createServer } from "http";
 import * as crypto from "crypto";
+import mongoose from "./db";
 
 import registerHelpers from "./helpers/hbsHelpers";
 import { addAPIHeaders } from "./helpers/utils";
@@ -30,8 +30,6 @@ import scoutingAPIRouter from "./routers/api/scouting";
 import tpsAPIRouter from "./routers/api/tps";
 
 const app = new Koa();
-
-const redis = new Redis();
 
 const sessionConfig: Partial<session.opts> = {
     key: config.auth.cookieKeys[0],
@@ -208,21 +206,25 @@ router.get("/discord", async (ctx) => {
     ctx.redirect("https://discord.gg/gT9ZZDqTyx");
 });
 
-export const rateLimiter = ratelimit({
-    driver: "redis",
-    db: redis,
-    duration: 1000, // 1 second
-    id: async (ctx) => {
-        const apiKey = ctx.query.key;
-        const rateInfo = await retrieveRateLimit(apiKey);
-        return rateInfo.teamNumber; // team number is id
-    },
+const mongo = new Stores.Mongodb(mongoose.connection, {
+    collectionName: 'ratelimits',
+    collectionAbuseName: 'ratelimitsabuses',
+});
+
+export const rateLimiter = RateLimit.middleware({
+    interval: { sec: 1 },  // 1 second
     max: async (ctx) => {
         const apiKey = ctx.query.key;
         const rateInfo = await retrieveRateLimit(apiKey);
-        return rateInfo.rateLimit;
+        return rateInfo.rateLimit; // max requests per second per team
     },
-    errorMessage: "Exceeded the rate limit. Try again later."
+    keyGenerator: async (ctx) => {
+        const apiKey = ctx.query.key;
+        const rateInfo = await retrieveRateLimit(apiKey);
+        return `teamid:${rateInfo.teamNumber}`; // team number as key
+    },
+    store: mongo,
+    message: "Exceeded the rate limit. Try again later."
 });
 
 app.use(router.routes());
