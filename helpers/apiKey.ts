@@ -4,7 +4,7 @@ import { APIKeyType } from "../models/apiKey";
 import * as crypto from "crypto";
 
 function ensureType(data: any): any {
-    console.log(data);
+    // console.log(data);
     if (data == null || typeof data !== "object") {
         return {};
     }
@@ -14,7 +14,8 @@ function ensureType(data: any): any {
         typeof data.app !== "string" ||
         !Array.isArray(data.scopes) ||
         typeof data.expiration !== "number" ||
-        typeof data.source !== "string"
+        typeof data.source !== "string" ||
+        typeof data.limit !== "number"
     ) {
         return {};
     }
@@ -26,6 +27,7 @@ function ensureType(data: any): any {
     obj.scopes = data.scopes;
     obj.expiration = data.expiration;
     obj.source = data.source;
+    obj.limit = data.limit;
     return obj;
 }
 
@@ -53,6 +55,7 @@ export async function addAPIKey(rawOptions: any) {
     options.hashType = "sha256";
     options.apiKey = hashKey(unhashed, options.hashType);
     options.apiIdentifier = generateAPIIdentifier();
+    options.limit = options.limit || 1000; // a default character limit
     options.name =
         options.name ||
         `${options.app} (${options.apiIdentifier.split("-")[0]})`;
