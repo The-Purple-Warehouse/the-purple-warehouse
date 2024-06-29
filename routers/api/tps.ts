@@ -1,6 +1,6 @@
 import * as Koa from "koa";
 import Router from "koa-router";
-import { rateLimiter } from "../..";
+import { rateLimiter } from "../../middleware/rateLimiter";
 import * as json from "koa-json";
 import * as logger from "koa-logger";
 import * as views from "koa-views";

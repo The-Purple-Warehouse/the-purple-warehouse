@@ -1,6 +1,5 @@
 import Koa from "koa";
 import Router from "koa-router";
-import { RateLimit, Stores } from 'koa2-ratelimit';
 import json from "koa-json";
 import logger from "koa-logger";
 import views from "koa-views";
@@ -10,11 +9,9 @@ import session from "koa-session";
 import auth from "koa-basic-auth";
 import { createServer } from "http";
 import * as crypto from "crypto";
-import mongoose from "./db";
 
 import registerHelpers from "./helpers/hbsHelpers";
 import { addAPIHeaders } from "./helpers/utils";
-import { retrieveRateLimit } from "./helpers/apiKey"
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
@@ -204,27 +201,6 @@ router.get("/", async (ctx, next) => {
 
 router.get("/discord", async (ctx) => {
     ctx.redirect("https://discord.gg/gT9ZZDqTyx");
-});
-
-const mongo = new Stores.Mongodb(mongoose.connection, {
-    collectionName: 'ratelimits',
-    collectionAbuseName: 'ratelimitsabuses',
-});
-
-export const rateLimiter = RateLimit.middleware({
-    interval: { sec: 1 },  // 1 second
-    max: async (ctx) => {
-        const apiKey = ctx.query.key;
-        const rateInfo = await retrieveRateLimit(apiKey);
-        return rateInfo.rateLimit; // max requests per second per team
-    },
-    keyGenerator: async (ctx) => {
-        const apiKey = ctx.query.key;
-        const rateInfo = await retrieveRateLimit(apiKey);
-        return `teamid:${rateInfo.teamNumber}`; // team number as key
-    },
-    store: mongo,
-    message: "Exceeded the rate limit. Try again later."
 });
 
 app.use(router.routes());
