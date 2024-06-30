@@ -4,7 +4,6 @@ import { APIKeyType } from "../models/apiKey";
 import * as crypto from "crypto";
 
 function ensureType(data: any): any {
-    console.log(data);
     if (data == null || typeof data !== "object") {
         return {};
     }
@@ -14,7 +13,8 @@ function ensureType(data: any): any {
         typeof data.app !== "string" ||
         !Array.isArray(data.scopes) ||
         typeof data.expiration !== "number" ||
-        typeof data.source !== "string"
+        typeof data.source !== "string" ||
+        typeof data.limit !== "number"
     ) {
         return {};
     }
@@ -26,6 +26,7 @@ function ensureType(data: any): any {
     obj.scopes = data.scopes;
     obj.expiration = data.expiration;
     obj.source = data.source;
+    obj.limit = data.limit;
     return obj;
 }
 
@@ -53,6 +54,7 @@ export async function addAPIKey(rawOptions: any) {
     options.hashType = "sha256";
     options.apiKey = hashKey(unhashed, options.hashType);
     options.apiIdentifier = generateAPIIdentifier();
+    options.limit = options.limit || 2500; // a default character limit
     options.name =
         options.name ||
         `${options.app} (${options.apiIdentifier.split("-")[0]})`;
@@ -135,4 +137,17 @@ export function removeAll() {
 
 export async function getAll() {
     return await APIKey.find({}).lean();
+}
+
+/**
+ * Retrive the rate limit and team number for a given API key.
+ * @param apiKey the API key to verify
+ * @returns the team number and rate limit for the given API key
+ */
+export async function retrieveRateLimit(apiKey) {
+    const info = await verifyAPIKey(apiKey, null, null, null, [], []); // verification already happened, just retrieve the team # + rate limit
+    if (!info.verified) {
+        return { teamNumber: "", rateLimit: 0 };
+    }
+    return { teamNumber: info.key.team, rateLimit: info.key.rateLimit };
 }

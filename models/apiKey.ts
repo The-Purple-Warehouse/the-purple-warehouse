@@ -7,6 +7,7 @@ export interface APIKeyType {
     username: string;
     team: string;
     app: string;
+    limit: number; // in characters
     scopes: string[];
     expiration: number;
     creation: number;
@@ -41,6 +42,10 @@ export default mongoose.model(
         app: {
             required: true,
             type: String
+        },
+        limit: {
+            required: true,
+            type: Number
         },
         scopes: {
             required: true,
