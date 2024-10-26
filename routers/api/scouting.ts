@@ -259,7 +259,17 @@ router.post(
                             country: team.country,
                             state: team.state
                         };
-                    }).sort((a: any, b: any) => parseInt(a.teamNumber) - parseInt(b.teamNumber))
+                    }).sort((a: any, b: any) => {
+                        let aTeamNumber = parseInt(a.teamNumber);
+                        let bTeamNumber = parseInt(b.teamNumber);
+                        if(isNaN(aTeamNumber)) {
+                            aTeamNumber = 9999999;
+                        }
+                        if(isNaN(bTeamNumber)) {
+                            bTeamNumber = 9999999;
+                        }
+                        return aTeamNumber - bTeamNumber;
+                    })
                 }
             };
         } else {
