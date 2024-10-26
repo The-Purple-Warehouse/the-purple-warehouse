@@ -2267,7 +2267,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 <div class="data-window">
                     <table class="data-table" style="display: none;">
                         <thead>
-                            <th></th>
                             <th>team number</th>
                             <th>name</th>
                             <th>country</th>
@@ -2371,9 +2370,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             element.querySelector(".data-table > tbody").innerHTML = result.body.teams.map((team, i) => {
                                 return `
                                 <tr>
-                                    <td>
-                                        ${i}
-                                    </td>
                                     <td>
                                         ${team.teamNumber}
                                     </td>
