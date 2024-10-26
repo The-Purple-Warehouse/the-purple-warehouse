@@ -56,6 +56,8 @@
           } else if(page == "predict-outcomes") {
             document.querySelector(".navbar a[data-page='predict-outcomes']").classList.add("active");
             await sdk.showPredictPage();
+          } else if(page == "admin") {
+            await sdk.showAdminPage();
           } else {
             document.querySelector(".navbar a[data-page='home']").classList.add("active");
             await sdk.showHomePage();
