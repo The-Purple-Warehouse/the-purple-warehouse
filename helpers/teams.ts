@@ -15,6 +15,10 @@ export function getTeamByNumber(teamNumber: string) {
     return Team.findOne({ teamNumber });
 }
 
+export function getAllTeams() {
+    return Team.find().lean();
+}
+
 export async function teamExistsByNumber(teamNumber: string) {
     return (await getTeamByNumber(teamNumber)) != null;
 }

@@ -1471,8 +1471,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
                 )
                 .toString()
         );
-        let predictionRed =
-            prediction.red / (prediction.red + prediction.blue);
+        let predictionRed = prediction.red / (prediction.red + prediction.blue);
         let predictionBlue =
             prediction.blue / (prediction.blue + prediction.red);
         if (predictionRed > 0.85) {

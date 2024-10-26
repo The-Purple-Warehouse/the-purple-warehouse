@@ -1,5 +1,6 @@
 import * as Koa from "koa";
 import Router from "koa-router";
+import { rateLimiter } from "../../middleware/rateLimiter";
 import * as json from "koa-json";
 import * as logger from "koa-logger";
 import * as views from "koa-views";
@@ -29,7 +30,7 @@ function checkNull(object1, object2) {
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
-router.post("/entry/add", async (ctx, next) => {
+router.post("/entry/add", rateLimiter, async (ctx, next) => {
     addAPIHeaders(ctx);
     const query = ctx.query as any;
     const body = ctx.request.body as any;
@@ -61,6 +62,7 @@ router.post("/entry/add", async (ctx, next) => {
             tps,
             privacy,
             threshold,
+            verify.key.limit,
             new Date().getTime()
         );
         if (entry == null) {
