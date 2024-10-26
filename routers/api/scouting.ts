@@ -259,7 +259,7 @@ router.post(
                             country: team.country,
                             state: team.state
                         };
-                    })
+                    }).sort((a: any, b: any) => parseInt(a.teamNumber) - parseInt(b.teamNumber))
                 }
             };
         } else {
