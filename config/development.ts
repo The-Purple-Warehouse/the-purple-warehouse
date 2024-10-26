@@ -31,7 +31,8 @@ const config: Config = {
         scoutingInternal: {
             teamNumber: "admin",
             accessToken: "admin"
-        }
+        },
+        adminTokens: secret.development.auth.adminTokens
     },
     features: ["scouting", "resources", "tps"],
     year: 2024

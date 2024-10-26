@@ -43,6 +43,7 @@ export interface Config {
             teamNumber: string;
             accessToken: string;
         };
+        adminTokens: any;
     };
     features: string[];
     year: number;
