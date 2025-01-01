@@ -20,12 +20,20 @@ import {
     getTotalIncentives
 } from "../../helpers/scouting";
 import {
+    getTeamByNumber,
+    addTeam,
+    hashAccessToken,
+    getAllTeams
+} from "../../helpers/teams";
+import {
     getEvents,
     getEventsSorted,
     getMatches,
-    getMatchesFull
+    getMatchesFull,
+    getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
+import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -184,6 +192,102 @@ router.get(
             body: {
                 matches: await getMatchesFull(ctx.params.event)
             }
+        };
+        addAPIHeaders(ctx);
+    }
+);
+
+router.get(
+    "/team/get/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        ctx.body = {
+            success: true,
+            body: {
+                team: await getTeam(ctx.params.team)
+            }
+        };
+        addAPIHeaders(ctx);
+    }
+);
+
+router.post(
+    "/team/add/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        let body = ctx.request.body as any;
+        if(config.auth.adminTokens[body.adminToken] != null) {
+            let team = await getTeamByNumber(ctx.params.team) as any;
+            if(team == null) {
+                await addTeam(body.teamName, ctx.params.team, body.accessToken, body.country, body.state);
+                processAdmin(config.auth.adminTokens[body.adminToken], "add", ctx.params.team, body);
+            } else {
+                let hashedAccessToken = await hashAccessToken(body.accessToken);
+                team.teamName = body.teamName;
+                team.accessToken = hashedAccessToken;
+                team.country = body.country;
+                team.state = body.state;
+                await team.save();
+                processAdmin(config.auth.adminTokens[body.adminToken], "update", ctx.params.team, body);
+            }
+            ctx.body = {
+                success: true
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: "Invalid admin token!"
+            };
+        }
+        addAPIHeaders(ctx);
+    }
+);
+
+router.post(
+    "/team/list",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        let body = ctx.request.body as any;
+        if(config.auth.adminTokens[body.adminToken] != null) {
+            ctx.body = {
+                success: true,
+                body: {
+                    teams: (await getAllTeams()).map((team: any) => {
+                        return {
+                            name: team.teamName,
+                            teamNumber: team.teamNumber,
+                            country: team.country,
+                            state: team.state
+                        };
+                    }).sort((a: any, b: any) => {
+                        let aTeamNumber = parseInt(a.teamNumber);
+                        let bTeamNumber = parseInt(b.teamNumber);
+                        if(isNaN(aTeamNumber)) {
+                            aTeamNumber = 9999999;
+                        }
+                        if(isNaN(bTeamNumber)) {
+                            bTeamNumber = 9999999;
+                        }
+                        return aTeamNumber - bTeamNumber;
+                    })
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: "Invalid admin token!"
+            };
+        }
+        addAPIHeaders(ctx);
+    }
+);
+
+router.post(
+    "/team/add/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        ctx.body = {
+            success: false
         };
         addAPIHeaders(ctx);
     }

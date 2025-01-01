@@ -2359,6 +2359,160 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
+    _this.showAdminPage = () => {
+        return new Promise(async (resolve, reject) => {
+            element.innerHTML = `
+                <div class="home-window">
+                    <h2>Admin Token:</h2>
+                    <input class="admin-token" type="password" />
+                    <button class="list">List All Teams</button>
+                    <h2>Team Number:</h2>
+                    <input class="team-number" type="number" />
+                    <h2>Access Token:</h2>
+                    <input class="access-token" type="text" />
+                    <button class="fetch">Fetch TBA</button>
+                    <h2>Team Name:</h2>
+                    <input class="team-name" type="text" />
+                    <h2>Country:</h2>
+                    <input class="country" type="text" />
+                    <h2>State:</h2>
+                    <input class="state" type="text" />
+                    <p class="warning">Make sure to double check all information before adding/updating a team.</p>
+                    <button class="add">Add/Update Team</button>
+                    <p class="message warning"></p>
+                </div>
+                <div class="data-window">
+                    <table class="data-table" style="display: none;">
+                        <thead>
+                            <th>team number</th>
+                            <th>name</th>
+                            <th>country</th>
+                            <th>state</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            element.querySelector(".home-window > button.fetch").onclick =
+                async () => {
+                    let teamNumber = element.querySelector(
+                        ".home-window > input.team-number"
+                    ).value;
+                    if (
+                        teamNumber != null &&
+                        teamNumber != ""
+                    ) {
+                        let team = await _this.getTeam(teamNumber);
+                        if(team.nickname != null && team.nickname != "") {
+                            element.querySelector(".home-window > input.team-name").value = team.nickname;
+                        } else {
+                            element.querySelector(".home-window > input.team-name").value = "";
+                        }
+                        if(team.country != null && team.country != "") {
+                            element.querySelector(".home-window > input.country").value = team.country;
+                        } else {
+                            element.querySelector(".home-window > input.country").value = "";
+                        }
+                        if(team.country == "USA" && team.state_prov != null && team.state_prov != "") {
+                            element.querySelector(".home-window > input.state").value = team.state_prov;
+                        } else {
+                            element.querySelector(".home-window > input.state").value = "";
+                        }
+                    }
+                };
+
+            element.querySelector(".home-window > button.add").onclick =
+                async () => {
+                    let teamNumber = element.querySelector(
+                        ".home-window > input.team-number"
+                    ).value;
+                    let accessToken = element.querySelector(
+                        ".home-window > input.access-token"
+                    ).value;
+                    let teamName = element.querySelector(
+                        ".home-window > input.team-name"
+                    ).value;
+                    let country = element.querySelector(
+                        ".home-window > input.country"
+                    ).value;
+                    let state = element.querySelector(
+                        ".home-window > input.state"
+                    ).value;
+                    let adminToken = element.querySelector(
+                        ".home-window > input.admin-token"
+                    ).value;
+                    if (
+                        teamNumber != null &&
+                        teamNumber != "" &&
+                        accessToken != null &&
+                        accessToken != "" &&
+                        teamName != null &&
+                        teamName != "" &&
+                        country != null &&
+                        country != "" &&
+                        adminToken != null &&
+                        adminToken != ""
+                    ) {
+                        let result = await _this.addTeam(teamNumber, accessToken, teamName, country, state, adminToken);
+                        if(result.success) {
+                            element.querySelector(".home-window > .message").classList.remove("red");
+                            element.querySelector(".home-window > .message").classList.add("green");
+                            element.querySelector(".home-window > input.team-number").value = "";
+                            element.querySelector(".home-window > input.access-token").value = "";
+                            element.querySelector(".home-window > input.team-name").value = "";
+                            element.querySelector(".home-window > input.country").value = "";
+                            element.querySelector(".home-window > input.state").value = "";
+                            element.querySelector(".home-window > .message").innerHTML = `Team ${teamNumber} added/updated successfully!`;
+                        } else {
+                            element.querySelector(".home-window > .message").classList.remove("green");
+                            element.querySelector(".home-window > .message").classList.add("red");
+                            element.querySelector(".home-window > .message").innerHTML = result.error;
+                        }
+                    }
+                };
+            element.querySelector(".home-window > button.list").onclick =
+                async () => {
+                    let adminToken = element.querySelector(
+                        ".home-window > input.admin-token"
+                    ).value;
+                    if (
+                        adminToken != null &&
+                        adminToken != ""
+                    ) {
+                        let result = await _this.listTeams(adminToken);
+                        if(result.success) {
+                            element.querySelector(".home-window > .message").innerHTML = "";
+                            element.querySelector(".data-table > tbody").innerHTML = result.body.teams.map((team, i) => {
+                                return `
+                                <tr>
+                                    <td>
+                                        ${team.teamNumber}
+                                    </td>
+                                    <td>
+                                        ${team.name}
+                                    </td>
+                                    <td>
+                                        ${team.country}
+                                    </td>
+                                    <td>
+                                        ${team.state}
+                                    </td>
+                                </tr>`;
+                            }) .join("");
+                            element.querySelector(".data-table").style.display = "";
+                        } else {
+                            element.querySelector(".home-window > .message").classList.remove("green");
+                            element.querySelector(".home-window > .message").classList.add("red");
+                            element.querySelector(".home-window > .message").innerHTML = result.error;
+                        }
+                    }
+                };
+            resolve();
+        });
+    };
+
     _this.getQuote = () => {
         let possibleQuotes = importantQuotes.length * 3 + quotes.length;
         let randomQuoteID = Math.floor(Math.random() * possibleQuotes);
@@ -2395,6 +2549,85 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             }
         });
     };
+
+    _this.getTeam = (teamNumber) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let team = await (
+                    await fetch(
+                        `/api/v1/scouting/team/get/${encodeURIComponent(
+                            teamNumber
+                        )}`
+                    )
+                ).json();
+                resolve(team.body.team);
+            } catch (err) {
+                resolve({
+                    success: false
+                });
+            }
+        });
+    };
+
+    _this.addTeam = (teamNumber, accessToken, teamName, country, state, adminToken) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let add = await (
+                    await fetch(
+                        `/api/v1/scouting/team/add/${encodeURIComponent(
+                            teamNumber
+                        )}`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json;charset=UTF-8"
+                            },
+                            body: JSON.stringify({
+                                teamName,
+                                country,
+                                state,
+                                accessToken,
+                                adminToken
+                            })
+                        }
+                    )
+                ).json();
+                resolve(add);
+            } catch (err) {
+                resolve({
+                    success: false
+                });
+            }
+        });
+    }
+
+    _this.listTeams = (adminToken) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let list = await (
+                    await fetch(
+                        `/api/v1/scouting/team/list`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json;charset=UTF-8"
+                            },
+                            body: JSON.stringify({
+                                adminToken
+                            })
+                        }
+                    )
+                ).json();
+                resolve(list);
+            } catch (err) {
+                resolve({
+                    success: false
+                });
+            }
+        });
+    }
 
     _this.getEventCode = () => {
         if (localStorage.getItem("eventCode") == null) {

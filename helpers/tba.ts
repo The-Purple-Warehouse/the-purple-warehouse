@@ -281,3 +281,17 @@ export async function getMatchesFull(event) {
     }
     return cache.matchesFull[event].value;
 }
+
+export async function getTeam(teamNumber) {
+    try {
+        let team = await (
+            await fetch(
+                `https://www.thebluealliance.com/api/v3/team/frc${encodeURIComponent(
+                    teamNumber
+                )}/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
+            )
+        ).json();
+        return team;
+    } catch (err) {}
+    return {};
+}
