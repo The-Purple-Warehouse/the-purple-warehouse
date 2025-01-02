@@ -33,7 +33,9 @@ import {
     getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
-import { processAdmin } from "../../helpers/adminHelpers";
+import ScoutingEntry from "../../models/scoutingEntry";
+import Team from "../../models/team";
+//import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -211,6 +213,7 @@ router.get(
     }
 );
 
+/*
 router.post(
     "/team/add/:team",
     requireScoutingAuth,
@@ -241,7 +244,7 @@ router.post(
         }
         addAPIHeaders(ctx);
     }
-);
+);*/
 
 router.post(
     "/team/list",
@@ -423,5 +426,54 @@ router.get(
         }
     }
 );
+
+router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    try {
+        const timeframe = ctx.query.timeframe || 'all';
+        const dateFilter: any = {};
+        
+        if (timeframe === 'week') {
+            const lastWeek = new Date();
+            lastWeek.setDate(lastWeek.getDate() - 7);
+            dateFilter.serverTimestamp = { $gte: lastWeek.getTime() };
+        } else if (timeframe === 'day') {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            dateFilter.serverTimestamp = { $gte: yesterday.getTime() };
+        }
+
+        const leaders = await ScoutingEntry.aggregate([
+            { $match: dateFilter },
+            {
+                $group: {
+                    _id: {
+                        team: "$contributor.team",
+                        username: "$contributor.username"
+                    },
+                    scansCount: { $sum: 1 },
+                    totalXp: { $sum: "$xp" },
+                    totalNuts: { $sum: "$nuts" },
+                    totalBolts: { $sum: "$bolts" }
+                }
+            },
+            { $sort: { scansCount: -1 } },
+            { $limit: 50 }
+        ]);
+
+        ctx.body = {
+            success: true,
+            body: {
+                leaders
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        ctx.body = {
+            success: false,
+            error: 'Internal server error'
+        };
+    }
+});
 
 export default router;

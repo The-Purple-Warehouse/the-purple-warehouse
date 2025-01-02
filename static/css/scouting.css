@@ -1244,3 +1244,76 @@ header .header-btn {
         width: 100%;
     }
 }
+
+/* Leaderboard Styles */
+.leaderboard-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.leaderboard-filters {
+  margin: 1rem 0;
+  text-align: right;
+}
+
+.leaderboard-filters select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.leaderboard-list {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item .rank {
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 40px;
+  text-align: center;
+}
+
+.leaderboard-item .user-info {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.leaderboard-item .username {
+  font-weight: bold;
+}
+
+.leaderboard-item .team {
+  color: #666;
+  margin-left: 0.5rem;
+}
+
+.leaderboard-item .stats {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.leaderboard-item .stats img {
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+}
+
+.leaderboard-item .currency {
+  display: flex;
+  gap: 0.5rem;
+}

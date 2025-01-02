@@ -4463,4 +4463,76 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     _this.hash = (string) => {
         return _this.hexFromBytes(sha256(_this.stringToBytes(string)));
     };
+
+    // Add this method right before the closing brace of the ScoutingAppSDK function
+    _this.showLeaderboardPage = async () => {
+        try {
+            const response = await fetch('/api/scouting/leaderboard');
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error('Failed to fetch leaderboard data');
+            }
+
+            element.innerHTML = `
+                <div class="leaderboard-container">
+                    <h2>Scouting Leaderboard</h2>
+                    <div class="leaderboard-filters">
+                        <select id="timeframe-select">
+                            <option value="all">All Time</option>
+                            <option value="week">This Week</option>
+                            <option value="day">Today</option>
+                        </select>
+                    </div>
+                    <div class="leaderboard-list">
+                        ${data.body.leaders.map((leader, index) => `
+                            <div class="leaderboard-item">
+                                <div class="rank">${index + 1}</div>
+                                <div class="user-info">
+                                    <span class="username">${_this.escape(leader.username)}</span>
+                                    <span class="team">(${_this.escape(leader.team)})</span>
+                                </div>
+                                <div class="stats">
+                                    <div class="scans">
+                                        <span>${leader.scans}</span>
+                                        <img src="/img/qr-code.png" alt="Scans" />
+                                    </div>
+                                    <div class="currency">
+                                        <div class="nuts">
+                                            <span>${leader.nuts}</span>
+                                            <img src="/img/nuts.png" alt="Nuts" />
+                                        </div>
+                                        <div class="bolts">
+                                            <span>${leader.bolts}</span>
+                                            <img src="/img/bolts.png" alt="Bolts" />
+                                        </div>
+                                    </div>
+                                    <div class="level">
+                                        Level ${leader.level}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+
+            // Add event listener for timeframe filter
+            element.querySelector('#timeframe-select')?.addEventListener('change', async (e) => {
+                const timeframe = e.target.value;
+                const response = await fetch(`/api/scouting/leaderboard?timeframe=${timeframe}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    await _this.showLeaderboardPage(); // Refresh the entire page with new data
+                }
+            });
+        } catch (error) {
+            console.error('Error loading leaderboard:', error);
+            element.innerHTML = `
+                <div class="leaderboard-container">
+                    <h2>Error Loading Leaderboard</h2>
+                    <p>Failed to load leaderboard data. Please try again later.</p>
+                </div>`;
+        }
+    };
 };

@@ -2,13 +2,17 @@ import mongoose from "mongoose";
 import config from "./config";
 
 if (config.db.username == "" && config.db.password == "") {
+    const mongoUrl = `mongodb://${config.db.host}:${config.db.port}/${config.db.database}`
+    console.log('mongoUrl:', mongoUrl)
     mongoose.connect(
-        `mongodb://${config.db.host}:${config.db.port}/${config.db.database}`,
+        mongoUrl,
         { useNewUrlParser: true, useUnifiedTopology: true }
     );
 } else {
+    const mongoUrl = `mongodb://${config.db.username}:${config.db.password}@${config.db.host}:${config.db.port}/${config.db.database}`
+    console.log('mongoUrl:', mongoUrl)
     mongoose.connect(
-        `mongodb://${config.db.username}:${config.db.password}@${config.db.host}:${config.db.port}/${config.db.database}`,
+        mongoUrl,
         { useNewUrlParser: true, useUnifiedTopology: true }
     );
 }

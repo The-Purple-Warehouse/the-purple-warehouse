@@ -1,0 +1,40 @@
+<div class="leaderboard-container">
+  <h2>Scouting Leaderboard</h2>
+  <div class="leaderboard-filters">
+    <select id="timeframe-select">
+      <option value="all">All Time</option>
+      <option value="week">This Week</option>
+      <option value="day">Today</option>
+    </select>
+  </div>
+  <div class="leaderboard-list">
+    {{#each leaders}}
+    <div class="leaderboard-item">
+      <div class="rank">{{add @index 1}}</div>
+      <div class="user-info">
+        <span class="username">{{this.username}}</span>
+        <span class="team">({{this.team}})</span>
+      </div>
+      <div class="stats">
+        <div class="scans">
+          <span>{{this.scans}}</span>
+          <img src="/img/qr-code.png" alt="Scans" />
+        </div>
+        <div class="currency">
+          <div class="nuts">
+            <span>{{this.nuts}}</span>
+            <img src="/img/nuts.png" alt="Nuts" />
+          </div>
+          <div class="bolts">
+            <span>{{this.bolts}}</span>
+            <img src="/img/bolts.png" alt="Bolts" />
+          </div>
+        </div>
+        <div class="level">
+          Level {{this.level}}
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div> 

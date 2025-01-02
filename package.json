@@ -11,6 +11,7 @@
         "build-noinstall": "rm -rf build && tsc",
         "debug": "NODE_ENV=development npx nodemon",
         "dev": "NODE_ENV=development node build/index.js",
+        "windows-dev": "npm run build && cp config/secret.json build/config/secret.json && set NODE_ENV=development&& node build/index.js",
         "staging": "NODE_ENV=staging node build/index.js",
         "format": "npx prettier . -w",
         "deploy-dev": "npm run build && npm run dev",
