@@ -64,6 +64,7 @@ main {
     align-items: center;
     justify-content: center;
     border-radius: var(--standard-border-radius);
+    width: 100%;
 }
 
 .login-window > .title-block,
