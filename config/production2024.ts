@@ -8,8 +8,8 @@ const config: Config = {
         port: 18924,
         domain: "2024.thepurplewarehouse.com"
     },
-    db: secret.production.db,
-    auth: secret.production.auth,
+    db: secret.production2024.db,
+    auth: secret.production2024.auth,
     features: ["scouting", "tps"],
     year: 2024
 };
