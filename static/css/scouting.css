@@ -160,13 +160,13 @@ input:-webkit-autofill {
     top: 10px;
     transition: 300ms ease all;
 }
-  
+
 .bar {
     position: relative;
     display: block;
     width: 100%;
 }
-  
+
 .bar::before {
     content: "";
     height: 2px;
@@ -177,7 +177,7 @@ input:-webkit-autofill {
     transition: 300ms ease all;
     left: 0px;
 }
-  
+
 .input-container *::before,
 .input-container *::after {
     box-sizing: border-box;
@@ -248,7 +248,7 @@ input:-webkit-autofill {
     height: max-content;
 }
 
-.home-window >:first-child {
+.home-window > :first-child {
     margin-top: 15px;
 }
 
@@ -535,13 +535,13 @@ header .match-info p,
 header .account-info p {
     margin: 0;
 }
-  
+
 header .match-info p.large,
 header .account-info p.large {
     font-size: 1.3rem;
     text-transform: capitalize;
 }
-  
+
 header .match-info p.small,
 header .account-info p.small {
     background: var(--cgray);
@@ -558,19 +558,19 @@ header .icon-button {
     justify-content: center;
     align-items: center;
 }
-  
+
 header .icon-button > p {
     font-size: 0.7rem;
     margin: 0;
 }
-  
+
 header .icon-button .send-container {
     height: 35%;
     aspect-ratio: 1 / 1;
     display: grid;
     place-items: center;
 }
-  
+
 header .icon-button .send-container svg {
     width: 100%;
     height: 100%;
@@ -853,7 +853,7 @@ header .icon-button .send-container svg {
 
 .match-window .component-textbox > div {
     background-color: #fff;
-    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 15px -3px rgba(0, 0, 0, 0.75);
     padding: 10px 40px 40px 40px;
 }
 
@@ -1134,7 +1134,6 @@ header .icon-button .send-container svg {
     display: flex;
     flex-direction: column;
     align-items: center;
-
 }
 
 .component-upload > h3,
@@ -1475,7 +1474,10 @@ header .icon-button .send-container svg {
         flex-direction: column;
     }
 
-    .match-window .component-locations-container.small-grid-x > .grid > .grid-item {
+    .match-window
+        .component-locations-container.small-grid-x
+        > .grid
+        > .grid-item {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -1494,7 +1496,7 @@ header .icon-button .send-container svg {
     display: inline-block;
     padding: 3px;
 }
-  
+
 .right {
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
@@ -1529,7 +1531,7 @@ header .icon-button .send-container svg {
     border-radius: var(--standard-border-radius);
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-  
+
 .component-toggle > p {
     color: black;
     padding: 0.35rem;
@@ -1539,13 +1541,13 @@ header .icon-button .send-container svg {
     margin-block-end: 0.6em;
     transition: 0.3s;
 }
-  
-.component-toggle input[type=checkbox]{
+
+.component-toggle input[type="checkbox"] {
     height: 0;
     width: 0;
     visibility: hidden;
 }
-  
+
 .component-toggle label {
     cursor: pointer;
     text-indent: 50px;
@@ -1556,7 +1558,7 @@ header .icon-button .send-container svg {
     border-radius: 100px;
     position: relative;
 }
-  
+
 .component-toggle label:after {
     content: "";
     position: absolute;
@@ -1569,11 +1571,11 @@ header .icon-button .send-container svg {
     border-radius: 90px;
     transition: 0.3s;
 }
-  
+
 .component-toggle input:checked + label {
     background: var(--primaryBackgroundColor);
 }
-  
+
 .component-toggle input:checked + label:after {
     left: 50%;
 }
@@ -1667,9 +1669,10 @@ div.disabled {
     border-radius: var(--standard-border-radius);
     margin: 0px 2% 0px 2%;
 }
-  
+
 .component-dropdown > select {
-    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+) no-repeat 100% 50%;
+    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+)
+        no-repeat 100% 50%;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
@@ -1695,17 +1698,17 @@ div.disabled {
     padding: 0px 3% 5% 3%;
     margin: 0px 2% 0px 2%;
 }
-  
+
 .component-textarea p {
     font-size: 0.9rem;
     margin-block-end: 0.5em;
 }
-  
+
 .component-textarea p.subtext {
     margin-block-start: 0;
     font-size: 0.75rem;
 }
-  
+
 .component-textarea textarea {
     font-family: inherit;
     resize: none;
@@ -1714,7 +1717,7 @@ div.disabled {
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.03);
-    border-color: -moz-use-text-color #FFFFFF #FFFFFF -moz-use-text-color;
+    border-color: -moz-use-text-color #ffffff #ffffff -moz-use-text-color;
     border-image: none;
     align-self: center;
     border-style: solid;
@@ -1724,11 +1727,12 @@ div.disabled {
     padding: 5px 8px;
     width: 95%;
     height: 20dvh;
-    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
-  
+
 textarea:focus {
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: none repeat scroll 0 0 #ffffff;
     border-color: var(--primaryBackgroundColor);
     outline: none;
     box-shadow: 0 0 5px var(--primaryBackgroundColor);
@@ -1773,11 +1777,11 @@ textarea:focus {
 .component-rating .range-slider::-webkit-slider-thumb:hover {
     background: var(--primaryBackgroundColor);
 }
-  
+
 .component-rating .range-slider:active::-webkit-slider-thumb {
     background: var(--primaryBackgroundColor);
 }
-  
+
 .component-rating .range-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -1787,11 +1791,11 @@ textarea:focus {
     cursor: pointer;
     transition: background 0.15s ease-in-out;
 }
-  
+
 .component-rating .range-slider::-moz-range-thumb:hover {
     background: var(--primaryBackgroundColor);
 }
-  
+
 .component-rating .range-slider:active::-moz-range-thumb {
     background: var(--primaryBackgroundColor);
 }
@@ -1799,7 +1803,7 @@ textarea:focus {
 .component-rating .range-slider:focus::-webkit-slider-thumb {
     box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--primaryBackgroundColor);
 }
-  
+
 .component-rating .range-span {
     display: inline-block;
     position: relative;
@@ -1812,7 +1816,7 @@ textarea:focus {
     padding: 5px 10px;
     margin-left: 8px;
 }
-  
+
 .component-rating .range-span::after {
     position: absolute;
     top: 8px;
@@ -1822,14 +1826,14 @@ textarea:focus {
     border-top: 7px solid transparent;
     border-right: 7px solid var(--primaryBackgroundColor);
     border-bottom: 7px solid transparent;
-    content: '';
+    content: "";
 }
-  
+
 ::-moz-range-track {
     background: #d7dcdf;
     border: 0;
 }
-  
+
 .component-rating input::-moz-focus-inner,
 .component-rating input::-moz-focus-outer {
     border: 0;
@@ -1842,7 +1846,6 @@ textarea:focus {
     margin-bottom: 3px;
     font-size: 0.9rem;
     font-weight: normal;
-
 }
 
 .match-window .component-rating > div {
@@ -1863,7 +1866,8 @@ aside#controls {
     border-radius: var(--standard-border-radius);
     display: flex;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 15px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 15px,
+        rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 aside#controls > div {
@@ -1877,29 +1881,29 @@ aside#controls > div {
     transition: background-color 0.5s;
     cursor: pointer;
 }
-  
+
 aside#controls > div.disabled {
     cursor: not-allowed;
 }
-  
+
 aside#controls > div.active {
     background: var(--primaryBackgroundColor);
 }
-  
+
 aside#controls > div.active p {
     color: white;
 }
-  
+
 aside#controls > div.active svg {
     filter: invert(1);
 }
-  
+
 aside#controls > div svg {
     aspect-ratio: 1;
     width: 30px;
     height: 30px;
 }
-  
+
 aside#controls > div p {
     font-size: 0.8rem;
     margin: 0px;
@@ -1920,7 +1924,7 @@ div.component-score-counter {
     background: #ffffff;
     overflow: hidden;
 }
-  
+
 div.component-score-counter > div {
     height: 100%;
     width: calc(100% / 3);
@@ -1934,14 +1938,14 @@ div.component-score-counter > div {
     position: relative;
     touch-action: manipulation;
 }
-  
+
 div.component-score-counter .score-label {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-  
+
 div.component-score-counter .score-controls {
     display: flex;
     flex-direction: column;
@@ -1950,7 +1954,7 @@ div.component-score-counter .score-controls {
     height: 90%;
     flex-grow: 1;
 }
-  
+
 div.component-score-counter .score-controls .score-control {
     display: flex;
     align-items: center;
@@ -1959,7 +1963,7 @@ div.component-score-counter .score-controls .score-control {
     height: 40%;
     width: 100%;
 }
-  
+
 div.component-score-counter .score-controls .score-control div:has(svg) {
     width: 100%;
     height: 100%;
@@ -1967,45 +1971,51 @@ div.component-score-counter .score-controls .score-control div:has(svg) {
     align-items: center;
 }
 
-div.component-score-counter .score-controls .score-control div:has(svg):first-child {
+div.component-score-counter
+    .score-controls
+    .score-control
+    div:has(svg):first-child {
     justify-content: flex-end;
 }
 
-div.component-score-counter .score-controls .score-control div:has(svg):last-child {
+div.component-score-counter
+    .score-controls
+    .score-control
+    div:has(svg):last-child {
     justify-content: flex-start;
 }
-  
+
 div.component-score-counter .score-controls .score-control svg {
     width: 15px;
-    height: 15px;;
+    height: 15px;
 }
-  
+
 div.component-score-counter > div:not(.active) .score-controls {
     display: none;
 }
-  
+
 .score-control > div > div.counter {
     user-select: none;
 }
-  
+
 .score-control > div > div.subtext {
     font-size: 0.75rem;
     user-select: none;
 }
-  
+
 .score-control > div:nth-child(2) {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  
+}
+
 div.component-score-counter div.disabled {
     background: rgba(67, 67, 67, 0.32) !important;
     color: black !important;
     cursor: not-allowed !important;
 }
-  
+
 div.component-score-counter > div:nth-child(2)::before {
     content: "";
     position: absolute;
@@ -2015,22 +2025,23 @@ div.component-score-counter > div:nth-child(2)::before {
     border-right: solid 1.5px var(--primaryBackgroundColor);
     pointer-events: none;
 }
-  
+
 div.component-score-counter > div svg {
     height: 1.5rem;
     width: 1.5rem;
 }
-  
+
 div.component-score-counter > div .subtitle {
     user-select: none;
 }
-  
+
 div.component-score-counter > div.active:not(.disabled) {
     width: 100% !important;
     justify-content: space-around;
 }
-  
-div.component-score-counter:has(> div.active:not(.disabled)) > div:not(.active) {
+
+div.component-score-counter:has(> div.active:not(.disabled))
+    > div:not(.active) {
     width: 0% !important;
     /* flex: 0; */
     visibility: hidden;
@@ -2046,27 +2057,27 @@ div.component-score-counter > div div.close {
     width: 15px;
     height: 15px;
 }
-  
+
 div.component-score-counter div.close svg {
     width: inherit;
     height: inherit;
 }
-  
+
 div.component-score-counter > div.active div.close {
     opacity: 0.75;
 }
-  
+
 div.component-score-counter div.front-group {
     display: grid;
-  /*   height: 100%; */
+    /*   height: 100%; */
     grid-template-rows: 3fr 1fr;
     margin: 0 15% 0 15%;
 }
-  
+
 div.component-score-counter div.front-group {
     grid-template-rows: 1fr;
 }
-  
+
 div.component-score-counter div.tally {
     height: 1.25rem;
     display: flex;

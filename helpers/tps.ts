@@ -193,13 +193,12 @@ export async function addEntry(
 ) {
     const serialized = sortedStringify(data);
     if (serialized.length > maxLength) {
-        throw new Error(`Given data exceeds the maximum length of ${maxLength} characters!`);
+        throw new Error(
+            `Given data exceeds the maximum length of ${maxLength} characters!`
+        );
     }
 
-    let hash = crypto
-        .createHash("sha256")
-        .update(serialized)
-        .digest("hex");
+    let hash = crypto.createHash("sha256").update(serialized).digest("hex");
 
     let entry = (await getEntryByHash(hash)) as any;
     if (entry == null) {

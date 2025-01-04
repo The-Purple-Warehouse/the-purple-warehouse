@@ -1047,16 +1047,18 @@ export function layout() {
                                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor"><path d="M20.5 13.5v-3c0-3.759 0-5.638-1.053-6.893a4.5 4.5 0 0 0-.555-.554C17.638 2 15.76 2 12 2S6.362 2 5.107 3.053a4.5 4.5 0 0 0-.554.554C3.5 4.862 3.5 6.741 3.5 10.5v3c0 3.759 0 5.638 1.053 6.892q.253.302.554.555C6.362 22 8.241 22 12 22s5.638 0 6.892-1.053a4.5 4.5 0 0 0 .555-.555C20.5 19.138 20.5 17.26 20.5 13.5"/><path d="M15.5 15a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0m-2-8a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"/></g></svg>',
                                             controls: [
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
-                                                    additive: true,
+                                                    additive: true
                                                 },
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Missed",
-                                                    additive: false,
+                                                    additive: false
                                                 }
                                             ]
                                         },
@@ -1068,22 +1070,24 @@ export function layout() {
                                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="4"><circle cx="24" cy="24" r="20"/><path stroke-linecap="round" stroke-linejoin="round" d="m23 14l-5 10h12l-5 10"/></g></svg>',
                                             controls: [
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
-                                                    additive: true,
+                                                    additive: true
                                                 },
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Missed",
-                                                    additive: false,
+                                                    additive: false
                                                 }
                                             ]
-                                        },
+                                        }
                                     ]
                                 }
-                            ],
+                            ]
                         }
                     ]
                 },
@@ -1173,22 +1177,25 @@ export function layout() {
                                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor"><path d="M20.5 13.5v-3c0-3.759 0-5.638-1.053-6.893a4.5 4.5 0 0 0-.555-.554C17.638 2 15.76 2 12 2S6.362 2 5.107 3.053a4.5 4.5 0 0 0-.554.554C3.5 4.862 3.5 6.741 3.5 10.5v3c0 3.759 0 5.638 1.053 6.892q.253.302.554.555C6.362 22 8.241 22 12 22s5.638 0 6.892-1.053a4.5 4.5 0 0 0 .555-.555C20.5 19.138 20.5 17.26 20.5 13.5"/><path d="M15.5 15a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0m-2-8a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"/></g></svg>',
                                             controls: [
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
-                                                    additive: true,
+                                                    additive: true
                                                 },
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Amplify",
-                                                    additive: true,
+                                                    additive: true
                                                 },
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Missed",
-                                                    additive: false,
+                                                    additive: false
                                                 }
                                             ]
                                         },
@@ -1200,16 +1207,18 @@ export function layout() {
                                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="4"><circle cx="24" cy="24" r="20"/><path stroke-linecap="round" stroke-linejoin="round" d="m23 14l-5 10h12l-5 10"/></g></svg>',
                                             controls: [
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
-                                                    additive: true,
+                                                    additive: true
                                                 },
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Missed",
-                                                    additive: false,
+                                                    additive: false
                                                 }
                                             ]
                                         },
@@ -1221,16 +1230,18 @@ export function layout() {
                                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM3 18a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zm14 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm-10.5-.9l5-9.1m6 9.1l-5-9.1M7 19h10"/></svg>',
                                             controls: [
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
-                                                    additive: true,
+                                                    additive: true
                                                 },
                                                 {
-                                                    subtract: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
+                                                    subtract:
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Missed",
-                                                    additive: false,
+                                                    additive: false
                                                 }
                                             ]
                                         }
@@ -1259,35 +1270,50 @@ export function layout() {
                                     label: "Driver Skill Rating",
                                     default: 0,
                                     data: "24-9",
-                                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                                    src: [
+                                        "/img/star-outline.png",
+                                        "/img/star-filled.png"
+                                    ]
                                 },
                                 {
                                     type: "rating",
                                     label: "Defense Skill Rating",
                                     default: 0,
                                     data: "24-10",
-                                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                                    src: [
+                                        "/img/star-outline.png",
+                                        "/img/star-filled.png"
+                                    ]
                                 },
                                 {
                                     type: "rating",
                                     label: "Robot Speed Rating",
                                     default: 0,
                                     data: "24-11",
-                                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                                    src: [
+                                        "/img/star-outline.png",
+                                        "/img/star-filled.png"
+                                    ]
                                 },
                                 {
                                     type: "rating",
                                     label: "Robot Stability Rating",
                                     default: 0,
                                     data: "24-12",
-                                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                                    src: [
+                                        "/img/star-outline.png",
+                                        "/img/star-filled.png"
+                                    ]
                                 },
                                 {
                                     type: "rating",
                                     label: "Intake Consistency Rating",
                                     default: 0,
                                     data: "24-13",
-                                    src: ["/img/star-outline.png", "/img/star-filled.png"]
+                                    src: [
+                                        "/img/star-outline.png",
+                                        "/img/star-filled.png"
+                                    ]
                                 },
                                 {
                                     type: "textbox",
@@ -1295,8 +1321,8 @@ export function layout() {
                                         "Enter notes here (and include team number if scouting practice matches)...",
                                     default: "",
                                     data: "comments"
-                                },
-                            ],
+                                }
+                            ]
                         }
                     ]
                 },
@@ -1321,7 +1347,7 @@ export function layout() {
                             html: '<svg fill="none" height="24" stroke-width="1.5" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M8 14L16 14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10L10 10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 18L12 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 3H6C4.89543 3 4 3.89543 4 5V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V5C20 3.89543 19.1046 3 18 3H14.5M10 3V1M10 3V5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>',
                             refers: "comments",
                             active: false
-                        },
+                        }
                     ]
                 }
             ]
@@ -1414,7 +1440,7 @@ export function preload() {
         "/img/star-filled.png",
         "/img/2024-amp.png",
         "/img/2024-speaker.png",
-        "/img/2024-trap.png",
+        "/img/2024-trap.png"
     ];
 }
 

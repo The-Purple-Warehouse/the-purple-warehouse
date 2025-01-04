@@ -416,7 +416,7 @@ const ScoutingAppSDK = function (element, config) {
                     </div>
                     <div class="group">
                         <input class="match-number" id="match-number" autocomplete="off" name="Match" type="number" min="0" required="required" value="${_this.escape(
-                        _matchNumber || latestMatch
+                            _matchNumber || latestMatch
                         )}"/></span><span class="bar"></span>
                         <label for="match-number">Match Number</label>
                     </div>
@@ -462,9 +462,8 @@ const ScoutingAppSDK = function (element, config) {
                         ".home-window > select.event-code"
                     ).value;
                     let matchNumber = parseInt(
-                        element.querySelector(
-                            ".home-window input.match-number"
-                        ).value
+                        element.querySelector(".home-window input.match-number")
+                            .value
                     );
                     let teamNumber = element.querySelector(
                         ".home-window > select.team"
@@ -622,14 +621,35 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             _this.currentPage = index;
             if (index < -1) {
                 _this.clearPendingFunctions();
-                pendingFunctions.push(async () => { await this.setMatchNav(0, eventCode, matchNumber, teamNumber); });
+                pendingFunctions.push(async () => {
+                    await this.setMatchNav(
+                        0,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                });
                 await _this.showHomePage();
             } else if (index < 0) {
                 _this.clearPendingFunctions();
-                pendingFunctions.push(async () => { await this.setMatchNav(0, eventCode, matchNumber, teamNumber); });
+                pendingFunctions.push(async () => {
+                    await this.setMatchNav(
+                        0,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                });
                 await _this.showHomePage(eventCode, matchNumber, teamNumber);
             } else {
-                pendingFunctions.push(async () => { await this.setMatchNav((index == 0) ? 1 : 2, eventCode, matchNumber, teamNumber); });
+                pendingFunctions.push(async () => {
+                    await this.setMatchNav(
+                        index == 0 ? 1 : 2,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                });
                 element.innerHTML = `
 					<div class="match-window">
 						${await _this.compileComponent(
@@ -679,31 +699,33 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 submit.onclick = async () => {
                     await _this.showMatchPage(
                         parseInt(_this.currentPage) + 1,
-                        eventCode, 
-                        matchNumber, 
+                        eventCode,
+                        matchNumber,
                         teamNumber
                     );
-                }
+                };
                 if (document.getElementById("scout-number"))
-                    document.getElementById("scout-number").innerText = teamNumber;
+                    document.getElementById("scout-number").innerText =
+                        teamNumber;
             } else if (toggle == 2) {
                 submit.classList.add("none");
                 back.classList.remove("none");
                 back.onclick = async () => {
                     await _this.showMatchPage(
                         Math.min(parseInt(_this.currentPage) - 1, 1),
-                        eventCode, 
-                        matchNumber, 
+                        eventCode,
+                        matchNumber,
                         teamNumber
                     );
-                }
+                };
                 if (document.getElementById("scout-number"))
-                    document.getElementById("scout-number").innerText = teamNumber;
+                    document.getElementById("scout-number").innerText =
+                        teamNumber;
             }
 
             resolve();
         });
-    }
+    };
 
     function getQRScannerSize() {
         return Math.floor(
@@ -2399,25 +2421,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let teamNumber = element.querySelector(
                         ".home-window > input.team-number"
                     ).value;
-                    if (
-                        teamNumber != null &&
-                        teamNumber != ""
-                    ) {
+                    if (teamNumber != null && teamNumber != "") {
                         let team = await _this.getTeam(teamNumber);
-                        if(team.nickname != null && team.nickname != "") {
-                            element.querySelector(".home-window > input.team-name").value = team.nickname;
+                        if (team.nickname != null && team.nickname != "") {
+                            element.querySelector(
+                                ".home-window > input.team-name"
+                            ).value = team.nickname;
                         } else {
-                            element.querySelector(".home-window > input.team-name").value = "";
+                            element.querySelector(
+                                ".home-window > input.team-name"
+                            ).value = "";
                         }
-                        if(team.country != null && team.country != "") {
-                            element.querySelector(".home-window > input.country").value = team.country;
+                        if (team.country != null && team.country != "") {
+                            element.querySelector(
+                                ".home-window > input.country"
+                            ).value = team.country;
                         } else {
-                            element.querySelector(".home-window > input.country").value = "";
+                            element.querySelector(
+                                ".home-window > input.country"
+                            ).value = "";
                         }
-                        if(team.country == "USA" && team.state_prov != null && team.state_prov != "") {
-                            element.querySelector(".home-window > input.state").value = team.state_prov;
+                        if (
+                            team.country == "USA" &&
+                            team.state_prov != null &&
+                            team.state_prov != ""
+                        ) {
+                            element.querySelector(
+                                ".home-window > input.state"
+                            ).value = team.state_prov;
                         } else {
-                            element.querySelector(".home-window > input.state").value = "";
+                            element.querySelector(
+                                ".home-window > input.state"
+                            ).value = "";
                         }
                     }
                 };
@@ -2454,20 +2489,49 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         adminToken != null &&
                         adminToken != ""
                     ) {
-                        let result = await _this.addTeam(teamNumber, accessToken, teamName, country, state, adminToken);
-                        if(result.success) {
-                            element.querySelector(".home-window > .message").classList.remove("red");
-                            element.querySelector(".home-window > .message").classList.add("green");
-                            element.querySelector(".home-window > input.team-number").value = "";
-                            element.querySelector(".home-window > input.access-token").value = "";
-                            element.querySelector(".home-window > input.team-name").value = "";
-                            element.querySelector(".home-window > input.country").value = "";
-                            element.querySelector(".home-window > input.state").value = "";
-                            element.querySelector(".home-window > .message").innerHTML = `Team ${teamNumber} added/updated successfully!`;
+                        let result = await _this.addTeam(
+                            teamNumber,
+                            accessToken,
+                            teamName,
+                            country,
+                            state,
+                            adminToken
+                        );
+                        if (result.success) {
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.remove("red");
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.add("green");
+                            element.querySelector(
+                                ".home-window > input.team-number"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.access-token"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.team-name"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.country"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.state"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = `Team ${teamNumber} added/updated successfully!`;
                         } else {
-                            element.querySelector(".home-window > .message").classList.remove("green");
-                            element.querySelector(".home-window > .message").classList.add("red");
-                            element.querySelector(".home-window > .message").innerHTML = result.error;
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.remove("green");
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.add("red");
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = result.error;
                         }
                     }
                 };
@@ -2476,15 +2540,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let adminToken = element.querySelector(
                         ".home-window > input.admin-token"
                     ).value;
-                    if (
-                        adminToken != null &&
-                        adminToken != ""
-                    ) {
+                    if (adminToken != null && adminToken != "") {
                         let result = await _this.listTeams(adminToken);
-                        if(result.success) {
-                            element.querySelector(".home-window > .message").innerHTML = "";
-                            element.querySelector(".data-table > tbody").innerHTML = result.body.teams.map((team, i) => {
-                                return `
+                        if (result.success) {
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = "";
+                            element.querySelector(
+                                ".data-table > tbody"
+                            ).innerHTML = result.body.teams
+                                .map((team, i) => {
+                                    return `
                                 <tr>
                                     <td>
                                         ${team.teamNumber}
@@ -2499,12 +2565,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ${team.state}
                                     </td>
                                 </tr>`;
-                            }) .join("");
-                            element.querySelector(".data-table").style.display = "";
+                                })
+                                .join("");
+                            element.querySelector(".data-table").style.display =
+                                "";
                         } else {
-                            element.querySelector(".home-window > .message").classList.remove("green");
-                            element.querySelector(".home-window > .message").classList.add("red");
-                            element.querySelector(".home-window > .message").innerHTML = result.error;
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.remove("green");
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.add("red");
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = result.error;
                         }
                     }
                 };
@@ -2568,7 +2642,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
-    _this.addTeam = (teamNumber, accessToken, teamName, country, state, adminToken) => {
+    _this.addTeam = (
+        teamNumber,
+        accessToken,
+        teamName,
+        country,
+        state,
+        adminToken
+    ) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let add = await (
@@ -2579,8 +2660,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         {
                             method: "POST",
                             headers: {
-                                "Content-Type":
-                                    "application/json;charset=UTF-8"
+                                "Content-Type": "application/json;charset=UTF-8"
                             },
                             body: JSON.stringify({
                                 teamName,
@@ -2599,25 +2679,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 });
             }
         });
-    }
+    };
 
     _this.listTeams = (adminToken) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let list = await (
-                    await fetch(
-                        `/api/v1/scouting/team/list`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/json;charset=UTF-8"
-                            },
-                            body: JSON.stringify({
-                                adminToken
-                            })
-                        }
-                    )
+                    await fetch(`/api/v1/scouting/team/list`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json;charset=UTF-8"
+                        },
+                        body: JSON.stringify({
+                            adminToken
+                        })
+                    })
                 ).json();
                 resolve(list);
             } catch (err) {
@@ -2626,7 +2702,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 });
             }
         });
-    }
+    };
 
     _this.getEventCode = () => {
         if (localStorage.getItem("eventCode") == null) {
@@ -3203,13 +3279,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 "upload",
                 "qrcode",
                 "data"
-            ];  
+            ];
             let type = component.type;
             if (!types.includes(type)) {
                 type = "layout";
             }
             if (component.type == "layout") {
-                let directions = ["rows", "columns", "grid", "preset", "preset-manager"];
+                let directions = [
+                    "rows",
+                    "columns",
+                    "grid",
+                    "preset",
+                    "preset-manager"
+                ];
                 let direction = component.direction;
                 let name = component.name;
                 if (!directions.includes(direction)) {
@@ -3236,19 +3318,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             return;
                         }
                         let children = manager.children;
-                        for (let i = 1; i < children.length - 1; i++) children[i].classList.add("none");
+                        for (let i = 1; i < children.length - 1; i++)
+                            children[i].classList.add("none");
                     }
                 });
                 resolve(`
-					<div ${(
-                        direction == "preset" ? 
-                        `class="${name}-preset preset" data-ref="${name}"` :
-                        `class="component-layout-${direction}"`
-                    )} ${(
-                        direction == "preset-manager" ?
-                        `data-id="${_this.escape(id)}"` :
-                        ""
-                    )}>
+					<div ${
+                        direction == "preset"
+                            ? `class="${name}-preset preset" data-ref="${name}"`
+                            : `class="component-layout-${direction}"`
+                    } ${
+                    direction == "preset-manager"
+                        ? `data-id="${_this.escape(id)}"`
+                        : ""
+                }>
 						${(
                             await Promise.all(
                                 components.map((component) =>
@@ -3667,15 +3750,22 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                 if (component.data) {
                     values = checkNull(data.data[component.data.values], []);
-                    locations = checkNull(data.data[component.data.locations], []);
-                    dcounter = checkNull(data.counters[component.data.counter], 0);
+                    locations = checkNull(
+                        data.data[component.data.locations],
+                        []
+                    );
+                    dcounter = checkNull(
+                        data.counters[component.data.counter],
+                        0
+                    );
                 }
 
                 let scoreClick = (event, el) => {
-                    if (!el.classList.contains("active")) event.stopPropagation();
+                    if (!el.classList.contains("active"))
+                        event.stopPropagation();
                     el.classList.add("active");
                 };
-                
+
                 let outClick = (event, el) => {
                     if (!event.target.closest(".parent")) {
                         el.classList.remove("active");
@@ -3690,13 +3780,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     });
                     let tallycount = tracker.querySelector("div.tally");
                     if (tallycount) tallycount.innerText = count;
-                    else { console.log("doesnt have tally counter"); console.log(tracker); }
-                }
+                    else {
+                        console.log("doesnt have tally counter");
+                        console.log(tracker);
+                    }
+                };
 
                 const saveData = async () => {
-                    await _this.setData("data", component.data.locations, locations);
+                    await _this.setData(
+                        "data",
+                        component.data.locations,
+                        locations
+                    );
                     await _this.setData("data", component.data.values, values);
-                    await _this.setData("counters", component.data.counter, dcounter);
+                    await _this.setData(
+                        "counters",
+                        component.data.counter,
+                        dcounter
+                    );
                 };
 
                 const handleIncrement = async (type, controlLabel) => {
@@ -3720,34 +3821,43 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                 const handleDecrement = async (type, controlLabel) => {
                     if (type.includes("speaker")) {
-                        if (controlLabel === "Scored") removeLastEntry(values, "ss");
-                        else if (controlLabel === "Missed") removeLastEntry(values, "sm");
-                        else if (controlLabel === "Amplify") removeLastEntry(values, "sa");
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "ss");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "sm");
+                        else if (controlLabel === "Amplify")
+                            removeLastEntry(values, "sa");
                         removeLastEntry(locations, 1);
                     } else if (type.includes("amp")) {
-                        if (controlLabel === "Scored") removeLastEntry(values, "as");
-                        else if (controlLabel === "Missed") removeLastEntry(values, "am");
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "as");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "am");
                         removeLastEntry(locations, 0);
                     } else if (type.includes("trap")) {
-                        if (controlLabel === "Scored") removeLastEntry(values, "ts");
-                        else if (controlLabel === "Missed") removeLastEntry(values, "tm");
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "ts");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "tm");
                         removeLastEntry(locations, 2);
                     }
                     dcounter = Math.max(0, dcounter - 1);
                     await saveData();
                 };
-            
+
                 const removeLastEntry = (array, value) => {
                     const index = array.lastIndexOf(value);
                     if (index !== -1) array.splice(index, 1);
                 };
 
                 const initCounters = (tracker, score, index) => {
-                    const counters = tracker.querySelectorAll(".score-control .counter");
+                    const counters = tracker.querySelectorAll(
+                        ".score-control .counter"
+                    );
                     const tallyCount = tracker.querySelector(".tally");
                     let count = 0;
                     counters.forEach((counter, cInd) => {
-                        let cLabel = score.controls[cInd]?.label || '';
+                        let cLabel = score.controls[cInd]?.label || "";
                         let mval = "";
                         if (score.class.includes("speaker")) {
                             if (cLabel === "Scored") mval = "ss";
@@ -3770,9 +3880,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let htmlcont = "";
 
                 component.scores.forEach((score, index) => {
-                    if (score.disabled)
-                        return;
-                    
+                    if (score.disabled) return;
+
                     let htmlcontrol = "";
                     score.controls.forEach((control) => {
                         let controlId = `${id}-control-${index}-${control.label}`;
@@ -3780,25 +3889,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             <div class="score-control" id="${controlId}">
                                 <div>${control.subtract}</div>
                                 <div>
-                                    <div class="counter ${control.additive ? 'additive' : ''}">0</div>
-                                    <div class="subtext">${_this.escape(control.label)}</div>
+                                    <div class="counter ${
+                                        control.additive ? "additive" : ""
+                                    }">0</div>
+                                    <div class="subtext">${_this.escape(
+                                        control.label
+                                    )}</div>
                                 </div>
                                 <div>${control.add}</div>
                             </div>`;
 
                         pendingFunctions.push(async () => {
-                            const controlElement = document.getElementById(controlId);
-                            controlElement.querySelector("div:nth-child(3)").addEventListener("click", () => {
-                                handleIncrement(score.class, control.label);
-                            });
-                            controlElement.querySelector("div:nth-child(1)").addEventListener("click", () => {
-                                handleDecrement(score.class, control.label);
-                            });
+                            const controlElement =
+                                document.getElementById(controlId);
+                            controlElement
+                                .querySelector("div:nth-child(3)")
+                                .addEventListener("click", () => {
+                                    handleIncrement(score.class, control.label);
+                                });
+                            controlElement
+                                .querySelector("div:nth-child(1)")
+                                .addEventListener("click", () => {
+                                    handleDecrement(score.class, control.label);
+                                });
                         });
                     });
 
                     htmlcont += `
-                        <div style="width: calc(100% / ${component.scores.length});" class="${score.class} ${score.disabled ? "disabled" : ""}">
+                        <div style="width: calc(100% / ${
+                            component.scores.length
+                        });" class="${score.class} ${
+                        score.disabled ? "disabled" : ""
+                    }">
                             <div class="close">${score.close}</div>
                             <div class="front-group">
                                 <div class="score-label">
@@ -3807,34 +3929,56 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 </div>
                                 <div class="tally">0</div>
                             </div>
-                            ${!score.disabled ? `<div class="score-controls parent">${htmlcontrol}</div>` : ""}
+                            ${
+                                !score.disabled
+                                    ? `<div class="score-controls parent">${htmlcontrol}</div>`
+                                    : ""
+                            }
                         </div>`;
-                    
+
                     pendingFunctions.push(async () => {
-                        const tracker = document.querySelector(`[data-id='${id}'] .${score.class}`);
+                        const tracker = document.querySelector(
+                            `[data-id='${id}'] .${score.class}`
+                        );
                         if (tracker) initCounters(tracker, score, index);
-                    });                    
+                    });
                 });
 
                 pendingFunctions.push(async () => {
-                    let trackers = document.querySelectorAll(`div[data-id='${id}'] > div:not(.disabled)`);
+                    let trackers = document.querySelectorAll(
+                        `div[data-id='${id}'] > div:not(.disabled)`
+                    );
                     trackers.forEach((tracker) => {
-                        tracker.addEventListener("click", (event) => scoreClick(event, tracker));
-                        document.addEventListener("click", (event) => outClick(event, tracker));
-                        let timers = tracker.querySelectorAll(".score-controls > .score-control");
+                        tracker.addEventListener("click", (event) =>
+                            scoreClick(event, tracker)
+                        );
+                        document.addEventListener("click", (event) =>
+                            outClick(event, tracker)
+                        );
+                        let timers = tracker.querySelectorAll(
+                            ".score-controls > .score-control"
+                        );
                         timers.forEach((timer) => {
                             let minus = timer.children[0];
                             let plus = timer.children[2];
                             plus.addEventListener("click", () => {
                                 event.stopPropagation();
-                                let text = timer.querySelector("div.counter").innerText;
-                                timer.querySelector("div.counter").innerText = parseInt(text) + 1;
+                                let text =
+                                    timer.querySelector(
+                                        "div.counter"
+                                    ).innerText;
+                                timer.querySelector("div.counter").innerText =
+                                    parseInt(text) + 1;
                                 updateCounter(tracker);
                             });
                             minus.addEventListener("click", () => {
                                 event.stopPropagation();
-                                let text = timer.querySelector("div.counter").innerText;
-                                timer.querySelector("div.counter").innerText = Math.max(parseInt(text) - 1, 0);
+                                let text =
+                                    timer.querySelector(
+                                        "div.counter"
+                                    ).innerText;
+                                timer.querySelector("div.counter").innerText =
+                                    Math.max(parseInt(text) - 1, 0);
                                 updateCounter(tracker);
                             });
                         });
@@ -3843,7 +3987,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     await saveData();
                 });
 
-                resolve(`<div class="component-score-counter" data-id="${_this.escape(id)}">${htmlcont}</div>`);
+                resolve(
+                    `<div class="component-score-counter" data-id="${_this.escape(
+                        id
+                    )}">${htmlcont}</div>`
+                );
             } else if (component.type == "pagebutton") {
                 let id = _this.random();
                 let page = -1;
@@ -3909,40 +4057,53 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 pendingFunctions.push(async () => {
                     let children = element.querySelectorAll(
                         `[data-id="${_this.escape(id)}"] > div`
-                    )
+                    );
                     for (let i = 0; i < children.length; ++i) {
                         let tab = tabs[i];
                         children[i].onclick = async () => {
-                            let manager = children[i].closest(".component-layout-preset-manager");
+                            let manager = children[i].closest(
+                                ".component-layout-preset-manager"
+                            );
                             let refers = children[i].getAttribute("data-ref");
                             let presets = manager.children;
-                            children.forEach((child) => { child.classList.remove("active"); });
+                            children.forEach((child) => {
+                                child.classList.remove("active");
+                            });
                             children[i].classList.add("active");
                             if (presets && presets.length > 0) {
                                 for (let j = 0; j < presets.length - 1; ++j) {
-                                    if (presets[j].getAttribute("data-ref") == refers) { 
-                                        presets[j].classList.remove("none"); 
-                                    } else { 
+                                    if (
+                                        presets[j].getAttribute("data-ref") ==
+                                        refers
+                                    ) {
+                                        presets[j].classList.remove("none");
+                                    } else {
                                         presets[j].classList.add("none");
                                     }
                                 }
                             }
-                        }
-                    };
+                        };
+                    }
                 });
                 resolve(
                     `<aside id="controls" class="component-pagebar" data-id="${_this.escape(
                         id
                     )}">
-                        ${tabs.map((tab, i) => {
-                            return `<div data-ref="${_this.escape(tab.refers)}" class="${_this.escape(tab.refers)} ${tab.active ? 'active' : ''}">
+                        ${tabs
+                            .map((tab, i) => {
+                                return `<div data-ref="${_this.escape(
+                                    tab.refers
+                                )}" class="${_this.escape(tab.refers)} ${
+                                    tab.active ? "active" : ""
+                                }">
                                 ${tab.html}
                                 <p>${_this.escape(tab.name)}</p>
-                            </div>`
-                        }).join("")}
+                            </div>`;
+                            })
+                            .join("")}
                     </aside>`
                 );
-            /* } else if (component.type == "checkbox") {
+                /* } else if (component.type == "checkbox") {
                 let id = _this.random();
                 let label = "";
                 if (component.label != null) {
@@ -3992,9 +4153,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let label = "";
                 if (component.label != null) {
                     if (component.label.type == "function") {
-                        label = eval(component.label.definition)(getState()) + "<br>";
+                        label =
+                            eval(component.label.definition)(getState()) +
+                            "<br>";
                     } else {
-                        label = component.label.toString()
+                        label = component.label.toString();
                     }
                 }
                 let defaultValue = false;
@@ -4003,17 +4166,26 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 }
                 if (checkboxes[component.data] == null) {
                     checkboxes[component.data] = {};
-                    checkboxes[component.data].elements = []
+                    checkboxes[component.data].elements = [];
                 }
                 checkboxes[component.data].elements.push(id);
                 pendingFunctions.push(async () => {
                     const updateUI = () => {
-                        checkboxes[component.data].elements.forEach(checkId => {
-                            const checkEl = element.querySelector(`[data-id="${_this.escape(checkId)}"] > input`);
-                            if (checkEl) {
-                                checkEl.checked = checkNull(data.abilities[component.data], defaultValue);
+                        checkboxes[component.data].elements.forEach(
+                            (checkId) => {
+                                const checkEl = element.querySelector(
+                                    `[data-id="${_this.escape(
+                                        checkId
+                                    )}"] > input`
+                                );
+                                if (checkEl) {
+                                    checkEl.checked = checkNull(
+                                        data.abilities[component.data],
+                                        defaultValue
+                                    );
+                                }
                             }
-                        });
+                        );
                     };
 
                     element.querySelector(
@@ -4048,7 +4220,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 						<label for="${_this.escape(id)}"></label>
 					</div>
 				`);
-            /* } else if (component.type == "timer") {
+                /* } else if (component.type == "timer") {
                 let id = _this.random();
                 let label = "";
                 if (component.label != null) {
@@ -4273,7 +4445,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     timers[name] = {};
                     timers[name].running = false;
                     timers[name].restricted = false;
-                    timers[name].elements = []
+                    timers[name].elements = [];
                 }
                 if (timers[name].milliseconds == null) {
                     timers[name].milliseconds = defaultValue;
@@ -4281,19 +4453,33 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 timers[name].elements.push(id);
                 pendingFunctions.push(async () => {
                     const updateUI = () => {
-                        timers[name].elements.forEach(timerId => {
-                            const timeElement = element.querySelector(`[data-id="${_this.escape(timerId)}"] p.time`);
+                        timers[name].elements.forEach((timerId) => {
+                            const timeElement = element.querySelector(
+                                `[data-id="${_this.escape(timerId)}"] p.time`
+                            );
                             if (timeElement) {
-                                timeElement.innerHTML = _this.timerFormat(timers[name].milliseconds);
+                                timeElement.innerHTML = _this.timerFormat(
+                                    timers[name].milliseconds
+                                );
                             }
                         });
                     };
                     const updateButtons = (running) => {
-                        timers[name].elements.forEach(timerId => {
-                            const playButton = element.querySelector(`[data-id="${_this.escape(timerId)}"] div.controls > div.play`);
+                        timers[name].elements.forEach((timerId) => {
+                            const playButton = element.querySelector(
+                                `[data-id="${_this.escape(
+                                    timerId
+                                )}"] div.controls > div.play`
+                            );
                             if (playButton) {
-                                playButton.children[0].classList.toggle("none", running);
-                                playButton.children[1].classList.toggle("none", !running);
+                                playButton.children[0].classList.toggle(
+                                    "none",
+                                    running
+                                );
+                                playButton.children[1].classList.toggle(
+                                    "none",
+                                    !running
+                                );
                             }
                         });
                     };
@@ -4349,13 +4535,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 if (!timers[name]) {
                                     timers[name] = {
                                         running: false,
-                                        restricted: false,
+                                        restricted: false
                                     };
                                 }
                                 timers[name].restricted = false;
                                 timers[name].elements.forEach((timerId) => {
                                     const button = element.querySelector(
-                                        `[data-id="${_this.escape(timerId)}"] div.controls > div.play`
+                                        `[data-id="${_this.escape(
+                                            timerId
+                                        )}"] div.controls > div.play`
                                     );
                                     if (button) {
                                         button.classList.remove("disabled");
@@ -4367,19 +4555,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 if (!timers[name]) {
                                     timers[name] = {
                                         running: false,
-                                        restricted: false,
+                                        restricted: false
                                     };
                                 }
                                 timers[name].restricted = true;
                                 timers[name].elements.forEach((timerId) => {
                                     const button = element.querySelector(
-                                        `[data-id="${_this.escape(timerId)}"] div.controls > div.play`
+                                        `[data-id="${_this.escape(
+                                            timerId
+                                        )}"] div.controls > div.play`
                                     );
                                     if (button) {
                                         button.classList.add("disabled");
                                     }
                                 });
-                            });                    
+                            });
                             timers[name].running = true;
                             timers[name].interval = setInterval(async () => {
                                 timers[name].milliseconds += 50;
@@ -4415,7 +4605,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <div>
                             <p>${_this.escape(label)}</p>
                             <div><p class="time">${_this.timerFormat(
-                                checkNull(data.timers[component.data], defaultValue)
+                                checkNull(
+                                    data.timers[component.data],
+                                    defaultValue
+                                )
                             )}</p></div>
                         </div>
                         <div class="controls">
@@ -4439,7 +4632,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         </div>
 					</div>
 				`);
-            /* } else if (component.type == "select") {
+                /* } else if (component.type == "select") {
                 let id = _this.random();
                 let label = "";
                 if (component.label != null) {
@@ -4527,11 +4720,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             ).value
                         );
                         if (n != -1) {
-                            await _this.setData(
-                                "abilities",
-                                component.data,
-                                n
-                            );
+                            await _this.setData("abilities", component.data, n);
                         }
                     };
                     await _this.setData(
@@ -4556,12 +4745,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     )
                                         ? "selected"
                                         : ""
-                                }>${_this.escape(label)}: ${_this.escape(option.label)}</option>`;
+                                }>${_this.escape(label)}: ${_this.escape(
+                                    option.label
+                                )}</option>`;
                             })}
 						</select>
 					</div>
 				`);
-            /* } else if (component.type == "textbox") {
+                /* } else if (component.type == "textbox") {
                 let id = _this.random();
                 let placeholder = "";
                 if (component.placeholder != null) {
@@ -4651,7 +4842,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }
                 pendingFunctions.push(async () => {
-                    const textarea = element.querySelector(`[data-id="${_this.escape(id)}"] textarea`);
+                    const textarea = element.querySelector(
+                        `[data-id="${_this.escape(id)}"] textarea`
+                    );
                     textarea.oninput = async () => {
                         await _this.setData(
                             "data",
@@ -4659,22 +4852,22 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             textarea.value
                         );
                     };
-                    await _this.setData(
-                        "data",
-                        component.data,
-                        textarea.value
-                    );
+                    await _this.setData("data", component.data, textarea.value);
                 });
                 resolve(
-                    `<div class="component-textarea" data-id="${_this.escape(id)}">
+                    `<div class="component-textarea" data-id="${_this.escape(
+                        id
+                    )}">
                         <p>Comments</p>
                         <p class="subtext">Scoring ability? Stability? Fouls? Issues?</p>
                         <p class="subtext">Team Number? (if practice match)</p>
-                        <textarea data-id="${_this.escape(id)}" placeholder="${_this.escape(
-                                placeholder
-                        )}">${_this.escape(
-                            checkNull(data.data[component.data], defaultValue)
-                        )}</textarea>
+                        <textarea data-id="${_this.escape(
+                            id
+                        )}" placeholder="${_this.escape(
+                        placeholder
+                    )}">${_this.escape(
+                        checkNull(data.data[component.data], defaultValue)
+                    )}</textarea>
                     </div>`
                 );
             } else if (component.type == "rating") {
@@ -4705,18 +4898,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     defaultValue = data.ratings[component.data];
                 }
                 pendingFunctions.push(async () => {
-                    var sliders = document.querySelectorAll(`[data-id="${id}"] > div`);
-                    var ranges = document.querySelectorAll(`[data-id="${id}"] > div > input`);
-                    var values = document.querySelectorAll(`[data-id="${id}"] > div > span`);
-                    
+                    var sliders = document.querySelectorAll(
+                        `[data-id="${id}"] > div`
+                    );
+                    var ranges = document.querySelectorAll(
+                        `[data-id="${id}"] > div > input`
+                    );
+                    var values = document.querySelectorAll(
+                        `[data-id="${id}"] > div > span`
+                    );
+
                     sliders.forEach((slider) => {
                         values.forEach((vel) => {
                             vel.innerHTML = parseInt(defaultValue) + 1;
                         });
-                    
+
                         ranges.forEach(async (rel) => {
                             rel.value = parseInt(defaultValue) + 1;
-                            rel.addEventListener("input", async function() {
+                            rel.addEventListener("input", async function () {
                                 var vel = this.nextElementSibling;
                                 vel.innerHTML = this.value;
 
@@ -4736,7 +4935,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         "ratings",
                         component.data,
                         parseInt(defaultValue)
-                    )
+                    );
                 });
                 resolve(
                     `<div class="component-rating" data-id="${_this.escape(
