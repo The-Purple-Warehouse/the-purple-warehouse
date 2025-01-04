@@ -1704,9 +1704,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ".data-window > select.event-code"
                     ).value;
                     let teamNumber =
-                        element.querySelector(
-                            ".data-window input.team-number"
-                        ).value || config.account.team;
+                        element.querySelector(".data-window input.team-number")
+                            .value || config.account.team;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
