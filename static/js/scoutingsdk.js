@@ -1522,7 +1522,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ".data-window > select.event-code"
                 ).value;
                 let teamNumber = element.querySelector(
-                    ".data-window > input.team-number"
+                    ".data-window input.team-number"
                 ).value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
@@ -1611,7 +1611,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ".data-window > select.event-code"
                     ).value;
                     let teamNumber = element.querySelector(
-                        ".data-window > input.team-number"
+                        ".data-window input.team-number"
                     ).value;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
@@ -1705,7 +1705,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).value;
                     let teamNumber =
                         element.querySelector(
-                            ".data-window > input.team-number"
+                            ".data-window input.team-number"
                         ).value || config.account.team;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
@@ -1851,7 +1851,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ".data-window > select.event-code"
                 ).value;
                 let teamNumber = element.querySelector(
-                    ".data-window > input.team-number"
+                    ".data-window input.team-number"
                 ).value;
                 try {
                     let data = await (
