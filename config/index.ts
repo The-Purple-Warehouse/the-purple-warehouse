@@ -2,12 +2,13 @@ import development from "./development";
 import staging from "./staging";
 import production from "./production";
 import production2023 from "./production2023";
+import production2024 from "./production2024";
 
 const env = process.env.NODE_ENV || "development";
 
-if (!["development", "staging", "production", "production2023"].includes(env))
+if (!["development", "staging", "production", "production2023", "production2024"].includes(env))
     throw new Error(`Config file for environment ${env} could not be found.`);
-const config: Config = { production, production2023, staging, development }[
+const config: Config = { production, production2023, production2024, staging, development }[
     env
 ];
 
