@@ -2079,7 +2079,6 @@ export async function tps(data, categories, teams) {
 const scouting2024 = {
     categories,
     layout,
-    legacy_layout,
     preload,
     formatData,
     formatParsedData,

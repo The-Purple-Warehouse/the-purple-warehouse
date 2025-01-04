@@ -1,6 +1,5 @@
 const ScoutingAppSDK = function (element, config) {
     let _this = this;
-    const legacy = false; // does not work well
     config = fixConfig(config);
 
     element.innerHTML = ``;
@@ -637,7 +636,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             eventCode,
                             matchNumber,
                             teamNumber,
-                            legacy ? config.legacy_pages[index] : config.pages[index]
+                            config.pages[index]
                         )}
 					</div>
 					<div class="overlay"></div>
@@ -5111,9 +5110,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         );
         if (configuration.pages == null) {
             configuration.pages = [];
-        }
-        if (configuration.legacy_pages == null) {
-            configuration.legacy_pages = [];
         }
         if (configuration.account == null) {
             configuration.account = {};

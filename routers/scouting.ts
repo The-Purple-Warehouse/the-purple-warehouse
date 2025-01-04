@@ -21,7 +21,6 @@ router.get("/", requireScoutingAuth, async (ctx, next) => {
     await ctx.render("scouting/index", {
         preload: scoutingConfig.preload(),
         pages: scoutingConfig.layout(),
-        legacy_pages: scoutingConfig.legacy_layout(),
         username: ctx.session.scoutingUsername,
         team: ctx.session.scoutingTeamNumber,
         incentives: await getTotalIncentives(
