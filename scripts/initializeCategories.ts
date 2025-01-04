@@ -1,5 +1,6 @@
 import { removeAllCategories, addCategory } from "../helpers/scouting";
 import scoutingConfig from "../config/scouting";
+import config from "../config";
 
 async function initializeCategories(year) {
     const categories = scoutingConfig[year].categories();
@@ -9,11 +10,9 @@ async function initializeCategories(year) {
             categories[i].identifier,
             categories[i].dataType
         )) as any;
-        console.log(
-            `Added category: ${category.name} (${category.identifier})`
-        );
     }
+    console.log(`Added/updated ${categories.length} categories`);
     return;
 }
 
-initializeCategories(2024);
+initializeCategories(config.year);

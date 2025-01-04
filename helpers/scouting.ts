@@ -26,7 +26,7 @@ export async function addCategory(
     identifier: string,
     dataType?: string
 ) {
-    let category = await getCategoryByIdentifier(identifier);
+    let category: any = await getCategoryByIdentifier(identifier);
     if (category == null) {
         if (dataType === undefined) {
             category = new ScoutingCategory({
@@ -40,8 +40,15 @@ export async function addCategory(
                 dataType: dataType
             });
         }
-        await category.save();
+    } else {
+        category.name = name;
+        if(dataType === undefined) {
+            category.dataType = undefined;
+        } else {
+            category.dataType = dataType;
+        }
     }
+    await category.save();
     return category;
 }
 
