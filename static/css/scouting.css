@@ -1129,6 +1129,14 @@ header .icon-button .send-container svg {
     text-align: center;
 }
 
+.component-upload {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
 .component-upload > h3,
 .download-window > h3,
 .data-window h3 {
@@ -1172,6 +1180,7 @@ header .icon-button .send-container svg {
 }
 
 .status-box {
+    width: 100%;
     padding: 0.75rem 2rem;
     border: 1px solid black;
     border-radius: 8px;
