@@ -1556,7 +1556,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 `<td${
                                                     cell.length > 40 ||
                                                     cell.includes("\\n")
-                                                        ? ` style="min-width: 200px;"`
+                                                        ? ` style="min-width: 200px; overflow-wrap: anywhere;"`
                                                         : ""
                                                 }>${
                                                     csv[0][i] == "timestamp"
@@ -1646,7 +1646,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 `<td${
                                                     cell.length > 40 ||
                                                     cell.includes("\\n")
-                                                        ? ` style="min-width: 200px;"`
+                                                        ? ` style="min-width: 200px; overflow-wrap: anywhere;"`
                                                         : ""
                                                 }>${
                                                     csv[0][i] == "timestamp"
