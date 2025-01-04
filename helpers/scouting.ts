@@ -42,7 +42,7 @@ export async function addCategory(
         }
     } else {
         category.name = name;
-        if(dataType === undefined) {
+        if (dataType === undefined) {
             category.dataType = undefined;
         } else {
             category.dataType = dataType;
