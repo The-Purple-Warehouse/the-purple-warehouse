@@ -209,11 +209,14 @@ app.use(serve("./static", {}));
 
 const httpServer = createServer(app.callback());
 
-(async() => {
+(async () => {
     await initializeCategories(config.year);
     httpServer.listen(config.server.port, () => {
         console.log(
-            "Listening at http://" + config.server.domain + ":" + config.server.port
+            "Listening at http://" +
+                config.server.domain +
+                ":" +
+                config.server.port
         );
     });
 })();
