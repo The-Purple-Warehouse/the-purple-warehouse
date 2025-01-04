@@ -3,16 +3,18 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.ts",
-    "scripts": {
-        "start": "NODE_ENV=production node build/index.js",
-        "start2023": "NODE_ENV=production2023 node build/index.js",
-        "start2024": "NODE_ENV=production2024 node build/index.js",
+    "scripts":
+    {
+        "initialize": "node build/scripts/initializeCategories.js",
+        "start": "NODE_ENV=production npm run initialize && node build/index.js",
+        "start2023": "NODE_ENV=production2023 npm run initialize && node build/index.js",
+        "start2024": "NODE_ENV=production2024 npm run initialize && node build/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "npm i && rm -rf build && tsc",
         "build-noinstall": "rm -rf build && tsc",
-        "debug": "NODE_ENV=development npx nodemon",
-        "dev": "NODE_ENV=development node build/index.js",
-        "staging": "NODE_ENV=staging node build/index.js",
+        "debug": "NODE_ENV=development npm run initialize && npx nodemon",
+        "dev": "NODE_ENV=development npm run initialize && node build/index.js",
+        "staging": "NODE_ENV=staging npm run initialize && node build/index.js",
         "format": "npx prettier . -w",
         "deploy-dev": "npm run build && npm run dev",
         "deploy-staging": "npm run build && npm run staging",
@@ -42,17 +44,20 @@
         "stop-prod2023": "pm2 stop \"npm run update-prod2023\"",
         "stop-prod2024": "pm2 stop \"npm run update-prod2024\""
     },
-    "repository": {
+    "repository":
+    {
         "type": "git",
         "url": "git+https://github.com/HarkerRobo/the-purple-warehouse.git"
     },
     "author": "Harker Robotics",
     "license": "AGPL-3.0-or-later",
-    "bugs": {
+    "bugs":
+    {
         "url": "https://github.com/HarkerRobo/the-purple-warehouse/issues"
     },
     "homepage": "https://github.com/HarkerRobo/the-purple-warehouse#readme",
-    "devDependencies": {
+    "devDependencies":
+    {
         "@harker-robo/prettier-config": "1.0.0",
         "@types/koa": "^2.13.5",
         "@types/koa-bodyparser": "^4.3.8",
@@ -71,7 +76,8 @@
         "ts-node": "^10.9.1",
         "typescript": "^4.8.4"
     },
-    "dependencies": {
+    "dependencies":
+    {
         "@koa/router": "^12.0.0",
         "axios": "^0.27.2",
         "dtrace-provider": "^0.8.8",
