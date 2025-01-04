@@ -52,6 +52,19 @@ export async function addCategory(
     return category;
 }
 
+export async function initializeCategories(year) {
+    const categories = scoutingConfig[year].categories();
+    for (let i = 0; i < categories.length; i++) {
+        let category = (await addCategory(
+            categories[i].name,
+            categories[i].identifier,
+            categories[i].dataType
+        )) as any;
+    }
+    console.log(`Added/updated ${categories.length} categories`);
+    return;
+}
+
 export async function removeCategory(identifier: string) {
     return (
         (await ScoutingCategory.deleteOne({ identifier: identifier }))
