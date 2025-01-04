@@ -1,15 +1,15 @@
-import { RateLimit, Stores } from 'koa2-ratelimit';
+import { RateLimit, Stores } from "koa2-ratelimit";
 import mongoose from "../db";
 
-import { retrieveRateLimit } from "../helpers/apiKey"
+import { retrieveRateLimit } from "../helpers/apiKey";
 
 const mongo = new Stores.Mongodb(mongoose.connection, {
-    collectionName: 'ratelimits',
-    collectionAbuseName: 'ratelimitsabuses',
+    collectionName: "ratelimits",
+    collectionAbuseName: "ratelimitsabuses"
 });
 
 export const rateLimiter = RateLimit.middleware({
-    interval: { sec: 1 },  // 1 second
+    interval: { sec: 1 }, // 1 second
     max: async (ctx) => {
         const apiKey = ctx.query.key;
         const rateInfo = await retrieveRateLimit(apiKey);

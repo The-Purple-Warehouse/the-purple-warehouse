@@ -554,7 +554,7 @@ export function layout() {
                 },
                 {
                     type: "text",
-                    label: "Please give any important information about this robot or its performance in the match including:\n\n- Ability to score against defense\n- Robot stability\n- Fouls or other issues\n- Team number (for practice matches only)\n- Anything else that is relevant\n"
+                    label: "Please give any important information about this robot or its performance in the match including:\n\n- Ability to score against defense\n- Robot stability\n- Fouls or other issues\n"
                 },
                 {
                     type: "textbox",
