@@ -1,2 +1,1 @@
-export function processAdmin(user, type, teamNumber, body) {
-}
+export function processAdmin(user, type, teamNumber, body) {}
