@@ -3941,26 +3941,39 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             </div>`;
 
                         pendingFunctions.push(async () => {
-                            const controlElement = document.getElementById(controlId);
-                            const plus = controlElement.querySelector("div:nth-child(3)");
-                            const minus = controlElement.querySelector("div:nth-child(1)");
+                            const controlElement =
+                                document.getElementById(controlId);
+                            const plus =
+                                controlElement.querySelector(
+                                    "div:nth-child(3)"
+                                );
+                            const minus =
+                                controlElement.querySelector(
+                                    "div:nth-child(1)"
+                                );
                             plus.addEventListener("click", (event) => {
                                 event.stopPropagation();
-                                let counter = controlElement.querySelector(".counter");
+                                let counter =
+                                    controlElement.querySelector(".counter");
                                 let curcount = parseInt(counter.innerText) || 0;
-                                if (control.max !== undefined && curcount >= control.max) return;
+                                if (
+                                    control.max !== undefined &&
+                                    curcount >= control.max
+                                )
+                                    return;
                                 counter.innerText = curcount + 1;
                                 handleIncrement(score.class, control.label);
                             });
                             minus.addEventListener("click", (event) => {
                                 event.stopPropagation();
-                                let counter = controlElement.querySelector(".counter");
+                                let counter =
+                                    controlElement.querySelector(".counter");
                                 let curcount = parseInt(counter.innerText) || 0;
                                 if (curcount <= 0) return;
                                 counter.innerText = curcount - 1;
                                 handleDecrement(score.class, control.label);
                             });
-                        });                    
+                        });
                     });
 
                     htmlcont += `
