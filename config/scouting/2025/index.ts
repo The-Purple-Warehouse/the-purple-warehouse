@@ -139,6 +139,7 @@ export function layout() {
                                                         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
+                                                    max: 9,
                                                     additive: true
                                                 },
                                                 {
@@ -162,6 +163,7 @@ export function layout() {
                                                         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>',
                                                     add: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>',
                                                     label: "Scored",
+                                                    max: 9,
                                                     additive: true
                                                 },
                                                 {
@@ -206,11 +208,7 @@ export function layout() {
                                                         "cs1",
                                                         "cs2",
                                                         "cs3",
-                                                        "cs4",
-                                                        "cm1",
-                                                        "cm2",
-                                                        "cm3",
-                                                        "cm4"
+                                                        "cs4"
                                                     ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
@@ -371,6 +369,7 @@ export function layout() {
                                             value: "cs4",
                                             tracks: ["cs1", "cs2", "cs3"],
                                             type: "counter",
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -395,6 +394,7 @@ export function layout() {
                                             value: "cs3",
                                             tracks: ["cs1", "cs2", "cs4"],
                                             type: "counter",
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -419,7 +419,7 @@ export function layout() {
                                             value: "cs2",
                                             tracks: ["cs1", "cs3", "cs4"],
                                             type: "counter",
-                                            max: 3,
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -444,7 +444,6 @@ export function layout() {
                                             value: "cs1",
                                             tracks: ["cs2", "cs3", "cs4"],
                                             type: "counter",
-                                            max: 3,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -605,11 +604,7 @@ export function layout() {
                                                         "cs1",
                                                         "cs2",
                                                         "cs3",
-                                                        "cs4",
-                                                        "cm1",
-                                                        "cm2",
-                                                        "cm3",
-                                                        "cm4"
+                                                        "cs4"
                                                     ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
@@ -770,6 +765,7 @@ export function layout() {
                                             value: "cs4",
                                             tracks: ["cs1", "cs2", "cs3"],
                                             type: "counter",
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -794,6 +790,7 @@ export function layout() {
                                             value: "cs3",
                                             tracks: ["cs1", "cs2", "cs4"],
                                             type: "counter",
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -818,7 +815,7 @@ export function layout() {
                                             value: "cs2",
                                             tracks: ["cs1", "cs3", "cs4"],
                                             type: "counter",
-                                            max: 3,
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -843,7 +840,6 @@ export function layout() {
                                             value: "cs1",
                                             tracks: ["cs2", "cs3", "cs4"],
                                             type: "counter",
-                                            max: 3,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {

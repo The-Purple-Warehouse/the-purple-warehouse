@@ -3943,16 +3943,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         pendingFunctions.push(async () => {
                             const controlElement =
                                 document.getElementById(controlId);
-                            controlElement
-                                .querySelector("div:nth-child(3)")
-                                .addEventListener("click", () => {
-                                    handleIncrement(score.class, control.label);
-                                });
-                            controlElement
-                                .querySelector("div:nth-child(1)")
-                                .addEventListener("click", () => {
-                                    handleDecrement(score.class, control.label);
-                                });
+                            const plus =
+                                controlElement.querySelector(
+                                    "div:nth-child(3)"
+                                );
+                            const minus =
+                                controlElement.querySelector(
+                                    "div:nth-child(1)"
+                                );
+                            plus.addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                let counter =
+                                    controlElement.querySelector(".counter");
+                                let curcount = parseInt(counter.innerText) || 0;
+                                if (
+                                    control.max !== undefined &&
+                                    curcount >= control.max
+                                )
+                                    return;
+                                counter.innerText = curcount + 1;
+                                updateCounter(controlElement);
+                                handleIncrement(score.class, control.label);
+                            });
+                            minus.addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                let counter =
+                                    controlElement.querySelector(".counter");
+                                let curcount = parseInt(counter.innerText) || 0;
+                                if (curcount <= 0) return;
+                                counter.innerText = curcount - 1;
+                                updateCounter(controlElement);
+                                handleDecrement(score.class, control.label);
+                            });
                         });
                     });
 
@@ -3996,33 +4018,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         document.addEventListener("click", (event) =>
                             outClick(event, tracker)
                         );
-                        let timers = tracker.querySelectorAll(
-                            ".score-controls > .score-control"
-                        );
-                        timers.forEach((timer) => {
-                            let minus = timer.children[0];
-                            let plus = timer.children[2];
-                            plus.addEventListener("click", () => {
-                                event.stopPropagation();
-                                let text =
-                                    timer.querySelector(
-                                        "div.counter"
-                                    ).innerText;
-                                timer.querySelector("div.counter").innerText =
-                                    parseInt(text) + 1;
-                                updateCounter(tracker);
-                            });
-                            minus.addEventListener("click", () => {
-                                event.stopPropagation();
-                                let text =
-                                    timer.querySelector(
-                                        "div.counter"
-                                    ).innerText;
-                                timer.querySelector("div.counter").innerText =
-                                    Math.max(parseInt(text) - 1, 0);
-                                updateCounter(tracker);
-                            });
-                        });
                     });
 
                     await saveData();
