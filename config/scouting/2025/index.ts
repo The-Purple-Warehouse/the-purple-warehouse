@@ -11,12 +11,20 @@ export function categories() {
             identifier: "25-0",
             dataType: "boolean"
         },
-        { name: "Coral Ground Intake", identifier: "25-1", dataType: "boolean" },
-        { name: "Algae Ground Intake", identifier: "25-2", dataType: "boolean" },
+        {
+            name: "Coral Ground Intake",
+            identifier: "25-1",
+            dataType: "boolean"
+        },
+        {
+            name: "Algae Ground Intake",
+            identifier: "25-2",
+            dataType: "boolean"
+        },
         { name: "Algae Reef Intake", identifier: "25-3", dataType: "boolean" },
-        { name: "Auto Algae Scoring", identifier: "25-4", dataType: "array" }, // 'asn' 'asp' 'amn' 'amp' 
-        { name: "Auto Coral Scoring", identifier: "25-5", dataType: "array" }, // 'cs1' 'cm2' 'cs3' 'cs4' 
-        { name: "Teleop Algae Scoring", identifier: "25-6", dataType: "array" }, // 'asn' 'asp' 'amn' 'amnp' 
+        { name: "Auto Algae Scoring", identifier: "25-4", dataType: "array" }, // 'asn' 'asp' 'amn' 'amp'
+        { name: "Auto Coral Scoring", identifier: "25-5", dataType: "array" }, // 'cs1' 'cm2' 'cs3' 'cs4'
+        { name: "Teleop Algae Scoring", identifier: "25-6", dataType: "array" }, // 'asn' 'asp' 'amn' 'amnp'
         { name: "Teleop Coral Scoring", identifier: "25-7", dataType: "array" }, // 'cs1' 'cm2' 'cs3' 'cs4'
         { name: "Cage Level", identifier: "25-8" },
         { name: "Cage Time", identifier: "25-9" },
@@ -41,7 +49,7 @@ export function categories() {
          * LOCATIONS
          * (0 = L4) (1 = L3) (2 = L2) (3 = L1)
          * (4 = net) (5 = processor)
-        */
+         */
         { name: "Auto Algae Count", identifier: "25-19" },
         { name: "Auto Coral Count", identifier: "25-20" },
         {
@@ -55,7 +63,7 @@ export function categories() {
             dataType: "array"
         },
         { name: "Teleop Algae Count", identifier: "25-23" },
-        { name: "Teleop Coral Count", identifier: "25-24" },
+        { name: "Teleop Coral Count", identifier: "25-24" }
     ];
 }
 
@@ -194,9 +202,16 @@ export function layout() {
                                         definition: ((state) => {
                                             return `${state.locations
                                                 .filter((location) =>
-                                                    ["cs1", "cs2", "cs3", "cs4", "cm1", "cm2", "cm3", "cm4"].includes(
-                                                        location.value
-                                                    )
+                                                    [
+                                                        "cs1",
+                                                        "cs2",
+                                                        "cs3",
+                                                        "cs4",
+                                                        "cm1",
+                                                        "cm2",
+                                                        "cm3",
+                                                        "cm4"
+                                                    ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
                                                     if (i > 4) {
@@ -343,7 +358,9 @@ export function layout() {
                                                     }
                                                     return "";
                                                 })
-                                                .filter((marker) => marker != "")
+                                                .filter(
+                                                    (marker) => marker != ""
+                                                )
                                                 .slice(0, 5)
                                                 .join("")}`;
                                         }).toString()
@@ -584,9 +601,16 @@ export function layout() {
                                         definition: ((state) => {
                                             return `${state.locations
                                                 .filter((location) =>
-                                                    ["cs1", "cs2", "cs3", "cs4", "cm1", "cm2", "cm3", "cm4"].includes(
-                                                        location.value
-                                                    )
+                                                    [
+                                                        "cs1",
+                                                        "cs2",
+                                                        "cs3",
+                                                        "cs4",
+                                                        "cm1",
+                                                        "cm2",
+                                                        "cm3",
+                                                        "cm4"
+                                                    ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
                                                     if (i > 4) {
@@ -733,7 +757,9 @@ export function layout() {
                                                     }
                                                     return "";
                                                 })
-                                                .filter((marker) => marker != "")
+                                                .filter(
+                                                    (marker) => marker != ""
+                                                )
                                                 .slice(0, 5)
                                                 .join("")}`;
                                         }).toString()
@@ -884,7 +910,7 @@ export function layout() {
                                     data: "25-9",
                                     name: "cage_time",
                                     restricts: ["defense_time", "brick_time"]
-                                },
+                                }
                             ]
                         }
                     ]
@@ -1077,9 +1103,7 @@ export function layout() {
 }
 
 export function preload() {
-    return [
-        "/img/2025coral-grid.png"
-    ];
+    return ["/img/2025coral-grid.png"];
 }
 
 let categoriesInSingular = {
@@ -1209,7 +1233,9 @@ export function formatParsedData(data, categories, teams) {
                     1000
                 ).toFixed(3)}s`,
                 "⭐".repeat(
-                    parseInt(find(entry, "ratings", categories, "25-12", "") + 1)
+                    parseInt(
+                        find(entry, "ratings", categories, "25-12", "") + 1
+                    )
                 ),
                 "⭐".repeat(
                     parseInt(
