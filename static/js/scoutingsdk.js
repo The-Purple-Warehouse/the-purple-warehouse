@@ -3633,7 +3633,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     rows
                 )}, 1fr); grid-template-columns: repeat(${_this.escape(
                     columns
-                )}, 1fr); background-image: url(${_this.escape(src)});${
+                )}, 1fr); background-size: cover; background-image: url(${_this.escape(
+                    src
+                )});${
                     (fieldOrientationSet ? fieldOrientation : orientation) == 1
                         ? " transform: scaleX(-1) scaleY(-1);"
                         : ""
@@ -3800,6 +3802,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 };
 
                 const handleIncrement = async (type, controlLabel) => {
+                    // 2024
                     if (type.includes("speaker")) {
                         if (controlLabel === "Scored") values.push("ss");
                         else if (controlLabel === "Missed") values.push("sm");
@@ -3814,11 +3817,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         else if (controlLabel === "Missed") values.push("tm");
                         locations.push(2);
                     }
+
+                    // 2025
+                    if (type.includes("net")) {
+                        if (controlLabel === "Scored") values.push("asn");
+                        else if (controlLabel === "Missed") values.push("amn");
+                        locations.push(4);
+                    } else if (type.includes("processor")) {
+                        if (controlLabel === "Scored") values.push("asp");
+                        else if (controlLabel === "Missed") values.push("amp");
+                        locations.push(5);
+                    }
                     dcounter++;
                     await saveData();
                 };
 
                 const handleDecrement = async (type, controlLabel) => {
+                    // 2024
                     if (type.includes("speaker")) {
                         if (controlLabel === "Scored")
                             removeLastEntry(values, "ss");
@@ -3840,6 +3855,22 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             removeLastEntry(values, "tm");
                         removeLastEntry(locations, 2);
                     }
+
+                    // 2025
+                    if (type.includes("net")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "asn");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "amn");
+                        removeLastEntry(locations, 4);
+                    } else if (type.includes("processor")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "asp");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "amp");
+                        removeLastEntry(locations, 5);
+                    }
+
                     dcounter = Math.max(0, dcounter - 1);
                     await saveData();
                 };
@@ -3858,6 +3889,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     counters.forEach((counter, cInd) => {
                         let cLabel = score.controls[cInd]?.label || "";
                         let mval = "";
+                        // 2024
                         if (score.class.includes("speaker")) {
                             if (cLabel === "Scored") mval = "ss";
                             else if (cLabel === "Missed") mval = "sm";
@@ -3869,6 +3901,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (cLabel === "Scored") mval = "ts";
                             else if (cLabel === "Missed") mval = "tm";
                         }
+
+                        // 2025
+                        if (score.class.includes("net")) {
+                            if (cLabel === "Scored") mval = "asn";
+                            else if (cLabel === "Missed") mval = "amn";
+                        } else if (score.class.includes("processor")) {
+                            if (cLabel === "Scored") mval = "asp";
+                            else if (cLabel === "Missed") mval = "amp";
+                        }
+
                         const mc = values.filter((val) => val === mval).length;
                         counter.innerText = mc;
                         if (score.controls[cInd].additive) count += mc;
@@ -3901,16 +3943,36 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         pendingFunctions.push(async () => {
                             const controlElement =
                                 document.getElementById(controlId);
-                            controlElement
-                                .querySelector("div:nth-child(3)")
-                                .addEventListener("click", () => {
-                                    handleIncrement(score.class, control.label);
-                                });
-                            controlElement
-                                .querySelector("div:nth-child(1)")
-                                .addEventListener("click", () => {
-                                    handleDecrement(score.class, control.label);
-                                });
+                            const plus =
+                                controlElement.querySelector(
+                                    "div:nth-child(3)"
+                                );
+                            const minus =
+                                controlElement.querySelector(
+                                    "div:nth-child(1)"
+                                );
+                            plus.addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                let counter =
+                                    controlElement.querySelector(".counter");
+                                let curcount = parseInt(counter.innerText) || 0;
+                                if (
+                                    control.max !== undefined &&
+                                    curcount >= control.max
+                                )
+                                    return;
+                                counter.innerText = curcount + 1;
+                                handleIncrement(score.class, control.label);
+                            });
+                            minus.addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                let counter =
+                                    controlElement.querySelector(".counter");
+                                let curcount = parseInt(counter.innerText) || 0;
+                                if (curcount <= 0) return;
+                                counter.innerText = curcount - 1;
+                                handleDecrement(score.class, control.label);
+                            });
                         });
                     });
 
@@ -3961,23 +4023,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             let minus = timer.children[0];
                             let plus = timer.children[2];
                             plus.addEventListener("click", () => {
-                                event.stopPropagation();
-                                let text =
-                                    timer.querySelector(
-                                        "div.counter"
-                                    ).innerText;
-                                timer.querySelector("div.counter").innerText =
-                                    parseInt(text) + 1;
                                 updateCounter(tracker);
                             });
                             minus.addEventListener("click", () => {
-                                event.stopPropagation();
-                                let text =
-                                    timer.querySelector(
-                                        "div.counter"
-                                    ).innerText;
-                                timer.querySelector("div.counter").innerText =
-                                    Math.max(parseInt(text) - 1, 0);
                                 updateCounter(tracker);
                             });
                         });
