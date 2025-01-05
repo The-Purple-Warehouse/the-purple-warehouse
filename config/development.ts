@@ -1,7 +1,6 @@
 import { Config } from ".";
 // @ts-ignore
 import secret from "./secret";
-console.log("secret:", secret)
 
 const config: Config = {
     branch: "main",
@@ -13,7 +12,7 @@ const config: Config = {
         database: "tpw-dev",
         username: "",
         password: "",
-        host: "127.0.0.1",
+        host: "localhost",
         port: 27017
     },
     auth: {
