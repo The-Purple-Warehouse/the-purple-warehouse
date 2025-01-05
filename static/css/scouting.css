@@ -913,7 +913,8 @@ header .icon-button .send-container svg {
 }
 
 .small-grid-x .grid {
-    width: calc(50vw) !important;
+    width: 60vw !important;
+    height: 60vw !important;
     max-width: 600px !important;
     max-height: 600px !important;
 }
@@ -2129,7 +2130,8 @@ div.preset {
     }
 
     div.preset > div.component-layout-rows div.component-score-counter,
-    div.preset > div.component-layout-rows div.component-textarea {
+    div.preset > div.component-layout-rows div.component-textarea,
+    div.preset > div.component-layout-rows div.component-locations {
         grid-column: 1 / -1;
         margin: 0px 1% 0px 1%;
     }

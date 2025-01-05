@@ -7,14 +7,14 @@ import scoutingConfig from "../config/scouting";
 import config from "../config";
 
 const DIVISIONS = [
-    "2024arc",
-    "2024cur",
-    "2024dal",
-    "2024gal",
-    "2024hop",
-    "2024joh",
-    "2024mil",
-    "2024new"
+    "2025arc",
+    "2025cur",
+    "2025dal",
+    "2025gal",
+    "2025hop",
+    "2025joh",
+    "2025mil",
+    "2025new"
 ];
 
 export function getCategoryByIdentifier(identifier: string) {
