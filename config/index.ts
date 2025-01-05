@@ -5,7 +5,6 @@ import production2023 from "./production2023";
 import production2024 from "./production2024";
 
 const env = process.env.NODE_ENV || "development";
-console.log("env:", env);
 
 if (
     ![
