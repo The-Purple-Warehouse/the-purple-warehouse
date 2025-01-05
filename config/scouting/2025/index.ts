@@ -366,7 +366,7 @@ export function layout() {
                                             value: "cs4",
                                             tracks: ["cs1", "cs2", "cs3"],
                                             type: "counter",
-                                            max: 3,
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -391,7 +391,7 @@ export function layout() {
                                             value: "cs3",
                                             tracks: ["cs1", "cs2", "cs4"],
                                             type: "counter",
-                                            max: 3,
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -416,7 +416,7 @@ export function layout() {
                                             value: "cs2",
                                             tracks: ["cs1", "cs3", "cs4"],
                                             type: "counter",
-                                            max: 3,
+                                            max: 12,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
@@ -441,7 +441,6 @@ export function layout() {
                                             value: "cs1",
                                             tracks: ["cs2", "cs3", "cs4"],
                                             type: "counter",
-                                            max: 3,
                                             show: {
                                                 type: "function",
                                                 definition: ((state) => {
