@@ -7,14 +7,14 @@ import scoutingConfig from "../config/scouting";
 import config from "../config";
 
 const DIVISIONS = [
-    "2023arc",
-    "2023cur",
-    "2023dal",
-    "2023gal",
-    "2023hop",
-    "2023joh",
-    "2023mil",
-    "2023new"
+    "2025arc",
+    "2025cur",
+    "2025dal",
+    "2025gal",
+    "2025hop",
+    "2025joh",
+    "2025mil",
+    "2025new"
 ];
 
 export function getCategoryByIdentifier(identifier: string) {
@@ -26,7 +26,7 @@ export async function addCategory(
     identifier: string,
     dataType?: string
 ) {
-    let category = await getCategoryByIdentifier(identifier);
+    let category: any = await getCategoryByIdentifier(identifier);
     if (category == null) {
         if (dataType === undefined) {
             category = new ScoutingCategory({
@@ -40,9 +40,29 @@ export async function addCategory(
                 dataType: dataType
             });
         }
-        await category.save();
+    } else {
+        category.name = name;
+        if (dataType === undefined) {
+            category.dataType = undefined;
+        } else {
+            category.dataType = dataType;
+        }
     }
+    await category.save();
     return category;
+}
+
+export async function initializeCategories(year) {
+    const categories = scoutingConfig[year].categories();
+    for (let i = 0; i < categories.length; i++) {
+        let category = (await addCategory(
+            categories[i].name,
+            categories[i].identifier,
+            categories[i].dataType
+        )) as any;
+    }
+    console.log(`Added/updated ${categories.length} categories`);
+    return;
 }
 
 export async function removeCategory(identifier: string) {

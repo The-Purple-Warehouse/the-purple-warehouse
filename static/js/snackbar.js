@@ -2,10 +2,10 @@ const snackbarContainer = document.querySelector("#snackbar-container");
 const snackbar = document.querySelector("#snackbar");
 
 const SNACKBAR_TIMEOUT = 5000;
-let timer;
+let snackbarTimer;
 
 function succBar(message) {
-    if (timer) clearTimeout(timer);
+    if (snackbarTimer) clearTimeout(snackbarTimer);
 
     snackbarContainer.classList.remove("error");
     snackbarContainer.classList.add("success");
@@ -13,11 +13,11 @@ function succBar(message) {
 
     snackbar.innerHTML = message;
 
-    timer = setTimeout(clearSnackbar, SNACKBAR_TIMEOUT);
+    snackbarTimer = setTimeout(clearSnackbar, SNACKBAR_TIMEOUT);
 }
 
 function errBar(message) {
-    if (timer) clearTimeout(timer);
+    if (snackbarTimer) clearTimeout(snackbarTimer);
 
     snackbarContainer.classList.remove("success");
     snackbarContainer.classList.add("error");
@@ -25,7 +25,7 @@ function errBar(message) {
 
     snackbar.innerHTML = message;
 
-    timer = setTimeout(clearSnackbar, SNACKBAR_TIMEOUT);
+    snackbarTimer = setTimeout(clearSnackbar, SNACKBAR_TIMEOUT);
 }
 
 const clearSnackbar = function () {

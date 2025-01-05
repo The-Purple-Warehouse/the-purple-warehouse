@@ -15,7 +15,7 @@ import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
-import { getStats } from "./helpers/scouting";
+import { getStats, initializeCategories } from "./helpers/scouting";
 
 // import loginRouter from "./routers/login"; // contains base route "/"
 import defaultRouter from "./routers/default"; // contains base route "/"
@@ -211,8 +211,14 @@ app.use(serve("./static", {}));
 
 const httpServer = createServer(app.callback());
 
-httpServer.listen(config.server.port, () => {
-    console.log(
-        "Listening at http://" + config.server.domain + ":" + config.server.port
-    );
-});
+(async () => {
+    await initializeCategories(config.year);
+    httpServer.listen(config.server.port, () => {
+        console.log(
+            "Listening at http://" +
+                config.server.domain +
+                ":" +
+                config.server.port
+        );
+    });
+})();

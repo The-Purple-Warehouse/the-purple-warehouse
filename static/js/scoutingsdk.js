@@ -1,6 +1,5 @@
 const ScoutingAppSDK = function (element, config) {
     let _this = this;
-
     config = fixConfig(config);
 
     element.innerHTML = ``;
@@ -356,6 +355,8 @@ const ScoutingAppSDK = function (element, config) {
 
     let timers = {};
     window.t = timers;
+    let checkboxes = {};
+    window.c = checkboxes;
 
     let data = {
         data: {},
@@ -365,12 +366,21 @@ const ScoutingAppSDK = function (element, config) {
         ratings: {}
     };
 
+    _this.revealTimers = () => {
+        console.log(timers);
+    };
+
+    _this.revealCheckboxes = () => {
+        console.log(checkboxes);
+    };
+
     _this.showHomePage = (
         _eventCode = "",
         _matchNumber = "",
         _teamNumber = ""
     ) => {
         return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
             data = {
                 data: {},
                 abilities: {},
@@ -379,6 +389,7 @@ const ScoutingAppSDK = function (element, config) {
                 ratings: {}
             };
             timers = {};
+            checkboxes = {};
             if (
                 _eventCode != "" &&
                 _this.getEventCode() != null &&
@@ -400,7 +411,15 @@ const ScoutingAppSDK = function (element, config) {
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="home-window">
-                    <h2>Event:</h2>
+                    <div class="title-block">
+                        <h1>Begin scouting</h1>
+                    </div>
+                    <div class="group">
+                        <input class="match-number" id="match-number" autocomplete="off" name="Match" type="number" min="0" required="required" value="${_this.escape(
+                            _matchNumber || latestMatch
+                        )}"/></span><span class="bar"></span>
+                        <label for="match-number">Match Number</label>
+                    </div>
                     <select class="event-code">
                         <option value=""${
                             (_eventCode || _this.getEventCode()) == null ||
@@ -418,11 +437,6 @@ const ScoutingAppSDK = function (element, config) {
                                 }>${event.name}</option>`
                         )}
                     </select>
-                    <h2>Match Number:</h2>
-                    <input class="match-number" type="number" min="0" value="${_this.escape(
-                        _matchNumber || latestMatch
-                    )}" />
-                    <h2>Team:</h2>
                     <select class="team">
                         <option value="">Select a team...</option>
                     </select>
@@ -431,7 +445,7 @@ const ScoutingAppSDK = function (element, config) {
                     <p class="boltman-quote">${_this.escape(
                         _this.getQuote()
                     )}</p>
-                    <p class="footer-text">Made with &lt; &gt; by <a href="https://kabirramzan.com/" target="_blank">Kabir Ramzan</a> of <a href="https://robotics.harker.org/" target="_blank">Harker Robotics</a></p>
+                    <p class="footer-text">Made with &lt; &gt; by <a href="https://robotics.harker.org/" target="_blank">Harker Robotics</a></p>
                 </div>
             `;
 
@@ -448,9 +462,8 @@ const ScoutingAppSDK = function (element, config) {
                         ".home-window > select.event-code"
                     ).value;
                     let matchNumber = parseInt(
-                        element.querySelector(
-                            ".home-window > input.match-number"
-                        ).value
+                        element.querySelector(".home-window input.match-number")
+                            .value
                     );
                     let teamNumber = element.querySelector(
                         ".home-window > select.team"
@@ -500,7 +513,7 @@ const ScoutingAppSDK = function (element, config) {
                     ".home-window > select.event-code"
                 ).value;
                 let matchNumber = parseInt(
-                    element.querySelector(".home-window > input.match-number")
+                    element.querySelector(".home-window  input.match-number")
                         .value
                 );
                 if (
@@ -596,7 +609,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ).innerHTML = "";
                     }
                 };
-            element.querySelector(".home-window > input.match-number").onblur =
+            element.querySelector(".home-window input.match-number").onblur =
                 updateTeamsList;
             updateTeamsList();
             resolve();
@@ -605,11 +618,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showMatchPage = (index, eventCode, matchNumber, teamNumber) => {
         return new Promise(async (resolve, reject) => {
+            _this.currentPage = index;
             if (index < -1) {
+                _this.clearPendingFunctions();
+                pendingFunctions.push(async () => {
+                    await this.setMatchNav(
+                        0,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                });
                 await _this.showHomePage();
             } else if (index < 0) {
+                _this.clearPendingFunctions();
+                pendingFunctions.push(async () => {
+                    await this.setMatchNav(
+                        0,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                });
                 await _this.showHomePage(eventCode, matchNumber, teamNumber);
             } else {
+                pendingFunctions.push(async () => {
+                    await this.setMatchNav(
+                        index == 0 ? 1 : 2,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                });
                 element.innerHTML = `
 					<div class="match-window">
 						${await _this.compileComponent(
@@ -624,6 +664,65 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 				`;
                 await _this.runPendingFunctions();
             }
+            resolve();
+        });
+    };
+
+    _this.setMatchNav = (toggle, eventCode, matchNumber, teamNumber) => {
+        return new Promise(async (resolve, reject) => {
+            const nav = document.querySelector("header");
+            const regEls = Array.from(nav.querySelectorAll(".reg-nav"));
+            const matchEls = Array.from(nav.querySelectorAll(".match-nav"));
+            if (regEls) {
+                let cl = toggle != 0 ? "add" : "remove";
+                regEls.forEach((el) => {
+                    el.classList[cl]("none");
+                });
+            }
+            if (matchEls) {
+                let cl = toggle != 0 ? "remove" : "add";
+                matchEls.forEach((el) => {
+                    el.classList[cl]("none");
+                });
+            }
+
+            const submit = document.getElementById("submit-button");
+            const back = document.getElementById("back-button");
+            if (!submit || !back) {
+                console.log("nav buttons not defined!");
+                return;
+            }
+
+            if (toggle == 1) {
+                submit.classList.remove("none");
+                back.classList.add("none");
+                submit.onclick = async () => {
+                    await _this.showMatchPage(
+                        parseInt(_this.currentPage) + 1,
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                };
+                if (document.getElementById("scout-number"))
+                    document.getElementById("scout-number").innerText =
+                        teamNumber;
+            } else if (toggle == 2) {
+                submit.classList.add("none");
+                back.classList.remove("none");
+                back.onclick = async () => {
+                    await _this.showMatchPage(
+                        Math.min(parseInt(_this.currentPage) - 1, 1),
+                        eventCode,
+                        matchNumber,
+                        teamNumber
+                    );
+                };
+                if (document.getElementById("scout-number"))
+                    document.getElementById("scout-number").innerText =
+                        teamNumber;
+            }
+
             resolve();
         });
     };
@@ -777,6 +876,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showScannerPage = (view = 0) => {
         return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
             element.innerHTML = `
                 <div class="scanner-window">
                     <div class="scanner-view" style="display: ${
@@ -1352,12 +1452,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showDataPage = () => {
         return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
                 config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
             element.innerHTML = `
                 <div class="data-window">
                     <h2>Event:</h2>
+                    <div class="group">
+                        <input class="team-number" id="team-number" autocomplete="off" name="Team" type="number" min="0" required="required"/></span><span class="bar"></span>
+                        <label for="team-number">Team Number (blank shows all)</label>
+                    </div>
                     <select class="event-code">
                         <option value=""${
                             _this.getEventCode() == null ||
@@ -1374,8 +1479,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 }>${event.name}</option>`
                         )}
                     </select>
-                    <h2>Team Number<br>(leave blank to show all):</h2>
-                    <input class="team-number" placeholder="Team Number" />
                     <button class="show-data">Show Data</button>
                     <button class="show-parsed-data">Show Parsed Data</button>
                     <button class="show-analysis">Show Analysis</button>
@@ -1419,7 +1522,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ".data-window > select.event-code"
                 ).value;
                 let teamNumber = element.querySelector(
-                    ".data-window > input.team-number"
+                    ".data-window input.team-number"
                 ).value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
@@ -1453,7 +1556,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 `<td${
                                                     cell.length > 40 ||
                                                     cell.includes("\\n")
-                                                        ? ` style="min-width: 200px;"`
+                                                        ? ` style="min-width: 200px; overflow-wrap: anywhere;"`
                                                         : ""
                                                 }>${
                                                     csv[0][i] == "timestamp"
@@ -1508,7 +1611,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ".data-window > select.event-code"
                     ).value;
                     let teamNumber = element.querySelector(
-                        ".data-window > input.team-number"
+                        ".data-window input.team-number"
                     ).value;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
@@ -1543,7 +1646,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 `<td${
                                                     cell.length > 40 ||
                                                     cell.includes("\\n")
-                                                        ? ` style="min-width: 200px;"`
+                                                        ? ` style="min-width: 200px; overflow-wrap: anywhere;"`
                                                         : ""
                                                 }>${
                                                     csv[0][i] == "timestamp"
@@ -1601,9 +1704,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ".data-window > select.event-code"
                     ).value;
                     let teamNumber =
-                        element.querySelector(
-                            ".data-window > input.team-number"
-                        ).value || config.account.team;
+                        element.querySelector(".data-window input.team-number")
+                            .value || config.account.team;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
@@ -1748,7 +1850,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ".data-window > select.event-code"
                 ).value;
                 let teamNumber = element.querySelector(
-                    ".data-window > input.team-number"
+                    ".data-window input.team-number"
                 ).value;
                 try {
                     let data = await (
@@ -1787,6 +1889,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showComparePage = () => {
         return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
                 config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
@@ -1809,17 +1912,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 }>${event.name}</option>`
                         )}
                     </select>
-                    <h2>Team Numbers<br>(enter up to 5 teams):</h2>
-                    <input class="team-number-1" placeholder="1st Team Number" style="margin-bottom: 10px;" />
-                    <input class="team-number-2" placeholder="2nd Team Number" style="margin-bottom: 10px;" />
-                    <input class="team-number-3" placeholder="3rd Team Number" style="margin-bottom: 10px;" />
-                    <input class="team-number-4" placeholder="4th Team Number" style="margin-bottom: 10px;" />
-                    <input class="team-number-5" placeholder="5th Team Number" />
+                    <h2>Team Numbers (up to 5)</h2>
+                    <div class="group">
+                        <input class="team-number-1" id="team-number-1" autocomplete="off" name="Team Number 1" type="number" min="0" required="required"/></span><span class="bar"></span>
+                        <label for="team-number-1">Team Number 1</label>
+                    </div>
+                    <div class="group">
+                        <input class="team-number-2" id="team-number-2" autocomplete="off" name="Team Number 2" type="number" min="0" required="required"/></span><span class="bar"></span>
+                        <label for="team-number-2">Team Number 2</label>
+                    </div>
+                    <div class="group">
+                        <input class="team-number-3" id="team-number-3" autocomplete="off" name="Team Number 3" type="number" min="0" required="required"/></span><span class="bar"></span>
+                        <label for="team-number-3">Team Number 3</label>
+                    </div>
+                    <div class="group">
+                        <input class="team-number-4" id="team-number-4" autocomplete="off" name="Team Number 4" type="number" min="0" required="required"/></span><span class="bar"></span>
+                        <label for="team-number-4">Team Number 4</label>
+                    </div>
+                    <div class="group">
+                        <input class="team-number-5" id="team-number-5" autocomplete="off" name="Team Number 5" type="number" min="0" required="required"/></span><span class="bar"></span>
+                        <label for="team-number-5">Team Number 5</label>
+                    </div>
                     <button class="show-comparison">Compare Teams</button>
                     <h3 class="red">&nbsp;</h3>
-                    <div class="comparison" style="display: none;">
-                        
-                    </div>
+                    <div class="comparison" style="display: none;"></div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
             `;
@@ -1850,23 +1966,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).value;
                     let teamNumber1 =
                         element.querySelector(
-                            ".data-window > input.team-number-1"
+                            ".data-window input.team-number-1"
                         ).value || config.account.team;
                     let teamNumber2 =
                         element.querySelector(
-                            ".data-window > input.team-number-2"
+                            ".data-window input.team-number-2"
                         ).value || "";
                     let teamNumber3 =
                         element.querySelector(
-                            ".data-window > input.team-number-3"
+                            ".data-window input.team-number-3"
                         ).value || "";
                     let teamNumber4 =
                         element.querySelector(
-                            ".data-window > input.team-number-4"
+                            ".data-window input.team-number-4"
                         ).value || "";
                     let teamNumber5 =
                         element.querySelector(
-                            ".data-window > input.team-number-5"
+                            ".data-window input.team-number-5"
                         ).value || "";
                     let teamNumbers = [
                         teamNumber1,
@@ -2014,6 +2130,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.showPredictPage = () => {
         return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
                 config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
@@ -2036,19 +2153,39 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 }>${event.name}</option>`
                         )}
                     </select>
-                    <h2>Red Alliance:</h2>
-                    <input class="team-number-red1" placeholder="Red 1" style="margin-bottom: 10px;" />
-                    <input class="team-number-red2" placeholder="Red 2" style="margin-bottom: 10px;" />
-                    <input class="team-number-red3" placeholder="Red 3" style="margin-bottom: 10px;" />
-                    <h2>Blue Alliance:</h2>
-                    <input class="team-number-blue1" placeholder="Blue 1" style="margin-bottom: 10px;" />
-                    <input class="team-number-blue2" placeholder="Blue 2" style="margin-bottom: 10px;" />
-                    <input class="team-number-blue3" placeholder="Blue 3" />
+                    <h2>Red Alliance</h2>
+                    <div class="team-color-group">
+                        <div class="group">
+                            <input class="team-number-red1" id="team-number-red1" autocomplete="off" name="Red 1 Team Number" type="number" min="0" required="required"/></span><span class="bar"></span>
+                            <label for="team-number-red1">Red 1</label>
+                        </div>
+                        <div class="group">
+                            <input class="team-number-red2" id="team-number-red2" autocomplete="off" name="Red 2 Team Number" type="number" min="0" required="required"/></span><span class="bar"></span>
+                            <label for="team-number-red2">Red 2</label>
+                        </div>
+                        <div class="group">
+                            <input class="team-number-red3" id="team-number-red3" autocomplete="off" name="Red 3 Team Number" type="number" min="0" required="required"/></span><span class="bar"></span>
+                            <label for="team-number-red3">Red 3</label>
+                        </div>
+                    </div>
+                    <h2>Blue Alliance</h2>
+                    <div class="team-color-group">
+                        <div class="group">
+                            <input class="team-number-blue1" id="team-number-blue1" autocomplete="off" name="Blue 1 Team Number" type="number" min="0" required="required"/></span><span class="bar"></span>
+                            <label for="team-number-blue1">Blue 1</label>
+                        </div>
+                        <div class="group">
+                            <input class="team-number-blue2" id="team-number-blue2" autocomplete="off" name="Blue 2 Team Number" type="number" min="0" required="required"/></span><span class="bar"></span>
+                            <label for="team-number-blue2">Blue 2</label>
+                        </div>
+                        <div class="group">
+                            <input class="team-number-blue3" id="team-number-blue3" autocomplete="off" name="Blue 3 Team Number" type="number" min="0" required="required"/></span><span class="bar"></span>
+                            <label for="team-number-blue3">Blue 3</label>
+                        </div>
+                    </div>
                     <button class="show-prediction">Predict Winner</button>
                     <h3 class="red">&nbsp;</h3>
-                    <div class="prediction" style="display: none;">
-                        
-                    </div>
+                    <div class="prediction" style="display: none;"></div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
             `;
@@ -2079,27 +2216,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).value;
                     let teamNumberRed1 =
                         element.querySelector(
-                            ".data-window > input.team-number-red1"
+                            ".data-window input.team-number-red1"
                         ).value || "";
                     let teamNumberRed2 =
                         element.querySelector(
-                            ".data-window > input.team-number-red2"
+                            ".data-window input.team-number-red2"
                         ).value || "";
                     let teamNumberRed3 =
                         element.querySelector(
-                            ".data-window > input.team-number-red3"
+                            ".data-window input.team-number-red3"
                         ).value || "";
                     let teamNumberBlue1 =
                         element.querySelector(
-                            ".data-window > input.team-number-blue1"
+                            ".data-window input.team-number-blue1"
                         ).value || "";
                     let teamNumberBlue2 =
                         element.querySelector(
-                            ".data-window > input.team-number-blue2"
+                            ".data-window input.team-number-blue2"
                         ).value || "";
                     let teamNumberBlue3 =
                         element.querySelector(
-                            ".data-window > input.team-number-blue3"
+                            ".data-window input.team-number-blue3"
                         ).value || "";
                     let teamNumbers = {
                         red: [
@@ -2283,25 +2420,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let teamNumber = element.querySelector(
                         ".home-window > input.team-number"
                     ).value;
-                    if (
-                        teamNumber != null &&
-                        teamNumber != ""
-                    ) {
+                    if (teamNumber != null && teamNumber != "") {
                         let team = await _this.getTeam(teamNumber);
-                        if(team.nickname != null && team.nickname != "") {
-                            element.querySelector(".home-window > input.team-name").value = team.nickname;
+                        if (team.nickname != null && team.nickname != "") {
+                            element.querySelector(
+                                ".home-window > input.team-name"
+                            ).value = team.nickname;
                         } else {
-                            element.querySelector(".home-window > input.team-name").value = "";
+                            element.querySelector(
+                                ".home-window > input.team-name"
+                            ).value = "";
                         }
-                        if(team.country != null && team.country != "") {
-                            element.querySelector(".home-window > input.country").value = team.country;
+                        if (team.country != null && team.country != "") {
+                            element.querySelector(
+                                ".home-window > input.country"
+                            ).value = team.country;
                         } else {
-                            element.querySelector(".home-window > input.country").value = "";
+                            element.querySelector(
+                                ".home-window > input.country"
+                            ).value = "";
                         }
-                        if(team.country == "USA" && team.state_prov != null && team.state_prov != "") {
-                            element.querySelector(".home-window > input.state").value = team.state_prov;
+                        if (
+                            team.country == "USA" &&
+                            team.state_prov != null &&
+                            team.state_prov != ""
+                        ) {
+                            element.querySelector(
+                                ".home-window > input.state"
+                            ).value = team.state_prov;
                         } else {
-                            element.querySelector(".home-window > input.state").value = "";
+                            element.querySelector(
+                                ".home-window > input.state"
+                            ).value = "";
                         }
                     }
                 };
@@ -2338,20 +2488,49 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         adminToken != null &&
                         adminToken != ""
                     ) {
-                        let result = await _this.addTeam(teamNumber, accessToken, teamName, country, state, adminToken);
-                        if(result.success) {
-                            element.querySelector(".home-window > .message").classList.remove("red");
-                            element.querySelector(".home-window > .message").classList.add("green");
-                            element.querySelector(".home-window > input.team-number").value = "";
-                            element.querySelector(".home-window > input.access-token").value = "";
-                            element.querySelector(".home-window > input.team-name").value = "";
-                            element.querySelector(".home-window > input.country").value = "";
-                            element.querySelector(".home-window > input.state").value = "";
-                            element.querySelector(".home-window > .message").innerHTML = `Team ${teamNumber} added/updated successfully!`;
+                        let result = await _this.addTeam(
+                            teamNumber,
+                            accessToken,
+                            teamName,
+                            country,
+                            state,
+                            adminToken
+                        );
+                        if (result.success) {
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.remove("red");
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.add("green");
+                            element.querySelector(
+                                ".home-window > input.team-number"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.access-token"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.team-name"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.country"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.state"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = `Team ${teamNumber} added/updated successfully!`;
                         } else {
-                            element.querySelector(".home-window > .message").classList.remove("green");
-                            element.querySelector(".home-window > .message").classList.add("red");
-                            element.querySelector(".home-window > .message").innerHTML = result.error;
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.remove("green");
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.add("red");
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = result.error;
                         }
                     }
                 };
@@ -2360,15 +2539,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let adminToken = element.querySelector(
                         ".home-window > input.admin-token"
                     ).value;
-                    if (
-                        adminToken != null &&
-                        adminToken != ""
-                    ) {
+                    if (adminToken != null && adminToken != "") {
                         let result = await _this.listTeams(adminToken);
-                        if(result.success) {
-                            element.querySelector(".home-window > .message").innerHTML = "";
-                            element.querySelector(".data-table > tbody").innerHTML = result.body.teams.map((team, i) => {
-                                return `
+                        if (result.success) {
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = "";
+                            element.querySelector(
+                                ".data-table > tbody"
+                            ).innerHTML = result.body.teams
+                                .map((team, i) => {
+                                    return `
                                 <tr>
                                     <td>
                                         ${team.teamNumber}
@@ -2383,12 +2564,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ${team.state}
                                     </td>
                                 </tr>`;
-                            }) .join("");
-                            element.querySelector(".data-table").style.display = "";
+                                })
+                                .join("");
+                            element.querySelector(".data-table").style.display =
+                                "";
                         } else {
-                            element.querySelector(".home-window > .message").classList.remove("green");
-                            element.querySelector(".home-window > .message").classList.add("red");
-                            element.querySelector(".home-window > .message").innerHTML = result.error;
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.remove("green");
+                            element
+                                .querySelector(".home-window > .message")
+                                .classList.add("red");
+                            element.querySelector(
+                                ".home-window > .message"
+                            ).innerHTML = result.error;
                         }
                     }
                 };
@@ -2452,7 +2641,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
-    _this.addTeam = (teamNumber, accessToken, teamName, country, state, adminToken) => {
+    _this.addTeam = (
+        teamNumber,
+        accessToken,
+        teamName,
+        country,
+        state,
+        adminToken
+    ) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let add = await (
@@ -2463,8 +2659,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         {
                             method: "POST",
                             headers: {
-                                "Content-Type":
-                                    "application/json;charset=UTF-8"
+                                "Content-Type": "application/json;charset=UTF-8"
                             },
                             body: JSON.stringify({
                                 teamName,
@@ -2483,25 +2678,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 });
             }
         });
-    }
+    };
 
     _this.listTeams = (adminToken) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let list = await (
-                    await fetch(
-                        `/api/v1/scouting/team/list`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/json;charset=UTF-8"
-                            },
-                            body: JSON.stringify({
-                                adminToken
-                            })
-                        }
-                    )
+                    await fetch(`/api/v1/scouting/team/list`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json;charset=UTF-8"
+                        },
+                        body: JSON.stringify({
+                            adminToken
+                        })
+                    })
                 ).json();
                 resolve(list);
             } catch (err) {
@@ -2510,7 +2701,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 });
             }
         });
-    }
+    };
 
     _this.getEventCode = () => {
         if (localStorage.getItem("eventCode") == null) {
@@ -2728,10 +2919,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     let pendingFunctions = [];
 
+    _this.clearPendingFunctions = () => {
+        pendingFunctions = [];
+    };
+
+    _this.logPendingFunctions = () => {
+        console.log(pendingFunctions);
+    };
+
     _this.runPendingFunctions = () => {
         return new Promise(async (resolve, reject) => {
             await Promise.all(pendingFunctions.map((func) => func()));
-            pendingFunctions = [];
+            _this.clearPendingFunctions();
             resolve();
         });
     };
@@ -3069,6 +3268,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 "text",
                 "locations",
                 "pagebutton",
+                "scorecount",
+                "pagebar",
                 "checkbox",
                 "timer",
                 "select",
@@ -3083,8 +3284,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 type = "layout";
             }
             if (component.type == "layout") {
-                let directions = ["rows", "columns"];
+                let directions = [
+                    "rows",
+                    "columns",
+                    "grid",
+                    "preset",
+                    "preset-manager"
+                ];
                 let direction = component.direction;
+                let name = component.name;
                 if (!directions.includes(direction)) {
                     direction = "rows";
                 }
@@ -3095,8 +3303,34 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ) {
                     components = component.components;
                 }
+                let id;
+                if (["preset-manager"].includes(direction)) {
+                    id = _this.random();
+                }
+                pendingFunctions.push(async () => {
+                    if (id) {
+                        let manager = element.querySelector(
+                            `[data-id="${_this.escape(id)}"]`
+                        );
+                        if (!manager) {
+                            console.log("manager is not defined!");
+                            return;
+                        }
+                        let children = manager.children;
+                        for (let i = 1; i < children.length - 1; i++)
+                            children[i].classList.add("none");
+                    }
+                });
                 resolve(`
-					<div class="component-layout-${direction}">
+					<div ${
+                        direction == "preset"
+                            ? `class="${name}-preset preset" data-ref="${name}"`
+                            : `class="component-layout-${direction}"`
+                    } ${
+                    direction == "preset-manager"
+                        ? `data-id="${_this.escape(id)}"`
+                        : ""
+                }>
 						${(
                             await Promise.all(
                                 components.map((component) =>
@@ -3135,7 +3369,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 resolve(
                     `<h1 class="component-header">${_this.escape(label)}</h1>`
                 );
-            } else if (component.type == "text") {
+            } else if (component.type == "text" || component.type == "text") {
                 let label = "";
                 if (component.label != null) {
                     if (component.label.type == "function") {
@@ -3399,7 +3633,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     rows
                 )}, 1fr); grid-template-columns: repeat(${_this.escape(
                     columns
-                )}, 1fr); background-image: url(${_this.escape(src)});${
+                )}, 1fr); background-size: cover; background-image: url(${_this.escape(
+                    src
+                )});${
                     (fieldOrientationSet ? fieldOrientation : orientation) == 1
                         ? " transform: scaleX(-1) scaleY(-1);"
                         : ""
@@ -3495,6 +3731,314 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 						${flip ? `<button>Flip</button>` : ""}
 					</div>
 				`);
+            } else if (component.type == "scorecount") {
+                let id = _this.random();
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label = eval(component.label.definition)(getState());
+                    } else {
+                        label = component.label.toString();
+                    }
+                }
+                let scores = [];
+                if (component.scores instanceof Array) {
+                    scores = component.scores;
+                }
+                let values = [];
+                let locations = [];
+                let dcounter = 0;
+
+                if (component.data) {
+                    values = checkNull(data.data[component.data.values], []);
+                    locations = checkNull(
+                        data.data[component.data.locations],
+                        []
+                    );
+                    dcounter = checkNull(
+                        data.counters[component.data.counter],
+                        0
+                    );
+                }
+
+                let scoreClick = (event, el) => {
+                    if (!el.classList.contains("active"))
+                        event.stopPropagation();
+                    el.classList.add("active");
+                };
+
+                let outClick = (event, el) => {
+                    if (!event.target.closest(".parent")) {
+                        el.classList.remove("active");
+                    }
+                };
+
+                let updateCounter = (tracker) => {
+                    let counters = tracker.querySelectorAll(".additive");
+                    let count = 0;
+                    counters.forEach((counter) => {
+                        count += parseInt(counter.innerText);
+                    });
+                    let tallycount = tracker.querySelector("div.tally");
+                    if (tallycount) tallycount.innerText = count;
+                    else {
+                        console.log("doesnt have tally counter");
+                        console.log(tracker);
+                    }
+                };
+
+                const saveData = async () => {
+                    await _this.setData(
+                        "data",
+                        component.data.locations,
+                        locations
+                    );
+                    await _this.setData("data", component.data.values, values);
+                    await _this.setData(
+                        "counters",
+                        component.data.counter,
+                        dcounter
+                    );
+                };
+
+                const handleIncrement = async (type, controlLabel) => {
+                    // 2024
+                    if (type.includes("speaker")) {
+                        if (controlLabel === "Scored") values.push("ss");
+                        else if (controlLabel === "Missed") values.push("sm");
+                        else if (controlLabel === "Amplify") values.push("sa");
+                        locations.push(1);
+                    } else if (type.includes("amp")) {
+                        if (controlLabel === "Scored") values.push("as");
+                        else if (controlLabel === "Missed") values.push("am");
+                        locations.push(0);
+                    } else if (type.includes("trap")) {
+                        if (controlLabel === "Scored") values.push("ts");
+                        else if (controlLabel === "Missed") values.push("tm");
+                        locations.push(2);
+                    }
+
+                    // 2025
+                    if (type.includes("net")) {
+                        if (controlLabel === "Scored") values.push("asn");
+                        else if (controlLabel === "Missed") values.push("amn");
+                        locations.push(4);
+                    } else if (type.includes("processor")) {
+                        if (controlLabel === "Scored") values.push("asp");
+                        else if (controlLabel === "Missed") values.push("amp");
+                        locations.push(5);
+                    }
+                    dcounter++;
+                    await saveData();
+                };
+
+                const handleDecrement = async (type, controlLabel) => {
+                    // 2024
+                    if (type.includes("speaker")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "ss");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "sm");
+                        else if (controlLabel === "Amplify")
+                            removeLastEntry(values, "sa");
+                        removeLastEntry(locations, 1);
+                    } else if (type.includes("amp")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "as");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "am");
+                        removeLastEntry(locations, 0);
+                    } else if (type.includes("trap")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "ts");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "tm");
+                        removeLastEntry(locations, 2);
+                    }
+
+                    // 2025
+                    if (type.includes("net")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "asn");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "amn");
+                        removeLastEntry(locations, 4);
+                    } else if (type.includes("processor")) {
+                        if (controlLabel === "Scored")
+                            removeLastEntry(values, "asp");
+                        else if (controlLabel === "Missed")
+                            removeLastEntry(values, "amp");
+                        removeLastEntry(locations, 5);
+                    }
+
+                    dcounter = Math.max(0, dcounter - 1);
+                    await saveData();
+                };
+
+                const removeLastEntry = (array, value) => {
+                    const index = array.lastIndexOf(value);
+                    if (index !== -1) array.splice(index, 1);
+                };
+
+                const initCounters = (tracker, score, index) => {
+                    const counters = tracker.querySelectorAll(
+                        ".score-control .counter"
+                    );
+                    const tallyCount = tracker.querySelector(".tally");
+                    let count = 0;
+                    counters.forEach((counter, cInd) => {
+                        let cLabel = score.controls[cInd]?.label || "";
+                        let mval = "";
+                        // 2024
+                        if (score.class.includes("speaker")) {
+                            if (cLabel === "Scored") mval = "ss";
+                            else if (cLabel === "Missed") mval = "sm";
+                            else if (cLabel === "Amplify") mval = "sa";
+                        } else if (score.class.includes("amp")) {
+                            if (cLabel === "Scored") mval = "as";
+                            else if (cLabel === "Missed") mval = "am";
+                        } else if (score.class.includes("trap")) {
+                            if (cLabel === "Scored") mval = "ts";
+                            else if (cLabel === "Missed") mval = "tm";
+                        }
+
+                        // 2025
+                        if (score.class.includes("net")) {
+                            if (cLabel === "Scored") mval = "asn";
+                            else if (cLabel === "Missed") mval = "amn";
+                        } else if (score.class.includes("processor")) {
+                            if (cLabel === "Scored") mval = "asp";
+                            else if (cLabel === "Missed") mval = "amp";
+                        }
+
+                        const mc = values.filter((val) => val === mval).length;
+                        counter.innerText = mc;
+                        if (score.controls[cInd].additive) count += mc;
+                    });
+                    if (tallyCount) tallyCount.innerText = count;
+                };
+
+                let htmlcont = "";
+
+                component.scores.forEach((score, index) => {
+                    if (score.disabled) return;
+
+                    let htmlcontrol = "";
+                    score.controls.forEach((control) => {
+                        let controlId = `${id}-control-${index}-${control.label}`;
+                        htmlcontrol += `
+                            <div class="score-control" id="${controlId}">
+                                <div>${control.subtract}</div>
+                                <div>
+                                    <div class="counter ${
+                                        control.additive ? "additive" : ""
+                                    }">0</div>
+                                    <div class="subtext">${_this.escape(
+                                        control.label
+                                    )}</div>
+                                </div>
+                                <div>${control.add}</div>
+                            </div>`;
+
+                        pendingFunctions.push(async () => {
+                            const controlElement =
+                                document.getElementById(controlId);
+                            const plus =
+                                controlElement.querySelector(
+                                    "div:nth-child(3)"
+                                );
+                            const minus =
+                                controlElement.querySelector(
+                                    "div:nth-child(1)"
+                                );
+                            plus.addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                let counter =
+                                    controlElement.querySelector(".counter");
+                                let curcount = parseInt(counter.innerText) || 0;
+                                if (
+                                    control.max !== undefined &&
+                                    curcount >= control.max
+                                )
+                                    return;
+                                counter.innerText = curcount + 1;
+                                handleIncrement(score.class, control.label);
+                            });
+                            minus.addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                let counter =
+                                    controlElement.querySelector(".counter");
+                                let curcount = parseInt(counter.innerText) || 0;
+                                if (curcount <= 0) return;
+                                counter.innerText = curcount - 1;
+                                handleDecrement(score.class, control.label);
+                            });
+                        });
+                    });
+
+                    htmlcont += `
+                        <div style="width: calc(100% / ${
+                            component.scores.length
+                        });" class="${score.class} ${
+                        score.disabled ? "disabled" : ""
+                    }">
+                            <div class="close">${score.close}</div>
+                            <div class="front-group">
+                                <div class="score-label">
+                                    <div class="icon">${score.icon}</div>
+                                    <div class="subtitle">${score.name}</div>
+                                </div>
+                                <div class="tally">0</div>
+                            </div>
+                            ${
+                                !score.disabled
+                                    ? `<div class="score-controls parent">${htmlcontrol}</div>`
+                                    : ""
+                            }
+                        </div>`;
+
+                    pendingFunctions.push(async () => {
+                        const tracker = document.querySelector(
+                            `[data-id='${id}'] .${score.class}`
+                        );
+                        if (tracker) initCounters(tracker, score, index);
+                    });
+                });
+
+                pendingFunctions.push(async () => {
+                    let trackers = document.querySelectorAll(
+                        `div[data-id='${id}'] > div:not(.disabled)`
+                    );
+                    trackers.forEach((tracker) => {
+                        tracker.addEventListener("click", (event) =>
+                            scoreClick(event, tracker)
+                        );
+                        document.addEventListener("click", (event) =>
+                            outClick(event, tracker)
+                        );
+                        let timers = tracker.querySelectorAll(
+                            ".score-controls > .score-control"
+                        );
+                        timers.forEach((timer) => {
+                            let minus = timer.children[0];
+                            let plus = timer.children[2];
+                            plus.addEventListener("click", () => {
+                                updateCounter(tracker);
+                            });
+                            minus.addEventListener("click", () => {
+                                updateCounter(tracker);
+                            });
+                        });
+                    });
+
+                    await saveData();
+                });
+
+                resolve(
+                    `<div class="component-score-counter" data-id="${_this.escape(
+                        id
+                    )}">${htmlcont}</div>`
+                );
             } else if (component.type == "pagebutton") {
                 let id = _this.random();
                 let page = -1;
@@ -3542,14 +4086,78 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         id
                     )}" data-page="${page}">${label}</button>`
                 );
-            } else if (component.type == "checkbox") {
+            } else if (component.type == "pagebar") {
                 let id = _this.random();
+                if (typeof component.page == "number") {
+                    page = component.page;
+                }
                 let label = "";
+                let tabs = component.options;
+                if (!tabs) tabs = [];
                 if (component.label != null) {
                     if (component.label.type == "function") {
                         label = eval(component.label.definition)(getState());
                     } else {
                         label = component.label.toString();
+                    }
+                }
+                pendingFunctions.push(async () => {
+                    let children = element.querySelectorAll(
+                        `[data-id="${_this.escape(id)}"] > div`
+                    );
+                    for (let i = 0; i < children.length; ++i) {
+                        let tab = tabs[i];
+                        children[i].onclick = async () => {
+                            let manager = children[i].closest(
+                                ".component-layout-preset-manager"
+                            );
+                            let refers = children[i].getAttribute("data-ref");
+                            let presets = manager.children;
+                            children.forEach((child) => {
+                                child.classList.remove("active");
+                            });
+                            children[i].classList.add("active");
+                            if (presets && presets.length > 0) {
+                                for (let j = 0; j < presets.length - 1; ++j) {
+                                    if (
+                                        presets[j].getAttribute("data-ref") ==
+                                        refers
+                                    ) {
+                                        presets[j].classList.remove("none");
+                                    } else {
+                                        presets[j].classList.add("none");
+                                    }
+                                }
+                            }
+                        };
+                    }
+                });
+                resolve(
+                    `<aside id="controls" class="component-pagebar" data-id="${_this.escape(
+                        id
+                    )}">
+                        ${tabs
+                            .map((tab, i) => {
+                                return `<div data-ref="${_this.escape(
+                                    tab.refers
+                                )}" class="${_this.escape(tab.refers)} ${
+                                    tab.active ? "active" : ""
+                                }">
+                                ${tab.html}
+                                <p>${_this.escape(tab.name)}</p>
+                            </div>`;
+                            })
+                            .join("")}
+                    </aside>`
+                );
+                /* } else if (component.type == "checkbox") {
+                let id = _this.random();
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label = eval(component.label.definition)(getState()) + "<br>";
+                    } else {
+                        label = component.label.toString() + "<br>";
                     }
                 }
                 let defaultValue = false;
@@ -3586,8 +4194,80 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 						<span class="checkmark"></span>
 						<label for="${_this.escape(id)}">${label}</label>
 					</div>
+				`); */
+            } else if (component.type == "checkbox") {
+                let id = _this.random();
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label =
+                            eval(component.label.definition)(getState()) +
+                            "<br>";
+                    } else {
+                        label = component.label.toString();
+                    }
+                }
+                let defaultValue = false;
+                if (typeof component.default == "boolean") {
+                    defaultValue = component.default;
+                }
+                if (checkboxes[component.data] == null) {
+                    checkboxes[component.data] = {};
+                    checkboxes[component.data].elements = [];
+                }
+                checkboxes[component.data].elements.push(id);
+                pendingFunctions.push(async () => {
+                    const updateUI = () => {
+                        checkboxes[component.data].elements.forEach(
+                            (checkId) => {
+                                const checkEl = element.querySelector(
+                                    `[data-id="${_this.escape(
+                                        checkId
+                                    )}"] > input`
+                                );
+                                if (checkEl) {
+                                    checkEl.checked = checkNull(
+                                        data.abilities[component.data],
+                                        defaultValue
+                                    );
+                                }
+                            }
+                        );
+                    };
+
+                    element.querySelector(
+                        `[data-id="${_this.escape(id)}"] > input`
+                    ).oninput = async () => {
+                        await _this.setData(
+                            "abilities",
+                            component.data,
+                            element.querySelector(
+                                `[data-id="${_this.escape(id)}"] > input`
+                            ).checked
+                        );
+                        updateUI();
+                    };
+                    await _this.setData(
+                        "abilities",
+                        component.data,
+                        element.querySelector(
+                            `[data-id="${_this.escape(id)}"] > input`
+                        ).checked
+                    );
+                    updateUI();
+                });
+                resolve(`
+					<div class="component-toggle" data-id="${_this.escape(id)}">
+                        <p>${_this.escape(label)}</p>
+						<input type="checkbox" id="${_this.escape(id)}" ${
+                    checkNull(data.abilities[component.data], defaultValue)
+                        ? "checked"
+                        : ""
+                } />
+						<label for="${_this.escape(id)}"></label>
+					</div>
 				`);
-            } else if (component.type == "timer") {
+                /* } else if (component.type == "timer") {
                 let id = _this.random();
                 let label = "";
                 if (component.label != null) {
@@ -3688,7 +4368,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 `[data-id="${_this.escape(
                                     timers[name].id
                                 )}"] > .button-container > button.timer`
-                            ).innerHTML = "Start";
+                            ).innerHTML = "<i class='fa'>&#xf04b;</i>";
                             for (let i = 0; i < restricts.length; i++) {
                                 if (timers[restricts[i]] == null) {
                                     timers[restricts[i]] = {};
@@ -3754,7 +4434,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 `[data-id="${_this.escape(
                                     timers[name].id
                                 )}"] > .button-container > button.timer`
-                            ).innerHTML = "Stop";
+                            ).innerHTML = '<i class="fa">&#xf04c;</i>';
                         }
                     };
                     await _this.setData(
@@ -3769,7 +4449,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     checkNull(data.timers[component.data], defaultValue)
                 )}</span></h2>
 						<div class="button-container">
-							<button class="minus">&nbsp;<span>-</span></button>
+							<button class="minus"><span>-</span></button>
 							<button class="timer" ${
                                 checkNull(
                                     checkNull(timers[name], {}).restricted,
@@ -3779,14 +4459,227 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     : ""
                             }>${
                     checkNull(checkNull(timers[name], {}).running, false)
-                        ? "Stop"
-                        : "Start"
+                        ? '<i class="fa">&#xf04c;</i>'
+                        : '<i class="fa">&#xf04b;</i>'
                 }</button>
-							<button class="plus">&nbsp;<span>+</span></button>
+							<button class="plus"><span>+</span></button>
 						</div>
 					</div>
+				`); */
+            } else if (component.type == "timer") {
+                let id = _this.random();
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label = eval(component.label.definition)(getState());
+                    } else {
+                        label = component.label.toString();
+                    }
+                }
+                let name = "";
+                if (component.name != null) {
+                    name = component.name.toString();
+                }
+                let restricts = [];
+                if (component.restricts instanceof Array) {
+                    restricts = component.restricts;
+                }
+                let defaultValue = 0;
+                if (typeof component.default == "number") {
+                    defaultValue = component.default;
+                }
+                if (timers[name] == null) {
+                    timers[name] = {};
+                    timers[name].running = false;
+                    timers[name].restricted = false;
+                    timers[name].elements = [];
+                }
+                if (timers[name].milliseconds == null) {
+                    timers[name].milliseconds = defaultValue;
+                }
+                timers[name].elements.push(id);
+                pendingFunctions.push(async () => {
+                    const updateUI = () => {
+                        timers[name].elements.forEach((timerId) => {
+                            const timeElement = element.querySelector(
+                                `[data-id="${_this.escape(timerId)}"] p.time`
+                            );
+                            if (timeElement) {
+                                timeElement.innerHTML = _this.timerFormat(
+                                    timers[name].milliseconds
+                                );
+                            }
+                        });
+                    };
+                    const updateButtons = (running) => {
+                        timers[name].elements.forEach((timerId) => {
+                            const playButton = element.querySelector(
+                                `[data-id="${_this.escape(
+                                    timerId
+                                )}"] div.controls > div.play`
+                            );
+                            if (playButton) {
+                                playButton.children[0].classList.toggle(
+                                    "none",
+                                    running
+                                );
+                                playButton.children[1].classList.toggle(
+                                    "none",
+                                    !running
+                                );
+                            }
+                        });
+                    };
+
+                    element.querySelector(
+                        `[data-id="${_this.escape(
+                            id
+                        )}"] div.controls > div.minus`
+                    ).onclick = async () => {
+                        if (timers[name].milliseconds > 1000) {
+                            timers[name].milliseconds -= 1000;
+                        } else {
+                            timers[name].milliseconds = 0;
+                        }
+                        if (timers[name].milliseconds < 0) {
+                            timers[name].milliseconds = 0;
+                        }
+                        updateUI();
+                        await _this.setData(
+                            "timers",
+                            component.data,
+                            timers[name].milliseconds
+                        );
+                    };
+                    element.querySelector(
+                        `[data-id="${_this.escape(
+                            id
+                        )}"] div.controls > div.plus`
+                    ).onclick = async () => {
+                        timers[name].milliseconds += 1000;
+                        updateUI();
+                        await _this.setData(
+                            "timers",
+                            component.data,
+                            timers[name].milliseconds
+                        );
+                    };
+                    element.querySelector(
+                        `[data-id="${_this.escape(
+                            id
+                        )}"] div.controls > div.play`
+                    ).onclick = async () => {
+                        if (timers[name].running) {
+                            timers[name].running = false;
+                            clearInterval(timers[name].interval);
+                            await _this.setData(
+                                "timers",
+                                component.data,
+                                timers[name].milliseconds
+                            );
+                            updateButtons(false);
+                            restricts.forEach((name) => {
+                                if (!timers[name]) {
+                                    timers[name] = {
+                                        running: false,
+                                        restricted: false
+                                    };
+                                }
+                                timers[name].restricted = false;
+                                timers[name].elements.forEach((timerId) => {
+                                    const button = element.querySelector(
+                                        `[data-id="${_this.escape(
+                                            timerId
+                                        )}"] div.controls > div.play`
+                                    );
+                                    if (button) {
+                                        button.classList.remove("disabled");
+                                    }
+                                });
+                            });
+                        } else {
+                            restricts.forEach((name) => {
+                                if (!timers[name]) {
+                                    timers[name] = {
+                                        running: false,
+                                        restricted: false
+                                    };
+                                }
+                                timers[name].restricted = true;
+                                timers[name].elements.forEach((timerId) => {
+                                    const button = element.querySelector(
+                                        `[data-id="${_this.escape(
+                                            timerId
+                                        )}"] div.controls > div.play`
+                                    );
+                                    if (button) {
+                                        button.classList.add("disabled");
+                                    }
+                                });
+                            });
+                            timers[name].running = true;
+                            timers[name].interval = setInterval(async () => {
+                                timers[name].milliseconds += 50;
+                                updateUI();
+                                await _this.setData(
+                                    "timers",
+                                    component.data,
+                                    timers[name].milliseconds
+                                );
+                                let text = element.querySelector(
+                                    `[data-id="${_this.escape(
+                                        timers[name].id
+                                    )}"] p.time`
+                                );
+                                if (text != null) {
+                                    text.innerHTML = _this.timerFormat(
+                                        data.timers[component.data]
+                                    );
+                                }
+                            }, 50);
+                            updateButtons(true);
+                        }
+                    };
+                    await _this.setData(
+                        "timers",
+                        component.data,
+                        timers[name].milliseconds
+                    );
+                    updateUI();
+                });
+                resolve(`
+					<div class="component-clock" data-id="${_this.escape(id)}">
+                        <div>
+                            <p>${_this.escape(label)}</p>
+                            <div><p class="time">${_this.timerFormat(
+                                checkNull(
+                                    data.timers[component.data],
+                                    defaultValue
+                                )
+                            )}</p></div>
+                        </div>
+                        <div class="controls">
+                            <div class="minus">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
+                            </div>
+                            <div class="play" ${
+                                checkNull(
+                                    checkNull(timers[name], {}).restricted,
+                                    false
+                                )
+                                    ? "disabled"
+                                    : ""
+                            }>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
+                                <svg class="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"/></svg>
+                            </div>
+                            <div class="plus">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+                            </div>
+                        </div>
+					</div>
 				`);
-            } else if (component.type == "select") {
+                /* } else if (component.type == "select") {
                 let id = _this.random();
                 let label = "";
                 if (component.label != null) {
@@ -3845,7 +4738,131 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             })}
 						</select>
 					</div>
+				`); */
+            } else if (component.type == "select") {
+                let id = _this.random();
+                let label = "";
+                if (component.label != null) {
+                    if (component.label.type == "function") {
+                        label = eval(component.label.definition)(getState());
+                    } else {
+                        label = component.label.toString();
+                    }
+                }
+                let defaultValue = 0;
+                if (typeof component.default == "number") {
+                    defaultValue = component.default;
+                }
+                let options = [];
+                if (component.options instanceof Array) {
+                    options = component.options;
+                }
+                pendingFunctions.push(async () => {
+                    element.querySelector(
+                        `[data-id="${_this.escape(id)}"] > select`
+                    ).oninput = async () => {
+                        let n = parseInt(
+                            element.querySelector(
+                                `[data-id="${_this.escape(id)}"] > select`
+                            ).value
+                        );
+                        if (n != -1) {
+                            await _this.setData("abilities", component.data, n);
+                        }
+                    };
+                    await _this.setData(
+                        "abilities",
+                        component.data,
+                        parseInt(
+                            element.querySelector(
+                                `[data-id="${_this.escape(id)}"] > select`
+                            ).value
+                        )
+                    );
+                });
+                resolve(`
+					<div class="component-dropdown" data-id="${_this.escape(id)}">
+						<select>
+							${options.map((option, index) => {
+                                return `<option value="${index}" ${
+                                    index ==
+                                    checkNull(
+                                        data.abilities[component.data],
+                                        defaultValue
+                                    )
+                                        ? "selected"
+                                        : ""
+                                }>${_this.escape(label)}: ${_this.escape(
+                                    option.label
+                                )}</option>`;
+                            })}
+						</select>
+					</div>
 				`);
+                /* } else if (component.type == "textbox") {
+                let id = _this.random();
+                let placeholder = "";
+                if (component.placeholder != null) {
+                    placeholder = component.placeholder.toString();
+                }
+                let defaultValue = "";
+                if (component.default != null) {
+                    defaultValue = component.default.toString();
+                }
+                let visibility = false;
+                function showOverlay() {
+                    overlayShown = true;
+                    if (overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "block";
+                    }
+                }
+                function hideOverlay() {
+                    overlayShown = false;
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
+                    }
+                }
+                pendingFunctions.push(async () => {
+                    const textarea = element.querySelector(`[data-id="${_this.escape(id)}"] > div`);
+                    const toggle = element.querySelector(`[data-id="${_this.escape(id)}"] button`);
+                    textarea.style.display = visibility ? "block" : "none";
+                    toggle.onclick = () => {
+                        visibility = !visibility;
+                        textarea.style.display = visibility ? "block" : "none";
+                        if (visibility) {
+                            showOverlay();
+                        } else {
+                            hideOverlay();
+                        }
+                    };
+                    textarea.oninput = async () => {
+                        await _this.setData(
+                            "data",
+                            component.data,
+                            textarea.value
+                        );
+                    };
+                    await _this.setData(
+                        "data",
+                        component.data,
+                        textarea.value
+                    );
+                });
+                resolve(
+                    `<div class="component-textbox" data-id="${_this.escape(id)}">
+                        <button class="component-notesbutton" type="button">Comments</button>
+                        <div>
+                            <h2>Notes</h2>
+                            <textarea class="component-textbox" placeholder="${_this.escape(
+                                placeholder
+                            )}" data-id="${_this.escape(id)}">${_this.escape(
+                                checkNull(data.data[component.data], defaultValue)
+                            )}</textarea>
+                        </div>
+                    </div>`
+                ); */
             } else if (component.type == "textbox") {
                 let id = _this.random();
                 let placeholder = "";
@@ -3856,37 +4873,57 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (component.default != null) {
                     defaultValue = component.default.toString();
                 }
+                let visibility = false;
+                function showOverlay() {
+                    overlayShown = true;
+                    if (overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "block";
+                    }
+                }
+                function hideOverlay() {
+                    overlayShown = false;
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
+                    }
+                }
                 pendingFunctions.push(async () => {
-                    element.querySelector(
-                        `[data-id="${_this.escape(id)}"]`
-                    ).oninput = async () => {
+                    const textarea = element.querySelector(
+                        `[data-id="${_this.escape(id)}"] textarea`
+                    );
+                    textarea.oninput = async () => {
                         await _this.setData(
                             "data",
                             component.data,
-                            element.querySelector(
-                                `[data-id="${_this.escape(id)}"]`
-                            ).value
+                            textarea.value
                         );
                     };
-                    await _this.setData(
-                        "data",
-                        component.data,
-                        element.querySelector(`[data-id="${_this.escape(id)}"]`)
-                            .value
-                    );
+                    await _this.setData("data", component.data, textarea.value);
                 });
                 resolve(
-                    `<textarea class="component-textbox" placeholder="${_this.escape(
+                    `<div class="component-textarea" data-id="${_this.escape(
+                        id
+                    )}">
+                        <p>Comments</p>
+                        <p class="subtext">Scoring ability? Stability? Fouls? Issues?</p>
+                        <p class="subtext">Team Number? (if practice match)</p>
+                        <textarea data-id="${_this.escape(
+                            id
+                        )}" placeholder="${_this.escape(
                         placeholder
-                    )}" data-id="${_this.escape(id)}">${_this.escape(
+                    )}">${_this.escape(
                         checkNull(data.data[component.data], defaultValue)
-                    )}</textarea>`
+                    )}</textarea>
+                    </div>`
                 );
             } else if (component.type == "rating") {
                 let id = _this.random();
                 let defaultValue = "";
                 if (component.default != null) {
                     defaultValue = component.default.toString();
+                } else {
+                    defaultValue = "0";
                 }
                 let label = "";
                 if (component.label != null) {
@@ -3904,90 +4941,47 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         src = component.src;
                     }
                 }
+                if (data.ratings[component.data]) {
+                    defaultValue = data.ratings[component.data];
+                }
                 pendingFunctions.push(async () => {
-                    let ratingElements = [
-                        ...element.querySelectorAll(
-                            `[data-id="${_this.escape(id)}"] .rating-star`
-                        )
-                    ];
-                    for (let i = 0; i < ratingElements.length; i++) {
-                        let ratingElement = ratingElements[i];
-                        ratingElement.onclick = async () => {
-                            let indexToSelect = parseInt(
-                                ratingElement.getAttribute("data-rating")
-                            );
-                            let indexToDeselect = indexToSelect + 1;
-                            console.log(indexToSelect, indexToDeselect);
-                            while (indexToSelect >= 0) {
-                                element
-                                    .querySelector(
-                                        `[data-id="${_this.escape(
-                                            id
-                                        )}"] [data-rating="${indexToSelect}"]`
-                                    )
-                                    .setAttribute("data-value", 1);
-                                indexToSelect--;
-                            }
-                            while (indexToDeselect <= 4) {
-                                element
-                                    .querySelector(
-                                        `[data-id="${_this.escape(
-                                            id
-                                        )}"] [data-rating="${indexToDeselect}"]`
-                                    )
-                                    .setAttribute("data-value", 0);
-                                indexToDeselect++;
-                            }
-                            let highestIndex = -1;
-                            let star = element.querySelector(
-                                `[data-id="${_this.escape(
-                                    id
-                                )}"] [data-rating="0"]`
-                            );
-                            while (
-                                star != null &&
-                                star.getAttribute("data-value") == 1
-                            ) {
-                                highestIndex += 1;
-                                star = element.querySelector(
-                                    `[data-id="${_this.escape(
-                                        id
-                                    )}"] [data-rating="${highestIndex + 1}"]`
-                                );
-                            }
-                            if (highestIndex < 0) {
-                                highestIndex = 0;
-                            }
-                            await _this.setData(
-                                "ratings",
-                                component.data,
-                                highestIndex
-                            );
-                        };
-                    }
-                    let highestIndex = -1;
-                    let star = element.querySelector(
-                        `[data-id="${_this.escape(id)}"] [data-rating="0"]`
+                    var sliders = document.querySelectorAll(
+                        `[data-id="${id}"] > div`
                     );
-                    while (
-                        star != null &&
-                        star.getAttribute("data-value") == 1
-                    ) {
-                        highestIndex += 1;
-                        star = element.querySelector(
-                            `[data-id="${_this.escape(id)}"] [data-rating="${
-                                highestIndex + 1
-                            }"]`
-                        );
-                    }
+                    var ranges = document.querySelectorAll(
+                        `[data-id="${id}"] > div > input`
+                    );
+                    var values = document.querySelectorAll(
+                        `[data-id="${id}"] > div > span`
+                    );
 
-                    if (highestIndex < 0) {
-                        highestIndex = 0;
-                    }
+                    sliders.forEach((slider) => {
+                        values.forEach((vel) => {
+                            vel.innerHTML = parseInt(defaultValue) + 1;
+                        });
+
+                        ranges.forEach(async (rel) => {
+                            rel.value = parseInt(defaultValue) + 1;
+                            rel.addEventListener("input", async function () {
+                                var vel = this.nextElementSibling;
+                                vel.innerHTML = this.value;
+
+                                let val = rel.value - 1;
+                                if (val < 0) val = 0;
+                                if (val > 4) val = 4;
+                                await _this.setData(
+                                    "ratings",
+                                    component.data,
+                                    val
+                                );
+                            });
+                        });
+                    });
+
                     await _this.setData(
                         "ratings",
                         component.data,
-                        highestIndex
+                        parseInt(defaultValue)
                     );
                 });
                 resolve(
@@ -3995,25 +4989,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         id
                     )}">
                         <h2>${_this.escape(label)}</h2>
-                        <div class="rating-container">
-                            ${[0, 1, 2, 3, 4]
-                                .map((i) => {
-                                    return `<div class="rating-star" data-value="${
-                                        i <=
-                                        checkNull(
-                                            data.ratings[component.data],
-                                            defaultValue
-                                        )
-                                            ? "1"
-                                            : "0"
-                                    }" data-rating="${i}" style="--outline-img: url(${_this.escape(
-                                        src[0]
-                                    )}); --filled-img: url(${_this.escape(
-                                        src[1]
-                                    )});"></div>`;
-                                })
-                                .join("")}
-                        </div> 
+                        <div>
+                            <input class="range-slider" type="range" value="1" min="1" max="5" step="1">
+                            <span class="range-span">1</span>
+                        </div>
                     </div>`
                 );
             } else if (component.type == "upload") {
@@ -4279,6 +5258,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         code
                     )}</textarea>`
                 );
+            } else {
+                console.log("bad error with component type");
+                resolve("");
             }
         });
     };

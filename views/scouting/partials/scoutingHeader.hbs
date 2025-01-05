@@ -13,9 +13,12 @@
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
 </nav>
 <header>
-    <button class="navbar-open-btn"></button>
-    <h3>{{shorten username 10}} ({{team}})</h3>
-    <div class="header-incentives">
+    <button class="nav-left navbar-open-btn"></button>
+    <div class="nav-middle reg-nav account-info">
+        <p class="large reg-nav">{{shorten username 10}}</p>
+        <p class="small team-number">{{team}}</p>
+    </div>
+    <div class="nav-right reg-nav header-incentives">
       <div class="currency">
         <div class="nuts">
           <p>{{ incentives.nuts }}</p>
@@ -32,6 +35,28 @@
           <p>{{ incentives.level }}</p>
         </div>
       </div>
+    </div>
+    <div class="none nav-middle match-nav match-info">
+        <p class="large match-period">Scout</p>
+        <p id="scout-number" class="small team-number">{{team}}</p>
+    </div>
+    <div class="none nav-right match-nav">
+        <div id="submit-button" class="icon-button">
+            <div class="send-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                </svg>
+            </div>
+            <p>Submit</p>
+        </div>
+        <div class="none icon-button" id="back-button">
+            <div class="send-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
+                </svg>
+            </div>
+            <p>Back</p>
+        </div>
     </div>
 </header>
 

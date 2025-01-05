@@ -11,7 +11,7 @@ const config: Config = {
     db: secret.production.db,
     auth: secret.production.auth,
     features: ["scouting", "tps"],
-    year: 2024
+    year: 2025
 };
 
 export default config;
