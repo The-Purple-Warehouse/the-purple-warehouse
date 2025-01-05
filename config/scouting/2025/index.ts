@@ -204,9 +204,12 @@ export function layout() {
                                         definition: ((state) => {
                                             return `${state.locations
                                                 .filter((location) =>
-                                                    ["cs1", "cs2", "cs3", "cs4"].includes(
-                                                        location.value
-                                                    )
+                                                    [
+                                                        "cs1",
+                                                        "cs2",
+                                                        "cs3",
+                                                        "cs4"
+                                                    ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
                                                     if (i > 4) {
@@ -597,9 +600,12 @@ export function layout() {
                                         definition: ((state) => {
                                             return `${state.locations
                                                 .filter((location) =>
-                                                    ["cs1", "cs2", "cs3", "cs4"].includes(
-                                                        location.value
-                                                    )
+                                                    [
+                                                        "cs1",
+                                                        "cs2",
+                                                        "cs3",
+                                                        "cs4"
+                                                    ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
                                                     if (i > 4) {
