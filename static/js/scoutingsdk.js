@@ -3962,7 +3962,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 )
                                     return;
                                 counter.innerText = curcount + 1;
-                                updateCounter(controlElement);
                                 handleIncrement(score.class, control.label);
                             });
                             minus.addEventListener("click", (event) => {
@@ -3972,7 +3971,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 let curcount = parseInt(counter.innerText) || 0;
                                 if (curcount <= 0) return;
                                 counter.innerText = curcount - 1;
-                                updateCounter(controlElement);
                                 handleDecrement(score.class, control.label);
                             });
                         });
@@ -4018,6 +4016,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         document.addEventListener("click", (event) =>
                             outClick(event, tracker)
                         );
+                        let timers = tracker.querySelectorAll(
+                            ".score-controls > .score-control"
+                        );
+                        timers.forEach((timer) => {
+                            let minus = timer.children[0];
+                            let plus = timer.children[2];
+                            plus.addEventListener("click", () => {
+                                updateCounter(tracker);
+                            });
+                            minus.addEventListener("click", () => {
+                                updateCounter(tracker);
+                            });
+                        });
                     });
 
                     await saveData();
