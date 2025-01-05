@@ -1,12 +1,5 @@
 <div class="leaderboard-container">
   <h2>Scouting Leaderboard</h2>
-  <div class="leaderboard-filters">
-    <select id="timeframe-select">
-      <option value="all">All Time</option>
-      <option value="week">This Week</option>
-      <option value="day">Today</option>
-    </select>
-  </div>
   <div class="leaderboard-list">
     {{#each leaders}}
     <div class="leaderboard-item">
@@ -16,9 +9,11 @@
         <span class="team">({{this.team}})</span>
       </div>
       <div class="stats">
-        <div class="scans">
-          <span>{{this.scans}}</span>
-          <img src="/img/qr-code.png" alt="Scans" />
+        <div class="level-info">
+          <div class="level">Level {{this.level}}</div>
+          <div class="xp-container">
+            <div class="xp-filled" style="width: {{multiply this.progress 100}}%;"></div>
+          </div>
         </div>
         <div class="currency">
           <div class="nuts">
@@ -30,11 +25,39 @@
             <img src="/img/bolts.png" alt="Bolts" />
           </div>
         </div>
-        <div class="level">
-          Level {{this.level}}
-        </div>
       </div>
     </div>
     {{/each}}
+
+    {{#if currentUser}}
+    {{#if (gt currentUser.rank 50)}}
+    <div class="leaderboard-divider"></div>
+    <div class="leaderboard-item current-user">
+      <div class="rank">{{currentUser.rank}}</div>
+      <div class="user-info">
+        <span class="username">{{currentUser.username}}</span>
+        <span class="team">({{currentUser.team}})</span>
+      </div>
+      <div class="stats">
+        <div class="level-info">
+          <div class="level">Level {{currentUser.level}}</div>
+          <div class="xp-container">
+            <div class="xp-filled" style="width: {{multiply currentUser.progress 100}}%;"></div>
+          </div>
+        </div>
+        <div class="currency">
+          <div class="nuts">
+            <span>{{currentUser.nuts}}</span>
+            <img src="/img/nuts.png" alt="Nuts" />
+          </div>
+          <div class="bolts">
+            <span>{{currentUser.bolts}}</span>
+            <img src="/img/bolts.png" alt="Bolts" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+    {{/if}}
   </div>
 </div> 
