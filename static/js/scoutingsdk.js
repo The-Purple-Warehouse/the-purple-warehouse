@@ -3633,7 +3633,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     rows
                 )}, 1fr); grid-template-columns: repeat(${_this.escape(
                     columns
-                )}, 1fr); background-size: cover; background-image: url(${_this.escape(
+                )}, 1fr); background-size: cover; aspect-ratio: 61 / 52; background-image: url(${_this.escape(
                     src
                 )});${
                     (fieldOrientationSet ? fieldOrientation : orientation) == 1

@@ -885,13 +885,17 @@ header .icon-button .send-container svg {
     padding: 8px;
 }
 
+.match-window .component-locations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .match-window .component-locations > .component-locations-container {
-    width: calc(100% - 20px);
-    max-width: 600px;
     margin-top: 10px;
     margin-bottom: 20px;
-    margin-left: 50%;
-    transform: translate(-50%, 0);
+    height: min(90%, 600px);
+    width: min(90%, 600px);
 }
 
 .match-window .component-locations > .component-locations-container > .grid {
@@ -900,10 +904,6 @@ header .icon-button .send-container svg {
     display: grid;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    width: 100vw;
-    height: 50vw;
-    max-width: 600px;
-    max-height: 300px;
 }
 
 .large-grid-y .grid {
@@ -913,10 +913,7 @@ header .icon-button .send-container svg {
 }
 
 .small-grid-x .grid {
-    width: 60vw !important;
-    height: 60vw !important;
-    max-width: 600px !important;
-    max-height: 600px !important;
+    /* not used */
 }
 
 .large-grid-y.small-grid-x .grid {
@@ -926,7 +923,7 @@ header .icon-button .send-container svg {
 
 .small-grid-x {
     /* width: calc(50% - 10px) !important; */
-    width: fit-content !important;
+    /* width: fit-content !important; */
 }
 
 .match-window
@@ -935,7 +932,7 @@ header .icon-button .send-container svg {
     > .grid
     > div {
     position: relative;
-    border: 1px solid var(--contentColor);
+    /* border: 1px solid var(--contentColor); */
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.2s ease-in-out;
