@@ -205,6 +205,10 @@ input:-webkit-autofill {
     box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
 }
 
+.scanner-window button {
+    margin: 0;
+}
+
 .login-window > img {
     position: absolute;
     z-index: 2;
@@ -833,6 +837,14 @@ header .icon-button .send-container svg {
     appearance: none;
 }
 
+.scanner-window .scanner-view,
+.scanner-window .upload-view {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
 .match-window .component-textbox > div,
 .upload-box {
     border-radius: var(--standard-border-radius);
@@ -840,10 +852,6 @@ header .icon-button .send-container svg {
     width: clamp(300px, 45dvw, 600px);
     height: clamp(150px, 40dvh, 400px);
     box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 101;
     display: flex;
     flex-direction: column;
