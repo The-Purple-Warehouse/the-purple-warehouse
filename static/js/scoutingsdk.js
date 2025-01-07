@@ -880,17 +880,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             element.innerHTML = `
                 <div class="scanner-window">
                     <div class="scanner-view" style="display: ${
-                        view == 0 ? "block" : "none"
+                        view == 0 ? "flex" : "none"
                     };">
                         <button class="use-text-input">Use Text Input</button>
                         <button class="switch-camera">Switch Camera</button>
-                        <p>&nbsp;</p>
                         <div class="reader" id="reader"></div>
                         <div class="upload"></div>
                         <button style="display: none;" class="scan-again">Scan Again</button>
                     </div>
                     <div class="upload-view" style="display: ${
-                        view == 1 ? "block" : "none"
+                        view == 1 ? "flex" : "none"
                     };">
                         <button class="use-scanner">Use Scanner</button>
                         <textarea class="upload-box"></textarea>
