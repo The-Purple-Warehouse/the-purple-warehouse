@@ -884,6 +884,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     };">
                         <button class="use-text-input">Use Text Input</button>
                         <button class="switch-camera">Switch Camera</button>
+                        <div class="scanned-label"><h4>QR Codes Scanned: </h4><p></p></div>
                         <div class="reader" id="reader"></div>
                         <div class="upload"></div>
                         <button style="display: none;" class="scan-again">Scan Again</button>
@@ -938,7 +939,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 try {
                     let data = JSON.parse(decodedText);
                     codes[data[0]] = data[2];
-                    element.querySelector(".scanner-view > p").innerHTML = `${
+                    element.querySelector(".scanner-view p").innerHTML = `${
                         codes.filter((code) => code != null).length
                     }/${data[1]}`;
                     if (
