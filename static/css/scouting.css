@@ -845,6 +845,22 @@ header .icon-button .send-container svg {
     gap: 10px;
 }
 
+.scanner-view .reader {
+    width: 90vw;
+}
+
+.scanner-view .scanned-label {
+    display: flex;
+    gap: 10px;
+    font-size: 1.25rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.scanner-view .reader > video {
+    width: 100%;
+}
+
 .match-window .component-textbox > div,
 .upload-box {
     border-radius: var(--standard-border-radius);
