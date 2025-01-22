@@ -192,17 +192,21 @@ input:-webkit-autofill {
     background-color: var(--primaryBackgroundColor);
     border: 2px solid var(--primaryBackgroundColor);
     padding: 10px;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    line-height: 1.3rem;
     color: var(--primaryContentColor);
-    width: 75%;
+    width: min(100%, 350px);
     box-sizing: border-box;
     margin: 0;
     margin-top: 10px;
     text-align: center;
+    position: relative;
     cursor: pointer;
     transition: filter 0.2s ease-in-out, background-color 0.2s ease-in-out;
     border-radius: var(--standard-border-radius);
     box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    user-select: none;
+    overflow: hidden;
 }
 
 .home-window > button:hover,
@@ -211,6 +215,33 @@ input:-webkit-autofill {
 .scanner-window button:hover,
 .download-window button:hover {
     filter: brightness(1.25);
+}
+
+.home-window > button::after,
+.login-window > button::after,
+.data-window > button::after,
+.scanner-window button::after,
+.download-window button::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 50%;
+    left: 50%;
+    transform-style: flat;
+    transform: translate3d(-50%, -50%, 0);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100%;
+    transition: width 0.2s ease, height 0.2s ease;
+}
+
+.home-window > button:active::after,
+.login-window > button:active::after,
+.data-window > button:active::after,
+.scanner-window button:active::after,
+.download-window button:active::after {
+    width: 500px;
+    height: 500px;
 }
 
 .scanner-window button {
