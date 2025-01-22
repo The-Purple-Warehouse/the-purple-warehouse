@@ -1283,7 +1283,6 @@ try {
 }
 
 function pruneCache() {
-    return;
     let cacheKeys = Object.keys(cache);
     for (let i = 0; i < cacheKeys.length; i++) {
         if (
@@ -1345,6 +1344,19 @@ async function syncAnalysisCache(event, teamNumber) {
         for (let i = 0; i < allTeams.length && hasAllTeams; i++) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
+        let rankingCommand = `python3 config/scouting/2025/rankings_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(rankingCommand);
+        pending.push(run(rankingCommand));
+        let graphsCommand = `python3 config/scouting/2025/graphs_2025.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(graphsCommand);
+        pending.push(run(graphsCommand));
+        let radarStandardCommand = `python3 config/scouting/2025/graphs_2025.py --mode 1 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(radarStandardCommand);
+        pending.push(run(radarStandardCommand));
+        let radarMaxCommand = `python3 config/scouting/2025/graphs_2025.py --mode 2 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(radarMaxCommand);
+        pending.push(run(radarMaxCommand));
+
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
             .filter(
@@ -1356,8 +1368,70 @@ async function syncAnalysisCache(event, teamNumber) {
             )
             .sort((a: any, b: any) => a.match_number - b.match_number);
         let predictions = [];
+        for (let i = 0; i < matches.length; i++) {
+            let match = matches[i] as any;
+            let r1 = match.alliances.red.team_keys[0].replace("frc", "");
+            let r2 = match.alliances.red.team_keys[1].replace("frc", "");
+            let r3 = match.alliances.red.team_keys[2].replace("frc", "");
+            let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
+            let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
+            let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
+            let predictionsCommand = `python3 config/scouting/2025/predictions_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+            console.log(predictionsCommand);
+            pending.push(run(predictionsCommand));
+        }
+
+        await Promise.all(pending);
+
+        for (let i = 0; i < matches.length; i++) {
+            let match = matches[i] as any;
+            let r1 = match.alliances.red.team_keys[0].replace("frc", "");
+            let r2 = match.alliances.red.team_keys[1].replace("frc", "");
+            let r3 = match.alliances.red.team_keys[2].replace("frc", "");
+            let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
+            let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
+            let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
+            let prediction = JSON.parse(
+                fs
+                    .readFileSync(
+                        `../${event}-${r1}-${r2}-${r3}-${b1}-${b2}-${b3}-prediction.json`
+                    )
+                    .toString()
+            );
+            prediction.match = match.match_number;
+            prediction.win = match.alliances[
+                prediction.winner
+            ].team_keys.includes(`frc${teamNumber}`);
+            let predictionRed =
+                prediction.red / (prediction.red + prediction.blue);
+            let predictionBlue =
+                prediction.blue / (prediction.blue + prediction.red);
+            if (predictionRed > 0.85) {
+                predictionRed = 0.75 + ((predictionRed - 0.85) / 0.15) * 0.1;
+                predictionBlue = 1 - predictionRed;
+            } else if (predictionBlue > 0.85) {
+                predictionBlue = 0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
+                predictionRed = 1 - predictionBlue;
+            }
+            prediction.red = predictionRed;
+            prediction.blue = predictionBlue;
+            predictions.push(prediction);
+        }
+        
         data.predictions = predictions;
+
+        let rankings = JSON.parse(
+            fs.readFileSync(`../${event}-rankings.json`).toString()
+        );
+        let rankingsTeams = Object.keys(rankings);
         let rankingsArr = [];
+        for (let i = 0; i < rankingsTeams.length; i++) {
+            rankingsArr.push({
+                teamNumber: rankingsTeams[i],
+                offenseScore: rankings[rankingsTeams[i]]["off-score"],
+                defenseScore: rankings[rankingsTeams[i]]["def-score"]
+            });
+        }
         let offense = rankingsArr
             .sort((a, b) => b.offenseScore - a.offenseScore)
             .map((ranking) => ranking.teamNumber);
@@ -1388,13 +1462,39 @@ async function syncAnalysisCache(event, teamNumber) {
                 `${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`
             ]);
         }
-        let graphs = "";
-        let radarStandard = "";
-        let radarMax = "";
+        let graphs = fs
+            .readFileSync(`../${event}-${teamNumber}-analysis.html`)
+            .toString();
+        let radarStandard = fs
+            .readFileSync(`../${event}-${teamNumber}-standard-radar.html`)
+            .toString();
+        let radarMax = fs
+            .readFileSync(`../${event}-${teamNumber}-max-radar.html`)
+            .toString();
         analyzed.push({
             type: "html",
-            label: "Coming Soon",
-            value: "<h3>2025 analysis is under development!</h3>"
+            label: "Scoring Graph",
+            value: graphs
+        });
+        analyzed.push({
+            type: "html",
+            label: "Radar Chart<br>(Single Team)",
+            value: radarStandard
+        });
+        analyzed.push({
+            type: "html",
+            label: "Radar Chart<br>(Compared to Best Scores)",
+            value: radarMax
+        });
+        analyzed.push({
+            type: "predictions",
+            label: "Predictions",
+            values: predictions
+        });
+        analyzed.push({
+            type: "table",
+            label: "Rankings",
+            values: tableRankings
         });
     } catch (err) {
         console.error(err);
@@ -1417,12 +1517,38 @@ async function syncCompareCache(event, teamNumbers) {
         let pending = [];
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
-        let radarStandard = "";
-        let radarMax = "";
+        let radarStandardCommand = `python3 config/scouting/2025/graphs_2025.py --mode 1 --event ${event} --teamList ${teamNumbers.join(
+            ","
+        )} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(run(radarStandardCommand));
+        let radarMaxCommand = `python3 config/scouting/2025/graphs_2025.py --mode 2 --event ${event} --teamList ${teamNumbers.join(
+            ","
+        )} --baseFilePath ../ --csv ${event}.csv`;
+        pending.push(run(radarMaxCommand));
+
+        await Promise.all(pending);
+
+        let radarStandard = fs
+            .readFileSync(
+                `../${event}-${teamNumbers.join("-")}-standard-radar.html`
+            )
+            .toString();
+        let radarMax = fs
+            .readFileSync(`../${event}-${teamNumbers.join("-")}-max-radar.html`)
+            .toString();
         comparison.push({
             type: "html",
-            label: "Coming Soon",
-            value: "<h3>2025 analysis is under development!</h3>"
+            label: `Radar Chart<br>(${
+                teamNumbers.length == 1
+                    ? "Single Team"
+                    : `${teamNumbers.length} Teams`
+            })`,
+            value: radarStandard
+        });
+        comparison.push({
+            type: "html",
+            label: "Radar Chart<br>(Compared to Best Scores)",
+            value: radarMax
         });
     } catch (err) {
         console.error(err);
@@ -1456,26 +1582,38 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
         let b1 = blueTeamNumbers[0];
         let b2 = blueTeamNumbers[1];
         let b3 = blueTeamNumbers[2];
+        let predictionsCommand = `python3 config/scouting/2025/predictions_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
+        pending.push(run(predictionsCommand));
 
-        let prediction = {
-            red: 0,
-            blue: 0
-        };
-        if (prediction.red > 0.85) {
-            prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
-            prediction.blue = 1 - prediction.red;
-        } else if (prediction.blue > 0.85) {
-            prediction.blue = 0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
-            prediction.red = 1 - prediction.blue;
+        await Promise.all(pending);
+
+        let prediction = JSON.parse(
+            fs
+                .readFileSync(
+                    `../${event}-${r1}-${r2}-${r3}-${b1}-${b2}-${b3}-prediction.json`
+                )
+                .toString()
+        );
+        let predictionRed = prediction.red / (prediction.red + prediction.blue);
+        let predictionBlue =
+            prediction.blue / (prediction.blue + prediction.red);
+        if (predictionRed > 0.85) {
+            predictionRed = 0.75 + ((predictionRed - 0.85) / 0.15) * 0.1;
+            predictionBlue = 1 - predictionRed;
+        } else if (predictionBlue > 0.85) {
+            predictionBlue = 0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
+            predictionRed = 1 - predictionBlue;
         }
+        prediction.red = predictionRed;
+        prediction.blue = predictionBlue;
         predictions.push(prediction);
 
         data.predictions = predictions;
 
         analyzed.push({
-            type: "html",
-            label: "Coming Soon",
-            value: "<h3>2025 analysis is under development!</h3>"
+            type: "predictions",
+            label: "Prediction",
+            values: predictions
         });
     } catch (err) {
         console.error(err);
