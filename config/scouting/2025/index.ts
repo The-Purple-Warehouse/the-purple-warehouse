@@ -1417,7 +1417,7 @@ async function syncAnalysisCache(event, teamNumber) {
             prediction.blue = predictionBlue;
             predictions.push(prediction);
         }
-        
+
         data.predictions = predictions;
 
         let rankings = JSON.parse(
