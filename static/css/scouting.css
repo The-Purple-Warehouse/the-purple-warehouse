@@ -343,6 +343,7 @@ input:-webkit-autofill {
     color: var(--contentColor);
     text-align: center;
     font-size: 1rem;
+    max-width: 600px;
 }
 
 .match-window select,
