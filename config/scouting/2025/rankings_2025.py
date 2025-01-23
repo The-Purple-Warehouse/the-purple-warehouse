@@ -1,5 +1,5 @@
 '''
-python rankings_2024.py
+python rankings_2025.py
 
     --event         tba/frc event key
     --csv           filename of tpw data
@@ -99,7 +99,7 @@ def getData():
         tagpts = {} #teleop algae game piece points
         # agpts = {} #auto game piece points
         # tgpts = {} #teleop game piece points
-        egcpts = {} #endgame cage points
+        egcpts = list() #endgame cage points
         defe = list()
         speed = list()
         driver = list()
