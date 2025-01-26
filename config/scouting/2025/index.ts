@@ -1350,6 +1350,9 @@ async function syncAnalysisCache(event, teamNumber) {
         let graphsCommand = `python3 config/scouting/2025/graphs_2025.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         console.log(graphsCommand);
         pending.push(run(graphsCommand));
+        let coralScoring = `python3 config/scouting/2025/graphs_2025.py --mode 3 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
+        console.log(coralScoring);
+        pending.push(run(coralScoring));
         let radarStandardCommand = `python3 config/scouting/2025/graphs_2025.py --mode 1 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
         console.log(radarStandardCommand);
         pending.push(run(radarStandardCommand));
@@ -1462,8 +1465,11 @@ async function syncAnalysisCache(event, teamNumber) {
                 `${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`
             ]);
         }
-        let graphs = fs
-            .readFileSync(`../${event}-${teamNumber}-analysis.html`)
+        let algaeGraphs = fs
+            .readFileSync(`../${event}-${teamNumber}-algae_analysis.html`)
+            .toString();
+        let coralGraphs = fs
+            .readFileSync(`../${event}-${teamNumber}-coral_analysis.html`)
             .toString();
         let radarStandard = fs
             .readFileSync(`../${event}-${teamNumber}-standard-radar.html`)
@@ -1473,8 +1479,13 @@ async function syncAnalysisCache(event, teamNumber) {
             .toString();
         analyzed.push({
             type: "html",
-            label: "Scoring Graph",
-            value: graphs
+            label: "Algae Scoring",
+            value: algaeGraphs
+        });
+        analyzed.push({
+            type: "html",
+            label: "Coral Scoring",
+            value: coralGraphs
         });
         analyzed.push({
             type: "html",

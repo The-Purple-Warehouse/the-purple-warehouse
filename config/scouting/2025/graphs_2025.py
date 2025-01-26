@@ -14,9 +14,10 @@ tba cached data must be in file named: event-tba.json
 returns graph/chart to html file:
 
     mode    filename
-    0       [event]-[team1]-analysis.html
+    0       [event]-[team1]-algae_analysis.html
     1       [team1]_[team2]_[team3]_etc_spreadChart.html
     2       [team1]_[taem2]_[team3]_etc_CTBchart.html
+    3       [event]-[team1]-coral_analysis.html
 
 caches parsed data to json file:
 
@@ -486,24 +487,16 @@ def radarChartCTB(teams):
 
     plotly.offline.plot(fig, filename=base + event + "-" + fn + 'max-radar.html', auto_open=False)
 
-def overTimeChart(team):
+def overTimeAlgaeChart(team):
     dataS = shotSummary(team)
 
     fig, ax = plt.subplots()
 
     x_Y = dataS['Match']
-    y_1 = dataS['L1']
-    y_2 = dataS['L2']
-    y_3 = dataS['L3']
-    y_4 = dataS['L4']
     y_P = dataS['Processor']
     y_N = dataS['Net']
     y_M = dataS['Missed']
     y_T = dataS['Total Shots']
-    ax.plot(x_Y, y_1, label = 'L1')
-    ax.plot(x_Y, y_2, label = 'L2')
-    ax.plot(x_Y, y_3, label = 'L3')
-    ax.plot(x_Y, y_4, label = 'L4')
     ax.plot(x_Y, y_P, label = 'Processor')
     ax.plot(x_Y, y_N, label = 'Net')
     ax.plot(x_Y, y_M, label = 'Missed')
@@ -515,14 +508,45 @@ def overTimeChart(team):
     plt.legend()
     ax.plot()
     html_fig = mpld3.fig_to_html(fig)
-    write = open(base + event + '-' + team + '-analysis.html', "w")
+    write = open(base + event + '-' + team + '-algae_analysis.html', "w")
+    write.write(html_fig)
+    write.close()
+
+def overTimeCoralChart(team):
+    dataS = shotSummary(team)
+
+    fig, ax = plt.subplots()
+
+    x_Y = dataS['Match']
+    y_1 = dataS['L1']
+    y_2 = dataS['L2']
+    y_3 = dataS['L3']
+    y_4 = dataS['L4']
+    y_M = dataS['Missed']
+    y_T = dataS['Total Shots']
+    ax.plot(x_Y, y_1, label = 'L1')
+    ax.plot(x_Y, y_2, label = 'L2')
+    ax.plot(x_Y, y_3, label = 'L3')
+    ax.plot(x_Y, y_4, label = 'L4')
+    ax.plot(x_Y, y_M, label = 'Missed')
+    ax.plot(x_Y, y_T, label = 'Total')
+
+    plt.title('Scoring Over Time ' + str(team))
+    plt.xlabel('Match Num')
+    plt.ylabel('Num')
+    plt.legend()
+    ax.plot()
+    html_fig = mpld3.fig_to_html(fig)
+    write = open(base + event + '-' + team + '-coral_analysis.html', "w")
     write.write(html_fig)
     write.close()
 
 
 if int(args["mode"]) == 0:
-    overTimeChart(str(args["team"]))
+    overTimeAlgaeChart(str(args["team"]))
 elif int(args["mode"]) == 1:
     radarChartSpread(args["teamList"])
 elif int(args["mode"]) == 2:
     radarChartCTB(args["teamList"])
+elif int(args["mode"]) == 3:
+    overTimeCoralChart(str(args["team"]))
