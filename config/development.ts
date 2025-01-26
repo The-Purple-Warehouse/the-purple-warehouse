@@ -1,7 +1,6 @@
 import { Config } from ".";
 // @ts-ignore
 import secret from "./secret";
-console.log("secret:", secret)
 
 const config: Config = {
     branch: "main",

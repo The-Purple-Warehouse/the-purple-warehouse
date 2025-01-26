@@ -439,7 +439,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
                         username: "$contributor.username"
                     },
                     totalXp: { $sum: "$xp" },
-                    scansCount: { $sum: 1 },
                     totalNuts: { $sum: "$nuts" },
                     totalBolts: { $sum: "$bolts" }
                 }
@@ -456,7 +455,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
                 $project: {
                     username: "$_id.username",
                     team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
-                    scans: "$scansCount",
                     nuts: "$totalNuts",
                     bolts: "$totalBolts",
                     totalXp: 1
@@ -475,7 +473,7 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
         });
 
         // Sort all leaders by level and XP
-        const allSortedLeaders = leadersWithLevels.sort((a, b) => {
+        const allSortedLeaders = [...leadersWithLevels].sort((a, b) => {
             if (b.level === a.level) {
                 return b.totalXp - a.totalXp;
             }
@@ -501,7 +499,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
                     team: currentUserTeam,
                     level: allSortedLeaders[currentUserIndex].level,
                     progress: allSortedLeaders[currentUserIndex].progress,
-                    scans: allSortedLeaders[currentUserIndex].scans,
                     nuts: allSortedLeaders[currentUserIndex].nuts,
                     bolts: allSortedLeaders[currentUserIndex].bolts,
                     totalXp: allSortedLeaders[currentUserIndex].totalXp,
@@ -513,17 +510,22 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
         // If user is not in top 50, add their position
         if (currentUserIndex >= 50) {
             response.body.currentUser = {
-                ...allSortedLeaders[currentUserIndex],
+                username: currentUserName,
+                team: currentUserTeam,
+                level: allSortedLeaders[currentUserIndex].level,
+                progress: allSortedLeaders[currentUserIndex].progress,
+                nuts: allSortedLeaders[currentUserIndex].nuts,
+                bolts: allSortedLeaders[currentUserIndex].bolts,
+                totalXp: allSortedLeaders[currentUserIndex].totalXp,
                 rank: currentUserIndex + 1
             };
         }
 
         ctx.body = response;
     } catch (error) {
-        console.error('Error fetching leaderboard:', error);
         ctx.body = {
             success: false,
-            error: 'Internal server error'
+            error: 'Unable to fetch leaderboard, please try again later.'
         };
     }
 });

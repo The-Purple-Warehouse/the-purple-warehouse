@@ -4,7 +4,6 @@ import production from "./production";
 import production2023 from "./production2023";
 
 const env = process.env.NODE_ENV || "development";
-console.log("env:", env);
 
 if (!["development", "staging", "production", "production2023"].includes(env))
     throw new Error(`Config file for environment "${env}" could not be found.`);

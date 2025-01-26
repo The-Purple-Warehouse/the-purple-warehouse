@@ -26,8 +26,6 @@ import scoutingRouter from "./routers/scouting";
 import scoutingAPIRouter from "./routers/api/scouting";
 import tpsAPIRouter from "./routers/api/tps";
 
-console.log("start");
-
 const app = new Koa();
 
 const sessionConfig: Partial<session.opts> = {
