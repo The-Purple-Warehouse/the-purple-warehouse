@@ -333,13 +333,9 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             Processor: pavg,
             Net: navg,
             Missed: mavg,
-<<<<<<< HEAD
             "Total Coral": cototal,
             "Total Algae": altotal,
             "Total Shots": total,
-=======
-            "Total Shots": total
->>>>>>> refs/remotes/origin/main
         });
     }
     return gamePieces;
