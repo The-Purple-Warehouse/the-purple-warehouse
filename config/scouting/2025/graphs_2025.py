@@ -502,7 +502,7 @@ def overTimeAlgaeChart(team):
     ax.plot(x_Y, y_M, label = 'Missed')
     ax.plot(x_Y, y_T, label = 'Total')
 
-    plt.title('Scoring Over Time ' + str(team))
+    plt.title('Algae Scoring Over Time ' + str(team))
     plt.xlabel('Match Num')
     plt.ylabel('Num')
     plt.legend()
@@ -531,7 +531,7 @@ def overTimeCoralChart(team):
     ax.plot(x_Y, y_M, label = 'Missed')
     ax.plot(x_Y, y_T, label = 'Total')
 
-    plt.title('Scoring Over Time ' + str(team))
+    plt.title('Coral Scoring Over Time ' + str(team))
     plt.xlabel('Match Num')
     plt.ylabel('Num')
     plt.legend()

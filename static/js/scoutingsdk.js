@@ -1492,12 +1492,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         </tbody>
                     </table>
                     <div class="analysis" style="display: none;">
-                        
                     </div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
             `;
             let overlayShown = false;
+            const defAnalysis = `
+                <div class="graphs"></div>
+                <div class="predictions"></div>
+                <div class="rankings"></div>
+            `;
             function showOverlay() {
                 overlayShown = true;
                 setTimeout(() => {
@@ -1709,7 +1713,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
-                    element.querySelector(".analysis").innerHTML = "";
+                    element.querySelector(".analysis").innerHTML = defAnalysis;
                     try {
                         let data = await (
                             await fetch(
@@ -1721,52 +1725,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
                             let run = [];
-                            element.querySelector(".analysis").innerHTML =
+                            // graphs
+                            element.querySelector(".analysis .graphs").innerHTML =
                                 data.body.display
                                     .map((item) => {
-                                        if (item.type == "table") {
-                                            return `<h2>${item.label}</h2>
-                                        <table class="data-table">
-                                            <thead>
-                                                <tr>${item.values[0]
-                                                    .map(
-                                                        (cell) =>
-                                                            `<th>${cell
-                                                                .replaceAll(
-                                                                    '"',
-                                                                    ""
-                                                                )
-                                                                .replaceAll(
-                                                                    "\\n",
-                                                                    "<br>"
-                                                                )}</th>`
-                                                    )
-                                                    .join("")}</tr>
-                                            </thead>
-                                            <tbody>
-                                                ${item.values
-                                                    .slice(1)
-                                                    .map((data) => {
-                                                        return `<tr>${data
-                                                            .map(
-                                                                (cell) =>
-                                                                    `<td${
-                                                                        cell.includes(
-                                                                            `<b>${teamNumber}</b>`
-                                                                        )
-                                                                            ? ` style="background-color: yellow;"`
-                                                                            : ""
-                                                                    }>${cell.replaceAll(
-                                                                        "\\n",
-                                                                        "<br>"
-                                                                    )}</td>`
-                                                            )
-                                                            .join("")}</tr>`;
-                                                    })
-                                                    .join("")}
-                                            </tbody>
-                                        </table>`;
-                                        } else if (item.type == "predictions") {
+                                        if (item.type == "html") {
+                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        } else if (item.type == "config") {
+                                            const config = item.value;
+                                            const id = _this.random();
+                                            console.log(config);
+                                            return `<canvas id="${id}">
+                                                <script>
+                                                    var chart_config = ${JSON.stringify(config)};
+                                                    new Chart(document.getElementById("${id}").getContext("2d"), chart_config);
+                                                </script>
+                                            </canvas>`
+                                        }
+                                    })
+                                    .join("");
+                            // predictions
+                            element.querySelector(".analysis .predictions").innerHTML =
+                                data.body.display
+                                    .map((item) => {
+                                        if (item.type == "predictions") {
                                             return `<h2>${item.label}</h2>
                                             ${item.values
                                                 .map((data) => {
@@ -1818,8 +1800,55 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     </div>`;
                                                 })
                                                 .join("")}`;
-                                        } else if (item.type == "html") {
-                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        }
+                                    })
+                                    .join("");
+                            // rankings
+                            element.querySelector(".analysis .rankings").innerHTML =
+                                data.body.display
+                                    .map((item) => {
+                                        if (item.type == "table") {
+                                            return `<h2>${item.label}</h2>
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>${item.values[0]
+                                                    .map(
+                                                        (cell) =>
+                                                            `<th>${cell
+                                                                .replaceAll(
+                                                                    '"',
+                                                                    ""
+                                                                )
+                                                                .replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</th>`
+                                                    )
+                                                    .join("")}</tr>
+                                            </thead>
+                                            <tbody>
+                                                ${item.values
+                                                    .slice(1)
+                                                    .map((data) => {
+                                                        return `<tr>${data
+                                                            .map(
+                                                                (cell) =>
+                                                                    `<td${
+                                                                        cell.includes(
+                                                                            `<b>${teamNumber}</b>`
+                                                                        )
+                                                                            ? ` style="background-color: yellow;"`
+                                                                            : ""
+                                                                    }>${cell.replaceAll(
+                                                                        "\\n",
+                                                                        "<br>"
+                                                                    )}</td>`
+                                                            )
+                                                            .join("")}</tr>`;
+                                                    })
+                                                    .join("")}
+                                            </tbody>
+                                        </table>`;
                                         }
                                     })
                                     .join("");
@@ -1836,7 +1865,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
                             element.querySelector(".analysis").style.display =
-                                "block";
+                                "";
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
