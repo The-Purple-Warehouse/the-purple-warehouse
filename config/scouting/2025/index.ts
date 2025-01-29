@@ -3,6 +3,34 @@ import * as fs from "fs";
 import { getMatchesFull } from "../../../helpers/tba";
 import { getAllDataByEvent } from "../../../helpers/scouting";
 import accuracy2025 from "./accuracy";
+import { getGraph } from "./graphs_2025";
+
+export interface parsedRow {
+    match: number;
+    team: string;
+    alliance: string;
+    leave: boolean;
+    "coral intake": boolean;
+    "algae ground intake": boolean;
+    "algae reef intake": boolean;
+    "auto algae scoring": string;
+    "auto coral scoring": string;
+    "teleop algae scoring": string;
+    "teleop coral scoring": string;
+    "cage level": number;
+    "cage time": number;
+    "brick time": number;
+    "defense time": number;
+    "driver skill": number;
+    "defense skill": number;
+    speed: number;
+    stability: number;
+    "intake consistency": number;
+    scouter: string;
+    comments: string;
+    accuracy: number | "";
+    timestamp: number;
+}
 
 export function categories() {
     return [
@@ -1166,6 +1194,53 @@ export function formatData(data, categories, teams) {
         .join("\n")}`;
 }
 
+export function parseFormatted(format: string): parsedRow[] {
+    const parseArr = (value: string): string[] => { return value.replace(/\[|\]/g, "").split(/,\s*/).filter(Boolean); }
+    const simplify = (row: string): string[] => {
+        const vals: string[] = [];
+        let current = "", iq = false;
+        for (let i = 0; i < row.length; ++i) {
+            const char = row[i], n = row[i + 1];
+            if (char === '"' && iq && n === '"') current += '"', i++;
+            else if (char === '"') iq = !iq;
+            else if (char === "," && !iq) vals.push(current.trim()), current = "";
+            else current += char;
+        }
+        return current ? [...vals, current.trim()] : vals;
+    }
+
+    const rows = format.split("\n").slice(1);
+    return rows.map((row) => {
+        const columns = simplify(row);
+        return {
+            match: parseInt(columns[1], 10),
+            team: columns[2],
+            alliance: columns[3],
+            leave: columns[4] === "true",
+            "coral intake": columns[5] === "true",
+            "algae ground intake": columns[6] === "true",
+            "algae reef intake": columns[7] === "true",
+            "auto algae scoring": parseArr(columns[8]).join(", "),
+            "auto coral scoring": parseArr(columns[9]).join(", "),
+            "teleop algae scoring": parseArr(columns[10]).join(", "),
+            "teleop coral scoring": parseArr(columns[11]).join(", "),
+            "cage level": parseInt(columns[12], 10),
+            "cage time": parseInt(columns[13], 10),
+            "brick time": parseInt(columns[14], 10),
+            "defense time": parseInt(columns[15], 10),
+            "driver skill": parseInt(columns[16], 10),
+            "defense skill": parseInt(columns[17], 10),
+            speed: parseInt(columns[18], 10),
+            stability: parseInt(columns[19], 10),
+            "intake consistency": parseInt(columns[20], 10),
+            scouter: columns[21].replace(/^"|"$/g, ""),
+            comments: columns[22].replace(/^"|"$/g, ""),
+            accuracy: columns[23] ? parseFloat(columns[23]) : "",
+            timestamp: parseInt(columns[24], 10),
+        };
+    });
+}
+
 let parsedScoring = {
     asn: "algae net score",
     asp: "algae processor score",
@@ -1274,29 +1349,6 @@ export function notes() {
     return ``;
 }
 
-let cache;
-
-try {
-    cache = JSON.parse(fs.readFileSync("../analysiscache.json").toString());
-} catch (err) {
-    cache = {};
-}
-
-function pruneCache() {
-    let cacheKeys = Object.keys(cache);
-    for (let i = 0; i < cacheKeys.length; i++) {
-        if (
-            new Date().getTime() >
-            cache[cacheKeys[i]].timestamp + 1000 * 60 * 60
-        ) {
-            delete cache[cacheKeys[i]];
-        }
-    }
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-}
-
-pruneCache();
-
 function run(command) {
     return new Promise(async (resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -1314,6 +1366,7 @@ async function syncAnalysisCache(event, teamNumber) {
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
         let allScoutingData = await getAllDataByEvent(event);
+        let allParsedData = parseFormatted(allScoutingData);
         let allScoutedTeams = [
             ...new Set(
                 allScoutingData
@@ -1347,18 +1400,10 @@ async function syncAnalysisCache(event, teamNumber) {
         let rankingCommand = `python3 config/scouting/2025/rankings_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
         console.log(rankingCommand);
         pending.push(run(rankingCommand));
-        let graphsCommand = `python3 config/scouting/2025/graphs_2025.py --mode 0 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        console.log(graphsCommand);
-        pending.push(run(graphsCommand));
-        let coralScoring = `python3 config/scouting/2025/graphs_2025.py --mode 3 --event ${event} --team ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        console.log(coralScoring);
-        pending.push(run(coralScoring));
-        let radarStandardCommand = `python3 config/scouting/2025/graphs_2025.py --mode 1 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        console.log(radarStandardCommand);
-        pending.push(run(radarStandardCommand));
-        let radarMaxCommand = `python3 config/scouting/2025/graphs_2025.py --mode 2 --event ${event} --teamList ${teamNumber} --baseFilePath ../ --csv ${event}.csv`;
-        console.log(radarMaxCommand);
-        pending.push(run(radarMaxCommand));
+        const graph0 = getGraph(0, allParsedData, teamNumber);
+        const graph3 = getGraph(3, allParsedData, teamNumber);
+        const graph1 = getGraph(1, allParsedData, teamNumber);
+        const graph2 = getGraph(2, allParsedData, teamNumber);
 
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
@@ -1465,37 +1510,25 @@ async function syncAnalysisCache(event, teamNumber) {
                 `${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`
             ]);
         }
-        let algaeGraphs = fs
-            .readFileSync(`../${event}-${teamNumber}-algae_analysis.html`)
-            .toString();
-        let coralGraphs = fs
-            .readFileSync(`../${event}-${teamNumber}-coral_analysis.html`)
-            .toString();
-        let radarStandard = fs
-            .readFileSync(`../${event}-${teamNumber}-standard-radar.html`)
-            .toString();
-        let radarMax = fs
-            .readFileSync(`../${event}-${teamNumber}-max-radar.html`)
-            .toString();
         analyzed.push({
-            type: "html",
+            type: "config",
             label: "Algae Scoring",
-            value: algaeGraphs
+            value: graph0
         });
         analyzed.push({
-            type: "html",
+            type: "config",
             label: "Coral Scoring",
-            value: coralGraphs
+            value: graph3
         });
         analyzed.push({
-            type: "html",
+            type: "config",
             label: "Radar Chart<br>(Single Team)",
-            value: radarStandard
+            value: graph1
         });
         analyzed.push({
-            type: "html",
+            type: "config",
             label: "Radar Chart<br>(Compared to Best Scores)",
-            value: radarMax
+            value: graph2
         });
         analyzed.push({
             type: "predictions",
@@ -1510,15 +1543,7 @@ async function syncAnalysisCache(event, teamNumber) {
     } catch (err) {
         console.error(err);
     }
-    cache[`${event}-${teamNumber}`] = {
-        value: {
-            display: analyzed,
-            data: data
-        },
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    pruneCache();
+    return {value: { display: analyzed, data: data }};
 }
 
 async function syncCompareCache(event, teamNumbers) {
@@ -1564,15 +1589,7 @@ async function syncCompareCache(event, teamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    cache[`${event}-compare-${teamNumbers.join(",")}`] = {
-        value: {
-            display: comparison,
-            data: {}
-        },
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    pruneCache();
+    return {value: { display: comparison, data: {}}};
 }
 
 async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
@@ -1629,46 +1646,18 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    cache[
-        `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
-            ","
-        )}`
-    ] = {
-        value: {
-            display: analyzed,
-            data: data
-        },
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    pruneCache();
+    return {value: { display: analyzed, data: data }};
 }
 
 export async function analysis(event, teamNumber) {
-    if (cache[`${event}-${teamNumber}`] == null) {
-        await syncAnalysisCache(event, teamNumber);
-    } else if (
-        new Date().getTime() >
-        cache[`${event}-${teamNumber}`].timestamp + 150000
-    ) {
-        syncAnalysisCache(event, teamNumber);
-    }
-    return cache[`${event}-${teamNumber}`].value;
+    return (await syncAnalysisCache(event, teamNumber)).value;
 }
 
 export async function compare(event, teamNumbers) {
     teamNumbers = [...new Set(teamNumbers)].sort((a: string, b: string) =>
         a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    if (cache[`${event}-compare-${teamNumbers.join(",")}`] == null) {
-        await syncCompareCache(event, teamNumbers);
-    } else if (
-        new Date().getTime() >
-        cache[`${event}-compare-${teamNumbers.join(",")}`].timestamp + 150000
-    ) {
-        syncCompareCache(event, teamNumbers);
-    }
-    return cache[`${event}-compare-${teamNumbers.join(",")}`].value;
+    return (await syncCompareCache(event, teamNumbers)).value;
 }
 
 export async function predict(event, redTeamNumbers, blueTeamNumbers) {
@@ -1679,30 +1668,7 @@ export async function predict(event, redTeamNumbers, blueTeamNumbers) {
         (a: string, b: string) =>
             a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    if (
-        cache[
-            `${event}-predict-${redTeamNumbers.join(
-                ","
-            )}-${blueTeamNumbers.join(",")}`
-        ] == null
-    ) {
-        await syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
-    } else if (
-        new Date().getTime() >
-        cache[
-            `${event}-predict-${redTeamNumbers.join(
-                ","
-            )}-${blueTeamNumbers.join(",")}`
-        ].timestamp +
-            150000
-    ) {
-        syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
-    }
-    return cache[
-        `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
-            ","
-        )}`
-    ].value;
+    return (await syncPredictCache(event, redTeamNumbers, blueTeamNumbers)).value;
 }
 
 export async function accuracy(event, matches, data, categories, teams) {
