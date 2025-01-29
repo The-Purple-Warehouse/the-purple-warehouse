@@ -29,6 +29,8 @@ interface shotSummary {
     Processor: number;
     Net: number;
     Missed: number;
+    "Total Coral": number;
+    "Total Algae": number;
     "Total Shots": number;
 }
 
@@ -311,6 +313,8 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
         const pavg = avg(processor);
         const navg = avg(net);
         const mavg = avg(missed);
+        const cototal = l1avg + l2avg + l3avg + l4avg + mavg;
+        const altotal = pavg + navg + mavg;
         const total = l1avg + l2avg + l3avg + l4avg + pavg + navg + mavg;
         gamePieces.push({
             Match: match,
@@ -321,6 +325,8 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             Processor: pavg,
             Net: navg,
             Missed: mavg,
+            "Total Coral": cototal,
+            "Total Algae": altotal,
             "Total Shots": total,
         });
     }
@@ -504,8 +510,8 @@ function overTimeAlgaeChart(parsed_data: parsedTPWData, team: string): chartConf
             fill: false,
         },
         {
-            label: "Total Shots",
-            data: dataS.map((x) => x["Total Shots"]),
+            label: "Total Algae Shots",
+            data: dataS.map((x) => x["Total Algae"]),
             backgroundColor: "rgba(255, 206, 86, 0.2)",
             borderColor: "rgba(255, 206, 86, 1)",
             borderWidth: 2,
@@ -590,8 +596,8 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             fill: false,
         },
         {
-            label: "Total Shots",
-            data: dataS.map((x) => x["Total Shots"]),
+            label: "Total Coral Shots",
+            data: dataS.map((x) => x["Total Coral"]),
             backgroundColor: "rgba(201, 203, 207, 0.2)",
             borderColor: "rgba(201, 203, 207, 1)",
             borderWidth: 2,
