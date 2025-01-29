@@ -14,7 +14,7 @@ interface parsedTPWData {
         "avg-stab": number;
         "avg-inta": number;
         "avg-upt": number;
-        "matches": any;
+        matches: any;
         "tpw-std": number;
         "tpw-score": number;
     };
@@ -74,19 +74,19 @@ interface chartConfig {
 }
 
 // sum and average taken from https://gist.github.com/dggluz/365527824f9f521055baa3532b1d46e7
-const sum = (numbers: number[]) => numbers.reduce((total, aNumber) => total + aNumber, 0);
+const sum = (numbers: number[]) =>
+    numbers.reduce((total, aNumber) => total + aNumber, 0);
 const avg = (numbers: number[]) => sum(numbers) / numbers.length;
 
 // std taken from https://decipher.dev/30-seconds-of-typescript/docs/standardDeviation/
 const std = (arr) => {
     const mean = arr.reduce((acc, val) => acc + val, 0) / arr.length;
     return Math.sqrt(
-      arr
-        .reduce((acc, val) => acc.concat((val - mean) ** 2), [])
-        .reduce((acc, val) => acc + val, 0) /
-        (arr.length)
+        arr
+            .reduce((acc, val) => acc.concat((val - mean) ** 2), [])
+            .reduce((acc, val) => acc + val, 0) / arr.length
     );
-};  
+};
 
 function getData(data): any {
     let team_data: teamData = {};
@@ -241,12 +241,14 @@ function getData(data): any {
             "avg-stab": avg(stab),
             "avg-inta": avg(inta),
             "avg-upt": avg(uptime),
-            "matches": matches,
-            "tpw-std": std(avg_auto_points) + std(avg_tele_points) + std(egcpts),
+            matches: matches,
+            "tpw-std":
+                std(avg_auto_points) + std(avg_tele_points) + std(egcpts),
             "tpw-score": 0
         };
-        data_tpw["tpw-score"] = data_tpw['avg-auto'] + data_tpw['avg-tele'] + data_tpw['avg-cage'];
-        parsed_tpw_data[team] = data_tpw
+        data_tpw["tpw-score"] =
+            data_tpw["avg-auto"] + data_tpw["avg-tele"] + data_tpw["avg-cage"];
+        parsed_tpw_data[team] = data_tpw;
     }
     return parsed_tpw_data;
 }
@@ -268,7 +270,13 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
         const net: number[] = [];
         const missed: number[] = [];
         for (const x in data.matches[match]) {
-            let l1 = 0, l2 = 0, l3 = 0, l4 = 0, pr = 0, nt = 0, mi = 0;
+            let l1 = 0,
+                l2 = 0,
+                l3 = 0,
+                l4 = 0,
+                pr = 0,
+                nt = 0,
+                mi = 0;
             for (const e of data.matches[match][x]) {
                 switch (e) {
                     case "asn":
@@ -321,14 +329,23 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             Processor: pavg,
             Net: navg,
             Missed: mavg,
-            "Total Shots": total,
+            "Total Shots": total
         });
     }
     return gamePieces;
 }
 
-function radarChartSpread(parsed_data: parsedTPWData, teams: string[]): chartConfig {
-    const categories = ["auto points", "teleop points", "cage points", "total points", "auto points"];
+function radarChartSpread(
+    parsed_data: parsedTPWData,
+    teams: string[]
+): chartConfig {
+    const categories = [
+        "auto points",
+        "teleop points",
+        "cage points",
+        "total points",
+        "auto points"
+    ];
     const datasets = teams.map((team) => {
         const t = parsed_data[team];
         if (!t) {
@@ -339,9 +356,12 @@ function radarChartSpread(parsed_data: parsedTPWData, teams: string[]): chartCon
             t["avg-tele"],
             t["avg-cage"],
             t["tpw-score"],
-            t["avg-auto"],
+            t["avg-auto"]
         ];
-        const color = () => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+        const color = () =>
+            `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+                Math.random() * 255
+            )}, ${Math.floor(Math.random() * 255)}, 0.5)`;
         const border = color();
         const background = border.replace("0.5", "0.2");
         return {
@@ -349,29 +369,29 @@ function radarChartSpread(parsed_data: parsedTPWData, teams: string[]): chartCon
             data: tvals,
             backgroundColor: background,
             borderColor: border,
-            borderWidth: 2,
+            borderWidth: 2
         };
     });
     return {
         type: "radar",
         data: {
             labels: categories,
-            datasets,
+            datasets
         },
         options: {
             plugins: {
                 title: {
                     display: true,
-                    text: "Average Point Spread",
-                },
+                    text: "Average Point Spread"
+                }
             },
             responsive: true,
             scales: {
                 r: {
-                    beginAtZero: true,
-                },
-            },
-        },
+                    beginAtZero: true
+                }
+            }
+        }
     };
 }
 
@@ -411,9 +431,11 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
         "uptime",
         "speed",
         "intake",
-        "auto pts",
+        "auto pts"
     ];
-    let maxes = getBest(parsed_data).map((value) => (value === 0 ? 1e-9 : value));
+    let maxes = getBest(parsed_data).map((value) =>
+        value === 0 ? 1e-9 : value
+    );
     const datasets = teams.map((team) => {
         const t = parsed_data[team];
         if (!t) {
@@ -429,10 +451,12 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
             t["avg-upt"] / maxes[6],
             t["avg-speed"] / maxes[7],
             t["avg-inta"] / maxes[8],
-            t["avg-auto"] / maxes[0],
+            t["avg-auto"] / maxes[0]
         ];
         const color = () =>
-            `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+            `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+                Math.random() * 255
+            )}, ${Math.floor(Math.random() * 255)}, 0.5)`;
         const border = color();
         const background = border.replace("0.5", "0.2");
 
@@ -441,7 +465,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
             data: s_team,
             backgroundColor: background,
             borderColor: border,
-            borderWidth: 2,
+            borderWidth: 2
         };
     });
     const avgspread = Array(categories.length).fill(1);
@@ -450,32 +474,35 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
         data: avgspread,
         backgroundColor: "rgba(0, 0, 0, 0.1)",
         borderColor: "rgba(0, 0, 0, 0.7)",
-        borderWidth: 2,
+        borderWidth: 2
     });
     return {
         type: "radar",
         data: {
             labels: categories,
-            datasets,
+            datasets
         },
         options: {
             plugins: {
                 title: {
                     display: true,
-                    text: "Stats Percent of Best",
-                },
+                    text: "Stats Percent of Best"
+                }
             },
             responsive: true,
             scales: {
                 r: {
-                    max: 1,
-                },
-            },
-        },
+                    max: 1
+                }
+            }
+        }
     };
 }
 
-function overTimeAlgaeChart(parsed_data: parsedTPWData, team: string): chartConfig {
+function overTimeAlgaeChart(
+    parsed_data: parsedTPWData,
+    team: string
+): chartConfig {
     const dataS = shotSummary(parsed_data, team);
     const labels = dataS.map((x) => x.Match);
     const datasets = [
@@ -485,7 +512,7 @@ function overTimeAlgaeChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(75, 192, 192, 0.2)",
             borderColor: "rgba(75, 192, 192, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "Net",
@@ -493,7 +520,7 @@ function overTimeAlgaeChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             borderColor: "rgba(54, 162, 235, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "Missed",
@@ -501,7 +528,7 @@ function overTimeAlgaeChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "Total Shots",
@@ -509,43 +536,46 @@ function overTimeAlgaeChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(255, 206, 86, 0.2)",
             borderColor: "rgba(255, 206, 86, 1)",
             borderWidth: 2,
-            fill: false,
-        },
+            fill: false
+        }
     ];
     return {
         type: "line",
         data: {
             labels,
-            datasets,
+            datasets
         },
         options: {
             plugins: {
                 title: {
                     display: true,
-                    text: `Algae Scoring Over Time for Team ${team}`,
-                },
+                    text: `Algae Scoring Over Time for Team ${team}`
+                }
             },
             responsive: true,
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: "Match Num",
-                    },
+                        text: "Match Num"
+                    }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: "Num",
+                        text: "Num"
                     },
-                    beginAtZero: true,
-                },
-            },
-        },
+                    beginAtZero: true
+                }
+            }
+        }
     };
 }
 
-function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConfig {
+function overTimeCoralChart(
+    parsed_data: parsedTPWData,
+    team: string
+): chartConfig {
     const dataS = shotSummary(parsed_data, team);
     const labels = dataS.map((x) => x.Match);
     const datasets = [
@@ -555,7 +585,7 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "L2",
@@ -563,7 +593,7 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             borderColor: "rgba(54, 162, 235, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "L3",
@@ -571,7 +601,7 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(255, 206, 86, 0.2)",
             borderColor: "rgba(255, 206, 86, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "L4",
@@ -579,7 +609,7 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(75, 192, 192, 0.2)",
             borderColor: "rgba(75, 192, 192, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "Missed",
@@ -587,7 +617,7 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(153, 102, 255, 0.2)",
             borderColor: "rgba(153, 102, 255, 1)",
             borderWidth: 2,
-            fill: false,
+            fill: false
         },
         {
             label: "Total Shots",
@@ -595,48 +625,53 @@ function overTimeCoralChart(parsed_data: parsedTPWData, team: string): chartConf
             backgroundColor: "rgba(201, 203, 207, 0.2)",
             borderColor: "rgba(201, 203, 207, 1)",
             borderWidth: 2,
-            fill: false,
-        },
+            fill: false
+        }
     ];
 
     return {
         type: "line",
         data: {
             labels,
-            datasets,
+            datasets
         },
         options: {
             plugins: {
                 title: {
                     display: true,
-                    text: `Coral Scoring Over Time for Team ${team}`,
-                },
+                    text: `Coral Scoring Over Time for Team ${team}`
+                }
             },
             responsive: true,
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: "Match Num",
-                    },
+                        text: "Match Num"
+                    }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: "Num",
+                        text: "Num"
                     },
-                    beginAtZero: true,
-                },
-            },
-        },
+                    beginAtZero: true
+                }
+            }
+        }
     };
 }
 
-export function getGraph(mode: number, parsed_data: parsedRow[], teamS: string | string[]) {
+export function getGraph(
+    mode: number,
+    parsed_data: parsedRow[],
+    teamS: string | string[]
+) {
     const array_modes = [1, 2];
-    if (array_modes.includes(mode)) teamS = (typeof teamS == "string") ? [teamS] : teamS;
+    if (array_modes.includes(mode))
+        teamS = typeof teamS == "string" ? [teamS] : teamS;
 
-    const allowed_modes = (typeof teamS == "string") ? [0, 3] : [1, 2];
+    const allowed_modes = typeof teamS == "string" ? [0, 3] : [1, 2];
     if (!allowed_modes.includes(mode)) {
         throw new Error(`Invalid mode: ${mode} in getGraph func`);
     }

@@ -1195,19 +1195,24 @@ export function formatData(data, categories, teams) {
 }
 
 export function parseFormatted(format: string): parsedRow[] {
-    const parseArr = (value: string): string[] => { return value.replace(/\[|\]/g, "").split(/,\s*/).filter(Boolean); }
+    const parseArr = (value: string): string[] => {
+        return value.replace(/\[|\]/g, "").split(/,\s*/).filter(Boolean);
+    };
     const simplify = (row: string): string[] => {
         const vals: string[] = [];
-        let current = "", iq = false;
+        let current = "",
+            iq = false;
         for (let i = 0; i < row.length; ++i) {
-            const char = row[i], n = row[i + 1];
-            if (char === '"' && iq && n === '"') current += '"', i++;
+            const char = row[i],
+                n = row[i + 1];
+            if (char === '"' && iq && n === '"') (current += '"'), i++;
             else if (char === '"') iq = !iq;
-            else if (char === "," && !iq) vals.push(current.trim()), current = "";
+            else if (char === "," && !iq)
+                vals.push(current.trim()), (current = "");
             else current += char;
         }
         return current ? [...vals, current.trim()] : vals;
-    }
+    };
 
     const rows = format.split("\n").slice(1);
     return rows.map((row) => {
@@ -1236,7 +1241,7 @@ export function parseFormatted(format: string): parsedRow[] {
             scouter: columns[21].replace(/^"|"$/g, ""),
             comments: columns[22].replace(/^"|"$/g, ""),
             accuracy: columns[23] ? parseFloat(columns[23]) : "",
-            timestamp: parseInt(columns[24], 10),
+            timestamp: parseInt(columns[24], 10)
         };
     });
 }
@@ -1543,7 +1548,7 @@ async function syncAnalysisCache(event, teamNumber) {
     } catch (err) {
         console.error(err);
     }
-    return {value: { display: analyzed, data: data }};
+    return { value: { display: analyzed, data: data } };
 }
 
 async function syncCompareCache(event, teamNumbers) {
@@ -1589,7 +1594,7 @@ async function syncCompareCache(event, teamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    return {value: { display: comparison, data: {}}};
+    return { value: { display: comparison, data: {} } };
 }
 
 async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
@@ -1646,7 +1651,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    return {value: { display: analyzed, data: data }};
+    return { value: { display: analyzed, data: data } };
 }
 
 export async function analysis(event, teamNumber) {
@@ -1668,7 +1673,8 @@ export async function predict(event, redTeamNumbers, blueTeamNumbers) {
         (a: string, b: string) =>
             a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    return (await syncPredictCache(event, redTeamNumbers, blueTeamNumbers)).value;
+    return (await syncPredictCache(event, redTeamNumbers, blueTeamNumbers))
+        .value;
 }
 
 export async function accuracy(event, matches, data, categories, teams) {
