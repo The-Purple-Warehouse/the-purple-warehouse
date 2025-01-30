@@ -1344,6 +1344,9 @@ header .icon-button .send-container svg {
 }
 
 .data-window .analysis,
+.data-window .comparison,
+.data-window .prediction,
+.data-window .graphs,
 .data-window .predictions,
 .data-window .rankings {
     display: flex;
@@ -1352,7 +1355,8 @@ header .icon-button .send-container svg {
     gap: 10px;
 }
 
-.data-window .analysis > .graphs {
+.data-window .analysis > .graphs,
+.data-window .comparison > .graphs {
     width: clamp(300px, 90vw, 900px);
 }
 
