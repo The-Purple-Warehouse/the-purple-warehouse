@@ -2032,7 +2032,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ]
                         .filter((teamNumber) => teamNumber != "")
                         .join(",");
-                    element.querySelector(".comparison").innerHTML = defComparison;
+                    element.querySelector(".comparison").innerHTML =
+                        defComparison;
                     try {
                         let data = await (
                             await fetch(
@@ -2081,17 +2082,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         data.winner ==
                                                             "blue") ||
                                                     (!data.win &&
-                                                        data.winner ==
-                                                            "red")
+                                                        data.winner == "red")
                                                 ) {
                                                     firstListed = "blue";
                                                 }
                                                 return `<h3>Match ${
                                                     data.match
                                                 } (Predicted ${
-                                                    data.win
-                                                        ? "WIN"
-                                                        : "LOSS"
+                                                    data.win ? "WIN" : "LOSS"
                                                 })</h3>
                                                 <div class="prediction-bar">
                                                     <div class="prediction-bar-${
@@ -2139,10 +2137,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 .map(
                                                     (cell) =>
                                                         `<th>${cell
-                                                            .replaceAll(
-                                                                '"',
-                                                                ""
-                                                            )
+                                                            .replaceAll('"', "")
                                                             .replaceAll(
                                                                 "\\n",
                                                                 "<br>"

@@ -1428,7 +1428,17 @@ async function syncAnalysisCache(event, teamNumber) {
             let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
-            let prediction = computePrediction(b1, b2, b3, r1, r2, r3, allParsedData, "../", event as string)
+            let prediction = computePrediction(
+                b1,
+                b2,
+                b3,
+                r1,
+                r2,
+                r3,
+                allParsedData,
+                "../",
+                event as string
+            );
             prediction.match = match.match_number;
             prediction.win = match.alliances[
                 prediction.winner
@@ -1575,7 +1585,17 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
         let b1 = blueTeamNumbers[0];
         let b2 = blueTeamNumbers[1];
         let b3 = blueTeamNumbers[2];
-        let prediction = computePrediction(b1, b2, b3, r1, r2, r3, allParsedData, "../", event as string)
+        let prediction = computePrediction(
+            b1,
+            b2,
+            b3,
+            r1,
+            r2,
+            r3,
+            allParsedData,
+            "../",
+            event as string
+        );
         let predictionRed = prediction.red / (prediction.red + prediction.blue);
         let predictionBlue =
             prediction.blue / (prediction.blue + prediction.red);

@@ -212,8 +212,16 @@ function getData(data): any {
 export function computeRankings(data: parsedRow[]): rankings {
     const parsed_data = getData(data);
     for (let team in parsed_data)
-        parsed_data[team]["r-score"] = parsed_data[team]["tpw-score"] - parsed_data[team]["tpw-std"] + parsed_data[team]["avg-driv"] + parsed_data[team]["avg-speed"] + parsed_data[team]["avg-stab"] + parsed_data[team]["avg-inta"];
-    const sorted = Object.entries(parsed_data).sort((a, b) => (b[1]["r-score"] || 0) - (a[1]["r-score"] || 0));
+        parsed_data[team]["r-score"] =
+            parsed_data[team]["tpw-score"] -
+            parsed_data[team]["tpw-std"] +
+            parsed_data[team]["avg-driv"] +
+            parsed_data[team]["avg-speed"] +
+            parsed_data[team]["avg-stab"] +
+            parsed_data[team]["avg-inta"];
+    const sorted = Object.entries(parsed_data).sort(
+        (a, b) => (b[1]["r-score"] || 0) - (a[1]["r-score"] || 0)
+    );
     const pranks: rankings = {};
     for (const [team, data] of sorted) {
         pranks[team] = {

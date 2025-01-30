@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { parsedRow } from '.';
+import fs from "fs";
+import { parsedRow } from ".";
 
 interface teamData {
     [key: string]: any[];
@@ -278,8 +278,12 @@ function tbaFile(path: string): parsedData {
             const rteams = match.alliances.red.team_keys;
             const bscore = match.alliances.blue.score;
             const rscore = match.alliances.red.score;
-            const bfouls = match.score_breakdown.blue.foulCount + match.score_breakdown.blue.techFoulCount;
-            const rfouls = match.score_breakdown.red.foulCount + match.score_breakdown.red.techFoulCount;
+            const bfouls =
+                match.score_breakdown.blue.foulCount +
+                match.score_breakdown.blue.techFoulCount;
+            const rfouls =
+                match.score_breakdown.red.foulCount +
+                match.score_breakdown.red.techFoulCount;
             const bteleop = match.score_breakdown.blue.teleopPoints;
             const rteleop = match.score_breakdown.red.teleopPoints;
             for (const team of bteams) {
@@ -287,7 +291,7 @@ function tbaFile(path: string): parsedData {
                 let match: matchData = {
                     score: bscore,
                     fouls: bfouls,
-                    teleop: bteleop,
+                    teleop: bteleop
                 };
                 if (!tdata[key]) {
                     tdata[key] = {};
@@ -300,7 +304,7 @@ function tbaFile(path: string): parsedData {
                 let match: matchData = {
                     score: rscore,
                     fouls: rfouls,
-                    teleop: rteleop,
+                    teleop: rteleop
                 };
                 if (!tdata[key]) {
                     tdata[key] = {};
@@ -326,33 +330,41 @@ function tbaFile(path: string): parsedData {
             "avg-score": avg(scores),
             "std-score": std(scores),
             "avg-fouls": avg(fouls),
-            "std-teleop": std(teleop),
+            "std-teleop": std(teleop)
         };
     }
     return pdata;
 }
 
-function tbaPredict(b1: number, b2: number, b3: number, r1: number, r2: number, r3: number, tbaData: parsedData): prediction {
+function tbaPredict(
+    b1: number,
+    b2: number,
+    b3: number,
+    r1: number,
+    r2: number,
+    r3: number,
+    tbaData: parsedData
+): prediction {
     const bteams = [String(b1), String(b2), String(b3)];
     const rteams = [String(r1), String(r2), String(r3)];
 
-    const bascores = bteams.map(team => tbaData[team]["avg-score"]);
+    const bascores = bteams.map((team) => tbaData[team]["avg-score"]);
     const bas = Math.max(...bascores) + Math.min(...bascores);
-    const bafouls = bteams.map(team => tbaData[team]["avg-fouls"]);
+    const bafouls = bteams.map((team) => tbaData[team]["avg-fouls"]);
     const baf = Math.max(...bafouls) + Math.min(...bafouls);
-    const batstd = avg(bteams.map(team => tbaData[team]["std-teleop"]));
-    const bstdscores = bteams.map(team => tbaData[team]["std-score"]);
+    const batstd = avg(bteams.map((team) => tbaData[team]["std-teleop"]));
+    const bstdscores = bteams.map((team) => tbaData[team]["std-score"]);
     const bmstd = Math.min(...bstdscores);
     const bmxstd = Math.max(...bstdscores);
     const bastd = std(bstdscores);
     const brstd = bmxstd - bmstd;
 
-    const rascores = rteams.map(team => tbaData[team]["avg-score"]);
+    const rascores = rteams.map((team) => tbaData[team]["avg-score"]);
     const ras = Math.max(...rascores) + Math.min(...rascores);
-    const rafouls = rteams.map(team => tbaData[team]["avg-fouls"]);
+    const rafouls = rteams.map((team) => tbaData[team]["avg-fouls"]);
     const raf = Math.max(...rafouls) + Math.min(...rafouls);
-    const ratstd = avg(rteams.map(team => tbaData[team]["std-teleop"]));
-    const rstdscores = rteams.map(team => tbaData[team]["std-score"]);
+    const ratstd = avg(rteams.map((team) => tbaData[team]["std-teleop"]));
+    const rstdscores = rteams.map((team) => tbaData[team]["std-score"]);
     const rmstd = Math.min(...rstdscores);
     const rmxstd = Math.max(...rstdscores);
     const rastd = std(rstdscores);
@@ -369,42 +381,58 @@ function tbaPredict(b1: number, b2: number, b3: number, r1: number, r2: number, 
         bluePredicted: bluescore,
         redPredicted: redscore,
         bluePercent: bpercent,
-        redPercent: rpercent,
+        redPercent: rpercent
     };
 }
 
-function tpwPredict(b1: number, b2: number, b3: number, r1: number, r2: number, r3: number, tpwData: parsedTPWData): prediction {
+function tpwPredict(
+    b1: number,
+    b2: number,
+    b3: number,
+    r1: number,
+    r2: number,
+    r3: number,
+    tpwData: parsedTPWData
+): prediction {
     const bteams = [String(b1), String(b2), String(b3)];
     const rteams = [String(r1), String(r2), String(r3)];
 
-    const bascores = bteams.map(team => tpwData[team]["tpw-score"]);
+    const bascores = bteams.map((team) => tpwData[team]["tpw-score"]);
     const bas = Math.max(...bascores) + Math.min(...bascores);
-    const bstdscores = bteams.map(team => tpwData[team]["tpw-std"]);
+    const bstdscores = bteams.map((team) => tpwData[team]["tpw-std"]);
     const bmstd = Math.min(...bstdscores);
     const bmxstd = Math.max(...bstdscores);
     const bastd = avg(bstdscores);
     const brstd = bmxstd - bmstd;
-    const baat = avg(bteams.map(team => tpwData[team]["avg-tele"] + tpwData[team]["avg-auto"]));
-    const bd = avg(bteams.map(team => tpwData[team]["avg-def"]));
-    const bdr = avg(bteams.map(team => tpwData[team]["avg-driv"]));
-    const bspd = avg(bteams.map(team => tpwData[team]["avg-speed"]));
-    const bstab = avg(bteams.map(team => tpwData[team]["avg-stab"]));
-    const binta = avg(bteams.map(team => tpwData[team]["avg-inta"]));
+    const baat = avg(
+        bteams.map(
+            (team) => tpwData[team]["avg-tele"] + tpwData[team]["avg-auto"]
+        )
+    );
+    const bd = avg(bteams.map((team) => tpwData[team]["avg-def"]));
+    const bdr = avg(bteams.map((team) => tpwData[team]["avg-driv"]));
+    const bspd = avg(bteams.map((team) => tpwData[team]["avg-speed"]));
+    const bstab = avg(bteams.map((team) => tpwData[team]["avg-stab"]));
+    const binta = avg(bteams.map((team) => tpwData[team]["avg-inta"]));
     const bmix = bd + bdr + bspd + bstab + binta;
 
-    const rascores = rteams.map(team => tpwData[team]["tpw-score"]);
+    const rascores = rteams.map((team) => tpwData[team]["tpw-score"]);
     const ras = Math.max(...rascores) + Math.min(...rascores);
-    const rstdscores = rteams.map(team => tpwData[team]["tpw-std"]);
+    const rstdscores = rteams.map((team) => tpwData[team]["tpw-std"]);
     const rmstd = Math.min(...rstdscores);
     const rmxstd = Math.max(...rstdscores);
     const rastd = avg(rstdscores);
     const rrstd = rmxstd - rmstd;
-    const raat = avg(rteams.map(team => tpwData[team]["avg-tele"] + tpwData[team]["avg-auto"]));
-    const rd = avg(rteams.map(team => tpwData[team]["avg-def"]));
-    const rdr = avg(rteams.map(team => tpwData[team]["avg-driv"]));
-    const rspd = avg(rteams.map(team => tpwData[team]["avg-speed"]));
-    const rstab = avg(rteams.map(team => tpwData[team]["avg-stab"]));
-    const rinta = avg(rteams.map(team => tpwData[team]["avg-inta"]));
+    const raat = avg(
+        rteams.map(
+            (team) => tpwData[team]["avg-tele"] + tpwData[team]["avg-auto"]
+        )
+    );
+    const rd = avg(rteams.map((team) => tpwData[team]["avg-def"]));
+    const rdr = avg(rteams.map((team) => tpwData[team]["avg-driv"]));
+    const rspd = avg(rteams.map((team) => tpwData[team]["avg-speed"]));
+    const rstab = avg(rteams.map((team) => tpwData[team]["avg-stab"]));
+    const rinta = avg(rteams.map((team) => tpwData[team]["avg-inta"]));
     const rmix = rd + rdr + rspd + rstab + rinta;
 
     const bluescore = baat + bas - bastd - brstd;
@@ -420,12 +448,22 @@ function tpwPredict(b1: number, b2: number, b3: number, r1: number, r2: number, 
         bp: bmix,
         rp: rmix,
         bluePercent: bpercent,
-        redPercent: rpercent,
+        redPercent: rpercent
     };
 }
 
-export function computePrediction(b1: number, b2: number, b3: number, r1: number, r2: number, r3: number, data: parsedRow[], base: string, event: string): endPrediction {
-    const path = base + event + "-tba.json"
+export function computePrediction(
+    b1: number,
+    b2: number,
+    b3: number,
+    r1: number,
+    r2: number,
+    r3: number,
+    data: parsedRow[],
+    base: string,
+    event: string
+): endPrediction {
+    const path = base + event + "-tba.json";
     const data_tba = tbaFile(path);
     const data_tpw: parsedTPWData = getData(data);
 
@@ -450,6 +488,6 @@ export function computePrediction(b1: number, b2: number, b3: number, r1: number
     return {
         winner: w,
         blue: bp,
-        red: rp,
+        red: rp
     };
 }
