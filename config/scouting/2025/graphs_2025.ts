@@ -3,6 +3,7 @@ import { parsedRow } from ".";
 interface teamData {
     [key: string]: any[];
 }
+
 interface parsedTPWData {
     [team: string]: {
         "avg-tele": number;

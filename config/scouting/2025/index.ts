@@ -4,6 +4,8 @@ import { getMatchesFull } from "../../../helpers/tba";
 import { getAllDataByEvent } from "../../../helpers/scouting";
 import accuracy2025 from "./accuracy";
 import { getGraph } from "./graphs_2025";
+import { computeRankings } from "./rankings_2025";
+import { computePrediction } from "./predictions_2025";
 
 export interface parsedRow {
     match: number;
@@ -1380,7 +1382,6 @@ async function syncAnalysisCache(event, teamNumber) {
                     .map((entry) => entry.split(",")[2])
             )
         ];
-        let pending = [];
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, allScoutingData);
         let allTeams = [
@@ -1402,9 +1403,7 @@ async function syncAnalysisCache(event, teamNumber) {
         for (let i = 0; i < allTeams.length && hasAllTeams; i++) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
-        let rankingCommand = `python3 config/scouting/2025/rankings_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv`;
-        console.log(rankingCommand);
-        pending.push(run(rankingCommand));
+        const rankings = computeRankings(allParsedData);
         const graph0 = getGraph(0, allParsedData, teamNumber);
         const graph3 = getGraph(3, allParsedData, teamNumber);
         const graph1 = getGraph(1, allParsedData, teamNumber);
@@ -1429,28 +1428,7 @@ async function syncAnalysisCache(event, teamNumber) {
             let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
-            let predictionsCommand = `python3 config/scouting/2025/predictions_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
-            console.log(predictionsCommand);
-            pending.push(run(predictionsCommand));
-        }
-
-        await Promise.all(pending);
-
-        for (let i = 0; i < matches.length; i++) {
-            let match = matches[i] as any;
-            let r1 = match.alliances.red.team_keys[0].replace("frc", "");
-            let r2 = match.alliances.red.team_keys[1].replace("frc", "");
-            let r3 = match.alliances.red.team_keys[2].replace("frc", "");
-            let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
-            let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
-            let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
-            let prediction = JSON.parse(
-                fs
-                    .readFileSync(
-                        `../${event}-${r1}-${r2}-${r3}-${b1}-${b2}-${b3}-prediction.json`
-                    )
-                    .toString()
-            );
+            let prediction = computePrediction(b1, b2, b3, r1, r2, r3, allParsedData, "../", event as string)
             prediction.match = match.match_number;
             prediction.win = match.alliances[
                 prediction.winner
@@ -1473,9 +1451,6 @@ async function syncAnalysisCache(event, teamNumber) {
 
         data.predictions = predictions;
 
-        let rankings = JSON.parse(
-            fs.readFileSync(`../${event}-rankings.json`).toString()
-        );
         let rankingsTeams = Object.keys(rankings);
         let rankingsArr = [];
         for (let i = 0; i < rankingsTeams.length; i++) {
@@ -1555,41 +1530,25 @@ async function syncCompareCache(event, teamNumbers) {
     let comparison = [];
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
-        let pending = [];
+        let allScoutingData = await getAllDataByEvent(event);
+        let allParsedData = parseFormatted(allScoutingData);
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
-        let radarStandardCommand = `python3 config/scouting/2025/graphs_2025.py --mode 1 --event ${event} --teamList ${teamNumbers.join(
-            ","
-        )} --baseFilePath ../ --csv ${event}.csv`;
-        pending.push(run(radarStandardCommand));
-        let radarMaxCommand = `python3 config/scouting/2025/graphs_2025.py --mode 2 --event ${event} --teamList ${teamNumbers.join(
-            ","
-        )} --baseFilePath ../ --csv ${event}.csv`;
-        pending.push(run(radarMaxCommand));
-
-        await Promise.all(pending);
-
-        let radarStandard = fs
-            .readFileSync(
-                `../${event}-${teamNumbers.join("-")}-standard-radar.html`
-            )
-            .toString();
-        let radarMax = fs
-            .readFileSync(`../${event}-${teamNumbers.join("-")}-max-radar.html`)
-            .toString();
+        const graph1 = getGraph(1, allParsedData, teamNumbers as string[]);
+        const graph2 = getGraph(2, allParsedData, teamNumbers as string[]);
         comparison.push({
-            type: "html",
+            type: "config",
             label: `Radar Chart<br>(${
                 teamNumbers.length == 1
                     ? "Single Team"
                     : `${teamNumbers.length} Teams`
             })`,
-            value: radarStandard
+            value: graph1
         });
         comparison.push({
-            type: "html",
+            type: "config",
             label: "Radar Chart<br>(Compared to Best Scores)",
-            value: radarMax
+            value: graph2
         });
     } catch (err) {
         console.error(err);
@@ -1604,9 +1563,10 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     };
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
-        let pending = [];
+        let allScoutingData = await getAllDataByEvent(event);
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
-        fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
+        fs.writeFileSync(`../${event}.csv`, allScoutingData);
+        let allParsedData = parseFormatted(allScoutingData);
 
         let predictions = [];
         let r1 = redTeamNumbers[0];
@@ -1615,18 +1575,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
         let b1 = blueTeamNumbers[0];
         let b2 = blueTeamNumbers[1];
         let b3 = blueTeamNumbers[2];
-        let predictionsCommand = `python3 config/scouting/2025/predictions_2025.py --event ${event} --baseFilePath ../ --csv ${event}.csv --r1 ${r1} --r2 ${r2} --r3 ${r3} --b1 ${b1} --b2 ${b2} --b3 ${b3}`;
-        pending.push(run(predictionsCommand));
-
-        await Promise.all(pending);
-
-        let prediction = JSON.parse(
-            fs
-                .readFileSync(
-                    `../${event}-${r1}-${r2}-${r3}-${b1}-${b2}-${b3}-prediction.json`
-                )
-                .toString()
-        );
+        let prediction = computePrediction(b1, b2, b3, r1, r2, r3, allParsedData, "../", event as string)
         let predictionRed = prediction.red / (prediction.red + prediction.blue);
         let predictionBlue =
             prediction.blue / (prediction.blue + prediction.red);
