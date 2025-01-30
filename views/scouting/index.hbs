@@ -59,6 +59,9 @@
             await sdk.showPredictPage();
           } else if(page == "admin") {
             await sdk.showAdminPage();
+          } else if(page == "leaderboard") {
+            document.querySelector(".navbar a[data-page='leaderboard']").classList.add("active");
+            await sdk.showLeaderboardPage();
           } else {
             document.querySelector(".navbar a[data-page='home']").classList.add("active");
             await sdk.showHomePage();
@@ -66,6 +69,9 @@
         } else {
           document.querySelector(".navbar a[data-page='home']").classList.add("active");
           await sdk.showHomePage();
+        }
+        if (window.location.hash === '#/leaderboard') {
+          await sdk.showLeaderboardPage();
         }
       }
       window.onhashchange = () => {
