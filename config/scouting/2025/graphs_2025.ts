@@ -55,6 +55,7 @@ interface chartConfig {
             };
         };
         responsive: boolean;
+        maintainAspectRatio?: boolean;
         scales?: {
             x?: {
                 title: {
@@ -67,6 +68,10 @@ interface chartConfig {
                     display: boolean;
                     text: string;
                 };
+                ticks?: {
+                    stepSize?: number;
+                    min?: number;
+                }
                 beginAtZero: boolean;
             };
             r?: {
@@ -350,8 +355,7 @@ function radarChartSpread(
         "auto points",
         "teleop points",
         "cage points",
-        "total points",
-        "auto points"
+        "total points"
     ];
     const datasets = teams.map((team) => {
         const t = parsed_data[team];
@@ -362,8 +366,7 @@ function radarChartSpread(
             t["avg-auto"],
             t["avg-tele"],
             t["avg-cage"],
-            t["tpw-score"],
-            t["avg-auto"]
+            t["tpw-score"]
         ];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
@@ -438,7 +441,6 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
         "uptime",
         "speed",
         "intake",
-        "auto pts"
     ];
     let maxes = getBest(parsed_data).map((value) =>
         value === 0 ? 1e-9 : value
@@ -457,8 +459,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
             t["avg-stab"] / maxes[5],
             t["avg-upt"] / maxes[6],
             t["avg-speed"] / maxes[7],
-            t["avg-inta"] / maxes[8],
-            t["avg-auto"] / maxes[0]
+            t["avg-inta"] / maxes[8]
         ];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(

@@ -961,8 +961,8 @@ header .icon-button .send-container svg {
 .match-window .component-locations > .component-locations-container {
     margin-top: 10px;
     margin-bottom: 20px;
-    height: min(90%, 600px);
-    width: min(90%, 600px);
+    height: min(95%, 600px);
+    width: min(95%, 600px);
 }
 
 .match-window .component-locations > .component-locations-container > .grid {

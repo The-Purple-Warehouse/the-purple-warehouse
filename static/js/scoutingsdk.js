@@ -3658,6 +3658,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         });
                                                     }
                                                 }
+                                                console.log("UPDATING LOCATIONS");
+                                                console.log(locations);
                                                 marker = eval(
                                                     component.marker.definition
                                                 )(getState({ locations }));
