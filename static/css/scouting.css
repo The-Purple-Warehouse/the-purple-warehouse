@@ -188,7 +188,9 @@ input:-webkit-autofill {
 .login-window > button,
 .data-window > button,
 .scanner-window button,
-.download-window button {
+.download-window button,
+.match-window .component-pagebutton,
+.match-window .component-notesbutton {
     background-color: var(--primaryBackgroundColor);
     border: 2px solid var(--primaryBackgroundColor);
     padding: 10px;
@@ -213,7 +215,9 @@ input:-webkit-autofill {
 .login-window > button:hover,
 .data-window > button:hover,
 .scanner-window button:hover,
-.download-window button:hover {
+.download-window button:hover,
+.match-window .component-pagebutton:hover,
+.match-window .component-notesbutton:hover {
     filter: brightness(1.25);
 }
 
@@ -221,7 +225,9 @@ input:-webkit-autofill {
 .login-window > button::after,
 .data-window > button::after,
 .scanner-window button::after,
-.download-window button::after {
+.download-window button::after,
+.match-window .component-pagebutton::after,
+.match-window .component-notesbutton::after {
     content: "";
     position: absolute;
     width: 0;
@@ -239,7 +245,9 @@ input:-webkit-autofill {
 .login-window > button:active::after,
 .data-window > button:active::after,
 .scanner-window button:active::after,
-.download-window button:active::after {
+.download-window button:active::after,
+.match-window .component-pagebutton:active::after,
+.match-window .component-notesbutton:active::after {
     width: 500px;
     height: 500px;
 }
@@ -320,6 +328,7 @@ input:-webkit-autofill {
 
 .home-window > p {
     width: 100%;
+    max-width: 700px;
 }
 
 .home-window > h2,
@@ -829,37 +838,12 @@ header .icon-button .send-container svg {
 .match-window .component-select select {
     width: 70%;
 }
-
-.match-window .component-pagebutton,
-.match-window .component-notesbutton {
-    background-color: var(--primaryBackgroundColor);
-    border: 2px solid var(--primaryBackgroundColor);
-    border-radius: 5px;
-    padding: 0px 10px 0px 10px;
-    font-size: 1.5rem;
-    color: var(--primaryContentColor);
-    height: 45px;
-    box-sizing: border-box;
-    margin: 10px;
-    margin-top: 30px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-    display: grid;
-    place-items: center;
-}
-
 .match-window:has([data-page="4"]) .component-pagebutton {
     width: 100%;
 }
 
 .match-window .component-notesbutton {
     width: fit-content;
-}
-
-.match-window .component-pagebutton:active {
-    outline: 0;
-    background-color: var(--primaryDarkerBackgroundColor);
 }
 
 .match-window .component-select > h2 {
@@ -935,7 +919,8 @@ header .icon-button .send-container svg {
     resize: none;
 }
 
-.match-window .component-textbox > div > textarea:focus {
+.match-window .component-textbox > div > textarea:focus,
+.upload-box:focus {
     border: none;
     outline: none;
 }
@@ -944,12 +929,6 @@ header .icon-button .send-container svg {
     width: 80dvw;
     height: 25dvh;
     resize: none;
-}
-
-.upload-box:focus {
-    outline: 0;
-    border: 4px solid var(--contentColor);
-    padding: 8px;
 }
 
 .match-window .component-locations {
@@ -1245,7 +1224,6 @@ header .icon-button .send-container svg {
 }
 
 .status-box {
-    width: 100%;
     padding: 0.75rem 2rem;
     border: 1px solid black;
     border-radius: 8px;
@@ -1509,12 +1487,6 @@ header .icon-button .send-container svg {
 @media (max-width: 420px) {
     .match-window {
         padding: 0 !important;
-    }
-}
-
-@media (max-width: 370px) {
-    .home-window > p {
-        width: 100%;
     }
 }
 
