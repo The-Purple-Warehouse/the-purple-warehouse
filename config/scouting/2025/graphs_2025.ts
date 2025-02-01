@@ -61,7 +61,7 @@ interface chartConfig {
                         size: number;
                     };
                 };
-            }
+            };
         };
         aspectRatio?: number;
         onResize?: (chart: any, size: any) => void;
@@ -454,7 +454,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
         "stability",
         "uptime",
         "speed",
-        "intake",
+        "intake"
     ];
     let maxes = getBest(parsed_data).map((value) =>
         value === 0 ? 1e-9 : value
@@ -581,7 +581,7 @@ function overTimeAlgaeChart(
                             size: 12
                         }
                     }
-                },
+                }
             },
             aspectRatio: 2,
             maintainAspectRatio: true,
