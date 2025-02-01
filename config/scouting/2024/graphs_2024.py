@@ -122,7 +122,7 @@ def getData():
         raise Exception("Could not find TPW file")
 
     parsed_tpw_data = OrderedDict()
-    for team, dict in team_data.items(): # team_data is tba data in an OrderedDict, just used to get list of teams
+    for team, dict in team_data.items(): # team_data is tba data in an OrderedDict, just used to get list of teams, dict=DATA
         agps = list() #auto game pieces
         tgps = list() #teleop game pieces
         agpts = {} #auto game piece points

@@ -3,6 +3,36 @@ import * as fs from "fs";
 import { getMatchesFull } from "../../../helpers/tba";
 import { getAllDataByEvent } from "../../../helpers/scouting";
 import accuracy2025 from "./accuracy";
+import { getGraph } from "./graphs_2025";
+import { computeRankings } from "./rankings_2025";
+import { computePrediction } from "./predictions_2025";
+
+export interface parsedRow {
+    match: number;
+    team: string;
+    alliance: string;
+    leave: boolean;
+    "coral intake": boolean;
+    "algae ground intake": boolean;
+    "algae reef intake": boolean;
+    "auto algae scoring": string;
+    "auto coral scoring": string;
+    "teleop algae scoring": string;
+    "teleop coral scoring": string;
+    "cage level": number;
+    "cage time": number;
+    "brick time": number;
+    "defense time": number;
+    "driver skill": number;
+    "defense skill": number;
+    speed: number;
+    stability: number;
+    "intake consistency": number;
+    scouter: string;
+    comments: string;
+    accuracy: number | "";
+    timestamp: number;
+}
 
 export function categories() {
     return [
@@ -212,7 +242,7 @@ export function layout() {
                                                     ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
-                                                    if (i > 4) {
+                                                    if (i > 5) {
                                                         return "";
                                                     } else {
                                                         let colors = [
@@ -223,135 +253,24 @@ export function layout() {
                                                             "#000000"
                                                         ];
                                                         if (
-                                                            arr.length > 100 ||
-                                                            i + 95 < arr.length
+                                                            arr.length > 18 ||
+                                                            i + 12 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[4]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 95 ||
-                                                            i + 90 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 90 ||
-                                                            i + 85 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 85 ||
-                                                            i + 80 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 80 ||
-                                                            i + 75 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 75 ||
-                                                            i + 70 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 70 ||
-                                                            i + 65 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 65 ||
-                                                            i + 60 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 60 ||
-                                                            i + 55 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 55 ||
-                                                            i + 50 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 50 ||
-                                                            i + 45 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 45 ||
-                                                            i + 40 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 40 ||
-                                                            i + 35 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 35 ||
-                                                            i + 30 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 30 ||
-                                                            i + 25 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 25 ||
-                                                            i + 20 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 20 ||
-                                                            i + 15 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
-                                                            arr.length > 15 ||
-                                                            i + 10 < arr.length
+                                                            arr.length > 12 ||
+                                                            i + 6 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 10 ||
-                                                            i + 5 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
-                                                            arr.length > 5 ||
+                                                            arr.length > 6 ||
                                                             i < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;"></div>`;
                                                         }
                                                     }
                                                     return "";
@@ -359,7 +278,7 @@ export function layout() {
                                                 .filter(
                                                     (marker) => marker != ""
                                                 )
-                                                .slice(0, 5)
+                                                .slice(0, 6)
                                                 .join("")}`;
                                         }).toString()
                                     },
@@ -608,7 +527,7 @@ export function layout() {
                                                     ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
-                                                    if (i > 4) {
+                                                    if (i > 5) {
                                                         return "";
                                                     } else {
                                                         let colors = [
@@ -619,135 +538,24 @@ export function layout() {
                                                             "#000000"
                                                         ];
                                                         if (
-                                                            arr.length > 100 ||
-                                                            i + 95 < arr.length
+                                                            arr.length > 18 ||
+                                                            i + 12 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[4]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 95 ||
-                                                            i + 90 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[4]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 90 ||
-                                                            i + 85 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[4]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 85 ||
-                                                            i + 80 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[4]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 80 ||
-                                                            i + 75 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[3]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 75 ||
-                                                            i + 70 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[3]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 70 ||
-                                                            i + 65 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[3]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 65 ||
-                                                            i + 60 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[3]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 60 ||
-                                                            i + 55 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[2]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 55 ||
-                                                            i + 50 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[2]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 50 ||
-                                                            i + 45 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[2]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 45 ||
-                                                            i + 40 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[2]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 40 ||
-                                                            i + 35 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[1]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 35 ||
-                                                            i + 30 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[1]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 30 ||
-                                                            i + 25 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[1]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 25 ||
-                                                            i + 20 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[1]}; border-radius: 50%;"></div>`;
-                                                        } else if (
-                                                            arr.length > 20 ||
-                                                            i + 15 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: ${colors[0]}; border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
-                                                            arr.length > 15 ||
-                                                            i + 10 < arr.length
+                                                            arr.length > 12 ||
+                                                            i + 6 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 10 ||
-                                                            i + 5 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
-                                                            arr.length > 5 ||
+                                                            arr.length > 6 ||
                                                             i < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;"></div>`;
                                                         }
                                                     }
                                                     return "";
@@ -755,7 +563,7 @@ export function layout() {
                                                 .filter(
                                                     (marker) => marker != ""
                                                 )
-                                                .slice(0, 5)
+                                                .slice(0, 6)
                                                 .join("")}`;
                                         }).toString()
                                     },
@@ -1166,6 +974,58 @@ export function formatData(data, categories, teams) {
         .join("\n")}`;
 }
 
+export function parseFormatted(format: string): parsedRow[] {
+    const parseArr = (value: string): string[] => {
+        return value.replace(/\[|\]/g, "").split(/,\s*/).filter(Boolean);
+    };
+    const simplify = (row: string): string[] => {
+        const vals: string[] = [];
+        let current = "",
+            iq = false;
+        for (let i = 0; i < row.length; ++i) {
+            const char = row[i],
+                n = row[i + 1];
+            if (char === '"' && iq && n === '"') (current += '"'), i++;
+            else if (char === '"') iq = !iq;
+            else if (char === "," && !iq)
+                vals.push(current.trim()), (current = "");
+            else current += char;
+        }
+        return current ? [...vals, current.trim()] : vals;
+    };
+
+    const rows = format.split("\n").slice(1);
+    return rows.map((row) => {
+        const columns = simplify(row);
+        return {
+            match: parseInt(columns[1], 10),
+            team: columns[2],
+            alliance: columns[3],
+            leave: columns[4] === "true",
+            "coral intake": columns[5] === "true",
+            "algae ground intake": columns[6] === "true",
+            "algae reef intake": columns[7] === "true",
+            "auto algae scoring": parseArr(columns[8]).join(", "),
+            "auto coral scoring": parseArr(columns[9]).join(", "),
+            "teleop algae scoring": parseArr(columns[10]).join(", "),
+            "teleop coral scoring": parseArr(columns[11]).join(", "),
+            "cage level": parseInt(columns[12], 10),
+            "cage time": parseInt(columns[13], 10),
+            "brick time": parseInt(columns[14], 10),
+            "defense time": parseInt(columns[15], 10),
+            "driver skill": parseInt(columns[16], 10),
+            "defense skill": parseInt(columns[17], 10),
+            speed: parseInt(columns[18], 10),
+            stability: parseInt(columns[19], 10),
+            "intake consistency": parseInt(columns[20], 10),
+            scouter: columns[21].replace(/^"|"$/g, ""),
+            comments: columns[22].replace(/^"|"$/g, ""),
+            accuracy: columns[23] ? parseFloat(columns[23]) : "",
+            timestamp: parseInt(columns[24], 10)
+        };
+    });
+}
+
 let parsedScoring = {
     asn: "algae net score",
     asp: "algae processor score",
@@ -1274,30 +1134,6 @@ export function notes() {
     return ``;
 }
 
-let cache;
-
-try {
-    cache = JSON.parse(fs.readFileSync("../analysiscache.json").toString());
-} catch (err) {
-    cache = {};
-}
-
-function pruneCache() {
-    return;
-    let cacheKeys = Object.keys(cache);
-    for (let i = 0; i < cacheKeys.length; i++) {
-        if (
-            new Date().getTime() >
-            cache[cacheKeys[i]].timestamp + 1000 * 60 * 60
-        ) {
-            delete cache[cacheKeys[i]];
-        }
-    }
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-}
-
-pruneCache();
-
 function run(command) {
     return new Promise(async (resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -1315,6 +1151,7 @@ async function syncAnalysisCache(event, teamNumber) {
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
         let allScoutingData = await getAllDataByEvent(event);
+        let allParsedData = parseFormatted(allScoutingData);
         let allScoutedTeams = [
             ...new Set(
                 allScoutingData
@@ -1323,7 +1160,6 @@ async function syncAnalysisCache(event, teamNumber) {
                     .map((entry) => entry.split(",")[2])
             )
         ];
-        let pending = [];
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, allScoutingData);
         let allTeams = [
@@ -1345,6 +1181,12 @@ async function syncAnalysisCache(event, teamNumber) {
         for (let i = 0; i < allTeams.length && hasAllTeams; i++) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
+        const rankings = computeRankings(allParsedData);
+        const graph0 = getGraph(0, allParsedData, teamNumber);
+        const graph3 = getGraph(3, allParsedData, teamNumber);
+        const graph1 = getGraph(1, allParsedData, teamNumber);
+        const graph2 = getGraph(2, allParsedData, teamNumber);
+
         let matches = matchesFull
             .filter((match: any) => match.comp_level == "qm")
             .filter(
@@ -1356,8 +1198,56 @@ async function syncAnalysisCache(event, teamNumber) {
             )
             .sort((a: any, b: any) => a.match_number - b.match_number);
         let predictions = [];
+        for (let i = 0; i < matches.length; i++) {
+            let match = matches[i] as any;
+            let r1 = match.alliances.red.team_keys[0].replace("frc", "");
+            let r2 = match.alliances.red.team_keys[1].replace("frc", "");
+            let r3 = match.alliances.red.team_keys[2].replace("frc", "");
+            let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
+            let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
+            let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
+            let prediction = computePrediction(
+                b1,
+                b2,
+                b3,
+                r1,
+                r2,
+                r3,
+                allParsedData,
+                "../",
+                event as string
+            );
+            prediction.match = match.match_number;
+            prediction.win = match.alliances[
+                prediction.winner
+            ].team_keys.includes(`frc${teamNumber}`);
+            let predictionRed =
+                prediction.red / (prediction.red + prediction.blue);
+            let predictionBlue =
+                prediction.blue / (prediction.blue + prediction.red);
+            if (predictionRed > 0.85) {
+                predictionRed = 0.75 + ((predictionRed - 0.85) / 0.15) * 0.1;
+                predictionBlue = 1 - predictionRed;
+            } else if (predictionBlue > 0.85) {
+                predictionBlue = 0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
+                predictionRed = 1 - predictionBlue;
+            }
+            prediction.red = predictionRed;
+            prediction.blue = predictionBlue;
+            predictions.push(prediction);
+        }
+
         data.predictions = predictions;
+
+        let rankingsTeams = Object.keys(rankings);
         let rankingsArr = [];
+        for (let i = 0; i < rankingsTeams.length; i++) {
+            rankingsArr.push({
+                teamNumber: rankingsTeams[i],
+                offenseScore: rankings[rankingsTeams[i]]["off-score"],
+                defenseScore: rankings[rankingsTeams[i]]["def-score"]
+            });
+        }
         let offense = rankingsArr
             .sort((a, b) => b.offenseScore - a.offenseScore)
             .map((ranking) => ranking.teamNumber);
@@ -1388,54 +1278,70 @@ async function syncAnalysisCache(event, teamNumber) {
                 `${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`
             ]);
         }
-        let graphs = "";
-        let radarStandard = "";
-        let radarMax = "";
         analyzed.push({
-            type: "html",
-            label: "Coming Soon",
-            value: "<h3>2025 analysis is under development!</h3>"
+            type: "config",
+            label: "Algae Scoring",
+            value: graph0
+        });
+        analyzed.push({
+            type: "config",
+            label: "Coral Scoring",
+            value: graph3
+        });
+        analyzed.push({
+            type: "config",
+            label: "Radar Chart<br>(Single Team)",
+            value: graph1
+        });
+        analyzed.push({
+            type: "config",
+            label: "Radar Chart<br>(Compared to Best Scores)",
+            value: graph2
+        });
+        analyzed.push({
+            type: "predictions",
+            label: "Predictions",
+            values: predictions
+        });
+        analyzed.push({
+            type: "table",
+            label: "Rankings",
+            values: tableRankings
         });
     } catch (err) {
         console.error(err);
     }
-    cache[`${event}-${teamNumber}`] = {
-        value: {
-            display: analyzed,
-            data: data
-        },
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    pruneCache();
+    return { value: { display: analyzed, data: data } };
 }
 
 async function syncCompareCache(event, teamNumbers) {
     let comparison = [];
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
-        let pending = [];
+        let allScoutingData = await getAllDataByEvent(event);
+        let allParsedData = parseFormatted(allScoutingData);
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
-        let radarStandard = "";
-        let radarMax = "";
+        const graph1 = getGraph(1, allParsedData, teamNumbers as string[]);
+        const graph2 = getGraph(2, allParsedData, teamNumbers as string[]);
         comparison.push({
-            type: "html",
-            label: "Coming Soon",
-            value: "<h3>2025 analysis is under development!</h3>"
+            type: "config",
+            label: `Radar Chart<br>(${
+                teamNumbers.length == 1
+                    ? "Single Team"
+                    : `${teamNumbers.length} Teams`
+            })`,
+            value: graph1
+        });
+        comparison.push({
+            type: "config",
+            label: "Radar Chart<br>(Compared to Best Scores)",
+            value: graph2
         });
     } catch (err) {
         console.error(err);
     }
-    cache[`${event}-compare-${teamNumbers.join(",")}`] = {
-        value: {
-            display: comparison,
-            data: {}
-        },
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    pruneCache();
+    return { value: { display: comparison, data: {} } };
 }
 
 async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
@@ -1445,9 +1351,10 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     };
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
-        let pending = [];
+        let allScoutingData = await getAllDataByEvent(event);
         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
-        fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
+        fs.writeFileSync(`../${event}.csv`, allScoutingData);
+        let allParsedData = parseFormatted(allScoutingData);
 
         let predictions = [];
         let r1 = redTeamNumbers[0];
@@ -1456,70 +1363,53 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
         let b1 = blueTeamNumbers[0];
         let b2 = blueTeamNumbers[1];
         let b3 = blueTeamNumbers[2];
-
-        let prediction = {
-            red: 0,
-            blue: 0
-        };
-        if (prediction.red > 0.85) {
-            prediction.red = 0.75 + ((prediction.red - 0.85) / 0.15) * 0.1;
-            prediction.blue = 1 - prediction.red;
-        } else if (prediction.blue > 0.85) {
-            prediction.blue = 0.75 + ((prediction.blue - 0.85) / 0.15) * 0.1;
-            prediction.red = 1 - prediction.blue;
+        let prediction = computePrediction(
+            b1,
+            b2,
+            b3,
+            r1,
+            r2,
+            r3,
+            allParsedData,
+            "../",
+            event as string
+        );
+        let predictionRed = prediction.red / (prediction.red + prediction.blue);
+        let predictionBlue =
+            prediction.blue / (prediction.blue + prediction.red);
+        if (predictionRed > 0.85) {
+            predictionRed = 0.75 + ((predictionRed - 0.85) / 0.15) * 0.1;
+            predictionBlue = 1 - predictionRed;
+        } else if (predictionBlue > 0.85) {
+            predictionBlue = 0.75 + ((predictionBlue - 0.85) / 0.15) * 0.1;
+            predictionRed = 1 - predictionBlue;
         }
+        prediction.red = predictionRed;
+        prediction.blue = predictionBlue;
         predictions.push(prediction);
 
         data.predictions = predictions;
 
         analyzed.push({
-            type: "html",
-            label: "Coming Soon",
-            value: "<h3>2025 analysis is under development!</h3>"
+            type: "predictions",
+            label: "Prediction",
+            values: predictions
         });
     } catch (err) {
         console.error(err);
     }
-    cache[
-        `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
-            ","
-        )}`
-    ] = {
-        value: {
-            display: analyzed,
-            data: data
-        },
-        timestamp: new Date().getTime()
-    };
-    fs.writeFileSync("../analysiscache.json", JSON.stringify(cache));
-    pruneCache();
+    return { value: { display: analyzed, data: data } };
 }
 
 export async function analysis(event, teamNumber) {
-    if (cache[`${event}-${teamNumber}`] == null) {
-        await syncAnalysisCache(event, teamNumber);
-    } else if (
-        new Date().getTime() >
-        cache[`${event}-${teamNumber}`].timestamp + 150000
-    ) {
-        syncAnalysisCache(event, teamNumber);
-    }
-    return cache[`${event}-${teamNumber}`].value;
+    return (await syncAnalysisCache(event, teamNumber)).value;
 }
 
 export async function compare(event, teamNumbers) {
     teamNumbers = [...new Set(teamNumbers)].sort((a: string, b: string) =>
         a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    if (cache[`${event}-compare-${teamNumbers.join(",")}`] == null) {
-        await syncCompareCache(event, teamNumbers);
-    } else if (
-        new Date().getTime() >
-        cache[`${event}-compare-${teamNumbers.join(",")}`].timestamp + 150000
-    ) {
-        syncCompareCache(event, teamNumbers);
-    }
-    return cache[`${event}-compare-${teamNumbers.join(",")}`].value;
+    return (await syncCompareCache(event, teamNumbers)).value;
 }
 
 export async function predict(event, redTeamNumbers, blueTeamNumbers) {
@@ -1530,30 +1420,8 @@ export async function predict(event, redTeamNumbers, blueTeamNumbers) {
         (a: string, b: string) =>
             a.length != b.length ? a.length - b.length : a.localeCompare(b)
     );
-    if (
-        cache[
-            `${event}-predict-${redTeamNumbers.join(
-                ","
-            )}-${blueTeamNumbers.join(",")}`
-        ] == null
-    ) {
-        await syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
-    } else if (
-        new Date().getTime() >
-        cache[
-            `${event}-predict-${redTeamNumbers.join(
-                ","
-            )}-${blueTeamNumbers.join(",")}`
-        ].timestamp +
-            150000
-    ) {
-        syncPredictCache(event, redTeamNumbers, blueTeamNumbers);
-    }
-    return cache[
-        `${event}-predict--${redTeamNumbers.join(",")}-${blueTeamNumbers.join(
-            ","
-        )}`
-    ].value;
+    return (await syncPredictCache(event, redTeamNumbers, blueTeamNumbers))
+        .value;
 }
 
 export async function accuracy(event, matches, data, categories, teams) {

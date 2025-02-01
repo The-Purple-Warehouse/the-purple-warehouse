@@ -1,0 +1,17 @@
+,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp
+0,1,1234,unknown,true,true,true,true,"[asp, asp, amp, amn, amn, amn, asn, asn, asn, asn]","[cs4, cs4, cs4, cs4, cs4, cs4, cs4, cs4, cs3, cs2, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1]","[]","[]",0,0,0,0,0,0,0,0,0,"lynx (9180)","",,1736195965383
+1,2,9180,unknown,false,true,false,false,"[]","[]","[]","[cs3, cm3]",2,0,0,0,0,0,0,0,0,"pietro (9180)","",,1736202095408
+2,3,1233,unknown,false,false,false,false,"[]","[cs3, cs3, cs3, cs3, cs3, cs3, cs3, cs3]","[]","[]",0,0,0,0,0,0,0,0,0,"pietro (9180)","",,1736202169990
+3,4,1r,red,false,false,false,false,"[]","[]","[]","[]",0,0,0,0,0,0,0,0,0,"malcomfv (8387)","",,1736217946468
+4,5,1b,blue,false,false,false,false,"[]","[]","[]","[]",0,0,0,0,0,0,0,0,0,"25danielg (1072)","",,1736273075867
+5,6,676,unknown,false,false,false,false,"[]","[]","[]","[cs3, cs3, cs4, cs4]",0,2050,0,0,0,0,0,0,0,"montclair robotics (555)","",,1736284611535
+6,7,2000,unknown,true,false,true,false,"[]","[cm4, cm4, cm4, cm4, cs4, cs4, cs4, cs4, cm3, cm3, cs3, cs3, cs3, cs3, cm2, cs2, cs2, cs2, cs2, cs2, cs2, cs2, cs2, cs2, cs2, cs2, cs2, cs1, cs1, cs1, cs1, cs1, cs1, cs1, cs1]","[asp, asp, asp, asp, asn, asn, asn, asn]","[cs4, cs4, cs4, cm3, cm2, cm1]",3,0,11500,12000,4,4,4,4,4,"limao1860 (1860)","",,1736285798459
+7,8,9220,unknown,true,true,true,true,"[]","[cs1]","[]","[cs1, cs1, cm1, cs4, cs4, cs4, cm4]",3,3350,0,0,4,2,1,4,3,"louis-alexandre (9220)","Pretty good",,1736291211914
+8,9,1r,red,true,false,false,true,"[]","[cs4, cm4, cs3]","[asp, amp]","[cs3, cs3, cs3, cs3, cm3, cs4, cs4, cs4, cm4, cm1, cm1]",3,13900,0,0,2,0,3,3,1,"coach darrin (6369)","",,1736301190596
+9,10,2,unknown,false,false,false,false,"[]","[]","[]","[]",0,0,0,0,0,0,0,0,0,"jprinstein (353)","",,1736431059661
+10,11,2,unknown,true,true,true,true,"[asp, asp, asp, asp]","[cs3, cs3, cm3, cm3, cm3, cm3, cm3, cm3, cm3, cs2, cs2, cs2]","[]","[]",2,1800,0,0,2,2,4,3,3,"jprinstein (353)","ZOom",,1736433793755
+11,12,1r,red,true,true,false,false,"[asp, asp, asn, asn, amn]","[cs4, cs4, cs4, cm4, cm4, cs1, cs1, cm1, cm1]","[asp, amp, asn, asn, amn]","[cs4, cs4, cs3, cs3, cs3, cs3]",2,2950,4000,0,2,1,1,2,1,"lilly (701)","",,1736579135998
+12,1,1r,red,true,false,true,true,"[]","[cs4, cm3]","[]","[cs4, cs4, cs3, cs3, cs3, cm3, cs2, cs2, cs2, cm2, cs1, cs1, cs1]",3,0,0,0,0,0,3,2,1,"doruk (9233)","",,1736579643738
+13,13,666,unknown,false,false,false,false,"[]","[cs4]","[]","[]",0,0,0,0,0,0,0,0,0,"lilly (701)","",,1736581028942
+14,14,2609,unknown,true,true,true,false,"[asp, amp, asn]","[cs2]","[]","[]",0,0,450,0,2,2,4,1,4,"bryce (2609)","",,1736790809568
+15,23,1b,blue,false,false,false,false,"[asn]","[]","[]","[]",0,0,0,0,0,0,0,0,0,"lilly (701)","",,1737167731321

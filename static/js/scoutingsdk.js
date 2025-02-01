@@ -1492,12 +1492,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         </tbody>
                     </table>
                     <div class="analysis" style="display: none;">
-                        
                     </div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
             `;
             let overlayShown = false;
+            const defAnalysis = `
+                <div class="graphs"></div>
+                <div class="predictions"></div>
+                <div class="rankings"></div>
+            `;
             function showOverlay() {
                 overlayShown = true;
                 setTimeout(() => {
@@ -1709,7 +1713,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
-                    element.querySelector(".analysis").innerHTML = "";
+                    element.querySelector(".analysis").innerHTML = defAnalysis;
                     try {
                         let data = await (
                             await fetch(
@@ -1721,53 +1725,49 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
                             let run = [];
-                            element.querySelector(".analysis").innerHTML =
-                                data.body.display
-                                    .map((item) => {
-                                        if (item.type == "table") {
-                                            return `<h2>${item.label}</h2>
-                                        <table class="data-table">
-                                            <thead>
-                                                <tr>${item.values[0]
-                                                    .map(
-                                                        (cell) =>
-                                                            `<th>${cell
-                                                                .replaceAll(
-                                                                    '"',
-                                                                    ""
-                                                                )
-                                                                .replaceAll(
-                                                                    "\\n",
-                                                                    "<br>"
-                                                                )}</th>`
-                                                    )
-                                                    .join("")}</tr>
-                                            </thead>
-                                            <tbody>
-                                                ${item.values
-                                                    .slice(1)
-                                                    .map((data) => {
-                                                        return `<tr>${data
-                                                            .map(
-                                                                (cell) =>
-                                                                    `<td${
-                                                                        cell.includes(
-                                                                            `<b>${teamNumber}</b>`
-                                                                        )
-                                                                            ? ` style="background-color: yellow;"`
-                                                                            : ""
-                                                                    }>${cell.replaceAll(
-                                                                        "\\n",
-                                                                        "<br>"
-                                                                    )}</td>`
-                                                            )
-                                                            .join("")}</tr>`;
-                                                    })
-                                                    .join("")}
-                                            </tbody>
-                                        </table>`;
-                                        } else if (item.type == "predictions") {
-                                            return `<h2>${item.label}</h2>
+                            // graphs
+                            element.querySelector(
+                                ".analysis .graphs"
+                            ).innerHTML = data.body.display
+                                .map((item, ind) => {
+                                    if (item.type == "html") {
+                                        return `<h2>${item.label}</h2>${item.value}`;
+                                    } else if (item.type == "config") {
+                                        const config = item.value;
+                                        const id = _this.random();
+                                        console.log(config);
+                                        return `<canvas id="${id}">
+                                                <script>
+                                                    const handleAR = (config) => {
+                                                        if (window.innerWidth < 515) config.options.aspectRatio = 1;
+                                                        else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
+                                                        else config.options.aspectRatio = 2;
+                                                        return config;
+                                                    };
+                                                    var chart_config${ind} = ${JSON.stringify(
+                                            config
+                                        )};
+                                                    chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                    let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                    if (chart_config${ind}.type == "line") {
+                                                        window.addEventListener("resize", () => {
+                                                            chart_config${ind} = handleAR(chart_config${ind});
+                                                            chart${ind}.destroy();
+                                                            chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                        });
+                                                    }
+                                                </script>
+                                            </canvas>`;
+                                    }
+                                })
+                                .join("");
+                            // predictions
+                            element.querySelector(
+                                ".analysis .predictions"
+                            ).innerHTML = data.body.display
+                                .map((item) => {
+                                    if (item.type == "predictions") {
+                                        return `<h2>${item.label}</h2>
                                             ${item.values
                                                 .map((data) => {
                                                     let firstListed = "red";
@@ -1818,11 +1818,59 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                     </div>`;
                                                 })
                                                 .join("")}`;
-                                        } else if (item.type == "html") {
-                                            return `<h2>${item.label}</h2>${item.value}`;
-                                        }
-                                    })
-                                    .join("");
+                                    }
+                                })
+                                .join("");
+                            // rankings
+                            element.querySelector(
+                                ".analysis .rankings"
+                            ).innerHTML = data.body.display
+                                .map((item) => {
+                                    if (item.type == "table") {
+                                        return `<h2>${item.label}</h2>
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>${item.values[0]
+                                                    .map(
+                                                        (cell) =>
+                                                            `<th>${cell
+                                                                .replaceAll(
+                                                                    '"',
+                                                                    ""
+                                                                )
+                                                                .replaceAll(
+                                                                    "\\n",
+                                                                    "<br>"
+                                                                )}</th>`
+                                                    )
+                                                    .join("")}</tr>
+                                            </thead>
+                                            <tbody>
+                                                ${item.values
+                                                    .slice(1)
+                                                    .map((data) => {
+                                                        return `<tr>${data
+                                                            .map(
+                                                                (cell) =>
+                                                                    `<td${
+                                                                        cell.includes(
+                                                                            `<b>${teamNumber}</b>`
+                                                                        )
+                                                                            ? ` style="background-color: yellow;"`
+                                                                            : ""
+                                                                    }>${cell.replaceAll(
+                                                                        "\\n",
+                                                                        "<br>"
+                                                                    )}</td>`
+                                                            )
+                                                            .join("")}</tr>`;
+                                                    })
+                                                    .join("")}
+                                            </tbody>
+                                        </table>`;
+                                    }
+                                })
+                                .join("");
                             let scripts = [
                                 ...element.querySelectorAll(".analysis script")
                             ];
@@ -1836,7 +1884,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
                             element.querySelector(".analysis").style.display =
-                                "block";
+                                "";
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
@@ -1940,6 +1988,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 </div>
             `;
             let overlayShown = false;
+            const defComparison = `
+                <div class="graphs"></div>
+                <div class="predictions"></div>
+                <div class="rankings"></div>
+            `;
             function showOverlay() {
                 overlayShown = true;
                 setTimeout(() => {
@@ -1993,7 +2046,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ]
                         .filter((teamNumber) => teamNumber != "")
                         .join(",");
-                    element.querySelector(".comparison").innerHTML = "";
+                    element.querySelector(".comparison").innerHTML =
+                        defComparison;
                     try {
                         let data = await (
                             await fetch(
@@ -2005,102 +2059,126 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
                             let run = [];
-                            element.querySelector(".comparison").innerHTML =
-                                data.body.display
-                                    .map((item) => {
-                                        if (item.type == "table") {
-                                            return `<h2>${item.label}</h2>
-                                        <table class="data-table">
-                                            <thead>
-                                                <tr>${item.values[0]
-                                                    .map(
-                                                        (cell) =>
-                                                            `<th>${cell
-                                                                .replaceAll(
-                                                                    '"',
-                                                                    ""
-                                                                )
-                                                                .replaceAll(
+                            // graphs
+                            element.querySelector(
+                                ".comparison .graphs"
+                            ).innerHTML = data.body.display
+                                .map((item) => {
+                                    if (item.type == "html") {
+                                        return `<h2>${item.label}</h2>${item.value}`;
+                                    } else if (item.type == "config") {
+                                        const config = item.value;
+                                        const id = _this.random();
+                                        console.log(config);
+                                        return `<canvas id="${id}">
+                                                <script>
+                                                    var chart_config = ${JSON.stringify(
+                                                        config
+                                                    )};
+                                                    new Chart(document.getElementById("${id}").getContext("2d"), chart_config);
+                                                </script>
+                                            </canvas>`;
+                                    }
+                                })
+                                .join("");
+                            // predictions
+                            element.querySelector(
+                                ".comparison .predictions"
+                            ).innerHTML = data.body.display
+                                .map((item) => {
+                                    if (item.type == "predictions") {
+                                        return `<h2>${item.label}</h2>
+                                        ${item.values
+                                            .map((data) => {
+                                                let firstListed = "red";
+                                                if (
+                                                    (data.win &&
+                                                        data.winner ==
+                                                            "blue") ||
+                                                    (!data.win &&
+                                                        data.winner == "red")
+                                                ) {
+                                                    firstListed = "blue";
+                                                }
+                                                return `<h3>Match ${
+                                                    data.match
+                                                } (Predicted ${
+                                                    data.win ? "WIN" : "LOSS"
+                                                })</h3>
+                                                <div class="prediction-bar">
+                                                    <div class="prediction-bar-${
+                                                        firstListed == "red"
+                                                            ? "red"
+                                                            : "blue"
+                                                    }" style="width: calc(${
+                                                    firstListed == "red"
+                                                        ? data.red * 100
+                                                        : data.blue * 100
+                                                }% - 2px);"><p>${Math.round(
+                                                    firstListed == "red"
+                                                        ? data.red * 100
+                                                        : data.blue * 100
+                                                )}%</p></div>
+                                                    <div class="prediction-bar-${
+                                                        firstListed == "red"
+                                                            ? "blue"
+                                                            : "red"
+                                                    }" style="width: calc(${
+                                                    firstListed == "red"
+                                                        ? data.blue * 100
+                                                        : data.red * 100
+                                                }% - 3px);"><p>${Math.round(
+                                                    firstListed == "red"
+                                                        ? data.blue * 100
+                                                        : data.red * 100
+                                                )}%</p></div>
+                                                </div>`;
+                                            })
+                                            .join("")}`;
+                                    }
+                                })
+                                .join("");
+                            // rankings
+                            element.querySelector(
+                                ".comparison .rankings"
+                            ).innerHTML = data.body.display
+                                .map((item) => {
+                                    if (item.type == "table") {
+                                        return `<h2>${item.label}</h2>
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>${item.values[0]
+                                                .map(
+                                                    (cell) =>
+                                                        `<th>${cell
+                                                            .replaceAll('"', "")
+                                                            .replaceAll(
+                                                                "\\n",
+                                                                "<br>"
+                                                            )}</th>`
+                                                )
+                                                .join("")}</tr>
+                                        </thead>
+                                        <tbody>
+                                            ${item.values
+                                                .slice(1)
+                                                .map((data) => {
+                                                    return `<tr>${data
+                                                        .map(
+                                                            (cell) =>
+                                                                `<td>${cell.replaceAll(
                                                                     "\\n",
                                                                     "<br>"
-                                                                )}</th>`
-                                                    )
-                                                    .join("")}</tr>
-                                            </thead>
-                                            <tbody>
-                                                ${item.values
-                                                    .slice(1)
-                                                    .map((data) => {
-                                                        return `<tr>${data
-                                                            .map(
-                                                                (cell) =>
-                                                                    `<td>${cell.replaceAll(
-                                                                        "\\n",
-                                                                        "<br>"
-                                                                    )}</td>`
-                                                            )
-                                                            .join("")}</tr>`;
-                                                    })
-                                                    .join("")}
-                                            </tbody>
-                                        </table>`;
-                                        } else if (item.type == "predictions") {
-                                            return `<h2>${item.label}</h2>
-                                            ${item.values
-                                                .map((data) => {
-                                                    let firstListed = "red";
-                                                    if (
-                                                        (data.win &&
-                                                            data.winner ==
-                                                                "blue") ||
-                                                        (!data.win &&
-                                                            data.winner ==
-                                                                "red")
-                                                    ) {
-                                                        firstListed = "blue";
-                                                    }
-                                                    return `<h3>Match ${
-                                                        data.match
-                                                    } (Predicted ${
-                                                        data.win
-                                                            ? "WIN"
-                                                            : "LOSS"
-                                                    })</h3>
-                                                    <div class="prediction-bar">
-                                                        <div class="prediction-bar-${
-                                                            firstListed == "red"
-                                                                ? "red"
-                                                                : "blue"
-                                                        }" style="width: calc(${
-                                                        firstListed == "red"
-                                                            ? data.red * 100
-                                                            : data.blue * 100
-                                                    }% - 2px);"><p>${Math.round(
-                                                        firstListed == "red"
-                                                            ? data.red * 100
-                                                            : data.blue * 100
-                                                    )}%</p></div>
-                                                        <div class="prediction-bar-${
-                                                            firstListed == "red"
-                                                                ? "blue"
-                                                                : "red"
-                                                        }" style="width: calc(${
-                                                        firstListed == "red"
-                                                            ? data.blue * 100
-                                                            : data.red * 100
-                                                    }% - 3px);"><p>${Math.round(
-                                                        firstListed == "red"
-                                                            ? data.blue * 100
-                                                            : data.red * 100
-                                                    )}%</p></div>
-                                                    </div>`;
+                                                                )}</td>`
+                                                        )
+                                                        .join("")}</tr>`;
                                                 })
-                                                .join("")}`;
-                                        } else if (item.type == "html") {
-                                            return `<h2>${item.label}</h2>${item.value}`;
-                                        }
-                                    })
-                                    .join("");
+                                                .join("")}
+                                        </tbody>
+                                    </table>`;
+                                    }
+                                })
+                                .join("");
                             let scripts = [
                                 ...element.querySelectorAll(
                                     ".comparison script"
@@ -2116,7 +2194,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
                             element.querySelector(".comparison").style.display =
-                                "block";
+                                "";
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
@@ -2367,7 +2445,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
                             element.querySelector(".prediction").style.display =
-                                "block";
+                                "";
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";

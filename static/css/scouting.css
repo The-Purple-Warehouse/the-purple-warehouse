@@ -94,7 +94,7 @@ main {
 .home-window input,
 .data-window input {
     display: block;
-    width: -webkit-fill-available;
+    width: calc(100% - 10px);
     border: none;
     border-bottom: 1px solid black;
     font-size: 16px;
@@ -192,17 +192,56 @@ input:-webkit-autofill {
     background-color: var(--primaryBackgroundColor);
     border: 2px solid var(--primaryBackgroundColor);
     padding: 10px;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    line-height: 1.3rem;
     color: var(--primaryContentColor);
-    width: 100%;
+    width: min(100%, 350px);
     box-sizing: border-box;
     margin: 0;
     margin-top: 10px;
     text-align: center;
+    position: relative;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    transition: filter 0.2s ease-in-out, background-color 0.2s ease-in-out;
     border-radius: var(--standard-border-radius);
     box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    user-select: none;
+    overflow: hidden;
+}
+
+.home-window > button:hover,
+.login-window > button:hover,
+.data-window > button:hover,
+.scanner-window button:hover,
+.download-window button:hover {
+    filter: brightness(1.25);
+}
+
+.home-window > button::after,
+.login-window > button::after,
+.data-window > button::after,
+.scanner-window button::after,
+.download-window button::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 50%;
+    left: 50%;
+    transform-style: flat;
+    transform: translate3d(-50%, -50%, 0);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100%;
+    transition: width 0.2s ease, height 0.2s ease;
+}
+
+.home-window > button:active::after,
+.login-window > button:active::after,
+.data-window > button:active::after,
+.scanner-window button:active::after,
+.download-window button:active::after {
+    width: 500px;
+    height: 500px;
 }
 
 .scanner-window button {
@@ -251,6 +290,9 @@ input:-webkit-autofill {
     border: none;
     padding: 10px 40px 40px 40px;
     height: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .home-window > :first-child {
@@ -301,6 +343,7 @@ input:-webkit-autofill {
     color: var(--contentColor);
     text-align: center;
     font-size: 1rem;
+    max-width: 600px;
 }
 
 .match-window select,
@@ -918,8 +961,8 @@ header .icon-button .send-container svg {
 .match-window .component-locations > .component-locations-container {
     margin-top: 10px;
     margin-bottom: 20px;
-    height: min(90%, 600px);
-    width: min(90%, 600px);
+    height: min(95%, 600px);
+    width: min(95%, 600px);
 }
 
 .match-window .component-locations > .component-locations-container > .grid {
@@ -1029,7 +1072,7 @@ header .icon-button .send-container svg {
 }
 
 .data-window:has(> h3.red) {
-    padding: 10px 40px 10px 40px;
+    padding: 10px clamp(0px, 5dvw, 40px) 10px clamp(0px, 5dvw, 40px);
 }
 
 .overlay {
@@ -1300,23 +1343,30 @@ header .icon-button .send-container svg {
     text-align: center;
 }
 
-.data-window .analysis > div:not(.prediction-bar),
-.data-window .comparison > div:not(.prediction-bar),
-.data-window .prediction > div:not(.prediction-bar) {
-    width: min-content;
-    margin-left: 50%;
-    transform: translate(-50%, 0);
+.data-window .analysis,
+.data-window .comparison,
+.data-window .prediction,
+.data-window .graphs,
+.data-window .predictions,
+.data-window .rankings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.data-window .analysis > div:not(.prediction-bar) rect.mpld3-axesbg,
-.data-window .comparison > div:not(.prediction-bar) rect.mpld3-axesbg,
-.data-window .prediction > div:not(.prediction-bar) rect.mpld3-axesbg {
-    fill: var(--backgroundColor) !important;
+.data-window .prediction {
+    width: 100%;
 }
 
-.data-window .analysis > .prediction-bar,
-.data-window .comparison > .prediction-bar,
-.data-window .prediction > .prediction-bar {
+.data-window .analysis > .graphs,
+.data-window .comparison > .graphs {
+    width: clamp(300px, 90vw, 900px);
+}
+
+.data-window .analysis .prediction-bar,
+.data-window .comparison .prediction-bar,
+.data-window .prediction .prediction-bar {
     width: 100%;
     height: 50px;
     border: 5px solid var(--primaryBackgroundColor);
@@ -1327,34 +1377,34 @@ header .icon-button .send-container svg {
 
 .data-window
     .analysis
-    > div:not(.prediction-bar)
+    div:not(.prediction-bar)
     .svg-container
     > .main-svg:nth-child(1),
 .data-window
     .comparison
-    > div:not(.prediction-bar)
+    div:not(.prediction-bar)
     .svg-container
     > .main-svg:nth-child(1),
 .data-window
     .prediction
-    > div:not(.prediction-bar)
+    div:not(.prediction-bar)
     .svg-container
     > .main-svg:nth-child(1) {
     background: var(--backgroundColor) !important;
 }
 
-.data-window .analysis > .prediction-bar > div,
-.data-window .comparison > .prediction-bar > div,
-.data-window .prediction > .prediction-bar > div {
+.data-window .analysis .prediction-bar > div,
+.data-window .comparison .prediction-bar > div,
+.data-window .prediction .prediction-bar > div {
     height: 100%;
     display: inline-block;
     color: var(--backgroundColor);
     position: relative;
 }
 
-.data-window .analysis > .prediction-bar > div > p,
-.data-window .comparison > .prediction-bar > div > p,
-.data-window .prediction > .prediction-bar > div > p {
+.data-window .analysis .prediction-bar > div > p,
+.data-window .comparison .prediction-bar > div > p,
+.data-window .prediction .prediction-bar > div > p {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -1363,16 +1413,16 @@ header .icon-button .send-container svg {
     margin: 0;
 }
 
-.data-window .analysis > .prediction-bar > .prediction-bar-red,
-.data-window .comparison > .prediction-bar > .prediction-bar-red,
-.data-window .prediction > .prediction-bar > .prediction-bar-red {
+.data-window .analysis .prediction-bar > .prediction-bar-red,
+.data-window .comparison .prediction-bar > .prediction-bar-red,
+.data-window .prediction .prediction-bar > .prediction-bar-red {
     background-color: #ff6e6e;
     border-radius: 3px 0 0 3px;
 }
 
-.data-window .analysis > .prediction-bar > .prediction-bar-blue,
-.data-window .comparison > .prediction-bar > .prediction-bar-blue,
-.data-window .prediction > .prediction-bar > .prediction-bar-blue {
+.data-window .analysis .prediction-bar > .prediction-bar-blue,
+.data-window .comparison .prediction-bar > .prediction-bar-blue,
+.data-window .prediction .prediction-bar > .prediction-bar-blue {
     background-color: #6a6afb;
     border-radius: 0 3px 3px 0;
 }
@@ -1444,27 +1494,12 @@ header .icon-button .send-container svg {
     border-radius: 5px;
 }
 
-@media (max-width: 650px) {
-    .data-window .analysis > div:not(.prediction-bar),
-    .data-window .comparison > div:not(.prediction-bar),
-    .data-window .prediction > div:not(.prediction-bar) {
-        margin-left: 50%;
-        transform: translate(-50%, 0) scale(0.8);
-    }
-}
-
 @media (max-width: 500px) {
     .data-window table {
         overflow-x: initial;
     }
     .data-window-visible {
         overflow-x: auto;
-    }
-    .data-window .analysis > div:not(.prediction-bar),
-    .data-window .comparison > div:not(.prediction-bar),
-    .data-window .prediction > div:not(.prediction-bar) {
-        margin-left: 50%;
-        transform: translate(-50%, 0) scale(0.65);
     }
     .match-window .component-timer {
         width: 100%;
@@ -1474,15 +1509,6 @@ header .icon-button .send-container svg {
 @media (max-width: 420px) {
     .match-window {
         padding: 0 !important;
-    }
-}
-
-@media (max-width: 400px) {
-    .data-window .analysis > div:not(.prediction-bar),
-    .data-window .comparison > div:not(.prediction-bar),
-    .data-window .prediction > div:not(.prediction-bar) {
-        margin-left: 50%;
-        transform: translate(-50%, 0) scale(0.55);
     }
 }
 

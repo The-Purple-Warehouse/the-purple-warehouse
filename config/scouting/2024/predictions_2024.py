@@ -355,19 +355,28 @@ def tba_predict(b1, b2, b3, r1, r2, r3):
     bas = max([parsed_data[b1]['avg-score'], parsed_data[b2]['avg-score'], parsed_data[b3]['avg-score']]) + min([parsed_data[b1]['avg-score'], parsed_data[b2]['avg-score'], parsed_data[b3]['avg-score']])
     ras = max([parsed_data[r1]['avg-score'], parsed_data[r2]['avg-score'], parsed_data[r3]['avg-score']]) + min([parsed_data[r1]['avg-score'], parsed_data[r2]['avg-score'], parsed_data[r3]['avg-score']])
 
+    # blue average score
+    # blue average foul
+
     baf = max([parsed_data[b1]['avg-fouls'], parsed_data[b2]['avg-fouls'], parsed_data[b3]['avg-fouls']]) + min([parsed_data[b1]['avg-fouls'], parsed_data[b2]['avg-fouls'], parsed_data[b3]['avg-fouls']])
     raf = max([parsed_data[r1]['avg-fouls'], parsed_data[r2]['avg-fouls'], parsed_data[r3]['avg-fouls']]) + min([parsed_data[r1]['avg-fouls'], parsed_data[r2]['avg-fouls'], parsed_data[r3]['avg-fouls']])
+
+    # stdev of all of the alliance partners in the simulation (all averaged) FOR TELEOP
 
     batstd = avg([parsed_data[b1]['std-teleop'], parsed_data[b2]['std-teleop'], parsed_data[b3]['std-teleop']])
     ratstd = avg([parsed_data[r1]['std-teleop'], parsed_data[r2]['std-teleop'], parsed_data[r3]['std-teleop']])
 
-    bmstd = min([parsed_data[b1]['std-score'], parsed_data[b2]['std-score'], parsed_data[b3]['std-score']])
+    # off of whole score, min of stdev of the whole score for any team in the blue
+    
+    # stdev of score in every match played: parsed_data[b1]['std-score']
+    
+    bmstd = min([parsed_data[b1]['std-score'], parsed_data[b2]['std-score'], parsed_data[b3]['std-score']]) # most blue consistent team
     rmstd = min([parsed_data[r1]['std-score'], parsed_data[r2]['std-score'], parsed_data[r3]['std-score']])
 
-    bmxstd = max([parsed_data[b1]['std-score'], parsed_data[b2]['std-score'], parsed_data[b3]['std-score']])
+    bmxstd = max([parsed_data[b1]['std-score'], parsed_data[b2]['std-score'], parsed_data[b3]['std-score']]) # least blue consistent team
     rmxstd = max([parsed_data[r1]['std-score'], parsed_data[r2]['std-score'], parsed_data[r3]['std-score']])
 
-    bastd = std([parsed_data[b1]['std-score'], parsed_data[b2]['std-score'], parsed_data[b3]['std-score']])
+    bastd = std([parsed_data[b1]['std-score'], parsed_data[b2]['std-score'], parsed_data[b3]['std-score']]) # stdev of consistences...
     rastd = std([parsed_data[r1]['std-score'], parsed_data[r2]['std-score'], parsed_data[r3]['std-score']])
 
     brstd = bmxstd - bmstd
@@ -401,7 +410,7 @@ def tpw_predict(b1, b2, b3, r1, r2, r3):
     bastd = avg([parsed_tpw_data[b1]['tpw-std'], parsed_tpw_data[b2]['tpw-std'], parsed_tpw_data[b3]['tpw-std']])
     rastd = avg([parsed_tpw_data[r1]['tpw-std'], parsed_tpw_data[r2]['tpw-std'], parsed_tpw_data[r3]['tpw-std']])
 
-    brstd = bmxstd - bmstd
+    brstd = bmxstd - bmstd # subtract worst standard deviation from best standard deviation, range of consistency
     rrstd = rmxstd - rmstd
 
     baat = avg([parsed_tpw_data[b1]['avg-tele'] + parsed_tpw_data[b1]['avg-auto'], parsed_tpw_data[b2]['avg-tele'] + parsed_tpw_data[b2]['avg-auto'], parsed_tpw_data[b3]['avg-tele'] + parsed_tpw_data[b3]['avg-auto']])
@@ -427,7 +436,10 @@ def tpw_predict(b1, b2, b3, r1, r2, r3):
 
     bluescore = baat + bas - bastd - brstd
     redscore = raat + ras - rastd - rrstd
-
+    
+    # bmix mix of averages and stdevs, for 5 star qualitative ratings
+    # bluescore estimates point score
+    
     if bluescore > redscore:
         return {'winner':'blue', 'blue-predicted': bluescore, 'red-predicted': redscore, 'bp': bmix, 'rp': rmix, 'blue-percent':bluescore/(bluescore + redscore), 'red-percent':redscore/(bluescore + redscore)}
     else:
@@ -454,7 +466,7 @@ def predict(b1, b2, b3, r1, r2, r3):
         rs2 = tpw["red-predicted"]
         rs3 = tpw["rp"]
 
-        bp = bs1 + bs2 + 5*(bs3 - rs3)
+        bp = bs1 + bs2 + 5*(bs3 - rs3) # look into 5
         rp = rs1 + rs2 + 5*(rs3 - bs3)
     else:
         bp = tpw["blue-predicted"]
