@@ -1745,8 +1745,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         return config;
                                                     };
                                                     var chart_config${ind} = ${JSON.stringify(
-                                                        config
-                                                    )};
+                                            config
+                                        )};
                                                     chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
                                                     let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
                                                     if (chart_config${ind}.type == "line") {
