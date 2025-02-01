@@ -2445,7 +2445,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
                             element.querySelector(".prediction").style.display =
-                                "block";
+                                "";
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
