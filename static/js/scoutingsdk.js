@@ -3134,7 +3134,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 					`;
                     })
                     .join("")}
-				<button>Save/Close</button>
+				<button>Save</button>
 			`;
             element.querySelector(".location-popup > button").onclick =
                 async () => {
@@ -3293,7 +3293,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 };
             }
             element.querySelector(".overlay").style.display = "block";
-            element.querySelector(".location-popup").style.display = "block";
+            element.querySelector(".location-popup").style.display = "flex";
         });
     };
 
