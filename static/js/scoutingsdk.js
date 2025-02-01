@@ -1729,7 +1729,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             element.querySelector(
                                 ".analysis .graphs"
                             ).innerHTML = data.body.display
-                                .map((item) => {
+                                .map((item, ind) => {
                                     if (item.type == "html") {
                                         return `<h2>${item.label}</h2>${item.value}`;
                                     } else if (item.type == "config") {
@@ -1738,10 +1738,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         console.log(config);
                                         return `<canvas id="${id}">
                                                 <script>
-                                                    var chart_config = ${JSON.stringify(
+                                                    const handleAR = (config) => {
+                                                        if (window.innerWidth < 515) config.options.aspectRatio = 1;
+                                                        else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
+                                                        else config.options.aspectRatio = 2;
+                                                        return config;
+                                                    };
+                                                    var chart_config${ind} = ${JSON.stringify(
                                                         config
                                                     )};
-                                                    new Chart(document.getElementById("${id}").getContext("2d"), chart_config);
+                                                    chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                    let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                    if (chart_config${ind}.type == "line") {
+                                                        window.addEventListener("resize", () => {
+                                                            chart_config${ind} = handleAR(chart_config${ind});
+                                                            chart${ind}.destroy();
+                                                            chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                        });
+                                                    }
                                                 </script>
                                             </canvas>`;
                                     }
@@ -2032,7 +2046,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ]
                         .filter((teamNumber) => teamNumber != "")
                         .join(",");
-                    element.querySelector(".comparison").innerHTML = defComparison;
+                    element.querySelector(".comparison").innerHTML =
+                        defComparison;
                     try {
                         let data = await (
                             await fetch(
@@ -2081,17 +2096,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         data.winner ==
                                                             "blue") ||
                                                     (!data.win &&
-                                                        data.winner ==
-                                                            "red")
+                                                        data.winner == "red")
                                                 ) {
                                                     firstListed = "blue";
                                                 }
                                                 return `<h3>Match ${
                                                     data.match
                                                 } (Predicted ${
-                                                    data.win
-                                                        ? "WIN"
-                                                        : "LOSS"
+                                                    data.win ? "WIN" : "LOSS"
                                                 })</h3>
                                                 <div class="prediction-bar">
                                                     <div class="prediction-bar-${
@@ -2139,10 +2151,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 .map(
                                                     (cell) =>
                                                         `<th>${cell
-                                                            .replaceAll(
-                                                                '"',
-                                                                ""
-                                                            )
+                                                            .replaceAll('"', "")
                                                             .replaceAll(
                                                                 "\\n",
                                                                 "<br>"

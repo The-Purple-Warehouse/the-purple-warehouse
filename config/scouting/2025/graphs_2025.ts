@@ -53,8 +53,20 @@ interface chartConfig {
                 display: boolean;
                 text: string;
             };
+            legend?: {
+                display: boolean;
+                position: string;
+                labels?: {
+                    font: {
+                        size: number;
+                    };
+                };
+            }
         };
+        aspectRatio?: number;
+        onResize?: (chart: any, size: any) => void;
         responsive: boolean;
+        maintainAspectRatio?: boolean;
         scales?: {
             x?: {
                 title: {
@@ -67,6 +79,13 @@ interface chartConfig {
                     display: boolean;
                     text: string;
                 };
+                ticks?: {
+                    stepSize?: number;
+                    min?: number;
+                    maxTicksLimit?: number;
+                };
+                suggestedMin?: number;
+                suggestedMax?: number;
                 beginAtZero: boolean;
             };
             r?: {
@@ -336,7 +355,7 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             Missed: mavg,
             "Total Coral": cototal,
             "Total Algae": altotal,
-            "Total Shots": total,
+            "Total Shots": total
         });
     }
     return gamePieces;
@@ -350,8 +369,7 @@ function radarChartSpread(
         "auto points",
         "teleop points",
         "cage points",
-        "total points",
-        "auto points"
+        "total points"
     ];
     const datasets = teams.map((team) => {
         const t = parsed_data[team];
@@ -362,8 +380,7 @@ function radarChartSpread(
             t["avg-auto"],
             t["avg-tele"],
             t["avg-cage"],
-            t["tpw-score"],
-            t["avg-auto"]
+            t["tpw-score"]
         ];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
@@ -438,7 +455,6 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
         "uptime",
         "speed",
         "intake",
-        "auto pts"
     ];
     let maxes = getBest(parsed_data).map((value) =>
         value === 0 ? 1e-9 : value
@@ -457,8 +473,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
             t["avg-stab"] / maxes[5],
             t["avg-upt"] / maxes[6],
             t["avg-speed"] / maxes[7],
-            t["avg-inta"] / maxes[8],
-            t["avg-auto"] / maxes[0]
+            t["avg-inta"] / maxes[8]
         ];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
@@ -557,8 +572,19 @@ function overTimeAlgaeChart(
                 title: {
                     display: true,
                     text: `Algae Scoring Over Time for Team ${team}`
-                }
+                },
+                legend: {
+                    display: true,
+                    position: "top",
+                    labels: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
             },
+            aspectRatio: 2,
+            maintainAspectRatio: true,
             responsive: true,
             scales: {
                 x: {
@@ -647,8 +673,19 @@ function overTimeCoralChart(
                 title: {
                     display: true,
                     text: `Coral Scoring Over Time for Team ${team}`
+                },
+                legend: {
+                    display: true,
+                    position: "top",
+                    labels: {
+                        font: {
+                            size: 12
+                        }
+                    }
                 }
             },
+            aspectRatio: 2,
+            maintainAspectRatio: true,
             responsive: true,
             scales: {
                 x: {
