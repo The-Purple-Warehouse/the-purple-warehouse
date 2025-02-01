@@ -1072,7 +1072,7 @@ header .icon-button .send-container svg {
 }
 
 .data-window:has(> h3.red) {
-    padding: 10px 40px 10px 40px;
+    padding: 10px clamp(0px, 5dvw, 40px) 10px clamp(0px, 5dvw, 40px);
 }
 
 .overlay {

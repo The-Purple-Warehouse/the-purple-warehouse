@@ -53,7 +53,18 @@ interface chartConfig {
                 display: boolean;
                 text: string;
             };
+            legend?: {
+                display: boolean;
+                position: string;
+                labels?: {
+                    font: {
+                        size: number;
+                    };
+                };
+            }
         };
+        aspectRatio?: number;
+        onResize?: (chart: any, size: any) => void;
         responsive: boolean;
         maintainAspectRatio?: boolean;
         scales?: {
@@ -71,7 +82,10 @@ interface chartConfig {
                 ticks?: {
                     stepSize?: number;
                     min?: number;
-                }
+                    maxTicksLimit?: number;
+                };
+                suggestedMin?: number;
+                suggestedMax?: number;
                 beginAtZero: boolean;
             };
             r?: {
@@ -558,8 +572,19 @@ function overTimeAlgaeChart(
                 title: {
                     display: true,
                     text: `Algae Scoring Over Time for Team ${team}`
-                }
+                },
+                legend: {
+                    display: true,
+                    position: "top",
+                    labels: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
             },
+            aspectRatio: 2,
+            maintainAspectRatio: true,
             responsive: true,
             scales: {
                 x: {
@@ -648,8 +673,19 @@ function overTimeCoralChart(
                 title: {
                     display: true,
                     text: `Coral Scoring Over Time for Team ${team}`
+                },
+                legend: {
+                    display: true,
+                    position: "top",
+                    labels: {
+                        font: {
+                            size: 12
+                        }
+                    }
                 }
             },
+            aspectRatio: 2,
+            maintainAspectRatio: true,
             responsive: true,
             scales: {
                 x: {
