@@ -1355,6 +1355,10 @@ header .icon-button .send-container svg {
     gap: 10px;
 }
 
+.data-window .prediction {
+    width: 100%;
+}
+
 .data-window .analysis > .graphs,
 .data-window .comparison > .graphs {
     width: clamp(300px, 90vw, 900px);

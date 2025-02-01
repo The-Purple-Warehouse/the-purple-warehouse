@@ -256,21 +256,21 @@ export function layout() {
                                                             arr.length > 18 ||
                                                             i + 12 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
                                                             arr.length > 12 ||
                                                             i + 6 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
                                                             arr.length > 6 ||
                                                             i < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;"></div>`;
                                                         }
                                                     }
                                                     return "";
@@ -541,21 +541,21 @@ export function layout() {
                                                             arr.length > 18 ||
                                                             i + 12 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
                                                             arr.length > 12 ||
                                                             i + 6 < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;">
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
                                                                 <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
                                                             </div>`;
                                                         } else if (
                                                             arr.length > 6 ||
                                                             i < arr.length
                                                         ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: calc(2px + 4.66vw); height: calc(2px + 4.66vw); background-color: rgba(0, 0, 0, 0); border: calc(2px + 0.66vw) solid ${colors[0]}; border-radius: 50%;"></div>`;
+                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;"></div>`;
                                                         }
                                                     }
                                                     return "";
