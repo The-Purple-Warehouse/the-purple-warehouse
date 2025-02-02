@@ -1711,18 +1711,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } catch (err) {}
                     hideOverlay();
                 };
-            element.querySelectorAll(".analysis-options > nav > a").forEach((el) => {
-                el.onclick = () => {
-                    element.querySelectorAll(".analysis-options > nav > a").forEach((el) => {
-                        el.classList.remove("active");
-                    });
-                    element.querySelectorAll(".analysis-content > div").forEach((el) => {
-                        el.classList.add("none");
-                    });
-                    el.classList.add("active");
-                    element.querySelector(`.analysis-content > .${el.getAttribute("data-refer")}`).classList.remove("none");
-                };
-            });
+            element
+                .querySelectorAll(".analysis-options > nav > a")
+                .forEach((el) => {
+                    el.onclick = () => {
+                        element
+                            .querySelectorAll(".analysis-options > nav > a")
+                            .forEach((el) => {
+                                el.classList.remove("active");
+                            });
+                        element
+                            .querySelectorAll(".analysis-content > div")
+                            .forEach((el) => {
+                                el.classList.add("none");
+                            });
+                        el.classList.add("active");
+                        element
+                            .querySelector(
+                                `.analysis-content > .${el.getAttribute(
+                                    "data-refer"
+                                )}`
+                            )
+                            .classList.remove("none");
+                    };
+                });
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
@@ -1735,7 +1747,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
-                    element.querySelector(".analysis-content").innerHTML = defAnalysis;
+                    element.querySelector(".analysis-content").innerHTML =
+                        defAnalysis;
                     try {
                         let data = await (
                             await fetch(
@@ -1761,22 +1774,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             console.log(config);
                                             return `<canvas id="${id}">
                                                     <script>
-                                                        const handleAR = (config) => {
+                                                        const parse = (config) => {
                                                             if (window.innerWidth < 515) config.options.aspectRatio = 1;
                                                             else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
                                                             else config.options.aspectRatio = 2;
+
+                                                            if (window.innerWidth <= 500 && config.type == "boxplot") {
+                                                                config.options.plugins.tooltip.bodyFont.size = 6;
+                                                            }
+
                                                             return config;
                                                         };
-                                                        var chart_config${ind} = ${JSON.stringify(
-                                                config
-                                            )};
-                                                        chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                        var chart_config${ind} = ${JSON.stringify(config)};
+                                                        const resizetypes = ["line", "boxplot"];
+                                                        chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
-                                                        if (chart_config${ind}.type == "line") {
+                                                        if (resizetypes.includes(chart_config${ind}.type)) {
                                                             window.addEventListener("resize", () => {
-                                                                chart_config${ind} = handleAR(chart_config${ind});
-                                                                chart${ind}.destroy();
-                                                                chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                                chart_config${ind} = parse(chart_config${ind});
+                                                                chart${ind}.update();
                                                             });
                                                         }
                                                     </script>
@@ -1799,22 +1815,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             console.log(config);
                                             return `<canvas id="${id}">
                                                     <script>
-                                                        const handleAR = (config) => {
+                                                        const parse = (config) => {
                                                             if (window.innerWidth < 515) config.options.aspectRatio = 1;
                                                             else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
                                                             else config.options.aspectRatio = 2;
+
+                                                            if (window.innerWidth <= 500 && config.type == "boxplot") {
+                                                                config.options.plugins.tooltip.bodyFont.size = 6;
+                                                            }
+
                                                             return config;
                                                         };
                                                         var chart_config${ind} = ${JSON.stringify(
                                                 config
                                             )};
-                                                        chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                        const resizetypes = ["line", "boxplot"];
+                                                        chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
-                                                        if (chart_config${ind}.type == "line") {
+                                                        if (resizetypes.includes(chart_config${ind}.type)) {
                                                             window.addEventListener("resize", () => {
-                                                                chart_config${ind} = handleAR(chart_config${ind});
-                                                                chart${ind}.destroy();
-                                                                chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                                chart_config${ind} = parse(chart_config${ind});
+                                                                chart${ind}.update();
                                                             });
                                                         }
                                                     </script>
@@ -1842,7 +1863,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 data.winner ==
                                                                     "red")
                                                         ) {
-                                                            firstListed = "blue";
+                                                            firstListed =
+                                                                "blue";
                                                         }
                                                         return `<h3>Match ${
                                                             data.match
@@ -1853,29 +1875,35 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         })</h3>
                                                         <div class="prediction-bar">
                                                             <div class="prediction-bar-${
-                                                                firstListed == "red"
+                                                                firstListed ==
+                                                                "red"
                                                                     ? "red"
                                                                     : "blue"
                                                             }" style="width: calc(${
                                                             firstListed == "red"
                                                                 ? data.red * 100
-                                                                : data.blue * 100
+                                                                : data.blue *
+                                                                  100
                                                         }% - 2px);"><p>${Math.round(
                                                             firstListed == "red"
                                                                 ? data.red * 100
-                                                                : data.blue * 100
+                                                                : data.blue *
+                                                                      100
                                                         )}%</p></div>
                                                             <div class="prediction-bar-${
-                                                                firstListed == "red"
+                                                                firstListed ==
+                                                                "red"
                                                                     ? "blue"
                                                                     : "red"
                                                             }" style="width: calc(${
                                                             firstListed == "red"
-                                                                ? data.blue * 100
+                                                                ? data.blue *
+                                                                  100
                                                                 : data.red * 100
                                                         }% - 3px);"><p>${Math.round(
                                                             firstListed == "red"
-                                                                ? data.blue * 100
+                                                                ? data.blue *
+                                                                      100
                                                                 : data.red * 100
                                                         )}%</p></div>
                                                         </div>`;
@@ -1928,7 +1956,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                             "<br>"
                                                                         )}</td>`
                                                                 )
-                                                                .join("")}</tr>`;
+                                                                .join(
+                                                                    ""
+                                                                )}</tr>`;
                                                         })
                                                         .join("")}
                                                 </tbody>

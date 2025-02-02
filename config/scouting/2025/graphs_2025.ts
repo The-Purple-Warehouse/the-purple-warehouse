@@ -30,6 +30,12 @@ interface shotSummary {
     Processor: number;
     Net: number;
     Missed: number;
+    MissedL1: number;
+    MissedL2: number;
+    MissedL3: number;
+    MissedL4: number;
+    MissedProcessor: number;
+    MissedNet: number;
     "Total Coral": number;
     "Total Algae": number;
     "Total Shots": number;
@@ -41,10 +47,10 @@ interface chartConfig {
         labels: string[];
         datasets: {
             label: string;
-            data: number[];
-            backgroundColor: string | string[];
-            borderColor: string | string[];
-            borderWidth: number;
+            data: number[] | number[][];
+            backgroundColor?: string | string[];
+            borderColor?: string | string[];
+            borderWidth?: number;
         }[];
     };
     options: {
@@ -62,6 +68,14 @@ interface chartConfig {
                     };
                 };
             };
+            tooltip?: {
+                bodyFont?: {
+                    size: number;
+                };
+                titleFont?: {
+                    size: number;
+                };
+            }
         };
         aspectRatio?: number;
         onResize?: (chart: any, size: any) => void;
@@ -84,6 +98,8 @@ interface chartConfig {
                     min?: number;
                     maxTicksLimit?: number;
                 };
+                min?: number;
+                max?: number;
                 suggestedMin?: number;
                 suggestedMax?: number;
                 beginAtZero: boolean;
@@ -291,6 +307,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
         const processor: number[] = [];
         const net: number[] = [];
         const missed: number[] = [];
+        const missednet: number[] = [];
+        const missedprocessor: number[] = [];
+        const missedl1: number[] = [];
+        const missedl2: number[] = [];
+        const missedl3: number[] = [];
+        const missedl4: number[] = [];
         for (const x in data.matches[match]) {
             let l1 = 0,
                 l2 = 0,
@@ -298,7 +320,13 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
                 l4 = 0,
                 pr = 0,
                 nt = 0,
-                mi = 0;
+                mi = 0,
+                ntmiss = 0,
+                prmiss = 0,
+                l1miss = 0,
+                l2miss = 0,
+                l3miss = 0,
+                l4miss = 0;
             for (const e of data.matches[match][x]) {
                 switch (e) {
                     case "asn":
@@ -319,10 +347,29 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
                     case "cs4":
                         l4 += 1;
                         break;
-                    default:
-                        if (e.includes("m")) {
-                            mi += 1;
-                        }
+                    case "amn":
+                        ntmiss += 1;
+                        mi += 1;
+                        break;
+                    case "amp":
+                        prmiss += 1;
+                        mi += 1;
+                        break;
+                    case "cm1":
+                        l1miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm2":
+                        l2miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm3":
+                        l3miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm4":
+                        l4miss += 1;
+                        mi += 1;
                         break;
                 }
             }
@@ -333,6 +380,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             processor.push(pr);
             net.push(nt);
             missed.push(mi);
+            missednet.push(ntmiss);
+            missedprocessor.push(prmiss);
+            missedl1.push(l1miss);
+            missedl2.push(l2miss);
+            missedl3.push(l3miss);
+            missedl4.push(l4miss);
         }
         const l1avg = avg(level1);
         const l2avg = avg(level2);
@@ -341,6 +394,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
         const pavg = avg(processor);
         const navg = avg(net);
         const mavg = avg(missed);
+        const mnetavg = avg(missednet);
+        const mpravg = avg(missedprocessor);
+        const ml1avg = avg(missedl1);
+        const ml2avg = avg(missedl2);
+        const ml3avg = avg(missedl3);
+        const ml4avg = avg(missedl4);
         const cototal = l1avg + l2avg + l3avg + l4avg + mavg;
         const altotal = pavg + navg + mavg;
         const total = l1avg + l2avg + l3avg + l4avg + pavg + navg + mavg;
@@ -353,6 +412,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             Processor: pavg,
             Net: navg,
             Missed: mavg,
+            MissedL1: ml1avg,
+            MissedL2: ml2avg,
+            MissedL3: ml3avg,
+            MissedL4: ml4avg,
+            MissedProcessor: mpravg,
+            MissedNet: mnetavg,
             "Total Coral": cototal,
             "Total Algae": altotal,
             "Total Shots": total
@@ -525,7 +590,7 @@ function overTimeAlgaeChart(
     parsed_data: parsedTPWData,
     team: string
 ): chartConfig {
-    const dataS = shotSummary(parsed_data, team);
+    const dataS: shotSummary[] = shotSummary(parsed_data, team);
     const labels = dataS.map((x) => x.Match);
     const datasets = [
         {
@@ -545,8 +610,8 @@ function overTimeAlgaeChart(
             fill: false
         },
         {
-            label: "Missed",
-            data: dataS.map((x) => x.Missed),
+            label: "Missed Algae",
+            data: dataS.map((x) => x.MissedNet + x.MissedProcessor),
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 2,
@@ -645,8 +710,8 @@ function overTimeCoralChart(
             fill: false
         },
         {
-            label: "Missed",
-            data: dataS.map((x) => x.Missed),
+            label: "Missed Coral",
+            data: dataS.map((x) => x.MissedL1 + x.MissedL2 + x.MissedL3 + x.MissedL4),
             backgroundColor: "rgba(153, 102, 255, 0.2)",
             borderColor: "rgba(153, 102, 255, 1)",
             borderWidth: 2,
@@ -706,15 +771,18 @@ function overTimeCoralChart(
     };
 }
 
-function scoreProportions(parsed_data: parsedTPWData, team: string): chartConfig {
+function scoreProportions(
+    parsed_data: parsedTPWData,
+    team: string
+): chartConfig {
     const dataS = shotSummary(parsed_data, team);
     const avgs = {
-        L1: avg(dataS.map(x => x.L1)),
-        L2: avg(dataS.map(x => x.L2)),
-        L3: avg(dataS.map(x => x.L3)),
-        L4: avg(dataS.map(x => x.L4)),
-        Processor: avg(dataS.map(x => x.Processor)),
-        Net: avg(dataS.map(x => x.Net))
+        L1: avg(dataS.map((x) => x.L1)),
+        L2: avg(dataS.map((x) => x.L2)),
+        L3: avg(dataS.map((x) => x.L3)),
+        L4: avg(dataS.map((x) => x.L4)),
+        Processor: avg(dataS.map((x) => x.Processor)),
+        Net: avg(dataS.map((x) => x.Net))
     };
     const labels = Object.keys(avgs);
     const data = Object.values(avgs);
@@ -767,6 +835,72 @@ function scoreProportions(parsed_data: parsedTPWData, team: string): chartConfig
     };
 }
 
+function shotAccuracy(
+    parsed_data: parsedTPWData,
+    team: string
+): chartConfig {
+    const dataS: shotSummary[] = shotSummary(parsed_data, team);
+    const accuracy = (successful: number, missed: number): number => {
+        const total = successful + missed;
+        return total === 0 ? 0 : (successful / total) * 100;
+    };
+    const accuracyL1 = dataS.map((x) => accuracy(x.L1, x.MissedL1));
+    const accuracyL2 = dataS.map((x) => accuracy(x.L2, x.MissedL2));
+    const accuracyL3 = dataS.map((x) => accuracy(x.L3, x.MissedL3));
+    const accuracyL4 = dataS.map((x) => accuracy(x.L4, x.MissedL4));
+    const accuracyProcessor = dataS.map((x) => accuracy(x.Processor, x.MissedProcessor));
+    const accuracyNet = dataS.map((x) => accuracy(x.Net, x.MissedNet));
+    return {
+        type: "boxplot",
+        data: {
+            labels: ["L1", "L2", "L3", "L4", "Processor", "Net"],
+            datasets: [
+                {
+                    label: "1072",
+                    data: [
+                        accuracyL1,
+                        accuracyL2,
+                        accuracyL3,
+                        accuracyL4,
+                        accuracyProcessor,
+                        accuracyNet
+                    ]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Shot Accuracy Distribution for Team ${team}`
+                },
+                tooltip: {
+                    bodyFont: {
+                        size: 10
+                    },
+                    titleFont: {
+                        size: 14
+                    }
+                }
+            },
+            aspectRatio: 2,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: "Accuracy %"
+                    }
+                }
+            }
+        }
+    };
+}
+
 export function getGraph(
     mode: number,
     parsed_data: parsedRow[],
@@ -776,7 +910,7 @@ export function getGraph(
     if (array_modes.includes(mode))
         teamS = typeof teamS == "string" ? [teamS] : teamS;
 
-    const allowed_modes = typeof teamS == "string" ? [0, 3, 4] : [1, 2];
+    const allowed_modes = typeof teamS == "string" ? [0, 3, 4, 5] : [1, 2];
     if (!allowed_modes.includes(mode)) {
         throw new Error(`Invalid mode: ${mode} in getGraph func`);
     }
@@ -786,4 +920,5 @@ export function getGraph(
     if (mode == 2) return radarChartCTB(tpw_data, teamS as string[]);
     if (mode == 3) return overTimeCoralChart(tpw_data, teamS as string);
     if (mode == 4) return scoreProportions(tpw_data, teamS as string);
+    if (mode == 5) return shotAccuracy(tpw_data, teamS as string);
 }

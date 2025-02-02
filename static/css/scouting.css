@@ -642,6 +642,7 @@ header .icon-button .send-container svg {
 .match-window .component-layout-rows {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .match-window:has([data-page="4"]) .component-layout-rows {
@@ -1213,6 +1214,7 @@ header .icon-button .send-container svg {
     position: relative;
     font-size: 1.25em;
     margin: 0.5rem 0;
+    min-width: 150px;
 }
 
 .status-box::before,
@@ -1321,27 +1323,28 @@ header .icon-button .send-container svg {
     display: flex;
     justify-content: space-around;
     align-items: center;
-	height: 45px;
-	background-color: #fefefe;
-	border-radius: var(--standard-border-radius);
+    height: 45px;
+    background-color: #fefefe;
+    border-radius: var(--standard-border-radius);
     overflow: hidden;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border: 1px solid #00000052;
-	font-size: 0;
+    font-size: 0;
 }
 
 .data-window .analysis-options nav a {
-	line-height: 45px;
-	height: 100%;
-	font-size: 15px;
-	display: inline-block;
-	text-decoration: none;
-	text-align: center;
-	color: black;
-	cursor: pointer;
-	width: 90px;
+    line-height: 45px;
+    height: 100%;
+    font-size: 15px;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    width: 90px;
     user-select: none;
-    transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out,
+        color 0.2s ease-in-out;
 }
 
 @media (max-width: 515px) {
@@ -1364,7 +1367,7 @@ header .icon-button .send-container svg {
 
 .data-window .analysis-options nav a.active {
     color: white;
-	background-color: var(--primaryBackgroundColor);
+    background-color: var(--primaryBackgroundColor);
 }
 
 .data-window .prediction {
