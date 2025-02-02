@@ -42,8 +42,8 @@ interface chartConfig {
         datasets: {
             label: string;
             data: number[];
-            backgroundColor: string;
-            borderColor: string;
+            backgroundColor: string | string[];
+            borderColor: string | string[];
             borderWidth: number;
         }[];
     };
@@ -706,6 +706,67 @@ function overTimeCoralChart(
     };
 }
 
+function scoreProportions(parsed_data: parsedTPWData, team: string): chartConfig {
+    const dataS = shotSummary(parsed_data, team);
+    const avgs = {
+        L1: avg(dataS.map(x => x.L1)),
+        L2: avg(dataS.map(x => x.L2)),
+        L3: avg(dataS.map(x => x.L3)),
+        L4: avg(dataS.map(x => x.L4)),
+        Processor: avg(dataS.map(x => x.Processor)),
+        Net: avg(dataS.map(x => x.Net))
+    };
+    const labels = Object.keys(avgs);
+    const data = Object.values(avgs);
+    return {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Scoring",
+                    data: data,
+                    backgroundColor: [
+                        "rgba(255, 99, 132, 0.5)",
+                        "rgba(54, 162, 235, 0.5)",
+                        "rgba(255, 206, 86, 0.5)",
+                        "rgba(75, 192, 192, 0.5)",
+                        "rgba(153, 102, 255, 0.5)",
+                        "rgba(255, 159, 64, 0.5)"
+                    ],
+                    borderColor: [
+                        "rgba(255, 99, 132, 1)",
+                        "rgba(54, 162, 235, 1)",
+                        "rgba(255, 206, 86, 1)",
+                        "rgba(75, 192, 192, 1)",
+                        "rgba(153, 102, 255, 1)",
+                        "rgba(255, 159, 64, 1)"
+                    ],
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Average Scoring Proportion for Team ${team}`
+                },
+                legend: {
+                    display: true,
+                    position: "top",
+                    labels: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            responsive: true
+        }
+    };
+}
+
 export function getGraph(
     mode: number,
     parsed_data: parsedRow[],
@@ -715,7 +776,7 @@ export function getGraph(
     if (array_modes.includes(mode))
         teamS = typeof teamS == "string" ? [teamS] : teamS;
 
-    const allowed_modes = typeof teamS == "string" ? [0, 3] : [1, 2];
+    const allowed_modes = typeof teamS == "string" ? [0, 3, 4] : [1, 2];
     if (!allowed_modes.includes(mode)) {
         throw new Error(`Invalid mode: ${mode} in getGraph func`);
     }
@@ -724,4 +785,5 @@ export function getGraph(
     if (mode == 1) return radarChartSpread(tpw_data, teamS as string[]);
     if (mode == 2) return radarChartCTB(tpw_data, teamS as string[]);
     if (mode == 3) return overTimeCoralChart(tpw_data, teamS as string);
+    if (mode == 4) return scoreProportions(tpw_data, teamS as string);
 }

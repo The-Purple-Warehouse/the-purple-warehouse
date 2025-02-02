@@ -1492,15 +1492,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         </tbody>
                     </table>
                     <div class="analysis" style="display: none;">
+                        <div class="analysis-options">
+                            <nav>
+                                <a class="active" data-refer="score-graphs">Scoring</a>
+                                <a data-refer="overall-graphs">Overall</a>
+                                <a data-refer="predictions">Predictions</a>
+                                <a data-refer="rankings">Rankings</a>
+                            </nav>
+                        </div>
+                        <div class="analysis-content"></div>
                     </div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
             `;
             let overlayShown = false;
             const defAnalysis = `
-                <div class="graphs"></div>
-                <div class="predictions"></div>
-                <div class="rankings"></div>
+                <div class="score-graphs"></div>
+                <div class="none overall-graphs"></div>
+                <div class="none predictions"></div>
+                <div class="none rankings"></div>
             `;
             function showOverlay() {
                 overlayShown = true;
@@ -1701,6 +1711,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } catch (err) {}
                     hideOverlay();
                 };
+            element.querySelectorAll(".analysis-options > nav > a").forEach((el) => {
+                el.onclick = () => {
+                    element.querySelectorAll(".analysis-options > nav > a").forEach((el) => {
+                        el.classList.remove("active");
+                    });
+                    element.querySelectorAll(".analysis-content > div").forEach((el) => {
+                        el.classList.add("none");
+                    });
+                    el.classList.add("active");
+                    element.querySelector(`.analysis-content > .${el.getAttribute("data-refer")}`).classList.remove("none");
+                };
+            });
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
@@ -1713,7 +1735,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
-                    element.querySelector(".analysis").innerHTML = defAnalysis;
+                    element.querySelector(".analysis-content").innerHTML = defAnalysis;
                     try {
                         let data = await (
                             await fetch(
@@ -1725,149 +1747,193 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
                             let run = [];
-                            // graphs
+                            // score graphs
                             element.querySelector(
-                                ".analysis .graphs"
+                                ".analysis-content .score-graphs"
                             ).innerHTML = data.body.display
                                 .map((item, ind) => {
-                                    if (item.type == "html") {
-                                        return `<h2>${item.label}</h2>${item.value}`;
-                                    } else if (item.type == "config") {
-                                        const config = item.value;
-                                        const id = _this.random();
-                                        console.log(config);
-                                        return `<canvas id="${id}">
-                                                <script>
-                                                    const handleAR = (config) => {
-                                                        if (window.innerWidth < 515) config.options.aspectRatio = 1;
-                                                        else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
-                                                        else config.options.aspectRatio = 2;
-                                                        return config;
-                                                    };
-                                                    var chart_config${ind} = ${JSON.stringify(
-                                            config
-                                        )};
-                                                    chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
-                                                    let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
-                                                    if (chart_config${ind}.type == "line") {
-                                                        window.addEventListener("resize", () => {
-                                                            chart_config${ind} = handleAR(chart_config${ind});
-                                                            chart${ind}.destroy();
-                                                            chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
-                                                        });
-                                                    }
-                                                </script>
-                                            </canvas>`;
+                                    if (item.category == "score") {
+                                        if (item.type == "html") {
+                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        } else if (item.type == "config") {
+                                            const config = item.value;
+                                            const id = _this.random();
+                                            console.log(config);
+                                            return `<canvas id="${id}">
+                                                    <script>
+                                                        const handleAR = (config) => {
+                                                            if (window.innerWidth < 515) config.options.aspectRatio = 1;
+                                                            else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
+                                                            else config.options.aspectRatio = 2;
+                                                            return config;
+                                                        };
+                                                        var chart_config${ind} = ${JSON.stringify(
+                                                config
+                                            )};
+                                                        chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                        let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                        if (chart_config${ind}.type == "line") {
+                                                            window.addEventListener("resize", () => {
+                                                                chart_config${ind} = handleAR(chart_config${ind});
+                                                                chart${ind}.destroy();
+                                                                chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                            });
+                                                        }
+                                                    </script>
+                                                </canvas>`;
+                                        }
+                                    }
+                                })
+                                .join("");
+                            // overall graphs
+                            element.querySelector(
+                                ".analysis-content .overall-graphs"
+                            ).innerHTML = data.body.display
+                                .map((item, ind) => {
+                                    if (item.category == "overall") {
+                                        if (item.type == "html") {
+                                            return `<h2>${item.label}</h2>${item.value}`;
+                                        } else if (item.type == "config") {
+                                            const config = item.value;
+                                            const id = _this.random();
+                                            console.log(config);
+                                            return `<canvas id="${id}">
+                                                    <script>
+                                                        const handleAR = (config) => {
+                                                            if (window.innerWidth < 515) config.options.aspectRatio = 1;
+                                                            else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
+                                                            else config.options.aspectRatio = 2;
+                                                            return config;
+                                                        };
+                                                        var chart_config${ind} = ${JSON.stringify(
+                                                config
+                                            )};
+                                                        chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                        let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                        if (chart_config${ind}.type == "line") {
+                                                            window.addEventListener("resize", () => {
+                                                                chart_config${ind} = handleAR(chart_config${ind});
+                                                                chart${ind}.destroy();
+                                                                chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                            });
+                                                        }
+                                                    </script>
+                                                </canvas>`;
+                                        }
                                     }
                                 })
                                 .join("");
                             // predictions
                             element.querySelector(
-                                ".analysis .predictions"
+                                ".analysis-content .predictions"
                             ).innerHTML = data.body.display
                                 .map((item) => {
-                                    if (item.type == "predictions") {
-                                        return `<h2>${item.label}</h2>
-                                            ${item.values
-                                                .map((data) => {
-                                                    let firstListed = "red";
-                                                    if (
-                                                        (data.win &&
-                                                            data.winner ==
-                                                                "blue") ||
-                                                        (!data.win &&
-                                                            data.winner ==
-                                                                "red")
-                                                    ) {
-                                                        firstListed = "blue";
-                                                    }
-                                                    return `<h3>Match ${
-                                                        data.match
-                                                    } (Predicted ${
-                                                        data.win
-                                                            ? "WIN"
-                                                            : "LOSS"
-                                                    })</h3>
-                                                    <div class="prediction-bar">
-                                                        <div class="prediction-bar-${
+                                    if (item.category == "predict") {
+                                        if (item.type == "predictions") {
+                                            return `<h2>${item.label}</h2>
+                                                ${item.values
+                                                    .map((data) => {
+                                                        let firstListed = "red";
+                                                        if (
+                                                            (data.win &&
+                                                                data.winner ==
+                                                                    "blue") ||
+                                                            (!data.win &&
+                                                                data.winner ==
+                                                                    "red")
+                                                        ) {
+                                                            firstListed = "blue";
+                                                        }
+                                                        return `<h3>Match ${
+                                                            data.match
+                                                        } (Predicted ${
+                                                            data.win
+                                                                ? "WIN"
+                                                                : "LOSS"
+                                                        })</h3>
+                                                        <div class="prediction-bar">
+                                                            <div class="prediction-bar-${
+                                                                firstListed == "red"
+                                                                    ? "red"
+                                                                    : "blue"
+                                                            }" style="width: calc(${
                                                             firstListed == "red"
-                                                                ? "red"
-                                                                : "blue"
-                                                        }" style="width: calc(${
-                                                        firstListed == "red"
-                                                            ? data.red * 100
-                                                            : data.blue * 100
-                                                    }% - 2px);"><p>${Math.round(
-                                                        firstListed == "red"
-                                                            ? data.red * 100
-                                                            : data.blue * 100
-                                                    )}%</p></div>
-                                                        <div class="prediction-bar-${
+                                                                ? data.red * 100
+                                                                : data.blue * 100
+                                                        }% - 2px);"><p>${Math.round(
                                                             firstListed == "red"
-                                                                ? "blue"
-                                                                : "red"
-                                                        }" style="width: calc(${
-                                                        firstListed == "red"
-                                                            ? data.blue * 100
-                                                            : data.red * 100
-                                                    }% - 3px);"><p>${Math.round(
-                                                        firstListed == "red"
-                                                            ? data.blue * 100
-                                                            : data.red * 100
-                                                    )}%</p></div>
-                                                    </div>`;
-                                                })
-                                                .join("")}`;
+                                                                ? data.red * 100
+                                                                : data.blue * 100
+                                                        )}%</p></div>
+                                                            <div class="prediction-bar-${
+                                                                firstListed == "red"
+                                                                    ? "blue"
+                                                                    : "red"
+                                                            }" style="width: calc(${
+                                                            firstListed == "red"
+                                                                ? data.blue * 100
+                                                                : data.red * 100
+                                                        }% - 3px);"><p>${Math.round(
+                                                            firstListed == "red"
+                                                                ? data.blue * 100
+                                                                : data.red * 100
+                                                        )}%</p></div>
+                                                        </div>`;
+                                                    })
+                                                    .join("")}`;
+                                        }
                                     }
                                 })
                                 .join("");
                             // rankings
                             element.querySelector(
-                                ".analysis .rankings"
+                                ".analysis-content .rankings"
                             ).innerHTML = data.body.display
                                 .map((item) => {
-                                    if (item.type == "table") {
-                                        return `<h2>${item.label}</h2>
-                                        <table class="data-table">
-                                            <thead>
-                                                <tr>${item.values[0]
-                                                    .map(
-                                                        (cell) =>
-                                                            `<th>${cell
-                                                                .replaceAll(
-                                                                    '"',
-                                                                    ""
-                                                                )
-                                                                .replaceAll(
-                                                                    "\\n",
-                                                                    "<br>"
-                                                                )}</th>`
-                                                    )
-                                                    .join("")}</tr>
-                                            </thead>
-                                            <tbody>
-                                                ${item.values
-                                                    .slice(1)
-                                                    .map((data) => {
-                                                        return `<tr>${data
-                                                            .map(
-                                                                (cell) =>
-                                                                    `<td${
-                                                                        cell.includes(
-                                                                            `<b>${teamNumber}</b>`
-                                                                        )
-                                                                            ? ` style="background-color: yellow;"`
-                                                                            : ""
-                                                                    }>${cell.replaceAll(
+                                    if (item.category == "rank") {
+                                        if (item.type == "table") {
+                                            return `<h2>${item.label}</h2>
+                                            <table class="data-table">
+                                                <thead>
+                                                    <tr>${item.values[0]
+                                                        .map(
+                                                            (cell) =>
+                                                                `<th>${cell
+                                                                    .replaceAll(
+                                                                        '"',
+                                                                        ""
+                                                                    )
+                                                                    .replaceAll(
                                                                         "\\n",
                                                                         "<br>"
-                                                                    )}</td>`
-                                                            )
-                                                            .join("")}</tr>`;
-                                                    })
-                                                    .join("")}
-                                            </tbody>
-                                        </table>`;
+                                                                    )}</th>`
+                                                        )
+                                                        .join("")}</tr>
+                                                </thead>
+                                                <tbody>
+                                                    ${item.values
+                                                        .slice(1)
+                                                        .map((data) => {
+                                                            return `<tr>${data
+                                                                .map(
+                                                                    (cell) =>
+                                                                        `<td${
+                                                                            cell.includes(
+                                                                                `<b>${teamNumber}</b>`
+                                                                            )
+                                                                                ? ` style="background-color: yellow;"`
+                                                                                : ""
+                                                                        }>${cell.replaceAll(
+                                                                            "\\n",
+                                                                            "<br>"
+                                                                        )}</td>`
+                                                                )
+                                                                .join("")}</tr>`;
+                                                        })
+                                                        .join("")}
+                                                </tbody>
+                                            </table>`;
+                                        }
                                     }
                                 })
                                 .join("");
@@ -3134,7 +3200,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 					`;
                     })
                     .join("")}
-				<button>Save/Close</button>
+				<button>Save</button>
 			`;
             element.querySelector(".location-popup > button").onclick =
                 async () => {
@@ -3293,7 +3359,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 };
             }
             element.querySelector(".overlay").style.display = "block";
-            element.querySelector(".location-popup").style.display = "block";
+            element.querySelector(".location-popup").style.display = "flex";
         });
     };
 
