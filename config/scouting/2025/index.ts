@@ -1184,6 +1184,7 @@ async function syncAnalysisCache(event, teamNumber) {
         const rankings = computeRankings(allParsedData);
         const graph0 = getGraph(0, allParsedData, teamNumber);
         const graph3 = getGraph(3, allParsedData, teamNumber);
+        const graph4 = getGraph(4, allParsedData, teamNumber);
         const graph1 = getGraph(1, allParsedData, teamNumber);
         const graph2 = getGraph(2, allParsedData, teamNumber);
 
@@ -1280,31 +1281,43 @@ async function syncAnalysisCache(event, teamNumber) {
         }
         analyzed.push({
             type: "config",
+            category: "score",
             label: "Algae Scoring",
             value: graph0
         });
         analyzed.push({
             type: "config",
+            category: "score",
             label: "Coral Scoring",
             value: graph3
         });
         analyzed.push({
             type: "config",
+            category: "score",
+            label: "Score Proportion",
+            value: graph4
+        });
+        analyzed.push({
+            type: "config",
+            category: "overall",
             label: "Radar Chart<br>(Single Team)",
             value: graph1
         });
         analyzed.push({
             type: "config",
+            category: "overall",
             label: "Radar Chart<br>(Compared to Best Scores)",
             value: graph2
         });
         analyzed.push({
             type: "predictions",
+            category: "predict",
             label: "Predictions",
             values: predictions
         });
         analyzed.push({
             type: "table",
+            category: "rank",
             label: "Rankings",
             values: tableRankings
         });
