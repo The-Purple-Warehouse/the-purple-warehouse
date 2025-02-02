@@ -706,15 +706,18 @@ function overTimeCoralChart(
     };
 }
 
-function scoreProportions(parsed_data: parsedTPWData, team: string): chartConfig {
+function scoreProportions(
+    parsed_data: parsedTPWData,
+    team: string
+): chartConfig {
     const dataS = shotSummary(parsed_data, team);
     const avgs = {
-        L1: avg(dataS.map(x => x.L1)),
-        L2: avg(dataS.map(x => x.L2)),
-        L3: avg(dataS.map(x => x.L3)),
-        L4: avg(dataS.map(x => x.L4)),
-        Processor: avg(dataS.map(x => x.Processor)),
-        Net: avg(dataS.map(x => x.Net))
+        L1: avg(dataS.map((x) => x.L1)),
+        L2: avg(dataS.map((x) => x.L2)),
+        L3: avg(dataS.map((x) => x.L3)),
+        L4: avg(dataS.map((x) => x.L4)),
+        Processor: avg(dataS.map((x) => x.Processor)),
+        Net: avg(dataS.map((x) => x.Net))
     };
     const labels = Object.keys(avgs);
     const data = Object.values(avgs);

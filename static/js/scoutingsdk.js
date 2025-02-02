@@ -1711,18 +1711,30 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } catch (err) {}
                     hideOverlay();
                 };
-            element.querySelectorAll(".analysis-options > nav > a").forEach((el) => {
-                el.onclick = () => {
-                    element.querySelectorAll(".analysis-options > nav > a").forEach((el) => {
-                        el.classList.remove("active");
-                    });
-                    element.querySelectorAll(".analysis-content > div").forEach((el) => {
-                        el.classList.add("none");
-                    });
-                    el.classList.add("active");
-                    element.querySelector(`.analysis-content > .${el.getAttribute("data-refer")}`).classList.remove("none");
-                };
-            });
+            element
+                .querySelectorAll(".analysis-options > nav > a")
+                .forEach((el) => {
+                    el.onclick = () => {
+                        element
+                            .querySelectorAll(".analysis-options > nav > a")
+                            .forEach((el) => {
+                                el.classList.remove("active");
+                            });
+                        element
+                            .querySelectorAll(".analysis-content > div")
+                            .forEach((el) => {
+                                el.classList.add("none");
+                            });
+                        el.classList.add("active");
+                        element
+                            .querySelector(
+                                `.analysis-content > .${el.getAttribute(
+                                    "data-refer"
+                                )}`
+                            )
+                            .classList.remove("none");
+                    };
+                });
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
@@ -1735,7 +1747,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
-                    element.querySelector(".analysis-content").innerHTML = defAnalysis;
+                    element.querySelector(".analysis-content").innerHTML =
+                        defAnalysis;
                     try {
                         let data = await (
                             await fetch(
@@ -1842,7 +1855,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 data.winner ==
                                                                     "red")
                                                         ) {
-                                                            firstListed = "blue";
+                                                            firstListed =
+                                                                "blue";
                                                         }
                                                         return `<h3>Match ${
                                                             data.match
@@ -1853,29 +1867,35 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         })</h3>
                                                         <div class="prediction-bar">
                                                             <div class="prediction-bar-${
-                                                                firstListed == "red"
+                                                                firstListed ==
+                                                                "red"
                                                                     ? "red"
                                                                     : "blue"
                                                             }" style="width: calc(${
                                                             firstListed == "red"
                                                                 ? data.red * 100
-                                                                : data.blue * 100
+                                                                : data.blue *
+                                                                  100
                                                         }% - 2px);"><p>${Math.round(
                                                             firstListed == "red"
                                                                 ? data.red * 100
-                                                                : data.blue * 100
+                                                                : data.blue *
+                                                                      100
                                                         )}%</p></div>
                                                             <div class="prediction-bar-${
-                                                                firstListed == "red"
+                                                                firstListed ==
+                                                                "red"
                                                                     ? "blue"
                                                                     : "red"
                                                             }" style="width: calc(${
                                                             firstListed == "red"
-                                                                ? data.blue * 100
+                                                                ? data.blue *
+                                                                  100
                                                                 : data.red * 100
                                                         }% - 3px);"><p>${Math.round(
                                                             firstListed == "red"
-                                                                ? data.blue * 100
+                                                                ? data.blue *
+                                                                      100
                                                                 : data.red * 100
                                                         )}%</p></div>
                                                         </div>`;
@@ -1928,7 +1948,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                             "<br>"
                                                                         )}</td>`
                                                                 )
-                                                                .join("")}</tr>`;
+                                                                .join(
+                                                                    ""
+                                                                )}</tr>`;
                                                         })
                                                         .join("")}
                                                 </tbody>
