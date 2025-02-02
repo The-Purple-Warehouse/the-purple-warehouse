@@ -1185,6 +1185,7 @@ async function syncAnalysisCache(event, teamNumber) {
         const graph0 = getGraph(0, allParsedData, teamNumber);
         const graph3 = getGraph(3, allParsedData, teamNumber);
         const graph4 = getGraph(4, allParsedData, teamNumber);
+        const graph5 = getGraph(5, allParsedData, teamNumber);
         const graph1 = getGraph(1, allParsedData, teamNumber);
         const graph2 = getGraph(2, allParsedData, teamNumber);
 
@@ -1296,6 +1297,12 @@ async function syncAnalysisCache(event, teamNumber) {
             category: "score",
             label: "Score Proportion",
             value: graph4
+        });
+        analyzed.push({
+            type: "config",
+            category: "score",
+            label: "Shot Accuracy",
+            value: graph5
         });
         analyzed.push({
             type: "config",

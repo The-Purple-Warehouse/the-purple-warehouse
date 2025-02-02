@@ -47,10 +47,10 @@ interface chartConfig {
         labels: string[];
         datasets: {
             label: string;
-            data: number[];
-            backgroundColor: string | string[];
-            borderColor: string | string[];
-            borderWidth: number;
+            data: number[] | number[][];
+            backgroundColor?: string | string[];
+            borderColor?: string | string[];
+            borderWidth?: number;
         }[];
     };
     options: {
@@ -68,6 +68,14 @@ interface chartConfig {
                     };
                 };
             };
+            tooltip?: {
+                bodyFont?: {
+                    size: number;
+                };
+                titleFont?: {
+                    size: number;
+                };
+            }
         };
         aspectRatio?: number;
         onResize?: (chart: any, size: any) => void;
@@ -90,6 +98,8 @@ interface chartConfig {
                     min?: number;
                     maxTicksLimit?: number;
                 };
+                min?: number;
+                max?: number;
                 suggestedMin?: number;
                 suggestedMax?: number;
                 beginAtZero: boolean;
@@ -825,6 +835,72 @@ function scoreProportions(
     };
 }
 
+function shotAccuracy(
+    parsed_data: parsedTPWData,
+    team: string
+): chartConfig {
+    const dataS: shotSummary[] = shotSummary(parsed_data, team);
+    const accuracy = (successful: number, missed: number): number => {
+        const total = successful + missed;
+        return total === 0 ? 0 : (successful / total) * 100;
+    };
+    const accuracyL1 = dataS.map((x) => accuracy(x.L1, x.MissedL1));
+    const accuracyL2 = dataS.map((x) => accuracy(x.L2, x.MissedL2));
+    const accuracyL3 = dataS.map((x) => accuracy(x.L3, x.MissedL3));
+    const accuracyL4 = dataS.map((x) => accuracy(x.L4, x.MissedL4));
+    const accuracyProcessor = dataS.map((x) => accuracy(x.Processor, x.MissedProcessor));
+    const accuracyNet = dataS.map((x) => accuracy(x.Net, x.MissedNet));
+    return {
+        type: "boxplot",
+        data: {
+            labels: ["L1", "L2", "L3", "L4", "Processor", "Net"],
+            datasets: [
+                {
+                    label: "1072",
+                    data: [
+                        accuracyL1,
+                        accuracyL2,
+                        accuracyL3,
+                        accuracyL4,
+                        accuracyProcessor,
+                        accuracyNet
+                    ]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Shot Accuracy Distribution for Team ${team}`
+                },
+                tooltip: {
+                    bodyFont: {
+                        size: 10
+                    },
+                    titleFont: {
+                        size: 14
+                    }
+                }
+            },
+            aspectRatio: 2,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: "Accuracy %"
+                    }
+                }
+            }
+        }
+    };
+}
+
 export function getGraph(
     mode: number,
     parsed_data: parsedRow[],
@@ -834,7 +910,7 @@ export function getGraph(
     if (array_modes.includes(mode))
         teamS = typeof teamS == "string" ? [teamS] : teamS;
 
-    const allowed_modes = typeof teamS == "string" ? [0, 3, 4] : [1, 2];
+    const allowed_modes = typeof teamS == "string" ? [0, 3, 4, 5] : [1, 2];
     if (!allowed_modes.includes(mode)) {
         throw new Error(`Invalid mode: ${mode} in getGraph func`);
     }
@@ -844,4 +920,5 @@ export function getGraph(
     if (mode == 2) return radarChartCTB(tpw_data, teamS as string[]);
     if (mode == 3) return overTimeCoralChart(tpw_data, teamS as string);
     if (mode == 4) return scoreProportions(tpw_data, teamS as string);
+    if (mode == 5) return shotAccuracy(tpw_data, teamS as string);
 }

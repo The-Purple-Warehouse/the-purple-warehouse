@@ -1774,22 +1774,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             console.log(config);
                                             return `<canvas id="${id}">
                                                     <script>
-                                                        const handleAR = (config) => {
+                                                        const parse = (config) => {
                                                             if (window.innerWidth < 515) config.options.aspectRatio = 1;
                                                             else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
                                                             else config.options.aspectRatio = 2;
+
+                                                            if (window.innerWidth <= 500 && config.type == "boxplot") {
+                                                                config.options.plugins.tooltip.bodyFont.size = 6;
+                                                            }
+
                                                             return config;
                                                         };
-                                                        var chart_config${ind} = ${JSON.stringify(
-                                                config
-                                            )};
-                                                        chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                        var chart_config${ind} = ${JSON.stringify(config)};
+                                                        const resizetypes = ["line", "boxplot"];
+                                                        chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
-                                                        if (chart_config${ind}.type == "line") {
+                                                        if (resizetypes.includes(chart_config${ind}.type)) {
                                                             window.addEventListener("resize", () => {
-                                                                chart_config${ind} = handleAR(chart_config${ind});
-                                                                chart${ind}.destroy();
-                                                                chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                                chart_config${ind} = parse(chart_config${ind});
+                                                                chart${ind}.update();
                                                             });
                                                         }
                                                     </script>
@@ -1812,22 +1815,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             console.log(config);
                                             return `<canvas id="${id}">
                                                     <script>
-                                                        const handleAR = (config) => {
+                                                        const parse = (config) => {
                                                             if (window.innerWidth < 515) config.options.aspectRatio = 1;
                                                             else if (window.innerWidth < 800) config.options.aspectRatio = 1.5;
                                                             else config.options.aspectRatio = 2;
+
+                                                            if (window.innerWidth <= 500 && config.type == "boxplot") {
+                                                                config.options.plugins.tooltip.bodyFont.size = 6;
+                                                            }
+
                                                             return config;
                                                         };
                                                         var chart_config${ind} = ${JSON.stringify(
                                                 config
                                             )};
-                                                        chart_config${ind} = (chart_config${ind}.type == "line") ? handleAR(chart_config${ind}) : chart_config${ind};
+                                                        const resizetypes = ["line", "boxplot"];
+                                                        chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
-                                                        if (chart_config${ind}.type == "line") {
+                                                        if (resizetypes.includes(chart_config${ind}.type)) {
                                                             window.addEventListener("resize", () => {
-                                                                chart_config${ind} = handleAR(chart_config${ind});
-                                                                chart${ind}.destroy();
-                                                                chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
+                                                                chart_config${ind} = parse(chart_config${ind});
+                                                                chart${ind}.update();
                                                             });
                                                         }
                                                     </script>
