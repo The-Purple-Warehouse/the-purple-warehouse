@@ -17,7 +17,8 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
-    getTotalIncentives
+    getTotalIncentives,
+    getLevelAndProgress
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -35,7 +36,7 @@ import {
 import scoutingConfig from "../../config/scouting";
 import ScoutingEntry from "../../models/scoutingEntry";
 import Team from "../../models/team";
-//import { processAdmin } from "../../helpers/adminHelpers";
+import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -431,48 +432,101 @@ router.get(
 router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
-        const timeframe = ctx.query.timeframe || 'all';
-        const dateFilter: any = {};
-        
-        if (timeframe === 'week') {
-            const lastWeek = new Date();
-            lastWeek.setDate(lastWeek.getDate() - 7);
-            dateFilter.serverTimestamp = { $gte: lastWeek.getTime() };
-        } else if (timeframe === 'day') {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            dateFilter.serverTimestamp = { $gte: yesterday.getTime() };
-        }
-
         const leaders = await ScoutingEntry.aggregate([
-            { $match: dateFilter },
             {
                 $group: {
                     _id: {
                         team: "$contributor.team",
                         username: "$contributor.username"
                     },
-                    scansCount: { $sum: 1 },
                     totalXp: { $sum: "$xp" },
                     totalNuts: { $sum: "$nuts" },
                     totalBolts: { $sum: "$bolts" }
                 }
             },
-            { $sort: { scansCount: -1 } },
-            { $limit: 50 }
+            {
+                $lookup: {
+                    from: "teams",
+                    localField: "_id.team",
+                    foreignField: "_id",
+                    as: "teamInfo"
+                }
+            },
+            {
+                $project: {
+                    username: "$_id.username",
+                    team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
+                    nuts: "$totalNuts",
+                    bolts: "$totalBolts",
+                    totalXp: 1
+                }
+            }
         ]);
 
-        ctx.body = {
+        // Apply the getLevelAndProgress function to each leader
+        const leadersWithLevels = leaders.map(leader => {
+            const { level, progress } = getLevelAndProgress(leader.totalXp);
+            return {
+                ...leader,
+                level,
+                progress
+            };
+        });
+
+        // Sort all leaders by level and XP
+        const allSortedLeaders = [...leadersWithLevels].sort((a, b) => {
+            if (b.level === a.level) {
+                return b.totalXp - a.totalXp;
+            }
+            return b.level - a.level;
+        });
+
+        // Get top 50
+        const top50 = allSortedLeaders.slice(0, 50);
+
+        // Find current user's position
+        const currentUserTeam = ctx.session.scoutingTeamNumber;
+        const currentUserName = ctx.session.scoutingUsername;
+        const currentUserIndex = allSortedLeaders.findIndex(
+            leader => leader.team.toString() === currentUserTeam && leader.username === currentUserName
+        );
+
+        let response = {
             success: true,
             body: {
-                leaders
+                leaders: top50,
+                currentUser: {
+                    username: currentUserName,
+                    team: currentUserTeam,
+                    level: allSortedLeaders[currentUserIndex].level,
+                    progress: allSortedLeaders[currentUserIndex].progress,
+                    nuts: allSortedLeaders[currentUserIndex].nuts,
+                    bolts: allSortedLeaders[currentUserIndex].bolts,
+                    totalXp: allSortedLeaders[currentUserIndex].totalXp,
+                    rank: currentUserIndex + 1
+                }
             }
         };
+
+        // If user is not in top 50, add their position
+        if (currentUserIndex >= 50) {
+            response.body.currentUser = {
+                username: currentUserName,
+                team: currentUserTeam,
+                level: allSortedLeaders[currentUserIndex].level,
+                progress: allSortedLeaders[currentUserIndex].progress,
+                nuts: allSortedLeaders[currentUserIndex].nuts,
+                bolts: allSortedLeaders[currentUserIndex].bolts,
+                totalXp: allSortedLeaders[currentUserIndex].totalXp,
+                rank: currentUserIndex + 1
+            };
+        }
+
+        ctx.body = response;
     } catch (error) {
-        console.error('Error fetching leaderboard:', error);
         ctx.body = {
             success: false,
-            error: 'Internal server error'
+            error: 'Unable to fetch leaderboard, please try again later.'
         };
     }
 });
