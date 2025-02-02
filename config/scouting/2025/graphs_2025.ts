@@ -30,6 +30,12 @@ interface shotSummary {
     Processor: number;
     Net: number;
     Missed: number;
+    MissedL1: number;
+    MissedL2: number;
+    MissedL3: number;
+    MissedL4: number;
+    MissedProcessor: number;
+    MissedNet: number;
     "Total Coral": number;
     "Total Algae": number;
     "Total Shots": number;
@@ -291,6 +297,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
         const processor: number[] = [];
         const net: number[] = [];
         const missed: number[] = [];
+        const missednet: number[] = [];
+        const missedprocessor: number[] = [];
+        const missedl1: number[] = [];
+        const missedl2: number[] = [];
+        const missedl3: number[] = [];
+        const missedl4: number[] = [];
         for (const x in data.matches[match]) {
             let l1 = 0,
                 l2 = 0,
@@ -298,7 +310,13 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
                 l4 = 0,
                 pr = 0,
                 nt = 0,
-                mi = 0;
+                mi = 0,
+                ntmiss = 0,
+                prmiss = 0,
+                l1miss = 0,
+                l2miss = 0,
+                l3miss = 0,
+                l4miss = 0;
             for (const e of data.matches[match][x]) {
                 switch (e) {
                     case "asn":
@@ -319,10 +337,29 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
                     case "cs4":
                         l4 += 1;
                         break;
-                    default:
-                        if (e.includes("m")) {
-                            mi += 1;
-                        }
+                    case "amn":
+                        ntmiss += 1;
+                        mi += 1;
+                        break;
+                    case "amp":
+                        prmiss += 1;
+                        mi += 1;
+                        break;
+                    case "cm1":
+                        l1miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm2":
+                        l2miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm3":
+                        l3miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm4":
+                        l4miss += 1;
+                        mi += 1;
                         break;
                 }
             }
@@ -333,6 +370,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             processor.push(pr);
             net.push(nt);
             missed.push(mi);
+            missednet.push(ntmiss);
+            missedprocessor.push(prmiss);
+            missedl1.push(l1miss);
+            missedl2.push(l2miss);
+            missedl3.push(l3miss);
+            missedl4.push(l4miss);
         }
         const l1avg = avg(level1);
         const l2avg = avg(level2);
@@ -341,6 +384,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
         const pavg = avg(processor);
         const navg = avg(net);
         const mavg = avg(missed);
+        const mnetavg = avg(missednet);
+        const mpravg = avg(missedprocessor);
+        const ml1avg = avg(missedl1);
+        const ml2avg = avg(missedl2);
+        const ml3avg = avg(missedl3);
+        const ml4avg = avg(missedl4);
         const cototal = l1avg + l2avg + l3avg + l4avg + mavg;
         const altotal = pavg + navg + mavg;
         const total = l1avg + l2avg + l3avg + l4avg + pavg + navg + mavg;
@@ -353,6 +402,12 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
             Processor: pavg,
             Net: navg,
             Missed: mavg,
+            MissedL1: ml1avg,
+            MissedL2: ml2avg,
+            MissedL3: ml3avg,
+            MissedL4: ml4avg,
+            MissedProcessor: mpravg,
+            MissedNet: mnetavg,
             "Total Coral": cototal,
             "Total Algae": altotal,
             "Total Shots": total
@@ -525,7 +580,7 @@ function overTimeAlgaeChart(
     parsed_data: parsedTPWData,
     team: string
 ): chartConfig {
-    const dataS = shotSummary(parsed_data, team);
+    const dataS: shotSummary[] = shotSummary(parsed_data, team);
     const labels = dataS.map((x) => x.Match);
     const datasets = [
         {
@@ -545,8 +600,8 @@ function overTimeAlgaeChart(
             fill: false
         },
         {
-            label: "Missed",
-            data: dataS.map((x) => x.Missed),
+            label: "Missed Algae",
+            data: dataS.map((x) => x.MissedNet + x.MissedProcessor),
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 2,
@@ -645,8 +700,8 @@ function overTimeCoralChart(
             fill: false
         },
         {
-            label: "Missed",
-            data: dataS.map((x) => x.Missed),
+            label: "Missed Coral",
+            data: dataS.map((x) => x.MissedL1 + x.MissedL2 + x.MissedL3 + x.MissedL4),
             backgroundColor: "rgba(153, 102, 255, 0.2)",
             borderColor: "rgba(153, 102, 255, 1)",
             borderWidth: 2,
