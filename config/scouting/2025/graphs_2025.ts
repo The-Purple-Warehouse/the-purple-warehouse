@@ -75,7 +75,7 @@ interface chartConfig {
                 titleFont?: {
                     size: number;
                 };
-            }
+            };
         };
         aspectRatio?: number;
         onResize?: (chart: any, size: any) => void;
@@ -711,7 +711,9 @@ function overTimeCoralChart(
         },
         {
             label: "Missed Coral",
-            data: dataS.map((x) => x.MissedL1 + x.MissedL2 + x.MissedL3 + x.MissedL4),
+            data: dataS.map(
+                (x) => x.MissedL1 + x.MissedL2 + x.MissedL3 + x.MissedL4
+            ),
             backgroundColor: "rgba(153, 102, 255, 0.2)",
             borderColor: "rgba(153, 102, 255, 1)",
             borderWidth: 2,
@@ -835,10 +837,7 @@ function scoreProportions(
     };
 }
 
-function shotAccuracy(
-    parsed_data: parsedTPWData,
-    team: string
-): chartConfig {
+function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
     const dataS: shotSummary[] = shotSummary(parsed_data, team);
     const accuracy = (successful: number, missed: number): number => {
         const total = successful + missed;
@@ -848,7 +847,9 @@ function shotAccuracy(
     const accuracyL2 = dataS.map((x) => accuracy(x.L2, x.MissedL2));
     const accuracyL3 = dataS.map((x) => accuracy(x.L3, x.MissedL3));
     const accuracyL4 = dataS.map((x) => accuracy(x.L4, x.MissedL4));
-    const accuracyProcessor = dataS.map((x) => accuracy(x.Processor, x.MissedProcessor));
+    const accuracyProcessor = dataS.map((x) =>
+        accuracy(x.Processor, x.MissedProcessor)
+    );
     const accuracyNet = dataS.map((x) => accuracy(x.Net, x.MissedNet));
     return {
         type: "boxplot",

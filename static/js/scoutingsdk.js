@@ -1785,7 +1785,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                                                             return config;
                                                         };
-                                                        var chart_config${ind} = ${JSON.stringify(config)};
+                                                        var chart_config${ind} = ${JSON.stringify(
+                                                config
+                                            )};
                                                         const resizetypes = ["line", "boxplot"];
                                                         chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
