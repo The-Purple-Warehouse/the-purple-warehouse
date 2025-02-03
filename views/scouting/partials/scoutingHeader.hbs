@@ -92,7 +92,7 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/admin"].includes(window.location.hash)) {
+          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/leaderboard", "#/admin"].includes(window.location.hash)) {
               try {
                   updatePage();
               } catch(err) {

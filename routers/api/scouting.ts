@@ -463,7 +463,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             }
         ]);
 
-        // Apply the getLevelAndProgress function to each leader
         const leadersWithLevels = leaders.map(leader => {
             const { level, progress } = getLevelAndProgress(leader.totalXp);
             return {
@@ -473,7 +472,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             };
         });
 
-        // Sort all leaders by level and XP
         const allSortedLeaders = [...leadersWithLevels].sort((a, b) => {
             if (b.level === a.level) {
                 return b.totalXp - a.totalXp;
@@ -481,10 +479,8 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             return b.level - a.level;
         });
 
-        // Get top 50
         const top50 = allSortedLeaders.slice(0, 50);
 
-        // Find current user's position
         const currentUserTeam = ctx.session.scoutingTeamNumber;
         const currentUserName = ctx.session.scoutingUsername;
         const currentUserIndex = allSortedLeaders.findIndex(
@@ -508,7 +504,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             }
         };
 
-        // If user is not in top 50, add their position
         if (currentUserIndex >= 50) {
             response.body.currentUser = {
                 username: currentUserName,
