@@ -1547,67 +1547,67 @@ header .icon-button .send-container svg {
 /* Leaderboard Styles */
 
 .leaderboard-list {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 15px rgba(0,0,0,0.35);
-  max-height: 350px;
-  overflow-y: scroll;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.35);
+    max-height: 350px;
+    overflow-y: scroll;
 }
 
 .leaderboard-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
 }
 
 .leaderboard-item:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .leaderboard-item .rank {
-  font-size: 1.5rem;
-  font-weight: bold;
-  width: 40px;
-  text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 40px;
+    text-align: center;
 }
 
 .leaderboard-item .user-info {
-  flex: 1;
+    flex: 1;
 }
 
 .leaderboard-item .username {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .leaderboard-item .team {
-  color: #666;
+    color: #666;
 }
 
 .leaderboard-item .stats {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 }
 
 .leaderboard-item .stats img {
-  width: 20px;
-  height: 20px;
-  margin-left: 4px;
+    width: 20px;
+    height: 20px;
+    margin-left: 4px;
 }
 
 .leaderboard-item .currency {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .leaderboard-item .currency .nuts,
 .leaderboard-item .currency .bolts {
-  display: flex;
-  align-items: center;
-  gap: 5px
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 @media (max-width: 1100px) {
