@@ -5632,13 +5632,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 element.innerHTML = `
                     <div class="leaderboard-container">
                         <h2>Scouting Leaderboard</h2>
-                        <div class="leaderboard-filters">
-                            <select id="timeframe-select">
-                                <option value="all">All Time</option>
-                                <option value="week">This Week</option>
-                                <option value="day">Today</option>
-                            </select>
-                        </div>
                         <div class="leaderboard-list">
                             ${data.success ? data.body.leaders.map((leader, index) => `
                                 <div class="leaderboard-item">
