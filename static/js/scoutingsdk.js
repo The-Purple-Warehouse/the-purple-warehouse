@@ -5626,19 +5626,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         return new Promise(async (resolve, reject) => {
             await _this.setMatchNav(0, undefined, undefined, undefined);
             try {
-                const response = await fetch('/api/v1/scouting/leaderboard');
+                const response = await fetch("/api/v1/scouting/leaderboard");
                 const data = await response.json();
-    
+
                 element.innerHTML = `
                     <div class="leaderboard-container">
                         <h2>Scouting Leaderboard</h2>
                         <div class="leaderboard-list">
-                            ${data.success ? data.body.leaders.map((leader, index) => `
+                            ${
+                                data.success
+                                    ? data.body.leaders
+                                          .map(
+                                              (leader, index) => `
                                 <div class="leaderboard-item">
                                     <div class="rank">${index + 1}</div>
                                     <div class="user-info">
-                                        <span class="username">${_this.escape(leader.username)}</span>
-                                        <span class="team">(${_this.escape(leader.team)})</span>
+                                        <span class="username">${_this.escape(
+                                            leader.username
+                                        )}</span>
+                                        <span class="team">(${_this.escape(
+                                            leader.team
+                                        )})</span>
                                     </div>
                                     <div class="stats">
                                         <div class="currency">
@@ -5656,11 +5664,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         </div>
                                     </div>
                                 </div>
-                            `).join(''): '<p>Failed to fetch leaderboard data</p>'}
+                            `
+                                          )
+                                          .join("")
+                                    : "<p>Failed to fetch leaderboard data</p>"
+                            }
                         </div>
                     </div>`;
             } catch (error) {
-                console.error('Error loading leaderboard:', error);
+                console.error("Error loading leaderboard:", error);
                 element.innerHTML = `
                     <div class="leaderboard-container">
                         <h2>Error Loading Leaderboard</h2>

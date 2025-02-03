@@ -865,7 +865,10 @@ function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
                         accuracyL4,
                         accuracyProcessor,
                         accuracyNet
-                    ]
+                    ],
+                    backgroundColor: "rgba(125, 64, 144, 0.5)",
+                    borderColor: "rgb(125, 64, 144)",
+                    borderWidth: 2
                 }
             ]
         },
