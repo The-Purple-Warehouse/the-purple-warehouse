@@ -18,7 +18,8 @@ import {
     getNumberOfEntriesByEvent,
     getSharedData,
     getTotalIncentives,
-    getLevelAndProgress
+    getLevelAndProgress,
+    aggregateLeaderboard
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -34,7 +35,6 @@ import {
     getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
-import ScoutingEntry from "../../models/scoutingEntry";
 import Team from "../../models/team";
 import { processAdmin } from "../../helpers/adminHelpers";
 
@@ -432,37 +432,7 @@ router.get(
 router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
-        const leaders = await ScoutingEntry.aggregate([
-            {
-                $group: {
-                    _id: {
-                        team: "$contributor.team",
-                        username: "$contributor.username"
-                    },
-                    totalXp: { $sum: "$xp" },
-                    totalNuts: { $sum: "$nuts" },
-                    totalBolts: { $sum: "$bolts" }
-                }
-            },
-            {
-                $lookup: {
-                    from: "teams",
-                    localField: "_id.team",
-                    foreignField: "_id",
-                    as: "teamInfo"
-                }
-            },
-            {
-                $project: {
-                    username: "$_id.username",
-                    team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
-                    nuts: "$totalNuts",
-                    bolts: "$totalBolts",
-                    totalXp: 1
-                }
-            }
-        ]);
-
+        const leaders = await aggregateLeaderboard();
         const leadersWithLevels = leaders.map(leader => {
             const { level, progress } = getLevelAndProgress(leader.totalXp);
             return {

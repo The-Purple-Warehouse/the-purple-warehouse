@@ -746,3 +746,37 @@ export async function getStats() {
             .length
     };
 }
+
+export async function aggregateLeaderboard() {
+    const leaders = await ScoutingEntry.aggregate([
+        {
+            $group: {
+                _id: {
+                    team: "$contributor.team",
+                    username: "$contributor.username"
+                },
+                totalXp: { $sum: "$xp" },
+                totalNuts: { $sum: "$nuts" },
+                totalBolts: { $sum: "$bolts" }
+            }
+        },
+        {
+            $lookup: {
+                from: "teams",
+                localField: "_id.team",
+                foreignField: "_id",
+                as: "teamInfo"
+            }
+        },
+        {
+            $project: {
+                username: "$_id.username",
+                team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
+                nuts: "$totalNuts",
+                bolts: "$totalBolts",
+                totalXp: 1
+            }
+        }
+    ]);
+    return leaders;
+}
