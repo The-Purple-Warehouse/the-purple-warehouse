@@ -54,6 +54,7 @@ main {
 
 .login-window,
 .data-window,
+.leaderboard-container,
 .match-window {
     position: relative;
     width: fit-content;
@@ -1214,7 +1215,7 @@ header .icon-button .send-container svg {
     position: relative;
     font-size: 1.25em;
     margin: 0.5rem 0;
-    min-width: 150px;
+    min-width: 200px;
 }
 
 .status-box::before,
@@ -1526,6 +1527,87 @@ header .icon-button .send-container svg {
     .match-window {
         padding: 0 !important;
     }
+}
+
+@media (max-width: 400px) {
+    .data-window .analysis > div:not(.prediction-bar),
+    .data-window .comparison > div:not(.prediction-bar),
+    .data-window .prediction > div:not(.prediction-bar) {
+        margin-left: 50%;
+        transform: translate(-50%, 0) scale(0.55);
+    }
+}
+
+@media (max-width: 370px) {
+    .home-window > p {
+        width: 100%;
+    }
+}
+
+/* Leaderboard Styles */
+
+.leaderboard-list {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.35);
+  max-height: 350px;
+  overflow-y: scroll;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item .rank {
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 40px;
+  text-align: center;
+}
+
+.leaderboard-item .user-info {
+  flex: 1;
+}
+
+.leaderboard-item .username {
+  font-weight: bold;
+}
+
+.leaderboard-item .team {
+  color: #666;
+}
+
+.leaderboard-item .stats {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.leaderboard-item .stats img {
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+}
+
+.leaderboard-item .currency {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.leaderboard-item .currency .nuts,
+.leaderboard-item .currency .bolts {
+  display: flex;
+  align-items: center;
+  gap: 5px
 }
 
 @media (max-width: 1100px) {

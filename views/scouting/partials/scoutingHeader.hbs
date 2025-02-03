@@ -9,6 +9,7 @@
     <a data-page="view-data" href="#/view-data">View Data/Analysis</a>
     <a data-page="compare-teams" href="#/compare-teams">Compare Teams</a>
     <a data-page="predict-outcomes" href="#/predict-outcomes">Predict Outcomes</a>
+    <a data-page="leaderboard" href="#/leaderboard">Leaderboard</a>
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
 </nav>
 <header>
@@ -91,7 +92,7 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/admin"].includes(window.location.hash)) {
+          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/leaderboard", "#/admin"].includes(window.location.hash)) {
               try {
                   updatePage();
               } catch(err) {
@@ -160,6 +161,18 @@
           }
           window.location.hash = "#/predict-outcomes";
           // await sdk.showPredictPage();
+        };
+    document.querySelector(".navbar a[data-page='leaderboard']").onclick =
+        async (e) => {
+          e.preventDefault();
+          if(window.location.hash == "#/leaderboard") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+          }
+          window.location.hash = "#/leaderboard";
         };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
         async (e) => {

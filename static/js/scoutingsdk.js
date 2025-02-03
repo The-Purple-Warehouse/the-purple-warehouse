@@ -1785,7 +1785,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                                                             return config;
                                                         };
-                                                        var chart_config${ind} = ${JSON.stringify(config)};
+                                                        var chart_config${ind} = ${JSON.stringify(
+                                                config
+                                            )};
                                                         const resizetypes = ["line", "boxplot"];
                                                         chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
@@ -5618,5 +5620,54 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
     _this.hash = (string) => {
         return _this.hexFromBytes(sha256(_this.stringToBytes(string)));
+    };
+
+    _this.showLeaderboardPage = async () => {
+        return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
+            try {
+                const response = await fetch('/api/v1/scouting/leaderboard');
+                const data = await response.json();
+    
+                element.innerHTML = `
+                    <div class="leaderboard-container">
+                        <h2>Scouting Leaderboard</h2>
+                        <div class="leaderboard-list">
+                            ${data.success ? data.body.leaders.map((leader, index) => `
+                                <div class="leaderboard-item">
+                                    <div class="rank">${index + 1}</div>
+                                    <div class="user-info">
+                                        <span class="username">${_this.escape(leader.username)}</span>
+                                        <span class="team">(${_this.escape(leader.team)})</span>
+                                    </div>
+                                    <div class="stats">
+                                        <div class="currency">
+                                            <div class="nuts">
+                                                <img src="/img/nuts.png" alt="Nuts" />
+                                                <span>${leader.nuts}</span>
+                                            </div>
+                                            <div class="bolts">
+                                                <img src="/img/bolts.png" alt="Bolts" />
+                                                <span>${leader.bolts}</span>
+                                            </div>
+                                        </div>
+                                        <div class="level">
+                                            Level ${leader.level}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join(''): '<p>Failed to fetch leaderboard data</p>'}
+                        </div>
+                    </div>`;
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                element.innerHTML = `
+                    <div class="leaderboard-container">
+                        <h2>Error Loading Leaderboard</h2>
+                        <p>Failed to load leaderboard data. Please try again later.</p>
+                    </div>`;
+            }
+            resolve();
+        });
     };
 };
