@@ -433,7 +433,7 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
         const leaders = await aggregateLeaderboard();
-        const leadersWithLevels = leaders.map(leader => {
+        const leadersWithLevels = leaders.map((leader) => {
             const { level, progress } = getLevelAndProgress(leader.totalXp);
             return {
                 ...leader,
@@ -454,7 +454,9 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
         const currentUserTeam = ctx.session.scoutingTeamNumber;
         const currentUserName = ctx.session.scoutingUsername;
         const currentUserIndex = allSortedLeaders.findIndex(
-            leader => leader.team.toString() === currentUserTeam && leader.username === currentUserName
+            (leader) =>
+                leader.team.toString() === currentUserTeam &&
+                leader.username === currentUserName
         );
 
         let response = {
@@ -491,7 +493,7 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     } catch (error) {
         ctx.body = {
             success: false,
-            error: 'Unable to fetch leaderboard, please try again later.'
+            error: "Unable to fetch leaderboard, please try again later."
         };
     }
 });
