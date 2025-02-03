@@ -643,7 +643,6 @@ header .icon-button .send-container svg {
 .match-window .component-layout-rows {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 .match-window:has([data-page="4"]) .component-layout-rows {
@@ -1526,21 +1525,6 @@ header .icon-button .send-container svg {
 @media (max-width: 420px) {
     .match-window {
         padding: 0 !important;
-    }
-}
-
-@media (max-width: 400px) {
-    .data-window .analysis > div:not(.prediction-bar),
-    .data-window .comparison > div:not(.prediction-bar),
-    .data-window .prediction > div:not(.prediction-bar) {
-        margin-left: 50%;
-        transform: translate(-50%, 0) scale(0.55);
-    }
-}
-
-@media (max-width: 370px) {
-    .home-window > p {
-        width: 100%;
     }
 }
 
