@@ -1474,15 +1474,19 @@ header .icon-button .send-container svg {
     margin: 0;
 }
 
+.nav-right.header-incentives {
+    display: flex;
+}
+
 .header-incentives .xp {
     margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .header-incentives .xp p {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     margin: 0;
     color: var(--backgroundColor);
     font-size: 1rem;
@@ -1495,7 +1499,7 @@ header .icon-button .send-container svg {
     display: inline-block;
     vertical-align: middle;
     width: 40px;
-    height: 20px;
+    height: 8px;
     border: 2px solid var(--backgroundColor);
     border-radius: 5px;
     position: relative;
