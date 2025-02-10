@@ -1142,7 +1142,7 @@ function run(command) {
     });
 }
 
-async function syncAnalysisCache(event, teamNumber) {
+export async function analysis(event, teamNumber) {
     let analyzed = [];
     let data: any = {
         offenseRankings: [],
@@ -1252,15 +1252,12 @@ async function syncAnalysisCache(event, teamNumber) {
         }
         let offense = rankingsArr
             .sort((a, b) => b.offenseScore - a.offenseScore)
-            .map((ranking) => ranking.teamNumber);
+            .map((ranking) => ({team: ranking.teamNumber, offense: ranking.offenseScore}));
         let defense = rankingsArr
             .sort((a, b) => b.defenseScore - a.defenseScore)
             .map((ranking) => ranking.teamNumber);
         data.offenseRankings = offense;
-        // let tableRankings = [["Offense", "Defense"]];
-        let tableRankings = [
-            ["TPW Calculated Offense Rank<br>(NOT COMPETITION RANK)"]
-        ];
+        let tableRankings = [["Offense", "Defense"]];
         function ending(num) {
             if (num % 100 >= 4 && num % 100 <= 20) {
                 return "th";
@@ -1275,10 +1272,7 @@ async function syncAnalysisCache(event, teamNumber) {
             }
         }
         for (let i = 0; i < offense.length; i++) {
-            // tableRankings.push([offense[i], defense[i]]);
-            tableRankings.push([
-                `${i + 1}${ending(i + 1)} - <b>${offense[i]}</b>`
-            ]);
+            tableRankings.push([(i + 1), offense[i].team, offense[i].offense]);
         }
         analyzed.push({
             type: "config",
@@ -1331,10 +1325,13 @@ async function syncAnalysisCache(event, teamNumber) {
     } catch (err) {
         console.error(err);
     }
-    return { value: { display: analyzed, data: data } };
+    return { display: analyzed, data: data };
 }
 
-async function syncCompareCache(event, teamNumbers) {
+export async function compare(event, teamNumbers) {
+    teamNumbers = [...new Set(teamNumbers)].sort((a: string, b: string) =>
+        a.length != b.length ? a.length - b.length : a.localeCompare(b)
+    );
     let comparison = [];
     try {
         let matchesFull = (await getMatchesFull(event)) as any;
@@ -1361,10 +1358,17 @@ async function syncCompareCache(event, teamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    return { value: { display: comparison, data: {} } };
+    return { display: comparison, data: {} };
 }
 
-async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
+export async function predict(event, redTeamNumbers, blueTeamNumbers) {
+    redTeamNumbers = [...new Set(redTeamNumbers)].sort((a: string, b: string) =>
+        a.length != b.length ? a.length - b.length : a.localeCompare(b)
+    );
+    blueTeamNumbers = [...new Set(blueTeamNumbers)].sort(
+        (a: string, b: string) =>
+            a.length != b.length ? a.length - b.length : a.localeCompare(b)
+    );
     let analyzed = [];
     let data: any = {
         predictions: []
@@ -1418,30 +1422,7 @@ async function syncPredictCache(event, redTeamNumbers, blueTeamNumbers) {
     } catch (err) {
         console.error(err);
     }
-    return { value: { display: analyzed, data: data } };
-}
-
-export async function analysis(event, teamNumber) {
-    return (await syncAnalysisCache(event, teamNumber)).value;
-}
-
-export async function compare(event, teamNumbers) {
-    teamNumbers = [...new Set(teamNumbers)].sort((a: string, b: string) =>
-        a.length != b.length ? a.length - b.length : a.localeCompare(b)
-    );
-    return (await syncCompareCache(event, teamNumbers)).value;
-}
-
-export async function predict(event, redTeamNumbers, blueTeamNumbers) {
-    redTeamNumbers = [...new Set(redTeamNumbers)].sort((a: string, b: string) =>
-        a.length != b.length ? a.length - b.length : a.localeCompare(b)
-    );
-    blueTeamNumbers = [...new Set(blueTeamNumbers)].sort(
-        (a: string, b: string) =>
-            a.length != b.length ? a.length - b.length : a.localeCompare(b)
-    );
-    return (await syncPredictCache(event, redTeamNumbers, blueTeamNumbers))
-        .value;
+    return { display: analyzed, data: data };
 }
 
 export async function accuracy(event, matches, data, categories, teams) {
