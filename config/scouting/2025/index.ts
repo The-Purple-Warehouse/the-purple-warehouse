@@ -1027,18 +1027,18 @@ export function parseFormatted(format: string): parsedRow[] {
 }
 
 let parsedScoring = {
-    asn: "algae net score",
-    asp: "algae processor score",
-    amn: "algae net missed",
-    amp: "algae processor missed",
-    cs1: "coral L1 score",
-    cs2: "coral L2 score",
-    cs3: "coral L3 score",
-    cs4: "coral L4 score",
-    cm1: "coral L1 missed",
-    cm2: "coral L2 missed",
-    cm3: "coral L3 missed",
-    cm4: "coral L4 missed"
+    asn: "net score",
+    asp: "processor score",
+    amn: "net missed",
+    amp: "processor missed",
+    cs1: "L1 score",
+    cs2: "L2 score",
+    cs3: "L3 score",
+    cs4: "L4 score",
+    cm1: "L1 missed",
+    cm2: "L2 missed",
+    cm3: "L3 missed",
+    cm4: "L4 missed"
 };
 
 export function formatParsedData(data, categories, teams) {
