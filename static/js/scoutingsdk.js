@@ -2584,6 +2584,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             <th>name</th>
                             <th>country</th>
                             <th>state</th>
+                            <th>token</th>
                         </thead>
                         <tbody>
                         </tbody>
@@ -2738,6 +2739,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     </td>
                                     <td>
                                         ${team.state}
+                                    </td>
+                                    <td>
+                                        ${team.token}
                                     </td>
                                 </tr>`;
                                 })

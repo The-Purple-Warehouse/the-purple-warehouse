@@ -266,7 +266,8 @@ router.post("/team/list", requireScoutingAuth, async (ctx, next) => {
                             name: team.teamName,
                             teamNumber: team.teamNumber,
                             country: team.country,
-                            state: team.state
+                            state: team.state,
+                            token: team.accessToken
                         };
                     })
                     .sort((a: any, b: any) => {
