@@ -1252,7 +1252,10 @@ export async function analysis(event, teamNumber) {
         }
         let offense = rankingsArr
             .sort((a, b) => b.offenseScore - a.offenseScore)
-            .map((ranking) => ({team: ranking.teamNumber, offense: ranking.offenseScore}));
+            .map((ranking) => ({
+                team: ranking.teamNumber,
+                offense: ranking.offenseScore
+            }));
         let defense = rankingsArr
             .sort((a, b) => b.defenseScore - a.defenseScore)
             .map((ranking) => ranking.teamNumber);
@@ -1272,7 +1275,7 @@ export async function analysis(event, teamNumber) {
             }
         }
         for (let i = 0; i < offense.length; i++) {
-            tableRankings.push([(i + 1), offense[i].team, offense[i].offense]);
+            tableRankings.push([i + 1, offense[i].team, offense[i].offense]);
         }
         analyzed.push({
             type: "config",
