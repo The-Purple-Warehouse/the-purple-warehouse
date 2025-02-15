@@ -1540,7 +1540,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
-                element.querySelector(".analysis").innerHTML = "";
+                element.querySelector(".analysis-content").innerHTML =
+                        defAnalysis;
                 element.querySelector(".analysis").style.display = "none";
                 try {
                     let data = await (
@@ -1629,7 +1630,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).value;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
-                    element.querySelector(".analysis").innerHTML = "";
+                    element.querySelector(".analysis-content").innerHTML =
+                        defAnalysis;
                     element.querySelector(".analysis").style.display = "none";
                     try {
                         let data = await (
