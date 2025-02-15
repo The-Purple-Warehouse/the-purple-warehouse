@@ -1260,7 +1260,7 @@ export async function analysis(event, teamNumber) {
             .sort((a, b) => b.defenseScore - a.defenseScore)
             .map((ranking) => ranking.teamNumber);
         data.offenseRankings = offense;
-        let tableRankings = [["Offense", "Defense"]];
+        let tableRankings = [["Team", "TPW Offense Score"]];
         function ending(num) {
             if (num % 100 >= 4 && num % 100 <= 20) {
                 return "th";
@@ -1275,7 +1275,7 @@ export async function analysis(event, teamNumber) {
             }
         }
         for (let i = 0; i < offense.length; i++) {
-            tableRankings.push([i + 1, offense[i].team, offense[i].offense]);
+            tableRankings.push([`<b>${offense[i].team}</b>`, offense[i].offense]);
         }
         analyzed.push({
             type: "config",
