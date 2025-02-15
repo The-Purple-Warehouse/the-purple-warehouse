@@ -1541,7 +1541,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
                 element.querySelector(".analysis-content").innerHTML =
-                        defAnalysis;
+                    defAnalysis;
                 element.querySelector(".analysis").style.display = "none";
                 try {
                     let data = await (
@@ -1737,6 +1737,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             .classList.remove("none");
                     };
                 });
+            const resetOptions = () => {
+                element
+                    .querySelectorAll(".analysis-options > nav > a")
+                    .forEach((el) => {
+                        el.classList.remove("active");
+                    });
+                element
+                    .querySelector(".analysis-options > nav > a:first-child")
+                    .classList.add("active");
+            }
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
@@ -1749,6 +1759,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
+                    resetOptions();
                     element.querySelector(".analysis-content").innerHTML =
                         defAnalysis;
                     try {
@@ -1950,12 +1961,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 .map(
                                                                     (cell) =>
                                                                         `<td${
-                                                                            cell.includes(
+                                                                            cell.toString().includes(
                                                                                 `<b>${teamNumber}</b>`
                                                                             )
                                                                                 ? ` style="background-color: yellow;"`
                                                                                 : ""
-                                                                        }>${cell.replaceAll(
+                                                                        }>${cell.toString().replaceAll(
                                                                             "\\n",
                                                                             "<br>"
                                                                         )}</td>`
