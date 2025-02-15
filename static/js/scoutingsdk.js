@@ -1541,7 +1541,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
                 element.querySelector(".analysis-content").innerHTML =
-                        defAnalysis;
+                    defAnalysis;
                 element.querySelector(".analysis").style.display = "none";
                 try {
                     let data = await (
