@@ -1275,7 +1275,10 @@ export async function analysis(event, teamNumber) {
             }
         }
         for (let i = 0; i < offense.length; i++) {
-            tableRankings.push([`<b>${offense[i].team}</b>`, offense[i].offense]);
+            tableRankings.push([
+                `<b>${offense[i].team}</b>`,
+                offense[i].offense
+            ]);
         }
         analyzed.push({
             type: "config",

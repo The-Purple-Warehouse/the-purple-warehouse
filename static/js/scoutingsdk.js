@@ -1746,7 +1746,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 element
                     .querySelector(".analysis-options > nav > a:first-child")
                     .classList.add("active");
-            }
+            };
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
@@ -1961,15 +1961,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 .map(
                                                                     (cell) =>
                                                                         `<td${
-                                                                            cell.toString().includes(
-                                                                                `<b>${teamNumber}</b>`
-                                                                            )
+                                                                            cell
+                                                                                .toString()
+                                                                                .includes(
+                                                                                    `<b>${teamNumber}</b>`
+                                                                                )
                                                                                 ? ` style="background-color: yellow;"`
                                                                                 : ""
-                                                                        }>${cell.toString().replaceAll(
-                                                                            "\\n",
-                                                                            "<br>"
-                                                                        )}</td>`
+                                                                        }>${cell
+                                                                            .toString()
+                                                                            .replaceAll(
+                                                                                "\\n",
+                                                                                "<br>"
+                                                                            )}</td>`
                                                                 )
                                                                 .join(
                                                                     ""
