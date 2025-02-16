@@ -2037,7 +2037,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 						    <label for="export-toggle"></label>
                         </div>
 					</div>
-                    <p id="current-export">Currently exporting <span></span></p>
+                    <p id="current-export">Currently exporting <span>all data.</span></p>
                     <div class="button-group" style="display: flex; gap: 15px;">
                         <button class="cancel-export">Cancel</button>
                         <button class="export-csv">Export CSV</button>
@@ -2060,7 +2060,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ) {
                     element.querySelector(
                         ".export-popup p span"
-                    ).innerText = `data from contributed by my team.`;
+                    ).innerText = `data contributed by my team.`;
                 } else {
                     element.querySelector(".export-popup p span").innerText =
                         "all data.";
