@@ -17,6 +17,7 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
+    getTeamData,
     getTotalIncentives,
     getLevelAndProgress,
     aggregateLeaderboard
@@ -159,6 +160,25 @@ router.get(
             body: {
                 csv: await getSharedData(
                     ctx.params.event,
+                    ctx.session.scoutingTeamNumber
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
+    "/entry/data/event/:event/csv/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getTeamData(
+                    ctx.params.event,
+                    ctx.params.team,
                     ctx.session.scoutingTeamNumber
                 ),
                 notes: scoutingConfig.notes()

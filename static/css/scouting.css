@@ -189,6 +189,7 @@ input:-webkit-autofill {
 .login-window > button,
 .data-window > button,
 .scanner-window button,
+.export-options button,
 .download-window button,
 .match-window .component-pagebutton,
 .match-window .component-notesbutton,
@@ -217,6 +218,7 @@ input:-webkit-autofill {
 .login-window > button:hover,
 .data-window > button:hover,
 .scanner-window button:hover,
+.export-options button:hover,
 .download-window button:hover,
 .match-window .component-pagebutton:hover,
 .match-window .component-notesbutton:hover,
@@ -228,6 +230,7 @@ input:-webkit-autofill {
 .login-window > button::after,
 .data-window > button::after,
 .scanner-window button::after,
+.export-options button::after,
 .download-window button::after,
 .match-window .component-pagebutton::after,
 .match-window .component-notesbutton::after,
@@ -249,6 +252,7 @@ input:-webkit-autofill {
 .login-window > button:active::after,
 .data-window > button:active::after,
 .scanner-window button:active::after,
+.export-options button:active::after,
 .download-window button:active::after,
 .match-window .component-pagebutton:active::after,
 .match-window .component-notesbutton:active::after,
@@ -455,6 +459,21 @@ div#app {
     justify-self: center;
     display: grid;
     place-items: center;
+}
+
+.export-options {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.export-options > h2 {
+    width: 100%;
+}
+
+.export-options > .button-group {
+    width: 100%;
 }
 
 /* NAVBAR */
@@ -1080,9 +1099,26 @@ header .icon-button .send-container svg {
     width: calc(100% - 20px);
     max-width: 350px;
     z-index: 200;
-    background-color: var(--backgroundColor);
+    background-color: #f1f1f1;
     color: var(--contentColor);
-    border-radius: 10px;
+    border-radius: var(--standard-border-radius);
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 15px;
+}
+
+.export-popup {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    width: calc(100% - 20px);
+    max-width: 500px;
+    z-index: 200;
+    background-color: #f1f1f1;
+    color: var(--contentColor);
+    border-radius: var(--standard-border-radius);
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -1538,8 +1574,8 @@ header .icon-button .send-container svg {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.35);
-    max-height: 350px;
     overflow-y: scroll;
+    width: clamp(300px, 95vw, 700px);
 }
 
 .leaderboard-item {
@@ -1567,6 +1603,10 @@ header .icon-button .send-container svg {
 
 .leaderboard-item .username {
     font-weight: bold;
+    max-width: 175px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
 }
 
 .leaderboard-item .team {
@@ -1646,9 +1686,17 @@ header .icon-button .send-container svg {
     -webkit-transform: rotate(45deg);
 }
 
-/* MOBILE */
-
 /* TOGGLE */
+
+.export-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0px 2% 0px 2%;
+    padding: 0px 1% 0px 1%;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+}
 
 .component-toggle {
     display: flex;
@@ -1661,6 +1709,18 @@ header .icon-button .send-container svg {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+.export-toggle > p {
+    text-align: center;
+}
+
+.export-toggle > div {
+    display: grid;
+    place-items: center;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.export-toggle > p,
 .component-toggle > p {
     color: black;
     padding: 0.35rem;
@@ -1671,12 +1731,18 @@ header .icon-button .send-container svg {
     transition: 0.3s;
 }
 
+.export-toggle input[type="checkbox"] {
+    margin: 0;
+}
+
+.export-toggle input[type="checkbox"],
 .component-toggle input[type="checkbox"] {
     height: 0;
     width: 0;
     visibility: hidden;
 }
 
+.export-toggle label,
 .component-toggle label {
     cursor: pointer;
     text-indent: 50px;
@@ -1688,6 +1754,7 @@ header .icon-button .send-container svg {
     position: relative;
 }
 
+.export-toggle label:after,
 .component-toggle label:after {
     content: "";
     position: absolute;
@@ -1701,10 +1768,12 @@ header .icon-button .send-container svg {
     transition: 0.3s;
 }
 
+.export-toggle input:checked + label,
 .component-toggle input:checked + label {
     background: var(--primaryBackgroundColor);
 }
 
+.export-toggle input:checked + label:after,
 .component-toggle input:checked + label:after {
     left: 50%;
 }
