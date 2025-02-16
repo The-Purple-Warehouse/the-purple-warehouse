@@ -2059,15 +2059,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         .checked
                 ) {
                     element.querySelector(
-                        ".export-popup .group"
-                    ).style.display = "flex";
-                    element.querySelector(
                         ".export-popup p span"
                     ).innerText = `data from contributed by my team.`;
                 } else {
-                    element.querySelector(
-                        ".export-popup .group"
-                    ).style.display = "none";
                     element.querySelector(".export-popup p span").innerText =
                         "all data.";
                 }
