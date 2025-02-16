@@ -2071,9 +2071,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     let eventCode = element.querySelector(
                         ".data-window > select.event-code"
                     ).value;
-                    let teamNumber = element.querySelector(
-                        ".data-window input.team-number"
-                    ).value;
+                    let teamNumber =
+                        element.querySelector(".data-window input.team-number")
+                            .value || config.account.team;
                     let toggle = element.querySelector(
                         ".export-popup input#export-toggle"
                     ).checked; // true = my team's data
