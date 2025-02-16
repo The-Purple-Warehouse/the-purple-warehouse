@@ -1516,8 +1516,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             function showOverlay() {
                 overlayShown = true;
                 if (overlayShown) {
-                    element.querySelector(".overlay").style.display =
-                        "block";
+                    element.querySelector(".overlay").style.display = "block";
                 }
             }
             function hideOverlay() {
@@ -1960,15 +1959,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 .map(
                                                                     (cell) =>
                                                                         `<td${
-                                                                            cell.toString().includes(
-                                                                                `<b>${teamNumber}</b>`
-                                                                            )
+                                                                            cell
+                                                                                .toString()
+                                                                                .includes(
+                                                                                    `<b>${teamNumber}</b>`
+                                                                                )
                                                                                 ? ` style="background-color: yellow;"`
                                                                                 : ""
-                                                                        }>${cell.toString().replaceAll(
-                                                                            "\\n",
-                                                                            "<br>"
-                                                                        )}</td>`
+                                                                        }>${cell
+                                                                            .toString()
+                                                                            .replaceAll(
+                                                                                "\\n",
+                                                                                "<br>"
+                                                                            )}</td>`
                                                                 )
                                                                 .join(
                                                                     ""
@@ -2015,15 +2018,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             function showOverlay() {
                 overlayShown = true;
                 if (overlayShown) {
-                    element.querySelector(".overlay").style.display =
-                        "block";
+                    element.querySelector(".overlay").style.display = "block";
                 }
             }
             function hideOverlay() {
                 overlayShown = false;
                 if (!overlayShown) {
-                    element.querySelector(".overlay").style.display =
-                        "none";
+                    element.querySelector(".overlay").style.display = "none";
                 }
             }
             element.querySelector(".export-popup").innerHTML = `
@@ -2044,104 +2045,124 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 </div>
             `;
             element.querySelector(".export-popup").style.display = "flex";
-            element.querySelector(".export-popup .cancel-export").onclick = () => {
-                element.querySelector(".export-popup").style.display = "none";
-                hideOverlay();
-            };
-            element.querySelector(".export-popup input#export-toggle").onchange = () => {
-                if (element.querySelector(".export-popup input#export-toggle").checked) {
-                    element.querySelector(".export-popup .group").style.display = "flex";
-                    element.querySelector(".export-popup p span").innerText = `data from contributed by my team.`;
+            element.querySelector(".export-popup .cancel-export").onclick =
+                () => {
+                    element.querySelector(".export-popup").style.display =
+                        "none";
+                    hideOverlay();
+                };
+            element.querySelector(
+                ".export-popup input#export-toggle"
+            ).onchange = () => {
+                if (
+                    element.querySelector(".export-popup input#export-toggle")
+                        .checked
+                ) {
+                    element.querySelector(
+                        ".export-popup .group"
+                    ).style.display = "flex";
+                    element.querySelector(
+                        ".export-popup p span"
+                    ).innerText = `data from contributed by my team.`;
                 } else {
-                    element.querySelector(".export-popup .group").style.display = "none";
-                    element.querySelector(".export-popup p span").innerText = "all data.";
+                    element.querySelector(
+                        ".export-popup .group"
+                    ).style.display = "none";
+                    element.querySelector(".export-popup p span").innerText =
+                        "all data.";
                 }
-            }
-            element.querySelector(".export-popup .export-csv").onclick = async () => {
-                let eventCode = element.querySelector(
-                    ".data-window > select.event-code"
-                ).value;
-                let teamNumber = element.querySelector(
-                    ".data-window input.team-number"
-                ).value;
-                let toggle = element.querySelector(
-                    ".export-popup input#export-toggle"
-                ).checked; // true = my team's data
-                if (toggle) {
-                    if (!teamNumber) {
-                        console.error("export error: no team number found.");
-                        return;
-                    }
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv/${teamNumber}`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," +
-                                encodeURIComponent(csv);
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                `tpw-scouting-${eventCode}-${teamNumber}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.log("export csv error", err);
-                    }
-                } else {
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," +
-                                encodeURIComponent(csv);
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                `tpw-scouting-${eventCode}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.log("export csv error", err);
-                    }
-                }
-                element.querySelector(".export-popup").style.display = "none";
-                hideOverlay();
             };
+            element.querySelector(".export-popup .export-csv").onclick =
+                async () => {
+                    let eventCode = element.querySelector(
+                        ".data-window > select.event-code"
+                    ).value;
+                    let teamNumber = element.querySelector(
+                        ".data-window input.team-number"
+                    ).value;
+                    let toggle = element.querySelector(
+                        ".export-popup input#export-toggle"
+                    ).checked; // true = my team's data
+                    if (toggle) {
+                        if (!teamNumber) {
+                            console.error(
+                                "export error: no team number found."
+                            );
+                            return;
+                        }
+                        try {
+                            let data = await (
+                                await fetch(
+                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                        eventCode
+                                    )}/csv/${teamNumber}`
+                                )
+                            ).json();
+                            if (data.success) {
+                                element.querySelector(".red").innerHTML =
+                                    "&nbsp;";
+                                let csv = data.body.csv;
+                                let download =
+                                    "data:text/csv;charset=utf-8," +
+                                    encodeURIComponent(csv);
+                                let link = document.createElement("a");
+                                link.style.display = "none";
+                                link.setAttribute("href", download);
+                                link.setAttribute(
+                                    "download",
+                                    `tpw-scouting-${eventCode}-${teamNumber}.csv`
+                                );
+                                element.appendChild(link);
+                                link.click();
+                                link.remove();
+                            } else {
+                                element.querySelector(".red").innerHTML =
+                                    data.error || "Unknown error.";
+                            }
+                        } catch (err) {
+                            console.log("export csv error", err);
+                        }
+                    } else {
+                        try {
+                            let data = await (
+                                await fetch(
+                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                        eventCode
+                                    )}/csv`
+                                )
+                            ).json();
+                            if (data.success) {
+                                element.querySelector(".red").innerHTML =
+                                    "&nbsp;";
+                                let csv = data.body.csv;
+                                let download =
+                                    "data:text/csv;charset=utf-8," +
+                                    encodeURIComponent(csv);
+                                let link = document.createElement("a");
+                                link.style.display = "none";
+                                link.setAttribute("href", download);
+                                link.setAttribute(
+                                    "download",
+                                    `tpw-scouting-${eventCode}.csv`
+                                );
+                                element.appendChild(link);
+                                link.click();
+                                link.remove();
+                            } else {
+                                element.querySelector(".red").innerHTML =
+                                    data.error || "Unknown error.";
+                            }
+                        } catch (err) {
+                            console.log("export csv error", err);
+                        }
+                    }
+                    element.querySelector(".export-popup").style.display =
+                        "none";
+                    hideOverlay();
+                };
             resolve();
         });
-    }
+    };
 
     _this.showComparePage = () => {
         return new Promise(async (resolve, reject) => {
