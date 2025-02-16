@@ -669,15 +669,22 @@ export async function getTeamData(
     threshold: number = 10
 ) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
-    let requestedTeam = (await getTeamByNumber(requestedTeamNumber)) || { _id: "" };
-    let contributingTeam = (await getTeamByNumber(contributingTeamNumber)) || { _id: "" };
+    let requestedTeam = (await getTeamByNumber(requestedTeamNumber)) || {
+        _id: ""
+    };
+    let contributingTeam = (await getTeamByNumber(contributingTeamNumber)) || {
+        _id: ""
+    };
     if (!config.auth.scoutingAdmins.includes(contributingTeamNumber)) {
         let contributions;
         if (DIVISIONS.includes(event)) {
-            contributions = await getWorldsContributions(contributingTeamNumber);
+            contributions = await getWorldsContributions(
+                contributingTeamNumber
+            );
         } else {
             contributions = data.filter(
-                (entry: any) => entry.contributor.team == contributingTeam._id.toString()
+                (entry: any) =>
+                    entry.contributor.team == contributingTeam._id.toString()
             ).length;
         }
         let hashStarts = [
@@ -723,7 +730,10 @@ export async function getTeamData(
                 return entry;
             })
             .filter((entry: any) => entry != null)
-            .filter((entry: any) => entry.contributor.team == requestedTeam._id.toString());
+            .filter(
+                (entry: any) =>
+                    entry.contributor.team == requestedTeam._id.toString()
+            );
     }
     if (parsed) {
         return scoutingConfig.formatParsedData(data, categories, teams);
