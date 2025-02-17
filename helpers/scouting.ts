@@ -677,9 +677,7 @@ export async function getTeamData(
     };
     let contributions;
     if (DIVISIONS.includes(event)) {
-        contributions = await getWorldsContributions(
-            contributingTeamNumber
-        );
+        contributions = await getWorldsContributions(contributingTeamNumber);
     } else {
         contributions = data.filter(
             (entry: any) =>
