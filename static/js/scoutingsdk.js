@@ -2031,7 +2031,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 <div class="export-options">
                     <h2>Export Options</h2>
                     <div class="export-toggle">
-                        <p>Export my team's contributions</p>
+                        <p>Export only my team's contributions</p>
                         <div>
 						    <input type="checkbox" id="export-toggle"/>
 						    <label for="export-toggle"></label>
