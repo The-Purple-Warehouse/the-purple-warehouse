@@ -1578,9 +1578,16 @@ header .icon-button .send-container svg {
     width: clamp(300px, 95vw, 700px);
 }
 
+.leaderboard-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .leaderboard-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid #eee;
     gap: 10px;
@@ -1598,7 +1605,9 @@ header .icon-button .send-container svg {
 }
 
 .leaderboard-item .user-info {
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .leaderboard-item .username {
@@ -1617,6 +1626,8 @@ header .icon-button .send-container svg {
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .leaderboard-item .stats img {
@@ -1625,15 +1636,20 @@ header .icon-button .send-container svg {
     margin-left: 4px;
 }
 
+.leaderboard-item .stats .level {
+    flex-shrink: 0;
+}
+
 .leaderboard-item .currency {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-.leaderboard-item .currency .nuts,
-.leaderboard-item .currency .bolts {
+.leaderboard-item .nuts,
+.leaderboard-item .bolts {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 5px;
 }
