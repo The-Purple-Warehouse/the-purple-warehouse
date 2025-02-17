@@ -1588,7 +1588,8 @@ header .icon-button .send-container svg {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem;
+    font-size: clamp(0.65rem, 3vw, 1rem);
+    padding: clamp(0rem, 2.5vw, 1rem);
     border-bottom: 1px solid #eee;
     gap: 10px;
 }
@@ -1598,7 +1599,7 @@ header .icon-button .send-container svg {
 }
 
 .leaderboard-item .rank {
-    font-size: 1.5rem;
+    font-size: calc(1em + 0.5rem);
     font-weight: bold;
     width: 40px;
     text-align: center;
