@@ -1574,7 +1574,6 @@ header .icon-button .send-container svg {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.35);
-    overflow-y: scroll;
     width: clamp(300px, 95vw, 700px);
 }
 
