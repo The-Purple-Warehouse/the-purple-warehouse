@@ -661,6 +661,87 @@ export async function getSharedData(
     }
 }
 
+export async function getTeamData(
+    event: string,
+    requestedTeamNumber: string,
+    contributingTeamNumber: string,
+    parsed: boolean = false,
+    threshold: number = 10
+) {
+    let { data, categories, teams } = await getAllRawDataByEvent(event);
+    let requestedTeam = (await getTeamByNumber(requestedTeamNumber)) || {
+        _id: ""
+    };
+    let contributingTeam = (await getTeamByNumber(contributingTeamNumber)) || {
+        _id: ""
+    };
+    if (!config.auth.scoutingAdmins.includes(contributingTeamNumber)) {
+        let contributions;
+        if (DIVISIONS.includes(event)) {
+            contributions = await getWorldsContributions(
+                contributingTeamNumber
+            );
+        } else {
+            contributions = data.filter(
+                (entry: any) =>
+                    entry.contributor.team == contributingTeam._id.toString()
+            ).length;
+        }
+        let hashStarts = [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f"
+        ].slice(
+            0,
+            threshold > 0
+                ? Math.floor(
+                      (contributions > threshold ? threshold : contributions) *
+                          (16 / threshold)
+                  )
+                : 16
+        );
+        data = data
+            .map((entry: any) => {
+                if (entry.contributor.team != contributingTeam._id.toString()) {
+                    if (!hashStarts.includes(entry.hash[0])) {
+                        return null;
+                    }
+                    entry.comments = "[redacted for privacy]";
+                    entry.contributor.username = crypto
+                        .createHmac("sha256", config.auth.scoutingKeys[1])
+                        .update(entry.contributor.username)
+                        .digest("hex")
+                        .substring(0, 16);
+                    entry.ratings = [];
+                }
+                return entry;
+            })
+            .filter((entry: any) => entry != null)
+            .filter(
+                (entry: any) =>
+                    entry.contributor.team == requestedTeam._id.toString()
+            );
+    }
+    if (parsed) {
+        return scoutingConfig.formatParsedData(data, categories, teams);
+    } else {
+        return scoutingConfig.formatData(data, categories, teams);
+    }
+}
+
 export async function updateAccuracy(event: string) {
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let matches: any = {};
@@ -745,4 +826,38 @@ export async function getStats() {
         states: (await Team.distinct("state")).filter((state) => state != "")
             .length
     };
+}
+
+export async function aggregateLeaderboard() {
+    const leaders = await ScoutingEntry.aggregate([
+        {
+            $group: {
+                _id: {
+                    team: "$contributor.team",
+                    username: "$contributor.username"
+                },
+                totalXp: { $sum: "$xp" },
+                totalNuts: { $sum: "$nuts" },
+                totalBolts: { $sum: "$bolts" }
+            }
+        },
+        {
+            $lookup: {
+                from: "teams",
+                localField: "_id.team",
+                foreignField: "_id",
+                as: "teamInfo"
+            }
+        },
+        {
+            $project: {
+                username: "$_id.username",
+                team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
+                nuts: "$totalNuts",
+                bolts: "$totalBolts",
+                totalXp: 1
+            }
+        }
+    ]);
+    return leaders;
 }

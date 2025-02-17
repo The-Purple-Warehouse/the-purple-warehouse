@@ -9,7 +9,8 @@
     <script src="/js/papaparse.min.js"></script>
     <script src="/js/scoutingsdk.js?v=38"></script>
     <script src="/js/js-confetti.browser.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/npm.chart.js"></script>
+    <script src="/js/chartjs-chart-boxplot.js"></script>
     <meta name="theme-color" content="#7d4090" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#7d4090">
 
@@ -59,6 +60,9 @@
             await sdk.showPredictPage();
           } else if(page == "admin") {
             await sdk.showAdminPage();
+          } else if(page == "leaderboard") {
+            document.querySelector(".navbar a[data-page='leaderboard']").classList.add("active");
+            await sdk.showLeaderboardPage();
           } else {
             document.querySelector(".navbar a[data-page='home']").classList.add("active");
             await sdk.showHomePage();
@@ -66,6 +70,9 @@
         } else {
           document.querySelector(".navbar a[data-page='home']").classList.add("active");
           await sdk.showHomePage();
+        }
+        if (window.location.hash === '#/leaderboard') {
+          await sdk.showLeaderboardPage();
         }
       }
       window.onhashchange = () => {

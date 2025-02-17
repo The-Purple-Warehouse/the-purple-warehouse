@@ -54,6 +54,7 @@ main {
 
 .login-window,
 .data-window,
+.leaderboard-container,
 .match-window {
     position: relative;
     width: fit-content;
@@ -188,6 +189,7 @@ input:-webkit-autofill {
 .login-window > button,
 .data-window > button,
 .scanner-window button,
+.export-options button,
 .download-window button,
 .match-window .component-pagebutton,
 .match-window .component-notesbutton,
@@ -216,6 +218,7 @@ input:-webkit-autofill {
 .login-window > button:hover,
 .data-window > button:hover,
 .scanner-window button:hover,
+.export-options button:hover,
 .download-window button:hover,
 .match-window .component-pagebutton:hover,
 .match-window .component-notesbutton:hover,
@@ -227,6 +230,7 @@ input:-webkit-autofill {
 .login-window > button::after,
 .data-window > button::after,
 .scanner-window button::after,
+.export-options button::after,
 .download-window button::after,
 .match-window .component-pagebutton::after,
 .match-window .component-notesbutton::after,
@@ -248,6 +252,7 @@ input:-webkit-autofill {
 .login-window > button:active::after,
 .data-window > button:active::after,
 .scanner-window button:active::after,
+.export-options button:active::after,
 .download-window button:active::after,
 .match-window .component-pagebutton:active::after,
 .match-window .component-notesbutton:active::after,
@@ -454,6 +459,21 @@ div#app {
     justify-self: center;
     display: grid;
     place-items: center;
+}
+
+.export-options {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.export-options > h2 {
+    width: 100%;
+}
+
+.export-options > .button-group {
+    width: 100%;
 }
 
 /* NAVBAR */
@@ -1079,9 +1099,26 @@ header .icon-button .send-container svg {
     width: calc(100% - 20px);
     max-width: 350px;
     z-index: 200;
-    background-color: var(--backgroundColor);
+    background-color: #f1f1f1;
     color: var(--contentColor);
-    border-radius: 10px;
+    border-radius: var(--standard-border-radius);
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 15px;
+}
+
+.export-popup {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    width: calc(100% - 20px);
+    max-width: 500px;
+    z-index: 200;
+    background-color: #f1f1f1;
+    color: var(--contentColor);
+    border-radius: var(--standard-border-radius);
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -1213,6 +1250,7 @@ header .icon-button .send-container svg {
     position: relative;
     font-size: 1.25em;
     margin: 0.5rem 0;
+    min-width: 200px;
 }
 
 .status-box::before,
@@ -1321,27 +1359,28 @@ header .icon-button .send-container svg {
     display: flex;
     justify-content: space-around;
     align-items: center;
-	height: 45px;
-	background-color: #fefefe;
-	border-radius: var(--standard-border-radius);
+    height: 45px;
+    background-color: #fefefe;
+    border-radius: var(--standard-border-radius);
     overflow: hidden;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border: 1px solid #00000052;
-	font-size: 0;
+    font-size: 0;
 }
 
 .data-window .analysis-options nav a {
-	line-height: 45px;
-	height: 100%;
-	font-size: 15px;
-	display: inline-block;
-	text-decoration: none;
-	text-align: center;
-	color: black;
-	cursor: pointer;
-	width: 90px;
+    line-height: 45px;
+    height: 100%;
+    font-size: 15px;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    width: 90px;
     user-select: none;
-    transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out,
+        color 0.2s ease-in-out;
 }
 
 @media (max-width: 515px) {
@@ -1364,7 +1403,7 @@ header .icon-button .send-container svg {
 
 .data-window .analysis-options nav a.active {
     color: white;
-	background-color: var(--primaryBackgroundColor);
+    background-color: var(--primaryBackgroundColor);
 }
 
 .data-window .prediction {
@@ -1471,15 +1510,19 @@ header .icon-button .send-container svg {
     margin: 0;
 }
 
+.nav-right.header-incentives {
+    display: flex;
+}
+
 .header-incentives .xp {
     margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .header-incentives .xp p {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     margin: 0;
     color: var(--backgroundColor);
     font-size: 1rem;
@@ -1492,7 +1535,7 @@ header .icon-button .send-container svg {
     display: inline-block;
     vertical-align: middle;
     width: 40px;
-    height: 20px;
+    height: 8px;
     border: 2px solid var(--backgroundColor);
     border-radius: 5px;
     position: relative;
@@ -1523,6 +1566,92 @@ header .icon-button .send-container svg {
     .match-window {
         padding: 0 !important;
     }
+}
+
+/* Leaderboard Styles */
+
+.leaderboard-list {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.35);
+    width: clamp(300px, 95vw, 700px);
+}
+
+.leaderboard-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: clamp(0.65rem, 3vw, 1rem);
+    padding: clamp(0rem, 2.5vw, 1rem);
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+}
+
+.leaderboard-item:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-item .rank {
+    font-size: calc(1em + 0.5rem);
+    font-weight: bold;
+    width: 40px;
+    text-align: center;
+}
+
+.leaderboard-item .user-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.leaderboard-item .username {
+    font-weight: bold;
+    max-width: 175px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.leaderboard-item .team {
+    color: #666;
+}
+
+.leaderboard-item .stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.leaderboard-item .stats img {
+    width: 20px;
+    height: 20px;
+    margin-left: 4px;
+}
+
+.leaderboard-item .stats .level {
+    flex-shrink: 0;
+}
+
+.leaderboard-item .currency {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.leaderboard-item .nuts,
+.leaderboard-item .bolts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 
 @media (max-width: 1100px) {
@@ -1573,9 +1702,17 @@ header .icon-button .send-container svg {
     -webkit-transform: rotate(45deg);
 }
 
-/* MOBILE */
-
 /* TOGGLE */
+
+.export-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0px 2% 0px 2%;
+    padding: 0px 1% 0px 1%;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+}
 
 .component-toggle {
     display: flex;
@@ -1588,6 +1725,18 @@ header .icon-button .send-container svg {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+.export-toggle > p {
+    text-align: center;
+}
+
+.export-toggle > div {
+    display: grid;
+    place-items: center;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.export-toggle > p,
 .component-toggle > p {
     color: black;
     padding: 0.35rem;
@@ -1598,12 +1747,18 @@ header .icon-button .send-container svg {
     transition: 0.3s;
 }
 
+.export-toggle input[type="checkbox"] {
+    margin: 0;
+}
+
+.export-toggle input[type="checkbox"],
 .component-toggle input[type="checkbox"] {
     height: 0;
     width: 0;
     visibility: hidden;
 }
 
+.export-toggle label,
 .component-toggle label {
     cursor: pointer;
     text-indent: 50px;
@@ -1615,6 +1770,7 @@ header .icon-button .send-container svg {
     position: relative;
 }
 
+.export-toggle label:after,
 .component-toggle label:after {
     content: "";
     position: absolute;
@@ -1628,10 +1784,12 @@ header .icon-button .send-container svg {
     transition: 0.3s;
 }
 
+.export-toggle input:checked + label,
 .component-toggle input:checked + label {
     background: var(--primaryBackgroundColor);
 }
 
+.export-toggle input:checked + label:after,
 .component-toggle input:checked + label:after {
     left: 50%;
 }

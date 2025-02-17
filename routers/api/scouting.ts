@@ -17,7 +17,10 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
-    getTotalIncentives
+    getTeamData,
+    getTotalIncentives,
+    getLevelAndProgress,
+    aggregateLeaderboard
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -33,6 +36,7 @@ import {
     getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
+import Team from "../../models/team";
 import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
@@ -156,6 +160,25 @@ router.get(
             body: {
                 csv: await getSharedData(
                     ctx.params.event,
+                    ctx.session.scoutingTeamNumber
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
+    "/entry/data/event/:event/csv/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getTeamData(
+                    ctx.params.event,
+                    ctx.params.team,
                     ctx.session.scoutingTeamNumber
                 ),
                 notes: scoutingConfig.notes()
@@ -425,5 +448,74 @@ router.get(
         }
     }
 );
+
+router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    try {
+        const leaders = await aggregateLeaderboard();
+        const leadersWithLevels = leaders.map((leader) => {
+            const { level, progress } = getLevelAndProgress(leader.totalXp);
+            return {
+                ...leader,
+                level,
+                progress
+            };
+        });
+
+        const allSortedLeaders = [...leadersWithLevels].sort((a, b) => {
+            if (b.level === a.level) {
+                return b.totalXp - a.totalXp;
+            }
+            return b.level - a.level;
+        });
+
+        const top50 = allSortedLeaders.slice(0, 50);
+
+        const currentUserTeam = ctx.session.scoutingTeamNumber;
+        const currentUserName = ctx.session.scoutingUsername;
+        const currentUserIndex = allSortedLeaders.findIndex(
+            (leader) =>
+                leader.team.toString() === currentUserTeam &&
+                leader.username === currentUserName
+        );
+
+        let response = {
+            success: true,
+            body: {
+                leaders: top50,
+                currentUser: {
+                    username: currentUserName,
+                    team: currentUserTeam,
+                    level: allSortedLeaders[currentUserIndex].level,
+                    progress: allSortedLeaders[currentUserIndex].progress,
+                    nuts: allSortedLeaders[currentUserIndex].nuts,
+                    bolts: allSortedLeaders[currentUserIndex].bolts,
+                    totalXp: allSortedLeaders[currentUserIndex].totalXp,
+                    rank: currentUserIndex + 1
+                }
+            }
+        };
+
+        if (currentUserIndex >= 50) {
+            response.body.currentUser = {
+                username: currentUserName,
+                team: currentUserTeam,
+                level: allSortedLeaders[currentUserIndex].level,
+                progress: allSortedLeaders[currentUserIndex].progress,
+                nuts: allSortedLeaders[currentUserIndex].nuts,
+                bolts: allSortedLeaders[currentUserIndex].bolts,
+                totalXp: allSortedLeaders[currentUserIndex].totalXp,
+                rank: currentUserIndex + 1
+            };
+        }
+
+        ctx.body = response;
+    } catch (error) {
+        ctx.body = {
+            success: false,
+            error: "Unable to fetch leaderboard, please try again later."
+        };
+    }
+});
 
 export default router;
