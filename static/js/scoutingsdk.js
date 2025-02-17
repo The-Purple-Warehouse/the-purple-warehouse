@@ -5764,25 +5764,25 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                           .map(
                                               (leader, index) => `
                                 <div class="leaderboard-item">
-                                    <div class="rank">${index + 1}</div>
-                                    <div class="user-info">
-                                        <span class="username">${_this.escape(
-                                            leader.username
-                                        )}</span>
-                                        <span class="team">(${_this.escape(
-                                            leader.team
-                                        )})</span>
+                                    <div class="leaderboard-left">
+                                        <div class="rank">${index + 1}</div>
+                                        <div class="user-info">
+                                            <span class="username">${_this.escape(
+                                                leader.username
+                                            )}</span>
+                                            <span class="team">(${_this.escape(
+                                                leader.team
+                                            )})</span>
+                                        </div>
                                     </div>
                                     <div class="stats">
-                                        <div class="currency">
-                                            <div class="nuts">
-                                                <img src="/img/nuts.png" alt="Nuts" />
-                                                <span>${leader.nuts}</span>
-                                            </div>
-                                            <div class="bolts">
-                                                <img src="/img/bolts.png" alt="Bolts" />
-                                                <span>${leader.bolts}</span>
-                                            </div>
+                                        <div class="nuts">
+                                            <img src="/img/nuts.png" alt="Nuts" />
+                                            <span>${leader.nuts}</span>
+                                        </div>
+                                        <div class="bolts">
+                                            <img src="/img/bolts.png" alt="Bolts" />
+                                            <span>${leader.bolts}</span>
                                         </div>
                                         <div class="level">
                                             Level ${leader.level}
