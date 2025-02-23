@@ -36,7 +36,7 @@ import {
 import scoutingConfig from "../../config/scouting";
 import ScoutingEntry from "../../models/scoutingEntry";
 import Team from "../../models/team";
-//import { processAdmin } from "../../helpers/adminHelpers";
+import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -210,7 +210,6 @@ router.get("/team/get/:team", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
 });
 
-/*
 router.post("/team/add/:team", requireScoutingAuth, async (ctx, next) => {
     let body = ctx.request.body as any;
     if (config.auth.adminTokens[body.adminToken] != null) {
@@ -254,7 +253,6 @@ router.post("/team/add/:team", requireScoutingAuth, async (ctx, next) => {
     }
     addAPIHeaders(ctx);
 });
-*/
 
 router.post("/team/list", requireScoutingAuth, async (ctx, next) => {
     let body = ctx.request.body as any;
