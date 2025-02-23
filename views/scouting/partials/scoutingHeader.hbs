@@ -30,9 +30,9 @@
         </div>
       </div>
       <div class="xp">
+        <p>{{ incentives.level }}</p>
         <div class="xp-container">
           <div class="xp-filled" style="width: {{ percent incentives.progress }};"></div>
-          <p>{{ incentives.level }}</p>
         </div>
       </div>
     </div>
@@ -92,7 +92,7 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/admin"].includes(window.location.hash)) {
+          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/leaderboard", "#/admin"].includes(window.location.hash)) {
               try {
                   updatePage();
               } catch(err) {

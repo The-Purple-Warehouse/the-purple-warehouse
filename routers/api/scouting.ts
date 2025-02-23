@@ -17,8 +17,10 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
+    getTeamData,
     getTotalIncentives,
-    getLevelAndProgress
+    getLevelAndProgress,
+    aggregateLeaderboard
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -34,7 +36,6 @@ import {
     getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
-import ScoutingEntry from "../../models/scoutingEntry";
 import Team from "../../models/team";
 import { processAdmin } from "../../helpers/adminHelpers";
 
@@ -159,6 +160,25 @@ router.get(
             body: {
                 csv: await getSharedData(
                     ctx.params.event,
+                    ctx.session.scoutingTeamNumber
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
+    "/entry/data/event/:event/csv/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getTeamData(
+                    ctx.params.event,
+                    ctx.params.team,
                     ctx.session.scoutingTeamNumber
                 ),
                 notes: scoutingConfig.notes()
@@ -432,39 +452,8 @@ router.get(
 router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
-        const leaders = await ScoutingEntry.aggregate([
-            {
-                $group: {
-                    _id: {
-                        team: "$contributor.team",
-                        username: "$contributor.username"
-                    },
-                    totalXp: { $sum: "$xp" },
-                    totalNuts: { $sum: "$nuts" },
-                    totalBolts: { $sum: "$bolts" }
-                }
-            },
-            {
-                $lookup: {
-                    from: "teams",
-                    localField: "_id.team",
-                    foreignField: "_id",
-                    as: "teamInfo"
-                }
-            },
-            {
-                $project: {
-                    username: "$_id.username",
-                    team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
-                    nuts: "$totalNuts",
-                    bolts: "$totalBolts",
-                    totalXp: 1
-                }
-            }
-        ]);
-
-        // Apply the getLevelAndProgress function to each leader
-        const leadersWithLevels = leaders.map(leader => {
+        const leaders = await aggregateLeaderboard();
+        const leadersWithLevels = leaders.map((leader) => {
             const { level, progress } = getLevelAndProgress(leader.totalXp);
             return {
                 ...leader,
@@ -473,7 +462,6 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             };
         });
 
-        // Sort all leaders by level and XP
         const allSortedLeaders = [...leadersWithLevels].sort((a, b) => {
             if (b.level === a.level) {
                 return b.totalXp - a.totalXp;
@@ -486,7 +474,9 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
         const currentUserTeam = ctx.session.scoutingTeamNumber;
         const currentUserName = ctx.session.scoutingUsername;
         const currentUserIndex = allSortedLeaders.findIndex(
-            leader => leader.team.toString() === currentUserTeam && leader.username === currentUserName
+            (leader) =>
+                leader.team.toString() === currentUserTeam &&
+                leader.username === currentUserName
         );
 
         if (currentUserIndex === -1) {
