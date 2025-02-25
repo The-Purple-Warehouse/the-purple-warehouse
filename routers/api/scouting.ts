@@ -479,41 +479,46 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
                 leader.username === currentUserName
         );
 
-        let response = {
-            success: true,
-            body: {
-                leaders: top50,
-                currentUser: {
-                    username: currentUserName,
-                    team: currentUserTeam,
-                    level: allSortedLeaders[currentUserIndex].level,
-                    progress: allSortedLeaders[currentUserIndex].progress,
-                    nuts: allSortedLeaders[currentUserIndex].nuts,
-                    bolts: allSortedLeaders[currentUserIndex].bolts,
-                    totalXp: allSortedLeaders[currentUserIndex].totalXp,
-                    rank: currentUserIndex + 1
+        if (currentUserIndex === -1) {
+            ctx.body = {
+                success: true,
+                body: {
+                    leaders: top50,
+                    currentUser: null
                 }
-            }
-        };
-
-        if (currentUserIndex >= 50) {
-            response.body.currentUser = {
-                username: currentUserName,
-                team: currentUserTeam,
-                level: allSortedLeaders[currentUserIndex].level,
-                progress: allSortedLeaders[currentUserIndex].progress,
-                nuts: allSortedLeaders[currentUserIndex].nuts,
-                bolts: allSortedLeaders[currentUserIndex].bolts,
-                totalXp: allSortedLeaders[currentUserIndex].totalXp,
-                rank: currentUserIndex + 1
             };
+            return;
         }
 
-        ctx.body = response;
+        const currentUserData = {
+            username: currentUserName,
+            team: currentUserTeam,
+            level: allSortedLeaders[currentUserIndex].level,
+            progress: allSortedLeaders[currentUserIndex].progress,
+            nuts: allSortedLeaders[currentUserIndex].nuts,
+            bolts: allSortedLeaders[currentUserIndex].bolts,
+            totalXp: allSortedLeaders[currentUserIndex].totalXp,
+            rank: currentUserIndex + 1
+        };
+
+        let displayList = allSortedLeaders.slice(0, 50);
+        displayList.push({
+            ...allSortedLeaders[currentUserIndex],
+            rank: currentUserIndex + 1
+        });
+
+        ctx.body = {
+            success: true,
+            body: {
+                leaders: displayList,
+                currentUser: currentUserData
+            }
+        };
     } catch (error) {
         ctx.body = {
             success: false,
-            error: "Unable to fetch leaderboard, please try again later."
+            error: 'Unable to fetch leaderboard, please try again later.',
+            message: error.message
         };
     }
 });
