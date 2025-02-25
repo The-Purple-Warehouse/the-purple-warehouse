@@ -517,7 +517,7 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     } catch (error) {
         ctx.body = {
             success: false,
-            error: 'Unable to fetch leaderboard, please try again later.',
+            error: "Unable to fetch leaderboard, please try again later.",
             message: error.message
         };
     }
