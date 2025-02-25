@@ -5765,7 +5765,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               (leader, index) => `
                                 <div class="leaderboard-item">
                                     <div class="leaderboard-left">
-                                        <div class="rank">${index + 1}</div>
+                                        <div class="rank">${
+                                            leader.rank
+                                                ? leader.rank
+                                                : index + 1
+                                        }</div>
                                         <div class="user-info">
                                             <span class="username">${_this.escape(
                                                 leader.username
