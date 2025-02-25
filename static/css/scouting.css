@@ -1601,17 +1601,17 @@ header .icon-button .send-container svg {
 }
 
 .leaderboard-item:first-child {
-    background: gold;
+    background: linear-gradient(to right, #ffd7009f, white);
     border-bottom: none;
 }
 
 .leaderboard-item:nth-child(2) {
-    background: silver;
+    background: linear-gradient(to right, #c0c0c09f, white);
     border-bottom: none;
 }
 
 .leaderboard-item:nth-child(3) {
-    background: brown;
+    background: linear-gradient(to right, #8125259f, white);
     border-bottom: none;
 }
 
