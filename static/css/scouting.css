@@ -1570,6 +1570,13 @@ header .icon-button .send-container svg {
 
 /* Leaderboard Styles */
 
+.leaderboard-container {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-bottom: 200px;
+}
+
 .leaderboard-list {
     background: white;
     border-radius: 8px;
@@ -1591,6 +1598,21 @@ header .icon-button .send-container svg {
     padding: clamp(0rem, 2.5vw, 1rem);
     border-bottom: 1px solid #eee;
     gap: 10px;
+}
+
+.leaderboard-item:first-child {
+    background: gold;
+    border-bottom: none;
+}
+
+.leaderboard-item:nth-child(2) {
+    background: silver;
+    border-bottom: none;
+}
+
+.leaderboard-item:nth-child(3) {
+    background: brown;
+    border-bottom: none;
 }
 
 .leaderboard-item:last-child {
