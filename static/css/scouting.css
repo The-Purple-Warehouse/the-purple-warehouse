@@ -1571,7 +1571,6 @@ header .icon-button .send-container svg {
 /* Leaderboard Styles */
 
 .leaderboard-container {
-    padding: 1rem;
     max-width: 800px;
     margin: 0 auto;
     margin-bottom: 200px;
@@ -1588,6 +1587,7 @@ header .icon-button .send-container svg {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
 }
 
 .leaderboard-item {
