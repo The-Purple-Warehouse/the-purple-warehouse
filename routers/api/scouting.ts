@@ -169,25 +169,6 @@ router.get(
 );
 
 router.get(
-    "/entry/data/event/:event/csv/:team",
-    requireScoutingAuth,
-    async (ctx, next) => {
-        addAPIHeaders(ctx);
-        ctx.body = {
-            success: true,
-            body: {
-                csv: await getTeamData(
-                    ctx.params.event,
-                    ctx.params.team,
-                    ctx.session.scoutingTeamNumber
-                ),
-                notes: scoutingConfig.notes()
-            }
-        };
-    }
-);
-
-router.get(
     "/entry/data/event/:event/csv/parsed",
     requireScoutingAuth,
     async (ctx, next) => {
@@ -199,6 +180,25 @@ router.get(
                     ctx.params.event,
                     ctx.session.scoutingTeamNumber,
                     true
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
+    "/entry/data/event/:event/csv/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getTeamData(
+                    ctx.params.event,
+                    ctx.params.team,
+                    ctx.session.scoutingTeamNumber
                 ),
                 notes: scoutingConfig.notes()
             }
