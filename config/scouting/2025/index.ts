@@ -1208,6 +1208,8 @@ export async function analysis(event, teamNumber) {
             let b1 = match.alliances.blue.team_keys[0].replace("frc", "");
             let b2 = match.alliances.blue.team_keys[1].replace("frc", "");
             let b3 = match.alliances.blue.team_keys[2].replace("frc", "");
+            if (!allScoutedTeams.includes(r1) || !allScoutedTeams.includes(r2) || !allScoutedTeams.includes(r3) || !allScoutedTeams.includes(b1) || !allScoutedTeams.includes(b2) || !allScoutedTeams.includes(b3))
+                continue;
             let prediction = computePrediction(
                 b1,
                 b2,
