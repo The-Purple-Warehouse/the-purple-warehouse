@@ -1412,6 +1412,8 @@ header .icon-button .send-container svg {
 
 .data-window .analysis-content > .score-graphs,
 .data-window .analysis-content > .overall-graphs,
+.data-window .analysis-content > .predictions,
+.data-window > .prediction,
 .data-window .comparison > .graphs {
     width: clamp(300px, 90vw, 900px);
 }
