@@ -857,7 +857,7 @@ function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
             labels: ["L1", "L2", "L3", "L4", "Processor", "Net"],
             datasets: [
                 {
-                    label: "1072",
+                    label: `${team}`,
                     data: [
                         accuracyL1,
                         accuracyL2,
