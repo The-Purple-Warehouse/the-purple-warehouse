@@ -965,8 +965,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             formatted.username = `team${data.at}-${data.au}`;
                         }
 
-                        element.querySelector(".scanner-view > .scanned-label").innerHTML =
-                            "&nbsp;";
+                        element.querySelector(
+                            ".scanner-view > .scanned-label"
+                        ).innerHTML = "&nbsp;";
                         await reader.stop();
                         element.querySelector(
                             ".scanner-view > button.switch-camera"
