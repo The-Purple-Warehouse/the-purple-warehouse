@@ -44,6 +44,9 @@
       });
 
       async function updatePage() {
+
+        document.querySelectorAll(".navbar a.active").forEach(a => a.classList.remove("active"));
+
         if(window.location.hash != null && window.location.hash.startsWith("#/")) {
           let page = window.location.hash.substring(2);
           if(page == "scan-data") {
@@ -63,6 +66,9 @@
           } else if(page == "leaderboard") {
             document.querySelector(".navbar a[data-page='leaderboard']").classList.add("active");
             await sdk.showLeaderboardPage();
+          } else if(page == "shop") {
+            document.querySelector(".navbar a[data-page='shop']").classList.add("active");
+            await sdk.showShopPage();
           } else {
             document.querySelector(".navbar a[data-page='home']").classList.add("active");
             await sdk.showHomePage();

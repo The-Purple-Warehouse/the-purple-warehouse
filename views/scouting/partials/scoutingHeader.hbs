@@ -10,6 +10,7 @@
     <a data-page="compare-teams" href="#/compare-teams">Compare Teams</a>
     <a data-page="predict-outcomes" href="#/predict-outcomes">Predict Outcomes</a>
     <a data-page="leaderboard" href="#/leaderboard">Leaderboard</a>
+    <a data-page="shop" href="#/shop">Shop</a>
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
 </nav>
 <header>
@@ -173,6 +174,18 @@
               }
           }
           window.location.hash = "#/leaderboard";
+        };
+    document.querySelector(".navbar a[data-page='shop']").onclick =
+        async (e) => {
+          e.preventDefault();
+          if(window.location.hash == "#/shop") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+          }
+          window.location.hash = "#/shop";
         };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
         async (e) => {
