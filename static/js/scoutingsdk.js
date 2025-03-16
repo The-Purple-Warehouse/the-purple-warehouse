@@ -965,8 +965,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             formatted.username = `team${data.at}-${data.au}`;
                         }
 
-                        element.querySelector(".scanner-view > p").innerHTML =
-                            "&nbsp;";
+                        element.querySelector(
+                            ".scanner-view > .scanned-label"
+                        ).innerHTML = "&nbsp;";
                         await reader.stop();
                         element.querySelector(
                             ".scanner-view > button.switch-camera"
@@ -1504,6 +1505,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     </div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
+                <div class="export-popup"></div>
             `;
             let overlayShown = false;
             const defAnalysis = `
@@ -1514,12 +1516,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             `;
             function showOverlay() {
                 overlayShown = true;
-                setTimeout(() => {
-                    if (overlayShown) {
-                        element.querySelector(".overlay").style.display =
-                            "block";
-                    }
-                }, 500);
+                if (overlayShown) {
+                    element.querySelector(".overlay").style.display = "block";
+                }
             }
             function hideOverlay() {
                 overlayShown = false;
@@ -1540,7 +1539,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector(".data-table > tbody").innerHTML = "";
-                element.querySelector(".analysis").innerHTML = "";
+                element.querySelector(".analysis-content").innerHTML =
+                    defAnalysis;
                 element.querySelector(".analysis").style.display = "none";
                 try {
                     let data = await (
@@ -1629,7 +1629,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).value;
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
-                    element.querySelector(".analysis").innerHTML = "";
+                    element.querySelector(".analysis-content").innerHTML =
+                        defAnalysis;
                     element.querySelector(".analysis").style.display = "none";
                     try {
                         let data = await (
@@ -1735,6 +1736,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             .classList.remove("none");
                     };
                 });
+            const resetOptions = () => {
+                element
+                    .querySelectorAll(".analysis-options > nav > a")
+                    .forEach((el) => {
+                        el.classList.remove("active");
+                    });
+                element
+                    .querySelector(".analysis-options > nav > a:first-child")
+                    .classList.add("active");
+            };
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
@@ -1747,6 +1758,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     element.querySelector(".notes").innerHTML = "";
                     element.querySelector(".data-table > tbody").innerHTML = "";
                     element.querySelector(".data-table").style.display = "none";
+                    resetOptions();
                     element.querySelector(".analysis-content").innerHTML =
                         defAnalysis;
                     try {
@@ -1948,15 +1960,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 .map(
                                                                     (cell) =>
                                                                         `<td${
-                                                                            cell.includes(
-                                                                                `<b>${teamNumber}</b>`
-                                                                            )
+                                                                            cell
+                                                                                .toString()
+                                                                                .includes(
+                                                                                    `<b>${teamNumber}</b>`
+                                                                                )
                                                                                 ? ` style="background-color: yellow;"`
                                                                                 : ""
-                                                                        }>${cell.replaceAll(
-                                                                            "\\n",
-                                                                            "<br>"
-                                                                        )}</td>`
+                                                                        }>${cell
+                                                                            .toString()
+                                                                            .replaceAll(
+                                                                                "\\n",
+                                                                                "<br>"
+                                                                            )}</td>`
                                                                 )
                                                                 .join(
                                                                     ""
@@ -1992,43 +2008,153 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 };
             element.querySelector("button.download-csv").onclick = async () => {
                 showOverlay();
-                let eventCode = element.querySelector(
-                    ".data-window > select.event-code"
-                ).value;
-                let teamNumber = element.querySelector(
-                    ".data-window input.team-number"
-                ).value;
-                try {
-                    let data = await (
-                        await fetch(
-                            `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                eventCode
-                            )}/csv`
-                        )
-                    ).json();
-                    if (data.success) {
-                        element.querySelector(".red").innerHTML = "&nbsp;";
-                        let csv = data.body.csv;
-                        let download =
-                            "data:text/csv;charset=utf-8," +
-                            encodeURIComponent(csv);
-                        let link = document.createElement("a");
-                        link.style.display = "none";
-                        link.setAttribute("href", download);
-                        link.setAttribute(
-                            "download",
-                            `tpw-scouting-${eventCode}.csv`
-                        );
-                        element.appendChild(link);
-                        link.click();
-                        link.remove();
-                    } else {
-                        element.querySelector(".red").innerHTML =
-                            data.error || "Unknown error.";
-                    }
-                } catch (err) {}
-                hideOverlay();
+                await _this.showExportOptions();
             };
+            resolve();
+        });
+    };
+
+    _this.showExportOptions = () => {
+        return new Promise(async (resolve, reject) => {
+            function showOverlay() {
+                overlayShown = true;
+                if (overlayShown) {
+                    element.querySelector(".overlay").style.display = "block";
+                }
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                if (!overlayShown) {
+                    element.querySelector(".overlay").style.display = "none";
+                }
+            }
+            element.querySelector(".export-popup").innerHTML = `
+                <div class="export-options">
+                    <h2>Export Options</h2>
+                    <div class="export-toggle">
+                        <p>Export only my team's contributions</p>
+                        <div>
+						    <input type="checkbox" id="export-toggle"/>
+						    <label for="export-toggle"></label>
+                        </div>
+					</div>
+                    <p id="current-export">Currently exporting <span>all data.</span></p>
+                    <div class="button-group" style="display: flex; gap: 15px;">
+                        <button class="cancel-export">Cancel</button>
+                        <button class="export-csv">Export CSV</button>
+                    </div>
+                </div>
+            `;
+            element.querySelector(".export-popup").style.display = "flex";
+            element.querySelector(".export-popup .cancel-export").onclick =
+                () => {
+                    element.querySelector(".export-popup").style.display =
+                        "none";
+                    hideOverlay();
+                };
+            element.querySelector(
+                ".export-popup input#export-toggle"
+            ).onchange = () => {
+                if (
+                    element.querySelector(".export-popup input#export-toggle")
+                        .checked
+                ) {
+                    element.querySelector(
+                        ".export-popup p span"
+                    ).innerText = `data contributed by my team.`;
+                } else {
+                    element.querySelector(".export-popup p span").innerText =
+                        "all data.";
+                }
+            };
+            element.querySelector(".export-popup .export-csv").onclick =
+                async () => {
+                    let eventCode = element.querySelector(
+                        ".data-window > select.event-code"
+                    ).value;
+                    let teamNumber =
+                        element.querySelector(".data-window input.team-number")
+                            .value || config.account.team;
+                    let toggle = element.querySelector(
+                        ".export-popup input#export-toggle"
+                    ).checked; // true = my team's data
+                    if (toggle) {
+                        if (!teamNumber) {
+                            console.error(
+                                "export error: no team number found."
+                            );
+                            return;
+                        }
+                        try {
+                            let data = await (
+                                await fetch(
+                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                        eventCode
+                                    )}/csv/${teamNumber}`
+                                )
+                            ).json();
+                            if (data.success) {
+                                element.querySelector(".red").innerHTML =
+                                    "&nbsp;";
+                                let csv = data.body.csv;
+                                let download =
+                                    "data:text/csv;charset=utf-8," +
+                                    encodeURIComponent(csv);
+                                let link = document.createElement("a");
+                                link.style.display = "none";
+                                link.setAttribute("href", download);
+                                link.setAttribute(
+                                    "download",
+                                    `tpw-scouting-${eventCode}-${teamNumber}.csv`
+                                );
+                                element.appendChild(link);
+                                link.click();
+                                link.remove();
+                            } else {
+                                element.querySelector(".red").innerHTML =
+                                    data.error || "Unknown error.";
+                            }
+                        } catch (err) {
+                            console.log("export csv error", err);
+                        }
+                    } else {
+                        try {
+                            let data = await (
+                                await fetch(
+                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                        eventCode
+                                    )}/csv`
+                                )
+                            ).json();
+                            if (data.success) {
+                                element.querySelector(".red").innerHTML =
+                                    "&nbsp;";
+                                let csv = data.body.csv;
+                                let download =
+                                    "data:text/csv;charset=utf-8," +
+                                    encodeURIComponent(csv);
+                                let link = document.createElement("a");
+                                link.style.display = "none";
+                                link.setAttribute("href", download);
+                                link.setAttribute(
+                                    "download",
+                                    `tpw-scouting-${eventCode}.csv`
+                                );
+                                element.appendChild(link);
+                                link.click();
+                                link.remove();
+                            } else {
+                                element.querySelector(".red").innerHTML =
+                                    data.error || "Unknown error.";
+                            }
+                        } catch (err) {
+                            console.log("export csv error", err);
+                        }
+                    }
+                    element.querySelector(".export-popup").style.display =
+                        "none";
+                    hideOverlay();
+                };
             resolve();
         });
     };
@@ -5623,56 +5749,68 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     };
 
     _this.showLeaderboardPage = async () => {
-        try {
-            const response = await fetch('/api/v1/scouting/leaderboard');
-            const data = await response.json();
+        return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
+            try {
+                const response = await fetch("/api/v1/scouting/leaderboard");
+                const data = await response.json();
 
-            element.innerHTML = `
-                <div class="leaderboard-container">
-                    <h2>Scouting Leaderboard</h2>
-                    <div class="leaderboard-filters">
-                        <select id="timeframe-select">
-                            <option value="all">All Time</option>
-                            <option value="week">This Week</option>
-                            <option value="day">Today</option>
-                        </select>
-                    </div>
-                    <div class="leaderboard-list">
-                        ${data.success ? data.body.leaders.map((leader, index) => `
-                            <div class="leaderboard-item">
-                                <div class="rank">${leader.rank}</div>
-                                <div class="user-info">
-                                    <span class="username">${_this.escape(leader.username)}</span>
-                                    <span class="team">(${_this.escape(leader.team)})</span>
-                                </div>
-                                <div class="stats">
-                                    <div class="currency">
+                element.innerHTML = `
+                    <div class="leaderboard-container">
+                        <h2>Scouting Leaderboard</h2>
+                        <div class="leaderboard-list">
+                            ${
+                                data.success
+                                    ? data.body.leaders
+                                          .map(
+                                              (leader, index) => `
+                                <div class="leaderboard-item">
+                                    <div class="leaderboard-left">
+                                        <div class="rank">${
+                                            leader.rank
+                                                ? leader.rank
+                                                : index + 1
+                                        }</div>
+                                        <div class="user-info">
+                                            <span class="username">${_this.escape(
+                                                leader.username
+                                            )}</span>
+                                            <span class="team">(${_this.escape(
+                                                leader.team
+                                            )})</span>
+                                        </div>
+                                    </div>
+                                    <div class="stats">
                                         <div class="nuts">
-                                            <span>${leader.nuts}</span>
                                             <img src="/img/nuts.png" alt="Nuts" />
+                                            <span>${leader.nuts}</span>
                                         </div>
                                         <div class="bolts">
-                                            <span>${leader.bolts}</span>
                                             <img src="/img/bolts.png" alt="Bolts" />
+                                            <span>${leader.bolts}</span>
+                                        </div>
+                                        <div class="level">
+                                            Level ${leader.level}
                                         </div>
                                     </div>
-                                    <div class="level">
-                                        Level ${leader.level}
-                                    </div>
                                 </div>
-                            </div>
-                        `).join(''): '<p>Failed to fetch leaderboard data</p>'}
-                    </div>
-                </div>`;
-
-        } catch (error) {
-            console.error('Error loading leaderboard:', error);
-            element.innerHTML = `
-                <div class="leaderboard-container">
-                    <h2>Error Loading Leaderboard</h2>
-                    <p>Failed to load leaderboard data. Please try again later.</p>
-                </div>`;
-        }
+                            `
+                                          )
+                                          .join("")
+                                    : "<p>Failed to fetch leaderboard data</p>"
+                            }
+                        </div>
+                    </div>`;
+            } catch (error) {
+                console.error("Error loading leaderboard:", error);
+                element.innerHTML = `
+                    <div class="leaderboard-container">
+                        <h2>Error Loading Leaderboard</h2>
+                        <p>Failed to load leaderboard data. Please try again later.</p>
+                    </div>`;
+            }
+            resolve();
+        });
     };
 
     _this.showShopPage = async () => {

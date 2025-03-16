@@ -17,8 +17,10 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
+    getTeamData,
     getTotalIncentives,
-    getLevelAndProgress
+    getLevelAndProgress,
+    aggregateLeaderboard
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -34,7 +36,6 @@ import {
     getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
-import ScoutingEntry from "../../models/scoutingEntry";
 import Team from "../../models/team";
 import { 
     getShopItems, 
