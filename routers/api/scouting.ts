@@ -41,7 +41,7 @@ import {
     purchaseShopItem, 
     getUserInventory 
 } from "../../helpers/shop";
-//import { processAdmin } from "../../helpers/adminHelpers";
+import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
 
@@ -192,6 +192,25 @@ router.get(
 );
 
 router.get(
+    "/entry/data/event/:event/csv/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getTeamData(
+                    ctx.params.event,
+                    ctx.params.team,
+                    ctx.session.scoutingTeamNumber
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
     "/entry/data/event/:event/tba",
     requireScoutingAuth,
     async (ctx, next) => {
@@ -205,102 +224,103 @@ router.get(
     }
 );
 
-router.get(
-    "/team/get/:team",
-    requireScoutingAuth,
-    async (ctx, next) => {
+router.get("/team/get/:team", requireScoutingAuth, async (ctx, next) => {
+    ctx.body = {
+        success: true,
+        body: {
+            team: await getTeam(ctx.params.team)
+        }
+    };
+    addAPIHeaders(ctx);
+});
+
+router.post("/team/add/:team", requireScoutingAuth, async (ctx, next) => {
+    let body = ctx.request.body as any;
+    if (config.auth.adminTokens[body.adminToken] != null) {
+        let team = (await getTeamByNumber(ctx.params.team)) as any;
+        if (team == null) {
+            await addTeam(
+                body.teamName,
+                ctx.params.team,
+                body.accessToken,
+                body.country,
+                body.state
+            );
+            processAdmin(
+                config.auth.adminTokens[body.adminToken],
+                "add",
+                ctx.params.team,
+                body
+            );
+        } else {
+            let hashedAccessToken = await hashAccessToken(body.accessToken);
+            team.teamName = body.teamName;
+            team.accessToken = hashedAccessToken;
+            team.country = body.country;
+            team.state = body.state;
+            await team.save();
+            processAdmin(
+                config.auth.adminTokens[body.adminToken],
+                "update",
+                ctx.params.team,
+                body
+            );
+        }
+        ctx.body = {
+            success: true
+        };
+    } else {
+        ctx.body = {
+            success: false,
+            error: "Invalid admin token!"
+        };
+    }
+    addAPIHeaders(ctx);
+});
+
+router.post("/team/list", requireScoutingAuth, async (ctx, next) => {
+    let body = ctx.request.body as any;
+    if (config.auth.adminTokens[body.adminToken] != null) {
         ctx.body = {
             success: true,
             body: {
-                team: await getTeam(ctx.params.team)
-            }
-        };
-        addAPIHeaders(ctx);
-    }
-);
-
-/*
-router.post(
-    "/team/add/:team",
-    requireScoutingAuth,
-    async (ctx, next) => {
-        let body = ctx.request.body as any;
-        if(config.auth.adminTokens[body.adminToken] != null) {
-            let team = await getTeamByNumber(ctx.params.team) as any;
-            if(team == null) {
-                await addTeam(body.teamName, ctx.params.team, body.accessToken, body.country, body.state);
-                processAdmin(config.auth.adminTokens[body.adminToken], "add", ctx.params.team, body);
-            } else {
-                let hashedAccessToken = await hashAccessToken(body.accessToken);
-                team.teamName = body.teamName;
-                team.accessToken = hashedAccessToken;
-                team.country = body.country;
-                team.state = body.state;
-                await team.save();
-                processAdmin(config.auth.adminTokens[body.adminToken], "update", ctx.params.team, body);
-            }
-            ctx.body = {
-                success: true
-            };
-        } else {
-            ctx.body = {
-                success: false,
-                error: "Invalid admin token!"
-            };
-        }
-        addAPIHeaders(ctx);
-    }
-);*/
-
-router.post(
-    "/team/list",
-    requireScoutingAuth,
-    async (ctx, next) => {
-        let body = ctx.request.body as any;
-        if(config.auth.adminTokens[body.adminToken] != null) {
-            ctx.body = {
-                success: true,
-                body: {
-                    teams: (await getAllTeams()).map((team: any) => {
+                teams: (await getAllTeams())
+                    .map((team: any) => {
                         return {
                             name: team.teamName,
                             teamNumber: team.teamNumber,
                             country: team.country,
                             state: team.state
                         };
-                    }).sort((a: any, b: any) => {
+                    })
+                    .sort((a: any, b: any) => {
                         let aTeamNumber = parseInt(a.teamNumber);
                         let bTeamNumber = parseInt(b.teamNumber);
-                        if(isNaN(aTeamNumber)) {
+                        if (isNaN(aTeamNumber)) {
                             aTeamNumber = 9999999;
                         }
-                        if(isNaN(bTeamNumber)) {
+                        if (isNaN(bTeamNumber)) {
                             bTeamNumber = 9999999;
                         }
                         return aTeamNumber - bTeamNumber;
                     })
-                }
-            };
-        } else {
-            ctx.body = {
-                success: false,
-                error: "Invalid admin token!"
-            };
-        }
-        addAPIHeaders(ctx);
-    }
-);
-
-router.post(
-    "/team/add/:team",
-    requireScoutingAuth,
-    async (ctx, next) => {
-        ctx.body = {
-            success: false
+            }
         };
-        addAPIHeaders(ctx);
+    } else {
+        ctx.body = {
+            success: false,
+            error: "Invalid admin token!"
+        };
     }
-);
+    addAPIHeaders(ctx);
+});
+
+router.post("/team/add/:team", requireScoutingAuth, async (ctx, next) => {
+    ctx.body = {
+        success: false
+    };
+    addAPIHeaders(ctx);
+});
 
 router.get(
     "/entry/analysis/event/:event/:team",
@@ -436,41 +456,8 @@ router.get(
 router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
-        const leaders = await ScoutingEntry.aggregate([
-            {
-                $group: {
-                    _id: {
-                        team: "$contributor.team",
-                        username: "$contributor.username"
-                    },
-                    totalXp: { $sum: "$xp" },
-                    scansCount: { $sum: 1 },
-                    totalNuts: { $sum: "$nuts" },
-                    totalBolts: { $sum: "$bolts" }
-                }
-            },
-            {
-                $lookup: {
-                    from: "teams",
-                    localField: "_id.team",
-                    foreignField: "_id",
-                    as: "teamInfo"
-                }
-            },
-            {
-                $project: {
-                    username: "$_id.username",
-                    team: { $arrayElemAt: ["$teamInfo.teamNumber", 0] },
-                    scans: "$scansCount",
-                    nuts: "$totalNuts",
-                    bolts: "$totalBolts",
-                    totalXp: 1
-                }
-            }
-        ]);
-
-        // Apply the getLevelAndProgress function to each leader
-        const leadersWithLevels = leaders.map(leader => {
+        const leaders = await aggregateLeaderboard();
+        const leadersWithLevels = leaders.map((leader) => {
             const { level, progress } = getLevelAndProgress(leader.totalXp);
             return {
                 ...leader,
@@ -479,56 +466,63 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             };
         });
 
-        // Sort all leaders by level and XP
-        const allSortedLeaders = leadersWithLevels.sort((a, b) => {
+        const allSortedLeaders = [...leadersWithLevels].sort((a, b) => {
             if (b.level === a.level) {
                 return b.totalXp - a.totalXp;
             }
             return b.level - a.level;
         });
 
-        // Get top 50
         const top50 = allSortedLeaders.slice(0, 50);
 
-        // Find current user's position
         const currentUserTeam = ctx.session.scoutingTeamNumber;
         const currentUserName = ctx.session.scoutingUsername;
         const currentUserIndex = allSortedLeaders.findIndex(
-            leader => leader.team.toString() === currentUserTeam && leader.username === currentUserName
+            (leader) =>
+                leader.team.toString() === currentUserTeam &&
+                leader.username === currentUserName
         );
 
-        let response = {
-            success: true,
-            body: {
-                leaders: top50,
-                currentUser: {
-                    username: currentUserName,
-                    team: currentUserTeam,
-                    level: allSortedLeaders[currentUserIndex].level,
-                    progress: allSortedLeaders[currentUserIndex].progress,
-                    scans: allSortedLeaders[currentUserIndex].scans,
-                    nuts: allSortedLeaders[currentUserIndex].nuts,
-                    bolts: allSortedLeaders[currentUserIndex].bolts,
-                    totalXp: allSortedLeaders[currentUserIndex].totalXp,
-                    rank: currentUserIndex + 1
+        if (currentUserIndex === -1) {
+            ctx.body = {
+                success: true,
+                body: {
+                    leaders: top50,
+                    currentUser: null
                 }
-            }
-        };
-
-        // If user is not in top 50, add their position
-        if (currentUserIndex >= 50) {
-            response.body.currentUser = {
-                ...allSortedLeaders[currentUserIndex],
-                rank: currentUserIndex + 1
             };
+            return;
         }
 
-        ctx.body = response;
+        const currentUserData = {
+            username: currentUserName,
+            team: currentUserTeam,
+            level: allSortedLeaders[currentUserIndex].level,
+            progress: allSortedLeaders[currentUserIndex].progress,
+            nuts: allSortedLeaders[currentUserIndex].nuts,
+            bolts: allSortedLeaders[currentUserIndex].bolts,
+            totalXp: allSortedLeaders[currentUserIndex].totalXp,
+            rank: currentUserIndex + 1
+        };
+
+        let displayList = allSortedLeaders.slice(0, 50);
+        displayList.push({
+            ...allSortedLeaders[currentUserIndex],
+            rank: currentUserIndex + 1
+        });
+
+        ctx.body = {
+            success: true,
+            body: {
+                leaders: displayList,
+                currentUser: currentUserData
+            }
+        };
     } catch (error) {
-        console.error('Error fetching leaderboard:', error);
         ctx.body = {
             success: false,
-            error: 'Internal server error'
+            error: "Unable to fetch leaderboard, please try again later.",
+            message: error.message
         };
     }
 });
