@@ -2415,7 +2415,8 @@ div.preset {
 .shop-balance img {
     width: 24px;
     height: 24px;
-    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg) brightness(102%) contrast(105%);
+    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg)
+        brightness(102%) contrast(105%);
 }
 
 .shop-grid {
@@ -2432,7 +2433,7 @@ div.preset {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 }
 
@@ -2514,7 +2515,7 @@ div.preset {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 10px;
     }
-    
+
     .shop-container {
         padding: 10px;
     }
