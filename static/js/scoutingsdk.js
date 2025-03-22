@@ -5623,138 +5623,153 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     };
 
     _this.showLeaderboardPage = async () => {
-        try {
-            const response = await fetch('/api/v1/scouting/leaderboard');
-            const data = await response.json();
+        return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
+            try {
+                const response = await fetch("/api/v1/scouting/leaderboard");
+                const data = await response.json();
 
-            element.innerHTML = `
-                <div class="leaderboard-container">
-                    <h2>Scouting Leaderboard</h2>
-                    <div class="leaderboard-filters">
-                        <select id="timeframe-select">
-                            <option value="all">All Time</option>
-                            <option value="week">This Week</option>
-                            <option value="day">Today</option>
-                        </select>
-                    </div>
-                    <div class="leaderboard-list">
-                        ${data.success ? data.body.leaders.map((leader, index) => `
-                            <div class="leaderboard-item">
-                                <div class="rank">${leader.rank}</div>
-                                <div class="user-info">
-                                    <span class="username">${_this.escape(leader.username)}</span>
-                                    <span class="team">(${_this.escape(leader.team)})</span>
-                                </div>
-                                <div class="stats">
-                                    <div class="currency">
+                element.innerHTML = `
+                    <div class="leaderboard-container">
+                        <h2>Scouting Leaderboard</h2>
+                        <div class="leaderboard-list">
+                            ${
+                                data.success
+                                    ? data.body.leaders
+                                          .map(
+                                              (leader, index) => `
+                                <div class="leaderboard-item">
+                                    <div class="leaderboard-left">
+                                        <div class="rank">${
+                                            leader.rank
+                                                ? leader.rank
+                                                : index + 1
+                                        }</div>
+                                        <div class="user-info">
+                                            <span class="username">${_this.escape(
+                                                leader.username
+                                            )}</span>
+                                            <span class="team">(${_this.escape(
+                                                leader.team
+                                            )})</span>
+                                        </div>
+                                    </div>
+                                    <div class="stats">
                                         <div class="nuts">
-                                            <span>${leader.nuts}</span>
                                             <img src="/img/nuts.png" alt="Nuts" />
+                                            <span>${leader.nuts}</span>
                                         </div>
                                         <div class="bolts">
-                                            <span>${leader.bolts}</span>
                                             <img src="/img/bolts.png" alt="Bolts" />
+                                            <span>${leader.bolts}</span>
+                                        </div>
+                                        <div class="level">
+                                            Level ${leader.level}
                                         </div>
                                     </div>
-                                    <div class="level">
-                                        Level ${leader.level}
-                                    </div>
                                 </div>
-                            </div>
-                        `).join(''): '<p>Failed to fetch leaderboard data</p>'}
-                    </div>
-                </div>`;
-
-        } catch (error) {
-            console.error('Error loading leaderboard:', error);
-            element.innerHTML = `
-                <div class="leaderboard-container">
-                    <h2>Error Loading Leaderboard</h2>
-                    <p>Failed to load leaderboard data. Please try again later.</p>
-                </div>`;
-        }
+                            `
+                                          )
+                                          .join("")
+                                    : "<p>Failed to fetch leaderboard data</p>"
+                            }
+                        </div>
+                    </div>`;
+            } catch (error) {
+                console.error("Error loading leaderboard:", error);
+                element.innerHTML = `
+                    <div class="leaderboard-container">
+                        <h2>Error Loading Leaderboard</h2>
+                        <p>Failed to load leaderboard data. Please try again later.</p>
+                    </div>`;
+            }
+            resolve();
+        });
     };
 
     _this.showShopPage = async () => {
-        try {
-            element.innerHTML = `
-                <div class="shop-container">
-                    <h2>Shop</h2>
-                    <div class="shop-balance">
-                        <div class="currency">
-                            <div class="nuts">
-                                <span>0</span>
-                                <img src="/img/nuts.png" alt="Nuts" />
-                            </div>
-                            <div class="bolts">
-                                <span>0</span>
-                                <img src="/img/bolts.png" alt="Bolts" />
+        return new Promise(async (resolve, reject) => {
+            try {
+                element.innerHTML = `
+                    <div class="shop-container">
+                        <h2>Shop</h2>
+                        <div class="shop-balance">
+                            <div class="currency">
+                                <div class="nuts">
+                                    <span>0</span>
+                                    <img src="/img/nuts.png" alt="Nuts" />
+                                </div>
+                                <div class="bolts">
+                                    <span>0</span>
+                                    <img src="/img/bolts.png" alt="Bolts" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="shop-grid">
-                        ${[
-                            {
-                                name: "Coming Soon",
-                                description: "This item will be available soon!",
-                                price: { nuts: "???", bolts: "???" },
-                                image: "🎁",
-                                disabled: true
-                            },
-                            {
-                                name: "Coming Soon",
-                                description: "This item will be available soon!",
-                                price: { nuts: "???", bolts: "???" },
-                                image: "🎁",
-                                disabled: true
-                            },
-                            {
-                                name: "Coming Soon",
-                                description: "This item will be available soon!",
-                                price: { nuts: "???", bolts: "???" },
-                                image: "🎁",
-                                disabled: true
-                            },
-                            {
-                                name: "Coming Soon",
-                                description: "This item will be available soon!",
-                                price: { nuts: "???", bolts: "???" },
-                                image: "🎁",
-                                disabled: true
-                            }
-                        ].map(item => `
-                            <div class="shop-item${item.disabled ? ' disabled' : ''}">
-                                <div class="item-image">${item.image}</div>
-                                <div class="item-info">
-                                    <h3>${_this.escape(item.name)}</h3>
-                                    <p>${_this.escape(item.description)}</p>
-                                    <div class="item-price">
-                                        <div class="nuts">
-                                            <span>${item.price.nuts}</span>
-                                            <img src="/img/nuts.png" alt="Nuts" />
-                                        </div>
-                                        <div class="bolts">
-                                            <span>${item.price.bolts}</span>
-                                            <img src="/img/bolts.png" alt="Bolts" />
+                        <div class="shop-grid">
+                            ${[
+                                {
+                                    name: "Coming Soon",
+                                    description: "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                },
+                                {
+                                    name: "Coming Soon",
+                                    description: "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                },
+                                {
+                                    name: "Coming Soon",
+                                    description: "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                },
+                                {
+                                    name: "Coming Soon",
+                                    description: "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                }
+                            ].map(item => `
+                                <div class="shop-item${item.disabled ? ' disabled' : ''}">
+                                    <div class="item-image">${item.image}</div>
+                                    <div class="item-info">
+                                        <h3>${_this.escape(item.name)}</h3>
+                                        <p>${_this.escape(item.description)}</p>
+                                        <div class="item-price">
+                                            <div class="nuts">
+                                                <span>${item.price.nuts}</span>
+                                                <img src="/img/nuts.png" alt="Nuts" />
+                                            </div>
+                                            <div class="bolts">
+                                                <span>${item.price.bolts}</span>
+                                                <img src="/img/bolts.png" alt="Bolts" />
+                                            </div>
                                         </div>
                                     </div>
+                                    <button ${item.disabled ? 'disabled' : ''}>
+                                        ${item.disabled ? 'Coming Soon' : 'Purchase'}
+                                    </button>
                                 </div>
-                                <button ${item.disabled ? 'disabled' : ''}>
-                                    ${item.disabled ? 'Coming Soon' : 'Purchase'}
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
+                            `).join('')}
+                        </div>
+                    </div>`;
 
-        } catch (error) {
-            console.error('Error loading shop:', error);
-            element.innerHTML = `
-                <div class="shop-container">
-                    <h2>Error Loading Shop</h2>
-                    <p>Failed to load shop data. Please try again later.</p>
-                </div>`;
-        }
+            } catch (error) {
+                console.error('Error loading shop:', error);
+                element.innerHTML = `
+                    <div class="shop-container">
+                        <h2>Error Loading Shop</h2>
+                        <p>Failed to load shop data. Please try again later.</p>
+                    </div>`;
+            }
+            resolve();
+        });
     };
 
     //document.head.insertAdjacentHTML('beforeend', `<style>${shopStyles}</style>`);
