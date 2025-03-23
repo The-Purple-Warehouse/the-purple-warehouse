@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import ShopItem from '../models/shopItem';
-import UserInventory from '../models/userInventory';
-import { getTotalIncentives } from './scouting';
+import mongoose from "mongoose";
+import ShopItem from "../models/shopItem";
+import UserInventory from "../models/userInventory";
+import { getTotalIncentives } from "./scouting";
 
 export interface ShopItem {
     id: string;
@@ -32,7 +32,7 @@ interface Incentives {
 
 export async function getShopItems(): Promise<ShopItem[]> {
     const items = await ShopItem.find({ enabled: true });
-    return items.map(item => ({
+    return items.map((item) => ({
         id: item._id.toString(),
         name: item.name,
         description: item.description,
@@ -62,15 +62,21 @@ export async function purchaseShopItem(
             throw new Error("Item not available");
         }
 
-        const userBalance = await getTotalIncentives(teamNumber, username) as Incentives;
-        if (userBalance.nuts < item.price.nuts || userBalance.bolts < item.price.bolts) {
+        const userBalance = (await getTotalIncentives(
+            teamNumber,
+            username
+        )) as Incentives;
+        if (
+            userBalance.nuts < item.price.nuts ||
+            userBalance.bolts < item.price.bolts
+        ) {
             throw new Error("Insufficient funds");
         }
 
         await UserInventory.findOneAndUpdate(
             {
-                'user.team': teamNumber,
-                'user.username': username
+                "user.team": teamNumber,
+                "user.username": username
             },
             {
                 $push: {
@@ -86,8 +92,11 @@ export async function purchaseShopItem(
         // await deductCurrency(teamNumber, username, item.price);
 
         await session.commitTransaction();
-        
-        const newBalance = await getTotalIncentives(teamNumber, username) as Incentives;
+
+        const newBalance = (await getTotalIncentives(
+            teamNumber,
+            username
+        )) as Incentives;
 
         return {
             success: true,
@@ -121,9 +130,9 @@ export async function getUserInventory(
     username: string
 ): Promise<InventoryItem[]> {
     const inventory = await UserInventory.findOne({
-        'user.team': teamNumber,
-        'user.username': username
-    }).populate('items.itemId');
-    
+        "user.team": teamNumber,
+        "user.username": username
+    }).populate("items.itemId");
+
     return inventory ? inventory.items : [];
-} 
+}
