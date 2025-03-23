@@ -37,6 +37,11 @@ import {
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
 import Team from "../../models/team";
+import {
+    getShopItems,
+    purchaseShopItem,
+    getUserInventory
+} from "../../helpers/shop";
 import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
@@ -560,6 +565,91 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             success: false,
             error: "Unable to fetch leaderboard, please try again later.",
             message: error.message
+        };
+    }
+});
+
+router.get("/shop/items", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    try {
+        const items = await getShopItems();
+        const userTotals = await getTotalIncentives(
+            ctx.session.scoutingTeamNumber,
+            ctx.session.scoutingUsername
+        );
+
+        ctx.body = {
+            success: true,
+            body: {
+                items,
+                balance: {
+                    nuts: userTotals.nuts || 0,
+                    bolts: userTotals.bolts || 0
+                }
+            }
+        };
+    } catch (error) {
+        ctx.body = {
+            success: false,
+            error: "Failed to fetch shop items"
+        };
+    }
+});
+
+router.post(
+    "/shop/purchase/:itemId",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        try {
+            const result = await purchaseShopItem(
+                ctx.params.itemId,
+                ctx.session.scoutingTeamNumber,
+                ctx.session.scoutingUsername
+            );
+
+            if (result.success) {
+                ctx.body = {
+                    success: true,
+                    body: {
+                        message: "Purchase successful",
+                        item: result.item,
+                        newBalance: result.newBalance
+                    }
+                };
+            } else {
+                ctx.body = {
+                    success: false,
+                    error: result.error
+                };
+            }
+        } catch (error) {
+            ctx.body = {
+                success: false,
+                error: "Failed to process purchase"
+            };
+        }
+    }
+);
+
+router.get("/shop/inventory", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    try {
+        const inventory = await getUserInventory(
+            ctx.session.scoutingTeamNumber,
+            ctx.session.scoutingUsername
+        );
+
+        ctx.body = {
+            success: true,
+            body: {
+                inventory
+            }
+        };
+    } catch (error) {
+        ctx.body = {
+            success: false,
+            error: "Failed to fetch inventory"
         };
     }
 });
