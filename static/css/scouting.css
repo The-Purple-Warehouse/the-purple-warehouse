@@ -93,7 +93,8 @@ main {
 
 .login-window input,
 .home-window input,
-.data-window input {
+.data-window input,
+.popup-modal input {
     display: block;
     width: calc(100% - 10px);
     border: none;
@@ -111,25 +112,30 @@ main {
 
 .login-window input:focus,
 .home-window input:focus,
-.data-window input:focus {
-    outline: none;
+.data-window input:focus,
+.popup-modal input:focus {
+outline: none;
 }
 
 .login-window input:focus ~ .bar::before,
 .home-window input:focus ~ .bar::before,
-.data-window input:focus ~ .bar::before {
+.data-window input:focus ~ .bar::before,
+.popup-modal input:focus ~ .bar::before {
     width: 100%;
 }
 
-.login-window input:focus ~ label,
-.login-window input:valid ~ label,
-.login-window input:-webkit-autofill ~ label,
-.home-window input:focus ~ label,
-.home-window input:valid ~ label,
-.home-window input:-webkit-autofill ~ label,
-.data-window input:focus ~ label,
-.data-window input:valid ~ label,
-.data-window input:-webkit-autofill ~ label {
+.login-window input:focus ~ label:not([data-checkbox]),
+.login-window input:valid ~ label:not([data-checkbox]),
+.login-window input:-webkit-autofill ~ label:not([data-checkbox]),
+.home-window input:focus ~ label:not([data-checkbox]),
+.home-window input:valid ~ label:not([data-checkbox]),
+.home-window input:-webkit-autofill ~ label:not([data-checkbox]),
+.data-window input:focus ~ label:not([data-checkbox]),
+.data-window input:valid ~ label:not([data-checkbox]),
+.data-window input:-webkit-autofill ~ label:not([data-checkbox]),
+.popup-modal input:focus ~ label:not([data-checkbox]),
+.popup-modal input:valid ~ label:not([data-checkbox]),
+.popup-modal input:-webkit-autofill ~ label:not([data-checkbox]) {
     top: -14px;
     font-size: 12px;
     color: var(--theme-primary);
@@ -188,8 +194,9 @@ input:-webkit-autofill {
 .home-window > button,
 .login-window > button,
 .data-window > button,
+.data-window > .button-row button,
 .scanner-window button,
-.export-options button,
+.popup-modal button,
 .download-window button,
 .match-window .component-pagebutton,
 .match-window .component-notesbutton,
@@ -214,14 +221,23 @@ input:-webkit-autofill {
     overflow: hidden;
 }
 
+.match-window .component-pagebutton {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .home-window > button:hover,
 .login-window > button:hover,
 .data-window > button:hover,
+.data-window > .button-row button:hover,
 .scanner-window button:hover,
-.export-options button:hover,
+.popup-modal button:hover,
+.analysis-popup button:hover,
 .download-window button:hover,
 .match-window .component-pagebutton:hover,
 .match-window .component-notesbutton:hover,
+.popup-modal .close-btn:hover,
+.popup-modal .popup-options > div.options-back:hover,
 .location-popup > button:hover {
     filter: brightness(1.25);
 }
@@ -229,12 +245,16 @@ input:-webkit-autofill {
 .home-window > button::after,
 .login-window > button::after,
 .data-window > button::after,
+.data-window > .button-row button::after,
 .scanner-window button::after,
-.export-options button::after,
+.popup-modal button::after,
+.analysis-popup button::after,
 .download-window button::after,
 .match-window .component-pagebutton::after,
 .match-window .component-notesbutton::after,
-.location-popup > button:after {
+.popup-modal .close-btn::after,
+.popup-modal .popup-options > div.options-back::after,
+.location-popup > button::after {
     content: "";
     position: absolute;
     width: 0;
@@ -248,17 +268,36 @@ input:-webkit-autofill {
     transition: width 0.2s ease, height 0.2s ease;
 }
 
+.data-window button.clear::after {
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+div:has(> button.data-filters) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .home-window > button:active::after,
 .login-window > button:active::after,
 .data-window > button:active::after,
+.data-window > .button-row button:active::after,
 .scanner-window button:active::after,
-.export-options button:active::after,
+.popup-modal button:active::after,
+.analysis-popup button:active::after,
 .download-window button:active::after,
 .match-window .component-pagebutton:active::after,
 .match-window .component-notesbutton:active::after,
+.popup-modal .close-btn:active::after,
+.popup-modal .popup-options > div.options-back:active::after,
 .location-popup > button:active::after {
     width: 500px;
     height: 500px;
+}
+
+button.clear {
+    background-color: transparent !important;
+    border: none !important;
 }
 
 .scanner-window button {
@@ -439,19 +478,6 @@ select.team > option {
     color: var(--primaryBackgroundColor);
 }
 
-.button-row {
-    width: max-content;
-    margin-left: 50%;
-    transform: translate(-50%, 0);
-}
-
-.button-row > button {
-    width: auto;
-    font-size: 0.8rem;
-    margin: auto;
-    transform: none;
-}
-
 div#app {
     height: clamp(300px, calc(100dvh - 95px), 950px);
     grid-row: 2;
@@ -461,24 +487,40 @@ div#app {
     place-items: center;
 }
 
-.export-options {
-    width: 90%;
+.popup-modal > h2 {
+    width: 100%;
+}
+
+.popup-modal > .button-group {
+    width: 100%;
+}
+
+.button-row {
+    width: min(100%, 350px);
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
-.export-options > h2 {
-    width: 100%;
+body .data-window .data-filters {
+    height: 45px;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 50%;
+    padding: 5px;
 }
 
-.export-options > .button-group {
-    width: 100%;
+.data-window .data-filters > svg {
+    width: inherit;
+    height: inherit;
 }
 
 /* NAVBAR */
 
-header {
+body > header {
     grid-row: 1;
     display: grid;
     align-items: center;
@@ -491,25 +533,25 @@ header {
     height: 55px;
 }
 
-header > .nav-left {
+body > header > .nav-left {
     justify-self: left;
     margin-left: 5px;
 }
 
-header > .nav-right {
+body > header > .nav-right {
     justify-self: right;
     margin-right: 5px;
 }
 
-header > .nav-middle {
+body > header > .nav-middle {
     justify-self: center;
 }
 
-header > h3 {
+body > header > h3 {
     margin: 0;
 }
 
-header .header-btn {
+body > header .header-btn {
     width: 2rem;
     height: 2rem;
     background-color: transparent;
@@ -1101,29 +1143,233 @@ header .icon-button .send-container svg {
     z-index: 200;
     background-color: #f1f1f1;
     color: var(--contentColor);
-    border-radius: var(--standard-border-radius);
+    border-radius: calc(var(--standard-border-radius) - 3px);
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
     padding-top: 20px;
     padding-bottom: 20px;
     gap: 15px;
 }
 
-.export-popup {
+.options-slider {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+}
+
+.options-slider > div,
+.popup-content > .popup-confirm {
+    background-color: transparent;
+    height: 60px;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.popup-content > .popup-confirm,
+.popup-options .options-slider > .popup-confirm {
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-element {
+    position: relative;
+}
+
+.popup-label {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    margin: 1rem 0rem 1rem 0rem;
+}
+
+.popup-label > p {
+    margin: 0;
+}
+
+.popup-content .subtext {
+    font-size: 0.7rem;
+}
+
+.options-slider > div::after,
+.popup-element::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 85%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    filter: blur(0.3px);
+}
+
+.options-slider > div > div.options-expand,
+.popup-content > .popup-confirm > div.options-expand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15px;
+    width: 15px;
+}
+
+.options-slider > div > div.options-expand > svg,
+.popup-content > .popup-confirm > div.options-expand > svg {
+    height: inherit;
+    width: inherit;
+}
+
+.popup-modal {
     display: none;
     flex-direction: column;
     align-items: center;
     position: fixed;
     width: calc(100% - 20px);
-    max-width: 500px;
+    max-width: 700px;
+    min-height: 300px;
     z-index: 200;
-    background-color: #f1f1f1;
+    background-color: #ffffff;
     color: var(--contentColor);
-    border-radius: var(--standard-border-radius);
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px 0px 20px 0px;
+    margin: 0;
     gap: 15px;
+    border-radius: calc(var(--standard-border-radius) - 3px);
 }
+
+.popup-options {
+    position: relative;
+    width: 90%;
+}
+
+.popup-modal .popup-options .toggle-element {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.popup-modal .popup-options header > h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.opacity-none {
+    opacity: 0;
+}
+
+.popup-modal .popup-options > span.close-btn {
+    font-size: 2rem;
+    line-height: 1.25rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.popup-modal .close-btn::after,
+.popup-modal .popup-options > div.options-back::after {
+    background: rgb(0, 0, 0, 0.1);
+}
+
+.popup-modal .close-btn:hover,
+.popup-modal .popup-options > div.options-back:hover {
+    filter: brightness(0.75);
+}
+
+.popup-modal .popup-options > div.options-back {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.popup-modal .popup-options > div.options-back:not(.opacity-none) {
+    opacity: 1;
+}
+
+.popup-modal .popup-options > div.options-back > svg {
+    width: 16px;
+    height: 16px;
+}
+
+.popup-modal .popup-options header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5em;
+}
+
+.popup-modal .popup-options .popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup-modal .popup-options .popup-content .group {
+    margin: 0;
+    padding: 0.75rem 0 0.75rem 0;
+}
+
+.popup-modal .popup-options .popup-content .group > input {
+    border-bottom: none;
+}
+
+.popup-modal .popup-options .popup-content .group > label {
+    top: calc(0.75rem + 10px);
+}
+
+.popup-modal .popup-content .group > input:focus ~ label:not([data-checkbox]) {
+    top: 0;
+}
+
+.popup-modal.open {
+    display: flex;
+}
+
+@media only screen and (max-width: 700px) { /* phones */
+    .popup-modal {
+        display: none;
+        position: absolute;
+        transform: translateY(100vh);
+        left: 0;
+        bottom: 0;
+        transition: transform 0.3s ease-in-out;
+        width: 100%;
+        border-radius: 0px;
+    }
+
+    .popup-modal.open {
+        transform: none;
+    }
+}  
 
 .location-popup > button {
     width: min(80%, 350px);
@@ -1138,22 +1384,57 @@ header .icon-button .send-container svg {
     margin-top: 0;
     margin-bottom: 15px;
 }
-.location-popup > div > h3 {
+
+.location-popup > div > .option-container > div h3 {
     display: inline-block;
     vertical-align: middle;
     margin: 0;
     margin-left: 20px;
     margin-right: 20px;
-    font-weight: 500;
+    color: white;
+    font-weight: normal;
 }
 
-.location-popup > div > button {
+.location-popup > div > .option-container > div h4 {
     display: inline-block;
-    background-color: var(--primaryBackgroundColor);
-    border: 2px solid var(--primaryBackgroundColor);
+    vertical-align: middle;
+    margin: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+    color: white;
+    font-weight: normal;
+    font-size: 0.8rem;
+}
+
+.location-popup > div > .option-container > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-popup > div > .option-container > div > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-popup .option-container {
+    display: flex;
+    align-items: center;
+    background: var(--primaryBackgroundColor);
+    overflow: hidden;
+    border-radius: calc(var(--standard-border-radius) - 2px);
+}
+
+.location-popup .option-container > button {
+    display: inline-block;
+    background-color: transparent;
     border-radius: 5px;
+    border: none;
     font-size: 1.5rem;
-    color: var(--primaryContentColor);
+    color: white;
     box-sizing: border-box;
     text-align: center;
     cursor: pointer;
@@ -1161,6 +1442,10 @@ header .icon-button .send-container svg {
     height: 50px;
     vertical-align: middle;
     position: relative;
+}
+
+.location-popup .option-container > button > span {
+    vertical-align: 3px; /* harcoded :( */
 }
 
 .location-popup > div > button.toggle {
@@ -1243,7 +1528,7 @@ header .icon-button .send-container svg {
 }
 
 .status-box {
-    padding: 0.75rem 2rem;
+    padding: 0.75rem 3rem;
     border: 1px solid black;
     border-radius: 8px;
     text-align: center;
@@ -1556,12 +1841,53 @@ header .icon-button .send-container svg {
     .data-window table {
         overflow-x: initial;
     }
-    .data-window-visible {
-        overflow-x: auto;
-    }
+    
     .match-window .component-timer {
         width: 100%;
     }
+
+    .ag-paging-panel {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 0px;
+        height: unset;
+    }
+}
+
+.ag-theme-alpine .row-selected-custom {
+    background-color: #cdb4db !important;
+}
+
+.ag-row-selected:before {
+    background-color: color-mix(in srgb, transparent, #5b16d6 12%) !important;
+}
+
+.ag-row-hover:before {
+    background-color: color-mix(in srgb, transparent, #5b16d6 6%) !important;
+}
+
+.ag-input-wrapper:before {
+    width: 0px;
+}
+
+span.current-team-tag {
+    display: inline-flex;
+    width: 90px;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+    background-color: rgb(195 69 218 / 30%);
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+.ag-cell * {
+    --ag-checkbox-checked-background-color: #984bb5 !important;
+    --ag-checkbox-checked-border-color: #9755c5b5 !important;
+}
+
+.ag-icon-filter::before {
+    mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAChklEQVR4nO2Zu24TQRSGPxeElgYbEVIYHoECCJdXQAIH+YKECA+AxEVESAl0wAsgUUEKpCiiIDFKDYGGS96AhhZSBZGQ2MFwpH+lKQxi8czYu+wnjbTy5f/3jPecOTOGgoKR5AAwDcwDa8A6sKPxBfig9y4DFUaQM0Ab6AC9vxz22WXgNCPAEWDFubku8Aq4BhwDysAeDbs+DlwHVvXZ5HsvgMPDCqIFfNWNfAPuAftTfN8Cuw9sSmMDaBCZOWc2F4DxAbQOAYuO3iyRuCvDH7ouedK9CuzGCqYlIzOsBdCfcoKpEzCxk5y4FcoEmHFyphrCYMXJiZCUnJxph1gneqowE4RnXJWwB5zyKdyWqJXYWFhpNs8ln21HRwtYmnViUGyd6aq9seuBuaKZeUl8Xsv7kg+xeYlZ2xGbG/J+7ENsTWLWO8VmUt7vfIitSyxmfiRU5P3Zh9i2xMaIz155f89LIBt5ebQ++kx22xTF5qS8rQznovw+8iE2LTHbnsbmjbzP+XpOkxbFS6uQskXpAPt8iS5rZqyRi8UDeVpL740TEt0aQht/1Ld425khX/v0fpj2M3k9D2FQ1cLU03Y0FLflYSeTB0OZNJzDBzso8M0F5/DhLIGZdYKZ8fSYlfRLJEHs6sSGWMEkOWOHbP/KhJMT7rDS2yQCdSdnNlWa06wzZZXYLacx7PYJpkEEqk41S4xX1VpMajEd06jotZvqndybXlBiN4cZDDqyWUr5t4JtD572aUZ/F0ydiJR1UPAEeK8Suq3F7RPwFniom/rTtqAxCsH4wsp7p08wF8lRMC0yyFSegqn9D8E0yWgwO0UwGSkAc2SU885jdoeMU4v5d3ZBwa8Z+Ak4rhMJLuUtjQAAAABJRU5ErkJggg==) !important;
 }
 
 @media (max-width: 420px) {
@@ -1728,7 +2054,7 @@ header .icon-button .send-container svg {
 
 /* TOGGLE */
 
-.export-toggle {
+.popup-modal input[type="checkbox"] {
     width: 100%;
     display: flex;
     align-items: center;
@@ -1749,18 +2075,7 @@ header .icon-button .send-container svg {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-.export-toggle > p {
-    text-align: center;
-}
-
-.export-toggle > div {
-    display: grid;
-    place-items: center;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.export-toggle > p,
+.popup-options > p,
 .component-toggle > p {
     color: black;
     padding: 0.35rem;
@@ -1771,18 +2086,18 @@ header .icon-button .send-container svg {
     transition: 0.3s;
 }
 
-.export-toggle input[type="checkbox"] {
+.popup-options input[type="checkbox"] {
     margin: 0;
 }
 
-.export-toggle input[type="checkbox"],
+.popup-options input[type="checkbox"],
 .component-toggle input[type="checkbox"] {
     height: 0;
     width: 0;
     visibility: hidden;
 }
 
-.export-toggle label,
+.popup-options label[data-checkbox],
 .component-toggle label {
     cursor: pointer;
     text-indent: 50px;
@@ -1794,7 +2109,7 @@ header .icon-button .send-container svg {
     position: relative;
 }
 
-.export-toggle label:after,
+.popup-options label[data-checkbox]:after,
 .component-toggle label:after {
     content: "";
     position: absolute;
@@ -1808,14 +2123,18 @@ header .icon-button .send-container svg {
     transition: 0.3s;
 }
 
-.export-toggle input:checked + label,
+.popup-options input[type="checkbox"]:checked + label,
 .component-toggle input:checked + label {
     background: var(--primaryBackgroundColor);
 }
 
-.export-toggle input:checked + label:after,
+.popup-options input[type="checkbox"]:checked + label:after,
 .component-toggle input:checked + label:after {
     left: 50%;
+}
+
+div:has(> label[data-checkbox]) {
+    position: relative;
 }
 
 /* GENERIC */

@@ -319,6 +319,47 @@ router.post("/team/add/:team", requireScoutingAuth, async (ctx, next) => {
 });
 
 router.get(
+    "/entry/analysis/event/:event",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        // let entries = await getTeamEntriesByEvent(
+        //     ctx.params.event,
+        //     ctx.session.scoutingTeamNumber
+        // );
+        let entries = await getNumberOfEntriesByEvent(ctx.params.event);
+        let analysis: any = {
+            display: [],
+            data: {}
+        };
+        if (
+            // entries.length >= 5 ||
+            // config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)
+            entries >= 1
+        ) {
+            analysis = await scoutingConfig.analysis(
+                ctx.params.event,
+                undefined
+            );
+        }
+        if (analysis.display.length > 0) {
+            ctx.body = {
+                success: true,
+                body: {
+                    display: analysis.display,
+                    data: analysis.data
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Not enough data has been collected at this event to run the analyzer for this team. Please try entering a different event or check back later after scouting more matches!`
+            };
+        }
+    }
+);
+
+router.get(
     "/entry/analysis/event/:event/:team",
     requireScoutingAuth,
     async (ctx, next) => {

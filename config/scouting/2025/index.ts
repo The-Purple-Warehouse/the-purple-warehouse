@@ -927,7 +927,7 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 
 export function formatData(data, categories, teams) {
-    return `,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `entry,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
@@ -995,9 +995,10 @@ export function parseFormatted(format: string): parsedRow[] {
     };
 
     const rows = format.split("\n").slice(1);
-    return rows.map((row) => {
+    return rows.map((row, i) => {
         const columns = simplify(row);
         return {
+            entry: i,
             match: parseInt(columns[1], 10),
             team: columns[2],
             alliance: columns[3],
@@ -1042,7 +1043,7 @@ let parsedScoring = {
 };
 
 export function formatParsedData(data, categories, teams) {
-    return `,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `entry,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
@@ -1182,6 +1183,62 @@ export async function analysis(event, teamNumber) {
             hasAllTeams = allScoutedTeams.includes(allTeams[i]);
         }
         const rankings = computeRankings(allParsedData);
+
+        const processRankings = async(rs) => {
+            let rankingsTeams = Object.keys(rs);
+            let rankingsArr = [];
+            for (let i = 0; i < rankingsTeams.length; i++) {
+                rankingsArr.push({
+                    teamNumber: rankingsTeams[i],
+                    offenseScore: rs[rankingsTeams[i]]["off-score"],
+                    defenseScore: rs[rankingsTeams[i]]["def-score"]
+                });
+            }
+            let offense = rankingsArr
+                .sort((a, b) => b.offenseScore - a.offenseScore)
+                .map((ranking) => ({
+                    team: ranking.teamNumber,
+                    offense: ranking.offenseScore
+                }));
+            let defense = rankingsArr
+                .sort((a, b) => b.defenseScore - a.defenseScore)
+                .map((ranking) => ranking.teamNumber);
+            data.offenseRankings = offense;
+            let tableRankings = [["Team", "TPW Offense Score"]];
+            function ending(num) {
+                if (num % 100 >= 4 && num % 100 <= 20) {
+                    return "th";
+                } else if (num % 10 == 1) {
+                    return "st";
+                } else if (num % 10 == 2) {
+                    return "nd";
+                } else if (num % 10 == 3) {
+                    return "rd";
+                } else {
+                    return "th";
+                }
+            }
+            for (let i = 0; i < offense.length; i++) {
+                tableRankings.push([
+                    `<b>${offense[i].team}</b>`,
+                    offense[i].offense
+                ]);
+            }
+            return tableRankings;
+        };
+        
+        // undefined teamNumber means we are just requesting the rankings
+        // all processing underneath of graphs+predictions requires teamNumber
+        if (teamNumber == undefined) {
+            analyzed.push({
+                type: "table",
+                category: "rank",
+                label: "Rankings",
+                values: await processRankings(rankings)
+            });
+            return { display: analyzed, data: data }; // return only the rankings
+        }
+
         const graph0 = getGraph(0, allParsedData, teamNumber);
         const graph3 = getGraph(3, allParsedData, teamNumber);
         const graph4 = getGraph(4, allParsedData, teamNumber);
@@ -1250,45 +1307,6 @@ export async function analysis(event, teamNumber) {
 
         data.predictions = predictions;
 
-        let rankingsTeams = Object.keys(rankings);
-        let rankingsArr = [];
-        for (let i = 0; i < rankingsTeams.length; i++) {
-            rankingsArr.push({
-                teamNumber: rankingsTeams[i],
-                offenseScore: rankings[rankingsTeams[i]]["off-score"],
-                defenseScore: rankings[rankingsTeams[i]]["def-score"]
-            });
-        }
-        let offense = rankingsArr
-            .sort((a, b) => b.offenseScore - a.offenseScore)
-            .map((ranking) => ({
-                team: ranking.teamNumber,
-                offense: ranking.offenseScore
-            }));
-        let defense = rankingsArr
-            .sort((a, b) => b.defenseScore - a.defenseScore)
-            .map((ranking) => ranking.teamNumber);
-        data.offenseRankings = offense;
-        let tableRankings = [["Team", "TPW Offense Score"]];
-        function ending(num) {
-            if (num % 100 >= 4 && num % 100 <= 20) {
-                return "th";
-            } else if (num % 10 == 1) {
-                return "st";
-            } else if (num % 10 == 2) {
-                return "nd";
-            } else if (num % 10 == 3) {
-                return "rd";
-            } else {
-                return "th";
-            }
-        }
-        for (let i = 0; i < offense.length; i++) {
-            tableRankings.push([
-                `<b>${offense[i].team}</b>`,
-                offense[i].offense
-            ]);
-        }
         analyzed.push({
             type: "config",
             category: "score",
@@ -1335,7 +1353,7 @@ export async function analysis(event, teamNumber) {
             type: "table",
             category: "rank",
             label: "Rankings",
-            values: tableRankings
+            values: processRankings(rankings)
         });
     } catch (err) {
         console.error(err);
@@ -1358,6 +1376,7 @@ export async function compare(event, teamNumbers) {
         const graph2 = getGraph(2, allParsedData, teamNumbers as string[]);
         comparison.push({
             type: "config",
+            category: "overall",
             label: `Radar Chart<br>(${
                 teamNumbers.length == 1
                     ? "Single Team"
@@ -1367,6 +1386,7 @@ export async function compare(event, teamNumbers) {
         });
         comparison.push({
             type: "config",
+            category: "overall",
             label: "Radar Chart<br>(Compared to Best Scores)",
             value: graph2
         });

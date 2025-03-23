@@ -14,6 +14,7 @@
     <meta name="theme-color" content="#7d4090" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#7d4090">
 
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
   </head>
   <body>
     {{> scoutingHeader}}
@@ -52,11 +53,11 @@
           } else if(page == "view-data") {
             document.querySelector(".navbar a[data-page='view-data']").classList.add("active");
             await sdk.showDataPage();
-          } else if(page == "compare-teams") {
-            document.querySelector(".navbar a[data-page='compare-teams']").classList.add("active");
-            await sdk.showComparePage();
-          } else if(page == "predict-outcomes") {
-            document.querySelector(".navbar a[data-page='predict-outcomes']").classList.add("active");
+          } else if(page == "analysis") {
+            document.querySelector(".navbar a[data-page='analysis']").classList.add("active");
+            await sdk.showAnalysisPage();
+          } else if(page == "predict") {
+            document.querySelector(".navbar a[data-page='predict']").classList.add("active");
             await sdk.showPredictPage();
           } else if(page == "admin") {
             await sdk.showAdminPage();

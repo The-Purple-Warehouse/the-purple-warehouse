@@ -6,9 +6,9 @@
     </div>
     <a data-page="home" href="#/">Home</a>
     <a data-page="scan-data" href="#/scan-data">Upload Data</a>
-    <a data-page="view-data" href="#/view-data">View Data/Analysis</a>
-    <a data-page="compare-teams" href="#/compare-teams">Compare Teams</a>
-    <a data-page="predict-outcomes" href="#/predict-outcomes">Predict Outcomes</a>
+    <a data-page="view-data" href="#/view-data">View Data</a>
+    <a data-page="analysis" href="#/analysis">Analysis</a>
+    <a data-page="predict" href="#/predict">Predict</a>
     <a data-page="leaderboard" href="#/leaderboard">Leaderboard</a>
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
 </nav>
@@ -92,7 +92,7 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/leaderboard", "#/admin"].includes(window.location.hash)) {
+          if(!["#/scan-data", "#/view-data", "#/analysis", "#/predict", "#/leaderboard", "#/admin"].includes(window.location.hash)) {
               try {
                   updatePage();
               } catch(err) {
@@ -134,24 +134,25 @@
             // await sdk.showDataPage();
           }
         };
-    document.querySelector(".navbar a[data-page='compare-teams']").onclick =
+    document.querySelector(".navbar a[data-page='analysis']").onclick =
         async (e) => {
           e.preventDefault();
-          if(window.location.hash == "#/compare-teams") {
+          if(window.location.hash == "#/analysis") {
               try {
                   updatePage();
               } catch(err) {
 
               }
               // window.location.reload();
+          } else {
+            window.location.hash = "#/analysis";
+            // await sdk.showDataPage();
           }
-          window.location.hash = "#/compare-teams";
-          // await sdk.showComparePage();
         };
-    document.querySelector(".navbar a[data-page='predict-outcomes']").onclick =
+    document.querySelector(".navbar a[data-page='predict']").onclick =
         async (e) => {
           e.preventDefault();
-          if(window.location.hash == "#/predict-outcomes") {
+          if(window.location.hash == "#/predict") {
               try {
                   updatePage();
               } catch(err) {
@@ -159,7 +160,7 @@
               }
               // window.location.reload();
           }
-          window.location.hash = "#/predict-outcomes";
+          window.location.hash = "#/predict";
           // await sdk.showPredictPage();
         };
     document.querySelector(".navbar a[data-page='leaderboard']").onclick =
