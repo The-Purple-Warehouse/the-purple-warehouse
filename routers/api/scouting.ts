@@ -17,8 +17,10 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
+    getTeamData,
     getTotalIncentives,
-    getLevelAndProgress
+    getLevelAndProgress,
+    aggregateLeaderboard
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -34,12 +36,11 @@ import {
     getTeam
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
-import ScoutingEntry from "../../models/scoutingEntry";
 import Team from "../../models/team";
-import { 
-    getShopItems, 
-    purchaseShopItem, 
-    getUserInventory 
+import {
+    getShopItems,
+    purchaseShopItem,
+    getUserInventory
 } from "../../helpers/shop";
 import { processAdmin } from "../../helpers/adminHelpers";
 
@@ -535,7 +536,7 @@ router.get("/shop/items", requireScoutingAuth, async (ctx, next) => {
             ctx.session.scoutingTeamNumber,
             ctx.session.scoutingUsername
         );
-        
+
         ctx.body = {
             success: true,
             body: {
@@ -554,37 +555,41 @@ router.get("/shop/items", requireScoutingAuth, async (ctx, next) => {
     }
 });
 
-router.post("/shop/purchase/:itemId", requireScoutingAuth, async (ctx, next) => {
-    addAPIHeaders(ctx);
-    try {
-        const result = await purchaseShopItem(
-            ctx.params.itemId,
-            ctx.session.scoutingTeamNumber,
-            ctx.session.scoutingUsername
-        );
-        
-        if (result.success) {
-            ctx.body = {
-                success: true,
-                body: {
-                    message: "Purchase successful",
-                    item: result.item,
-                    newBalance: result.newBalance
-                }
-            };
-        } else {
+router.post(
+    "/shop/purchase/:itemId",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        try {
+            const result = await purchaseShopItem(
+                ctx.params.itemId,
+                ctx.session.scoutingTeamNumber,
+                ctx.session.scoutingUsername
+            );
+
+            if (result.success) {
+                ctx.body = {
+                    success: true,
+                    body: {
+                        message: "Purchase successful",
+                        item: result.item,
+                        newBalance: result.newBalance
+                    }
+                };
+            } else {
+                ctx.body = {
+                    success: false,
+                    error: result.error
+                };
+            }
+        } catch (error) {
             ctx.body = {
                 success: false,
-                error: result.error
+                error: "Failed to process purchase"
             };
         }
-    } catch (error) {
-        ctx.body = {
-            success: false,
-            error: "Failed to process purchase"
-        };
     }
-});
+);
 
 router.get("/shop/inventory", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
@@ -593,7 +598,7 @@ router.get("/shop/inventory", requireScoutingAuth, async (ctx, next) => {
             ctx.session.scoutingTeamNumber,
             ctx.session.scoutingUsername
         );
-        
+
         ctx.body = {
             success: true,
             body: {

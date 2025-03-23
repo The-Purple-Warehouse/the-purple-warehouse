@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const shopItemSchema = new mongoose.Schema({
     name: {
@@ -35,4 +35,4 @@ const shopItemSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model('ShopItem', shopItemSchema); 
+export default mongoose.model("ShopItem", shopItemSchema);

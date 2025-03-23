@@ -857,7 +857,7 @@ function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
             labels: ["L1", "L2", "L3", "L4", "Processor", "Net"],
             datasets: [
                 {
-                    label: "1072",
+                    label: `${team}`,
                     data: [
                         accuracyL1,
                         accuracyL2,
@@ -865,7 +865,10 @@ function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
                         accuracyL4,
                         accuracyProcessor,
                         accuracyNet
-                    ]
+                    ],
+                    backgroundColor: "rgba(125, 64, 144, 0.5)",
+                    borderColor: "rgb(125, 64, 144)",
+                    borderWidth: 2
                 }
             ]
         },
