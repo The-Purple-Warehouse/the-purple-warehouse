@@ -5835,34 +5835,42 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             ${[
                                 {
                                     name: "Coming Soon",
-                                    description: "This item will be available soon!",
+                                    description:
+                                        "This item will be available soon!",
                                     price: { nuts: "???", bolts: "???" },
                                     image: "🎁",
                                     disabled: true
                                 },
                                 {
                                     name: "Coming Soon",
-                                    description: "This item will be available soon!",
+                                    description:
+                                        "This item will be available soon!",
                                     price: { nuts: "???", bolts: "???" },
                                     image: "🎁",
                                     disabled: true
                                 },
                                 {
                                     name: "Coming Soon",
-                                    description: "This item will be available soon!",
+                                    description:
+                                        "This item will be available soon!",
                                     price: { nuts: "???", bolts: "???" },
                                     image: "🎁",
                                     disabled: true
                                 },
                                 {
                                     name: "Coming Soon",
-                                    description: "This item will be available soon!",
+                                    description:
+                                        "This item will be available soon!",
                                     price: { nuts: "???", bolts: "???" },
                                     image: "🎁",
                                     disabled: true
                                 }
-                            ].map(item => `
-                                <div class="shop-item${item.disabled ? ' disabled' : ''}">
+                            ]
+                                .map(
+                                    (item) => `
+                                <div class="shop-item${
+                                    item.disabled ? " disabled" : ""
+                                }">
                                     <div class="item-image">${item.image}</div>
                                     <div class="item-info">
                                         <h3>${_this.escape(item.name)}</h3>
@@ -5878,16 +5886,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             </div>
                                         </div>
                                     </div>
-                                    <button ${item.disabled ? 'disabled' : ''}>
-                                        ${item.disabled ? 'Coming Soon' : 'Purchase'}
+                                    <button ${item.disabled ? "disabled" : ""}>
+                                        ${
+                                            item.disabled
+                                                ? "Coming Soon"
+                                                : "Purchase"
+                                        }
                                     </button>
                                 </div>
-                            `).join('')}
+                            `
+                                )
+                                .join("")}
                         </div>
                     </div>`;
-
             } catch (error) {
-                console.error('Error loading shop:', error);
+                console.error("Error loading shop:", error);
                 element.innerHTML = `
                     <div class="shop-container">
                         <h2>Error Loading Shop</h2>
