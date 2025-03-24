@@ -2066,7 +2066,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             rowData: rowData,
                             pagination: true,
                             paginationPageSize: 20,
-                            domLayout: "autoHeight",
                             theme: agGrid.themeQuartz
                         });
             
@@ -2156,7 +2155,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             rowData: rowData,
                             pagination: true,
                             paginationPageSize: 20,
-                            domLayout: "normal",
                             theme: agGrid.themeQuartz
                         });
             
