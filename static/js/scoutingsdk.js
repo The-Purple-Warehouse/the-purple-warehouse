@@ -1712,6 +1712,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         return;
                     }
                     const teams = selectData.map(d => d.team);
+                    let endpoint = (teams.length == 1) ? "analysis" : "compare";
+                    let compare = endpoint == "compare";
+                    element.querySelector(".analysis-content").innerHTML = _this.getDefaultAnalysis(compare);
+                    element.querySelector(".analysis-options").innerHTML = _this.getAnalysisOptions(compare);
+                    element.querySelector(".analysis").style.display = "none";
                     if (!teams || teams.length < 1) {
                         element.querySelector(".red").innerHTML = "1 or more teams should be selected on the analyzer table to run analysis."
                         hideOverlay();
@@ -1725,8 +1730,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                     element.querySelector(".red").innerHTML = "&nbsp;"
                     try {
-                        let endpoint = (teams.length == 1) ? "analysis" : "compare";
-                        let compare = endpoint == "compare";
                         let data = await (
                             await fetch(
                                 `/api/v1/scouting/entry/${endpoint}/event/${encodeURIComponent(
@@ -1736,8 +1739,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         ).json();
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
-                            element.querySelector(".analysis-content").innerHTML = _this.getDefaultAnalysis(compare);
-                            element.querySelector(".analysis-options").innerHTML = _this.getAnalysisOptions(compare);
                             defineAnalysisNav();
                             let run = [];
                             console.log(data);

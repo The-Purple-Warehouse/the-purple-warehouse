@@ -1198,7 +1198,7 @@ export async function analysis(event, teamNumber) {
                 .sort((a, b) => b.offenseScore - a.offenseScore)
                 .map((ranking) => ({
                     team: ranking.teamNumber,
-                    offense: ranking.offenseScore
+                    offense: ranking.offenseScore.toFixed(2)
                 }));
             let defense = rankingsArr
                 .sort((a, b) => b.defenseScore - a.defenseScore)
