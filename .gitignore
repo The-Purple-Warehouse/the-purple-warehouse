@@ -5,3 +5,5 @@ build/
 config/secret.json
 **/accuracy.ts
 **/adminHelpers.ts
+.vscode/
+.idx/
