@@ -496,56 +496,64 @@ router.get(
     }
 );
 
-router.get("/:event/:year/teams/tpw/:team", requireScoutingAuth, async (ctx, next) => {
-    addAPIHeaders(ctx);
-    let y = ctx.params.year;
-    let year: number;
+router.get(
+    "/:event/:year/teams/tpw/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        let y = ctx.params.year;
+        let year: number;
 
-    try {
-        year = parseInt(y);
-    } catch (err) {
-        console.error(err);
-        ctx.body = {
-            success: false,
-            error: `An error occured. Invalid parameters.`
-        };
-    }
-
-    if (config.auth.blacklist.includes(String(ctx.params.team))) {
-        ctx.status = 418; // im a teapot! - nelson gou 2025
-        ctx.body = {
-            success: false,
-            error: "An internal error occured. Please try again later or try entering a different event!"
+        try {
+            year = parseInt(y);
+        } catch (err) {
+            console.error(err);
+            ctx.body = {
+                success: false,
+                error: `An error occured. Invalid parameters.`
+            };
         }
-        return;
-    }
 
-    let teams = await getTeamsAtEvent(ctx.params.event, ctx.params.team, year);
-    
-    if (teams) {
-        const blacklist = new Set(config.auth.blacklist.map(String));
-        teams = teams.map(team => {
-            if (blacklist.has(String(team.team)) && team.tpw == true) {
-                return { ...team, tpw: false };
-            }
-            return team;
-        });
-    }
+        if (config.auth.blacklist.includes(String(ctx.params.team))) {
+            ctx.status = 418; // im a teapot! - nelson gou 2025
+            ctx.body = {
+                success: false,
+                error: "An internal error occured. Please try again later or try entering a different event!"
+            };
+            return;
+        }
 
-    if (teams) {
-        ctx.body = {
-            success: true,
-            body: {
-                data: teams
-            }
-        };
-    } else {
-        ctx.body = {
-            success: false,
-            error: `Your team is not attending this event. Please try entering a different event to check which teams use TPW!`
-        };
+        let teams = await getTeamsAtEvent(
+            ctx.params.event,
+            ctx.params.team,
+            year
+        );
+
+        if (teams) {
+            const blacklist = new Set(config.auth.blacklist.map(String));
+            teams = teams.map((team) => {
+                if (blacklist.has(String(team.team)) && team.tpw == true) {
+                    return { ...team, tpw: false };
+                }
+                return team;
+            });
+        }
+
+        if (teams) {
+            ctx.body = {
+                success: true,
+                body: {
+                    data: teams
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Your team is not attending this event. Please try entering a different event to check which teams use TPW!`
+            };
+        }
     }
-});
+);
 
 router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);

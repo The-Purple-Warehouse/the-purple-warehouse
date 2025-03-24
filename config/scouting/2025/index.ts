@@ -1184,7 +1184,7 @@ export async function analysis(event, teamNumber) {
         }
         const rankings = computeRankings(allParsedData);
 
-        const processRankings = async(rs) => {
+        const processRankings = async (rs) => {
             let rankingsTeams = Object.keys(rs);
             let rankingsArr = [];
             for (let i = 0; i < rankingsTeams.length; i++) {
@@ -1226,7 +1226,7 @@ export async function analysis(event, teamNumber) {
             }
             return tableRankings;
         };
-        
+
         // undefined teamNumber means we are just requesting the rankings
         // all processing underneath of graphs+predictions requires teamNumber
         if (teamNumber == undefined) {

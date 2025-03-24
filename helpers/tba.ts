@@ -116,7 +116,9 @@ async function syncEventTeamsCache(year, event) {
             await fetch(
                 `https://www.thebluealliance.com/api/v3/event/${encodeURIComponent(
                     event
-                )}/teams/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
+                )}/teams/simple?X-TBA-Auth-Key=${encodeURIComponent(
+                    config.auth.tba
+                )}`
             )
         ).json();
         if (!cache.eventTeams) {
@@ -215,7 +217,8 @@ export async function getEventTeams(event, year) {
     if (!cache.eventTeams[year][event]) {
         await syncEventTeamsCache(year, event);
     } else if (
-        new Date().getTime() > cache.eventTeams[year][event].timestamp + 60000
+        new Date().getTime() >
+        cache.eventTeams[year][event].timestamp + 60000
     ) {
         syncEventTeamsCache(year, event);
     }
