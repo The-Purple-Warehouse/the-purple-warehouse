@@ -13,7 +13,8 @@ try {
         events: {},
         matches: {},
         matchesFull: {},
-        teamEvents: {}
+        teamEvents: {},
+        eventTeams: {}
     };
 }
 
@@ -109,6 +110,31 @@ async function syncTeamEventsCache(year, team) {
     } catch (err) {}
 }
 
+async function syncEventTeamsCache(year, event) {
+    try {
+        const teams = await (
+            await fetch(
+                `https://www.thebluealliance.com/api/v3/event/${encodeURIComponent(
+                    event
+                )}/teams/simple?X-TBA-Auth-Key=${encodeURIComponent(config.auth.tba)}`
+            )
+        ).json();
+        if (!cache.eventTeams) {
+            cache.eventTeams = {};
+        }
+        if (!cache.eventTeams[year]) {
+            cache.eventTeams[year] = {};
+        }
+        cache.eventTeams[year][event] = {
+            value: teams,
+            timestamp: new Date().getTime()
+        };
+        fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 export async function getEvents(year) {
     try {
         if (cache.events == null) {
@@ -177,6 +203,23 @@ export async function getTeamEvents(year, team) {
         }
         return cache.teamEvents[year][team].value;
     }
+}
+
+export async function getEventTeams(event, year) {
+    if (!cache.eventTeams) {
+        cache.eventTeams = {};
+    }
+    if (!cache.eventTeams[year]) {
+        cache.eventTeams[year] = {};
+    }
+    if (!cache.eventTeams[year][event]) {
+        await syncEventTeamsCache(year, event);
+    } else if (
+        new Date().getTime() > cache.eventTeams[year][event].timestamp + 60000
+    ) {
+        syncEventTeamsCache(year, event);
+    }
+    return cache.eventTeams[year][event].value;
 }
 
 export async function getEventsSorted(year, team) {

@@ -1870,7 +1870,8 @@ header .icon-button .send-container svg {
     width: 0px;
 }
 
-span.current-team-tag {
+span.current-team-tag,
+span.tpw-tag {
     display: inline-flex;
     width: 90px;
     align-items: center;
@@ -1879,6 +1880,17 @@ span.current-team-tag {
     background-color: rgb(195 69 218 / 30%);
     border-radius: 20px;
     margin-left: 10px;
+}
+
+div.half-ag-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+div.half-ag-grid > div {
+    width: 100%;
 }
 
 .ag-cell * {
@@ -1890,9 +1902,20 @@ span.current-team-tag {
     mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAChklEQVR4nO2Zu24TQRSGPxeElgYbEVIYHoECCJdXQAIH+YKECA+AxEVESAl0wAsgUUEKpCiiIDFKDYGGS96AhhZSBZGQ2MFwpH+lKQxi8czYu+wnjbTy5f/3jPecOTOGgoKR5AAwDcwDa8A6sKPxBfig9y4DFUaQM0Ab6AC9vxz22WXgNCPAEWDFubku8Aq4BhwDysAeDbs+DlwHVvXZ5HsvgMPDCqIFfNWNfAPuAftTfN8Cuw9sSmMDaBCZOWc2F4DxAbQOAYuO3iyRuCvDH7ouedK9CuzGCqYlIzOsBdCfcoKpEzCxk5y4FcoEmHFyphrCYMXJiZCUnJxph1gneqowE4RnXJWwB5zyKdyWqJXYWFhpNs8ln21HRwtYmnViUGyd6aq9seuBuaKZeUl8Xsv7kg+xeYlZ2xGbG/J+7ENsTWLWO8VmUt7vfIitSyxmfiRU5P3Zh9i2xMaIz155f89LIBt5ebQ++kx22xTF5qS8rQznovw+8iE2LTHbnsbmjbzP+XpOkxbFS6uQskXpAPt8iS5rZqyRi8UDeVpL740TEt0aQht/1Ld425khX/v0fpj2M3k9D2FQ1cLU03Y0FLflYSeTB0OZNJzDBzso8M0F5/DhLIGZdYKZ8fSYlfRLJEHs6sSGWMEkOWOHbP/KhJMT7rDS2yQCdSdnNlWa06wzZZXYLacx7PYJpkEEqk41S4xX1VpMajEd06jotZvqndybXlBiN4cZDDqyWUr5t4JtD572aUZ/F0ydiJR1UPAEeK8Suq3F7RPwFniom/rTtqAxCsH4wsp7p08wF8lRMC0yyFSegqn9D8E0yWgwO0UwGSkAc2SU885jdoeMU4v5d3ZBwa8Z+Ak4rhMJLuUtjQAAAABJRU5ErkJggg==) !important;
 }
 
+table.teams-table .ag-center-cols-viewport,
+table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
+    min-height: unset !important;
+}
+
 @media (max-width: 420px) {
     .match-window {
         padding: 0 !important;
+    }
+}
+
+@media (max-width: 340px) {
+    table.teams-table > div {
+        flex-direction: column;
     }
 }
 

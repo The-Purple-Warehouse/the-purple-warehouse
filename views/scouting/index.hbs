@@ -53,6 +53,9 @@
           if(page == "scan-data") {
             document.querySelector(".navbar a[data-page='scan-data']").classList.add("active");
             window.readerForNav = await sdk.showScannerPage();
+          } else if(page == "teams") {
+            document.querySelector(".navbar a[data-page='teams']").classList.add("active");
+            await sdk.showTeamPage();
           } else if(page == "view-data") {
             document.querySelector(".navbar a[data-page='view-data']").classList.add("active");
             await sdk.showDataPage();

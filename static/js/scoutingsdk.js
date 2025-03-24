@@ -1451,6 +1451,124 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
+    _this.showTeamPage = () => {
+        return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
+            let events = await _this.getEvents(year);
+            element.innerHTML = `
+                <div class="data-window">
+                    <h2>Event:</h2>
+                    <select class="event-code">
+                        <option value=""${
+                            _this.getEventCode() == null ||
+                            _this.getEventCode() == ""
+                                ? " selected"
+                                : ""
+                        }>Select an event...</option>
+                        ${events.map(
+                            (event) =>
+                                `<option value="${event.key}"${
+                                    _this.getEventCode() == event.key
+                                        ? " selected"
+                                        : ""
+                                }>${event.name}</option>`
+                        )}
+                    </select>
+                    <button class="show-teams">Show Teams</button>
+                    <h3 class="red">&nbsp;</h3>
+                    <table class="teams-table" style="display: none;"></table>
+                    <div class="overlay" style="display: none;"></div>
+                </div>
+            `;
+            let overlayShown = false;
+            function showOverlay() {
+                overlayShown = true;
+                if (overlayShown) {
+                    element.querySelector(".overlay").style.display = "block";
+                }
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                setTimeout(() => {
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
+                    }
+                }, 500);
+            }
+            element.querySelector(".show-teams").onclick =
+                async () => {
+                    showOverlay();
+                    let eventCode = element.querySelector(
+                        ".data-window > select.event-code"
+                    ).value;
+                    let teamNumber = config.account.team;
+                    element.querySelector(".teams-table").innerHTML = "";
+                    element.querySelector(".teams-table").style.display = "none";
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/${eventCode}/${config.year}/teams/tpw/${encodeURIComponent(
+                                    teamNumber
+                                )}`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML = "&nbsp;";
+                            const container = document.createElement("div");
+                            container.id = "teamsGrid";
+                            container.style["max-height"] = "500px";
+                            container.style.display = "flex";
+                            container.style.gap = "20px";
+                            element.querySelector(".teams-table").appendChild(container);
+                            const tpwcont = document.createElement("div");
+                            const notpwcont = document.createElement("div");
+                            tpwcont.classList.add("half-ag-grid");
+                            notpwcont.classList.add("half-ag-grid");
+                            container.appendChild(tpwcont);
+                            container.appendChild(notpwcont);
+                            const tpwteams = data.body.data.filter(entry => entry.tpw);
+                            const noteams = data.body.data.filter(entry => !entry.tpw);
+
+                            const createGrid = (cont, rowData, t) => {
+                                const title = document.createElement("h3");
+                                title.textContent = t;
+                                cont.appendChild(title);
+                                const gdiv = document.createElement("div");
+                                cont.appendChild(gdiv);
+
+                                new agGrid.createGrid(gdiv, {
+                                    columnDefs: [{
+                                        headerName: "Team",
+                                        field: "team",
+                                        flex: 1,
+                                        sort: "asc"
+                                    }],
+                                    rowData,
+                                    domLayout: "autoHeight",
+                                    theme: agGrid.themeQuartz
+                                });
+                            };
+
+                            createGrid(tpwcont, tpwteams, "Uses TPW");
+                            createGrid(notpwcont, noteams, "Not Using TPW");
+
+                            element.querySelector(".teams-table").style.display = "block";
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                    hideOverlay();
+                };
+            resolve();
+        });
+    };
+
     _this.getDefaultAnalysis = (comp) => {
         if (comp) {
             return `
@@ -1522,7 +1640,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     </div>
                     <div class="overlay" style="display: none;"></div>
                 </div>
-                <div class="analysis-popup popup-modal"></div>
             `;
             let overlayShown = false;
             function showOverlay() {
