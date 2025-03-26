@@ -12,7 +12,7 @@ export interface parsedRow {
     team: string;
     alliance: string;
     leave: boolean;
-    "coral intake": boolean;
+    "coral ground intake": boolean;
     "algae ground intake": boolean;
     "algae reef intake": boolean;
     "auto algae scoring": string;
@@ -927,7 +927,7 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 
 export function formatData(data, categories, teams) {
-    return `entry,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `entry,match,team,alliance,leave,"coral ground intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
@@ -1003,7 +1003,7 @@ export function parseFormatted(format: string): parsedRow[] {
             team: columns[2],
             alliance: columns[3],
             leave: columns[4] === "true",
-            "coral intake": columns[5] === "true",
+            "coral ground intake": columns[5] === "true",
             "algae ground intake": columns[6] === "true",
             "algae reef intake": columns[7] === "true",
             "auto algae scoring": parseArr(columns[8]).join(", "),
@@ -1043,7 +1043,7 @@ let parsedScoring = {
 };
 
 export function formatParsedData(data, categories, teams) {
-    return `entry,match,team,alliance,leave,"coral intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `entry,match,team,alliance,leave,"coral ground intake","algae ground intake","algae reef intake","auto algae scoring","auto coral scoring","teleop algae scoring","teleop coral scoring","cage level","cage time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
