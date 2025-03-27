@@ -1592,6 +1592,7 @@ header .icon-button .send-container svg {
     border-collapse: collapse;
     width: calc(100vw - 30px);
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .data-window table td,
