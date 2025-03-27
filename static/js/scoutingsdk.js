@@ -1456,7 +1456,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
                 config.year || new Date().toLocaleDateString().split("/")[2];
-            let events = (await _this.getEvents(year));
+            let events = await _this.getEvents(year);
             events.shift();
             element.innerHTML = `
                 <div class="data-window">
@@ -1499,73 +1499,81 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }, 500);
             }
-            element.querySelector(".show-teams").onclick =
-                async () => {
-                    showOverlay();
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    let teamNumber = config.account.team;
-                    element.querySelector(".teams-table").innerHTML = "";
-                    element.querySelector(".teams-table").style.display = "none";
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/${eventCode}/${config.year}/teams/tpw/${encodeURIComponent(
-                                    teamNumber
-                                )}`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            const container = document.createElement("div");
-                            container.id = "teamsGrid";
-                            container.style["max-height"] = "500px";
-                            container.style.display = "flex";
-                            container.style.gap = "20px";
-                            element.querySelector(".teams-table").appendChild(container);
-                            const tpwcont = document.createElement("div");
-                            const notpwcont = document.createElement("div");
-                            tpwcont.classList.add("half-ag-grid");
-                            notpwcont.classList.add("half-ag-grid");
-                            container.appendChild(tpwcont);
-                            container.appendChild(notpwcont);
-                            const tpwteams = data.body.data.filter(entry => entry.tpw);
-                            const noteams = data.body.data.filter(entry => !entry.tpw);
+            element.querySelector(".show-teams").onclick = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                let teamNumber = config.account.team;
+                element.querySelector(".teams-table").innerHTML = "";
+                element.querySelector(".teams-table").style.display = "none";
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/${eventCode}/${
+                                config.year
+                            }/teams/tpw/${encodeURIComponent(teamNumber)}`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        const container = document.createElement("div");
+                        container.id = "teamsGrid";
+                        container.style["max-height"] = "500px";
+                        container.style.display = "flex";
+                        container.style.gap = "20px";
+                        element
+                            .querySelector(".teams-table")
+                            .appendChild(container);
+                        const tpwcont = document.createElement("div");
+                        const notpwcont = document.createElement("div");
+                        tpwcont.classList.add("half-ag-grid");
+                        notpwcont.classList.add("half-ag-grid");
+                        container.appendChild(tpwcont);
+                        container.appendChild(notpwcont);
+                        const tpwteams = data.body.data.filter(
+                            (entry) => entry.tpw
+                        );
+                        const noteams = data.body.data.filter(
+                            (entry) => !entry.tpw
+                        );
 
-                            const createGrid = (cont, rowData, t) => {
-                                const title = document.createElement("h3");
-                                title.textContent = t;
-                                cont.appendChild(title);
-                                const gdiv = document.createElement("div");
-                                cont.appendChild(gdiv);
+                        const createGrid = (cont, rowData, t) => {
+                            const title = document.createElement("h3");
+                            title.textContent = t;
+                            cont.appendChild(title);
+                            const gdiv = document.createElement("div");
+                            cont.appendChild(gdiv);
 
-                                new agGrid.createGrid(gdiv, {
-                                    columnDefs: [{
+                            new agGrid.createGrid(gdiv, {
+                                columnDefs: [
+                                    {
                                         headerName: "Team",
                                         field: "team",
                                         flex: 1,
                                         sort: "asc"
-                                    }],
-                                    rowData,
-                                    domLayout: "autoHeight",
-                                    theme: agGrid.themeQuartz
-                                });
-                            };
+                                    }
+                                ],
+                                rowData,
+                                domLayout: "autoHeight",
+                                theme: agGrid.themeQuartz
+                            });
+                        };
 
-                            createGrid(tpwcont, tpwteams, "Uses TPW");
-                            createGrid(notpwcont, noteams, "Not Using TPW");
+                        createGrid(tpwcont, tpwteams, "Uses TPW");
+                        createGrid(notpwcont, noteams, "Not Using TPW");
 
-                            element.querySelector(".teams-table").style.display = "block";
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.error(err);
+                        element.querySelector(".teams-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
-                    hideOverlay();
-                };
+                } catch (err) {
+                    console.error(err);
+                }
+                hideOverlay();
+            };
             resolve();
         });
     };
@@ -1703,7 +1711,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     ).value;
                     let teamNumber = config.account.team;
                     element.querySelector(".analysis-table").innerHTML = "";
-                    element.querySelector(".analysis-table").style.display = "none";
+                    element.querySelector(".analysis-table").style.display =
+                        "none";
                     resetOptions();
                     element.querySelector(".analysis-content").innerHTML =
                         _this.getDefaultAnalysis(false);
@@ -1721,18 +1730,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             let run = [];
                             // rankings
                             let gridOptions;
-                            const rankingsTable = data.body.display.find(item => item.category === "rank" && item.type === "table");
+                            const rankingsTable = data.body.display.find(
+                                (item) =>
+                                    item.category === "rank" &&
+                                    item.type === "table"
+                            );
                             if (rankingsTable) {
                                 const container = document.createElement("div");
                                 container.id = "rankingGrid";
                                 container.style.height = "400px";
-                                element.querySelector(".analysis-table").appendChild(container);
+                                element
+                                    .querySelector(".analysis-table")
+                                    .appendChild(container);
 
-                                const [headersRaw, ...rowsRaw] = rankingsTable.values;
-                                const headers = headersRaw.map(h => h.replace(/<[^>]*>/g, ''));
-                                const rowData = rowsRaw.map(row => {
+                                const [headersRaw, ...rowsRaw] =
+                                    rankingsTable.values;
+                                const headers = headersRaw.map((h) =>
+                                    h.replace(/<[^>]*>/g, "")
+                                );
+                                const rowData = rowsRaw.map((row) => {
                                     return {
-                                        team: row[0].replace(/<[^>]*>/g, ''),
+                                        team: row[0].replace(/<[^>]*>/g, ""),
                                         score: row[1]
                                     };
                                 });
@@ -1745,12 +1763,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             sortable: true,
                                             filter: true,
                                             flex: 1,
-                                            cellRenderer: params => {
+                                            cellRenderer: (params) => {
                                                 const team = params.value;
-                                                const yourteam = (team == teamNumber);
-                                                const tag = yourteam ? `<span class="current-team-tag">Your Team</span>` : "";
+                                                const yourteam =
+                                                    team == teamNumber;
+                                                const tag = yourteam
+                                                    ? `<span class="current-team-tag">Your Team</span>`
+                                                    : "";
                                                 return `<span class="team-cell">${team} ${tag}</span>`;
-                                            }                                            
+                                            }
                                         },
                                         {
                                             headerName: headers[1],
@@ -1762,14 +1783,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ],
                                     rowData: rowData,
                                     rowSelection: {
-                                        mode: 'multiRow',
+                                        mode: "multiRow",
                                         headerCheckbox: false,
                                         enableClickSelection: false
                                     },
                                     domLayout: "autoHeight",
                                     theme: agGrid.themeQuartz,
                                     suppressCellFocus: true,
-                                    onRowClicked: function(event) {
+                                    onRowClicked: function (event) {
                                         const api = gridOptions.api;
                                         const selected = api.getSelectedNodes();
                                         if (event.node.isSelected()) {
@@ -1781,16 +1802,24 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         }
                                         event.node.setSelected(true);
                                     },
-                                    onGridReady: function(params) {
+                                    onGridReady: function (params) {
                                         gridOptions.api = params.api;
                                         gridOptions.colApi = params.colApi;
                                     },
                                     onSelectionChanged: () => {
                                         if (!gridOptions.api) return;
-                                        const selected = gridOptions.api.getSelectedNodes();
-                                        selectData = selected.map(node => node.data);
-                                        gridOptions.api.refreshCells({ force: true });
-                                        console.log("selected so far:", selectData.map(d => d.team));
+                                        const selected =
+                                            gridOptions.api.getSelectedNodes();
+                                        selectData = selected.map(
+                                            (node) => node.data
+                                        );
+                                        gridOptions.api.refreshCells({
+                                            force: true
+                                        });
+                                        console.log(
+                                            "selected so far:",
+                                            selectData.map((d) => d.team)
+                                        );
                                     }
                                 };
                                 new agGrid.createGrid(container, gridOptions);
@@ -1807,8 +1836,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             element
                                 .querySelector(".data-window")
                                 .classList.add("data-window-visible");
-                            element.querySelector(".analysis-table").style.display = "";
-                            element.querySelector("button.run-analysis").classList.remove("none");
+                            element.querySelector(
+                                ".analysis-table"
+                            ).style.display = "";
+                            element
+                                .querySelector("button.run-analysis")
+                                .classList.remove("none");
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
@@ -1818,54 +1851,60 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                     hideOverlay();
                 };
-            element.querySelector("button.run-analysis").onclick =
-                async () => {
-                    showOverlay();
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    if (!selectData) {
-                        element.querySelector(".red").innerHTML = "Please select teams from the analyzer table to run analysis."
-                        hideOverlay();
-                        return;
-                    }
-                    const teams = selectData.map(d => d.team);
-                    let endpoint = (teams.length == 1) ? "analysis" : "compare";
-                    let compare = endpoint == "compare";
-                    element.querySelector(".analysis-content").innerHTML = _this.getDefaultAnalysis(compare);
-                    element.querySelector(".analysis-options").innerHTML = _this.getAnalysisOptions(compare);
-                    element.querySelector(".analysis").style.display = "none";
-                    if (!teams || teams.length < 1) {
-                        element.querySelector(".red").innerHTML = "1 or more teams should be selected on the analyzer table to run analysis."
-                        hideOverlay();
-                        return;
-                    }
-                    if (teams.length > 5) {
-                        element.querySelector(".red").innerHTML = "5 or less teams should be selected on the analyzer table to run analysis."
-                        hideOverlay();
-                        return;
-                    }
+            element.querySelector("button.run-analysis").onclick = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                if (!selectData) {
+                    element.querySelector(".red").innerHTML =
+                        "Please select teams from the analyzer table to run analysis.";
+                    hideOverlay();
+                    return;
+                }
+                const teams = selectData.map((d) => d.team);
+                let endpoint = teams.length == 1 ? "analysis" : "compare";
+                let compare = endpoint == "compare";
+                element.querySelector(".analysis-content").innerHTML =
+                    _this.getDefaultAnalysis(compare);
+                element.querySelector(".analysis-options").innerHTML =
+                    _this.getAnalysisOptions(compare);
+                element.querySelector(".analysis").style.display = "none";
+                if (!teams || teams.length < 1) {
+                    element.querySelector(".red").innerHTML =
+                        "1 or more teams should be selected on the analyzer table to run analysis.";
+                    hideOverlay();
+                    return;
+                }
+                if (teams.length > 5) {
+                    element.querySelector(".red").innerHTML =
+                        "5 or less teams should be selected on the analyzer table to run analysis.";
+                    hideOverlay();
+                    return;
+                }
 
-                    element.querySelector(".red").innerHTML = "&nbsp;"
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/${endpoint}/event/${encodeURIComponent(
-                                    eventCode
-                                )}/${teams.join(",")}`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            defineAnalysisNav();
-                            let run = [];
-                            console.log(data);
-                            console.log(data.body);
-                            console.log(data.body.display);
-                            // score graphs
-                            if (element.querySelector(
+                element.querySelector(".red").innerHTML = "&nbsp;";
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/${endpoint}/event/${encodeURIComponent(
+                                eventCode
+                            )}/${teams.join(",")}`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        defineAnalysisNav();
+                        let run = [];
+                        console.log(data);
+                        console.log(data.body);
+                        console.log(data.body.display);
+                        // score graphs
+                        if (
+                            element.querySelector(
                                 ".analysis-content .score-graphs"
-                            ))
+                            )
+                        )
                             element.querySelector(
                                 ".analysis-content .score-graphs"
                             ).innerHTML = data.body.display
@@ -1908,10 +1947,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                 })
                                 .join("");
-                            // overall graphs
-                            if (element.querySelector(
+                        // overall graphs
+                        if (
+                            element.querySelector(
                                 ".analysis-content .overall-graphs"
-                            ))
+                            )
+                        )
                             element.querySelector(
                                 ".analysis-content .overall-graphs"
                             ).innerHTML = data.body.display
@@ -1954,10 +1995,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                 })
                                 .join("");
-                            // predictions
-                            if (element.querySelector(
+                        // predictions
+                        if (
+                            element.querySelector(
                                 ".analysis-content .predictions"
-                            ))
+                            )
+                        )
                             element.querySelector(
                                 ".analysis-content .predictions"
                             ).innerHTML = data.body.display
@@ -2026,29 +2069,28 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                 })
                                 .join("");
-                            let scripts = [
-                                ...element.querySelectorAll(".analysis script")
-                            ];
-                            for (let i = 0; i < scripts.length; i++) {
-                                if (!run.includes(scripts[i].innerHTML)) {
-                                    run.push(scripts[i].innerHTML);
-                                    eval(scripts[i].innerHTML);
-                                }
+                        let scripts = [
+                            ...element.querySelectorAll(".analysis script")
+                        ];
+                        for (let i = 0; i < scripts.length; i++) {
+                            if (!run.includes(scripts[i].innerHTML)) {
+                                run.push(scripts[i].innerHTML);
+                                eval(scripts[i].innerHTML);
                             }
-                            element
-                                .querySelector(".data-window")
-                                .classList.add("data-window-visible");
-                            element.querySelector(".analysis").style.display =
-                                "";
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
                         }
-                    } catch (err) {
-                        console.error(err);
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".analysis").style.display = "";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
-                    hideOverlay();
-                };
+                } catch (err) {
+                    console.error(err);
+                }
+                hideOverlay();
+            };
             resolve();
         });
     };
@@ -2111,26 +2153,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             }
             const showData = async () => {
                 showOverlay();
-                let eventCode = element.querySelector(".data-window > select.event-code").value;
-                // let teamNumber = element.querySelector(".data-popup .show-data-content input.team-number").value;                
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                // let teamNumber = element.querySelector(".data-popup .show-data-content input.team-number").value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector("table.data-table").innerHTML = "";
-                
+
                 try {
-                    let response = await fetch(`/api/v1/scouting/entry/data/event/${encodeURIComponent(eventCode)}/csv`);
+                    let response = await fetch(
+                        `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                            eventCode
+                        )}/csv`
+                    );
                     let data = await response.json();
-            
+
                     if (data.success) {
-                        let csv = Papa.parse(data.body.csv.replaceAll('\\"', "&quot;")).data;
-                        
+                        let csv = Papa.parse(
+                            data.body.csv.replaceAll('\\"', "&quot;")
+                        ).data;
+
                         if (csv.length < 2) {
                             console.warn("no data available for show data");
                             return;
                         }
-            
+
                         let columnDefs = csv[0].map((header, index) => ({
-                            headerName: header.replaceAll('"', "").replaceAll("\\n", " "),
-                            field: header.replaceAll('"', "").replaceAll("\\n", " "),
+                            headerName: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
+                            field: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
                             filter: true,
                             sortable: true,
                             resizable: true,
@@ -2144,25 +2198,35 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         columnDefs[0].filter = false;
                         columnDefs[0].resizable = false;
 
-                        let rowData = csv.slice(1)
-                        .map(row => {
-                                let obj = {};
-                                row.forEach((cell, index) => {
-                                    let key = csv[0][index].replaceAll('"', "").replaceAll("\\n", " ");
-                                    obj[key] = key === "timestamp" ? new Date(parseInt(cell)).toLocaleString() : cell.replaceAll("&quot;", '"').replaceAll("\\n", "<br>");
-                                });
-                                return obj;
+                        let rowData = csv.slice(1).map((row) => {
+                            let obj = {};
+                            row.forEach((cell, index) => {
+                                let key = csv[0][index]
+                                    .replaceAll('"', "")
+                                    .replaceAll("\\n", " ");
+                                obj[key] =
+                                    key === "timestamp"
+                                        ? new Date(
+                                              parseInt(cell)
+                                          ).toLocaleString()
+                                        : cell
+                                              .replaceAll("&quot;", '"')
+                                              .replaceAll("\\n", "<br>");
+                            });
+                            return obj;
                         });
-            
+
                         let gridTable = document.querySelector("#dataGrid");
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
                             gridTable.style.height = "500px";
                             element.querySelector(".data-table").innerHTML = "";
-                            element.querySelector(".data-table").appendChild(gridTable);
+                            element
+                                .querySelector(".data-table")
+                                .appendChild(gridTable);
                         }
-            
+
                         new agGrid.createGrid(gridTable, {
                             columnDefs: columnDefs,
                             rowData: rowData,
@@ -2170,12 +2234,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             paginationPageSize: 20,
                             theme: agGrid.themeQuartz
                         });
-            
-                        element.querySelector(".notes").innerHTML = data.body.notes.replaceAll("\n", "<br>");
-                        element.querySelector(".data-window").classList.add("data-window-visible");
-                        element.querySelector(".data-table").style.display = "block";
+
+                        element.querySelector(".notes").innerHTML =
+                            data.body.notes.replaceAll("\n", "<br>");
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
                     } else {
-                        element.querySelector(".red").innerHTML = data.error || "Unknown error.";
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
                 } catch (err) {
                     console.error(err);
@@ -2184,26 +2253,38 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             };
             const showParsedData = async () => {
                 showOverlay();
-                let eventCode = element.querySelector(".data-window > select.event-code").value;
-                // let teamNumber = element.querySelector(".data-popup .show-data-content input.team-number").value;                
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                // let teamNumber = element.querySelector(".data-popup .show-data-content input.team-number").value;
                 element.querySelector(".notes").innerHTML = "";
                 element.querySelector("table.data-table").innerHTML = "";
-            
+
                 try {
-                    let response = await fetch(`/api/v1/scouting/entry/data/event/${encodeURIComponent(eventCode)}/csv/parsed`);
+                    let response = await fetch(
+                        `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                            eventCode
+                        )}/csv/parsed`
+                    );
                     let data = await response.json();
-            
+
                     if (data.success) {
-                        let csv = Papa.parse(data.body.csv.replaceAll('\\"', "&quot;")).data;
-            
+                        let csv = Papa.parse(
+                            data.body.csv.replaceAll('\\"', "&quot;")
+                        ).data;
+
                         if (csv.length < 2) {
                             console.warn("No parsed data available");
                             return;
                         }
-            
+
                         let columnDefs = csv[0].map((header, index) => ({
-                            headerName: header.replaceAll('"', "").replaceAll("\\n", " "),
-                            field: header.replaceAll('"', "").replaceAll("\\n", " "),
+                            headerName: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
+                            field: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
                             filter: true,
                             sortable: true,
                             resizable: true,
@@ -2216,26 +2297,36 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         columnDefs[0].filter = false;
                         columnDefs[0].sortable = false;
                         columnDefs[0].resizable = false;
-            
-                        let rowData = csv.slice(1)
-                        .map(row => {
-                                let obj = {};
-                                row.forEach((cell, index) => {
-                                    let key = csv[0][index].replaceAll('"', "").replaceAll("\\n", " ");
-                                    obj[key] = key === "timestamp" ? new Date(parseInt(cell)).toLocaleString() : cell.replaceAll("&quot;", '"').replaceAll("\\n", ", ");
-                                });
-                                return obj;
+
+                        let rowData = csv.slice(1).map((row) => {
+                            let obj = {};
+                            row.forEach((cell, index) => {
+                                let key = csv[0][index]
+                                    .replaceAll('"', "")
+                                    .replaceAll("\\n", " ");
+                                obj[key] =
+                                    key === "timestamp"
+                                        ? new Date(
+                                              parseInt(cell)
+                                          ).toLocaleString()
+                                        : cell
+                                              .replaceAll("&quot;", '"')
+                                              .replaceAll("\\n", ", ");
+                            });
+                            return obj;
                         });
-            
+
                         let gridTable = document.querySelector("#dataGrid");
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
                             gridTable.style.height = "500px";
                             element.querySelector(".data-table").innerHTML = "";
-                            element.querySelector(".data-table").appendChild(gridTable);
+                            element
+                                .querySelector(".data-table")
+                                .appendChild(gridTable);
                         }
-            
+
                         new agGrid.createGrid(gridTable, {
                             columnDefs: columnDefs,
                             rowData: rowData,
@@ -2243,12 +2334,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             paginationPageSize: 20,
                             theme: agGrid.themeQuartz
                         });
-            
-                        element.querySelector(".notes").innerHTML = data.body.notes.replaceAll("\n", "<br>");
-                        element.querySelector(".data-window").classList.add("data-window-visible");
-                        element.querySelector(".data-table").style.display = "block";
+
+                        element.querySelector(".notes").innerHTML =
+                            data.body.notes.replaceAll("\n", "<br>");
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
                     } else {
-                        element.querySelector(".red").innerHTML = data.error || "Unknown error.";
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
                 } catch (err) {
                     console.error(err);
@@ -2259,14 +2355,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 showOverlay();
                 await showData();
             };
-            element.querySelector("button.show-parsed-data").onclick = async () => {
-                showOverlay();
-                await showParsedData();
-            };
-            element.querySelector("button.export-options").onclick = async () => {
-                showOverlay();
-                await _this.showExportOptions();
-            };
+            element.querySelector("button.show-parsed-data").onclick =
+                async () => {
+                    showOverlay();
+                    await showParsedData();
+                };
+            element.querySelector("button.export-options").onclick =
+                async () => {
+                    showOverlay();
+                    await _this.showExportOptions();
+                };
             resolve();
         });
     };
@@ -2332,97 +2430,93 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 </div>
             `;
             openOptions();
-            element.querySelector(".data-popup .close-btn").onclick =
-                () => {
-                    closeOptions();
-                };
-            element.querySelector(".data-popup .export-content .export-confirm").onclick =
-                async () => {
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    let teamNumber = config.account.team;
-                    let toggle = element.querySelector(
-                        ".data-popup input#export-toggle"
-                    ).checked; // true = my team's data
-                    if (toggle) {
-                        if (!teamNumber) {
-                            console.error(
-                                "export error: no team number found."
-                            );
-                            return;
-                        }
-                        try {
-                            let data = await (
-                                await fetch(
-                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                        eventCode
-                                    )}/csv/${teamNumber}`
-                                )
-                            ).json();
-                            if (data.success) {
-                                element.querySelector(".red").innerHTML =
-                                    "&nbsp;";
-                                let csv = data.body.csv;
-                                let download =
-                                    "data:text/csv;charset=utf-8," +
-                                    encodeURIComponent(csv);
-                                let link = document.createElement("a");
-                                link.style.display = "none";
-                                link.setAttribute("href", download);
-                                link.setAttribute(
-                                    "download",
-                                    `tpw-scouting-${eventCode}-${teamNumber}.csv`
-                                );
-                                element.appendChild(link);
-                                link.click();
-                                link.remove();
-                            } else {
-                                element.querySelector(".red").innerHTML =
-                                    data.error || "Unknown error.";
-                            }
-                        } catch (err) {
-                            console.log("export csv error", err);
-                        }
-                    } else {
-                        try {
-                            let data = await (
-                                await fetch(
-                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                        eventCode
-                                    )}/csv`
-                                )
-                            ).json();
-                            if (data.success) {
-                                element.querySelector(".red").innerHTML =
-                                    "&nbsp;";
-                                let csv = data.body.csv;
-                                let download =
-                                    "data:text/csv;charset=utf-8," +
-                                    encodeURIComponent(csv);
-                                let link = document.createElement("a");
-                                link.style.display = "none";
-                                link.setAttribute("href", download);
-                                link.setAttribute(
-                                    "download",
-                                    `tpw-scouting-${eventCode}.csv`
-                                );
-                                element.appendChild(link);
-                                link.click();
-                                link.remove();
-                            } else {
-                                element.querySelector(".red").innerHTML =
-                                    data.error || "Unknown error.";
-                            }
-                        } catch (err) {
-                            console.log("export csv error", err);
-                        }
+            element.querySelector(".data-popup .close-btn").onclick = () => {
+                closeOptions();
+            };
+            element.querySelector(
+                ".data-popup .export-content .export-confirm"
+            ).onclick = async () => {
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                let teamNumber = config.account.team;
+                let toggle = element.querySelector(
+                    ".data-popup input#export-toggle"
+                ).checked; // true = my team's data
+                if (toggle) {
+                    if (!teamNumber) {
+                        console.error("export error: no team number found.");
+                        return;
                     }
-                    closeOptions();
-                };
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                    eventCode
+                                )}/csv/${teamNumber}`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML = "&nbsp;";
+                            let csv = data.body.csv;
+                            let download =
+                                "data:text/csv;charset=utf-8," +
+                                encodeURIComponent(csv);
+                            let link = document.createElement("a");
+                            link.style.display = "none";
+                            link.setAttribute("href", download);
+                            link.setAttribute(
+                                "download",
+                                `tpw-scouting-${eventCode}-${teamNumber}.csv`
+                            );
+                            element.appendChild(link);
+                            link.click();
+                            link.remove();
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {
+                        console.log("export csv error", err);
+                    }
+                } else {
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                    eventCode
+                                )}/csv`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML = "&nbsp;";
+                            let csv = data.body.csv;
+                            let download =
+                                "data:text/csv;charset=utf-8," +
+                                encodeURIComponent(csv);
+                            let link = document.createElement("a");
+                            link.style.display = "none";
+                            link.setAttribute("href", download);
+                            link.setAttribute(
+                                "download",
+                                `tpw-scouting-${eventCode}.csv`
+                            );
+                            element.appendChild(link);
+                            link.click();
+                            link.remove();
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {
+                        console.log("export csv error", err);
+                    }
+                }
+                closeOptions();
+            };
             resolve();
         });
-    }
+    };
 
     _this.showPredictPage = () => {
         return new Promise(async (resolve, reject) => {
@@ -3303,37 +3397,40 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ${
                                     option.type == "toggle"
                                         ? `<button class="toggle" data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}">[${
-                                            locationData.filter(
-                                                (loc) =>
-                                                    loc.value == option.value &&
-                                                    loc.index == index
-                                            ).length
-                                        }/${
-                                            locationData.filter(
-                                                (loc) => loc.value == option.value
-                                            ).length
-                                        }] ${
-                                            locationData.filter(
-                                                (loc) =>
-                                                    loc.value == option.value &&
-                                                    loc.index == index
-                                            ).length > 0
-                                                ? "Deselect"
-                                                : "Select"
-                                        }</button>`
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}">[${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value &&
+                                                      loc.index == index
+                                              ).length
+                                          }/${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value == option.value
+                                              ).length
+                                          }] ${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value &&
+                                                      loc.index == index
+                                              ).length > 0
+                                                  ? "Deselect"
+                                                  : "Select"
+                                          }</button>`
                                         : `<button data-increment="-1"${
-                                            option.max
-                                                ? ` data-max="${option.max}"`
-                                                : ""
-                                        } data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}"><span>-</span></button>
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>-</span></button>
                                 <div><div><h3>${
                                     locationData.filter(
                                         (loc) =>
@@ -3341,19 +3438,22 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             loc.index == index
                                     ).length
                                 }</h3><h4>here</h4></div><div><h3>${
-                                            locationData.filter(
-                                                (loc) =>
-                                                    loc.value == option.value ||
-                                                    tracks.includes(loc.value)
-                                            ).length
-                                        }</h3><h4>total</h4></div></div>
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value ||
+                                                      tracks.includes(loc.value)
+                                              ).length
+                                          }</h3><h4>total</h4></div></div>
                                 <button data-increment="1"${
-                                    option.max ? ` data-max="${option.max}"` : ""
+                                    option.max
+                                        ? ` data-max="${option.max}"`
+                                        : ""
                                 } data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}"><span>+</span></button>`
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>+</span></button>`
                                 }
                             </div>
 						</div>
@@ -5764,17 +5864,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     _this.showShopPage = async () => {
         return new Promise(async (resolve, reject) => {
             try {
+                let nutsElement = document.querySelector(
+                    ".header-incentives .nuts > p"
+                );
+                let boltsElement = document.querySelector(
+                    ".header-incentives .bolts > p"
+                );
                 element.innerHTML = `
                     <div class="shop-container">
                         <h2>Shop</h2>
                         <div class="shop-balance">
                             <div class="currency">
                                 <div class="nuts">
-                                    <span>0</span>
+                                    <span>${nutsElement.innerHTML}</span>
                                     <img src="/img/nuts.png" alt="Nuts" />
                                 </div>
                                 <div class="bolts">
-                                    <span>0</span>
+                                    <span>${boltsElement.innerHTML}</span>
                                     <img src="/img/bolts.png" alt="Bolts" />
                                 </div>
                             </div>
