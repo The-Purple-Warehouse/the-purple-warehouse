@@ -2056,9 +2056,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 : bluep
                                                         }%;"><p>${
                                                             firstListed == "red"
-                                                                ? (redp <= 3 ? "" : Math.round(redp))
-                                                                : (bluep <= 3 ? "" : Math.round(bluep))
-                                                        }%</p></div>
+                                                                ? redp <= 3
+                                                                    ? ""
+                                                                    : (Math.round(
+                                                                          redp
+                                                                      ) + "%")
+                                                                : bluep <= 3
+                                                                ? ""
+                                                                : (Math.round(
+                                                                      bluep
+                                                                  ) + "%")
+                                                        }</p></div>
                                                             <div class="prediction-bar-${
                                                                 firstListed ==
                                                                 "red"
@@ -2070,9 +2078,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 : redp
                                                         }%;"><p>${
                                                             firstListed == "red"
-                                                                ? (bluep <= 3 ? "" : Math.round(bluep))
-                                                                : (redp <= 3 ? "" : Math.round(redp))
-                                                        }%</p></div>
+                                                                ? bluep <= 3
+                                                                    ? ""
+                                                                    : (Math.round(
+                                                                          bluep
+                                                                      ) + "%")
+                                                                : redp <= 3
+                                                                ? ""
+                                                                : (Math.round(
+                                                                      redp
+                                                                  ) + "%")
+                                                        }</p></div>
                                                         </div>`;
                                                     })
                                                     .join("")}`;
