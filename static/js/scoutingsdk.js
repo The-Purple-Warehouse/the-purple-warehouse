@@ -1789,7 +1789,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         headerCheckbox: false,
                                         enableClickSelection: false
                                     },
-                                    domLayout: "autoHeight",
+                                    // domLayout: "autoHeight",
                                     theme: agGrid.themeQuartz,
                                     suppressCellFocus: true,
                                     onRowClicked: function (event) {
