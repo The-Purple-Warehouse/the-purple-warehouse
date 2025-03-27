@@ -669,8 +669,8 @@ export async function getTeamsAtEvent(
 ) {
     let teams = await getEventTeams(event, year);
     let data = await Promise.all(
-        teams.map(async t => {
-            const check = (await getTeamByNumber(t.team_number));
+        teams.map(async (t) => {
+            const check = await getTeamByNumber(t.team_number);
             return {
                 team: t.team_number,
                 tpw: Boolean(check && check._id) // true if team exists
@@ -682,7 +682,7 @@ export async function getTeamsAtEvent(
         return data;
     }
 
-    const atevent = teams.some(t => (t.team_number == teamNumber)); // team at event
+    const atevent = teams.some((t) => t.team_number == teamNumber); // team at event
     return atevent ? data : undefined;
 }
 

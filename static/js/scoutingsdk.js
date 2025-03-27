@@ -1456,7 +1456,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
                 config.year || new Date().toLocaleDateString().split("/")[2];
-            let events = await _this.getEvents(year);
+            let events = (await _this.getEvents(year));
+            events.shift();
             element.innerHTML = `
                 <div class="data-window">
                     <h2>Event:</h2>
@@ -2131,7 +2132,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             field: header.replaceAll('"', "").replaceAll("\\n", " "),
                             filter: true,
                             sortable: true,
-                            resizable: true
+                            resizable: true,
+                            cellClass: "wrap-text",
+                            autoHeight: true
                         }));
 
                         columnDefs[0].headerComponent = class {
@@ -2193,10 +2196,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } else {
                         element.querySelector(".red").innerHTML = data.error || "Unknown error.";
                     }
-                    hideOverlay();
                 } catch (err) {
                     console.error(err);
                 }
+                hideOverlay();
             };
             const showParsedData = async () => {
                 showOverlay();
@@ -2222,7 +2225,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             field: header.replaceAll('"', "").replaceAll("\\n", " "),
                             filter: true,
                             sortable: true,
-                            resizable: true
+                            resizable: true,
+                            cellClass: "wrap-text",
+                            autoHeight: true
                         }));
             
                         columnDefs[0].headerComponent = class {
@@ -2282,10 +2287,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } else {
                         element.querySelector(".red").innerHTML = data.error || "Unknown error.";
                     }
-                    hideOverlay();
                 } catch (err) {
                     console.error(err);
                 }
+                hideOverlay();
             };
             element.querySelector("button.show-data").onclick = async () => {
                 showOverlay();
