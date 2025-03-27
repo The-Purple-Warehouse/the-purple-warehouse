@@ -52,6 +52,7 @@ export interface Config {
         scoutingKeys: string[];
         tba: string;
         scoutingAdmins: string[];
+        blacklist: string[];
         scoutingInternal: {
             teamNumber: string;
             accessToken: string;

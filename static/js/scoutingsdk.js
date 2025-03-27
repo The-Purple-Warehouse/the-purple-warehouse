@@ -965,8 +965,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             formatted.username = `team${data.at}-${data.au}`;
                         }
 
-                        element.querySelector(".scanner-view > .scanned-label").innerHTML =
-                            "&nbsp;";
+                        element.querySelector(
+                            ".scanner-view > .scanned-label"
+                        ).innerHTML = "&nbsp;";
                         await reader.stop();
                         element.querySelector(
                             ".scanner-view > button.switch-camera"
@@ -1450,19 +1451,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 
-    _this.showDataPage = () => {
+    _this.showTeamPage = () => {
         return new Promise(async (resolve, reject) => {
             await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
                 config.year || new Date().toLocaleDateString().split("/")[2];
             let events = await _this.getEvents(year);
+            events.shift();
             element.innerHTML = `
                 <div class="data-window">
                     <h2>Event:</h2>
-                    <div class="group">
-                        <input class="team-number" id="team-number" autocomplete="off" name="Team" type="number" min="0" required="required"/></span><span class="bar"></span>
-                        <label for="team-number">Team Number (blank shows all)</label>
-                    </div>
                     <select class="event-code">
                         <option value=""${
                             _this.getEventCode() == null ||
@@ -1479,40 +1477,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 }>${event.name}</option>`
                         )}
                     </select>
-                    <button class="show-data">Show Data</button>
-                    <button class="show-parsed-data">Show Parsed Data</button>
-                    <button class="show-analysis">Show Analysis</button>
-                    <button class="download-csv">Download CSV</button>
-                    <p class="notes"></p>
+                    <button class="show-teams">Show Teams</button>
                     <h3 class="red">&nbsp;</h3>
-                    <table class="data-table" style="display: none;">
-                        <thead>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <div class="analysis" style="display: none;">
-                        <div class="analysis-options">
-                            <nav>
-                                <a class="active" data-refer="score-graphs">Scoring</a>
-                                <a data-refer="overall-graphs">Overall</a>
-                                <a data-refer="predictions">Predictions</a>
-                                <a data-refer="rankings">Rankings</a>
-                            </nav>
-                        </div>
-                        <div class="analysis-content"></div>
-                    </div>
+                    <table class="teams-table" style="display: none;"></table>
                     <div class="overlay" style="display: none;"></div>
                 </div>
-                <div class="export-popup"></div>
             `;
             let overlayShown = false;
-            const defAnalysis = `
-                <div class="score-graphs"></div>
-                <div class="none overall-graphs"></div>
-                <div class="none predictions"></div>
-                <div class="none rankings"></div>
-            `;
             function showOverlay() {
                 overlayShown = true;
                 if (overlayShown) {
@@ -1528,213 +1499,199 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }, 500);
             }
-            element.querySelector("button.show-data").onclick = async () => {
+            element.querySelector(".show-teams").onclick = async () => {
                 showOverlay();
                 let eventCode = element.querySelector(
                     ".data-window > select.event-code"
                 ).value;
-                let teamNumber = element.querySelector(
-                    ".data-window input.team-number"
-                ).value;
-                element.querySelector(".notes").innerHTML = "";
-                element.querySelector(".data-table > tbody").innerHTML = "";
-                element.querySelector(".analysis-content").innerHTML =
-                    defAnalysis;
-                element.querySelector(".analysis").style.display = "none";
+                let teamNumber = config.account.team;
+                element.querySelector(".teams-table").innerHTML = "";
+                element.querySelector(".teams-table").style.display = "none";
                 try {
                     let data = await (
                         await fetch(
-                            `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                eventCode
-                            )}/csv`
+                            `/api/v1/scouting/${eventCode}/${
+                                config.year
+                            }/teams/tpw/${encodeURIComponent(teamNumber)}`
                         )
                     ).json();
                     if (data.success) {
                         element.querySelector(".red").innerHTML = "&nbsp;";
-                        let csv = Papa.parse(
-                            data.body.csv.replaceAll('\\"', "&quot;")
-                        ).data;
-                        element.querySelector(".data-table > tbody").innerHTML =
-                            csv
-                                .slice(1)
-                                .filter(
-                                    (data) =>
-                                        teamNumber == "" ||
-                                        data.slice(1).includes(`${teamNumber}`)
-                                )
-                                .map((data) => {
-                                    return `<tr>${data
-                                        .map(
-                                            (cell, i) =>
-                                                `<td${
-                                                    cell.length > 40 ||
-                                                    cell.includes("\\n")
-                                                        ? ` style="min-width: 200px; overflow-wrap: anywhere;"`
-                                                        : ""
-                                                }>${
-                                                    csv[0][i] == "timestamp"
-                                                        ? new Date(
-                                                              parseInt(cell)
-                                                          ).toLocaleString()
-                                                        : _this
-                                                              .escape(
-                                                                  cell.replaceAll(
-                                                                      "&quot;",
-                                                                      '"'
-                                                                  )
-                                                              )
-                                                              .replaceAll(
-                                                                  "\\n",
-                                                                  "<br>"
-                                                              )
-                                                }</td>`
-                                        )
-                                        .join("")}</tr>`;
-                                })
-                                .join("");
-                        element.querySelector(
-                            ".data-table > thead"
-                        ).innerHTML = `<tr>${csv[0]
-                            .map(
-                                (cell) =>
-                                    `<th>${cell
-                                        .replaceAll('"', "")
-                                        .replaceAll("\\n", "<br>")}</th>`
-                            )
-                            .join("")}</tr>`;
-                        element.querySelector(
-                            ".data-window > .notes"
-                        ).innerHTML = data.body.notes.replaceAll("\n", "<br>");
+                        const container = document.createElement("div");
+                        container.id = "teamsGrid";
+                        container.style["max-height"] = "500px";
+                        container.style.display = "flex";
+                        container.style.gap = "20px";
                         element
-                            .querySelector(".data-window")
-                            .classList.add("data-window-visible");
-                        element.querySelector(".data-table").style.display =
+                            .querySelector(".teams-table")
+                            .appendChild(container);
+                        const tpwcont = document.createElement("div");
+                        const notpwcont = document.createElement("div");
+                        tpwcont.classList.add("half-ag-grid");
+                        notpwcont.classList.add("half-ag-grid");
+                        container.appendChild(tpwcont);
+                        container.appendChild(notpwcont);
+                        const tpwteams = data.body.data.filter(
+                            (entry) => entry.tpw
+                        );
+                        const noteams = data.body.data.filter(
+                            (entry) => !entry.tpw
+                        );
+
+                        const createGrid = (cont, rowData, t) => {
+                            const title = document.createElement("h3");
+                            title.textContent = t;
+                            cont.appendChild(title);
+                            const gdiv = document.createElement("div");
+                            cont.appendChild(gdiv);
+
+                            new agGrid.createGrid(gdiv, {
+                                columnDefs: [
+                                    {
+                                        headerName: "Team",
+                                        field: "team",
+                                        flex: 1,
+                                        sort: "asc"
+                                    }
+                                ],
+                                rowData,
+                                domLayout: "autoHeight",
+                                theme: agGrid.themeQuartz
+                            });
+                        };
+
+                        createGrid(tpwcont, tpwteams, "Uses TPW");
+                        createGrid(notpwcont, noteams, "Not Using TPW");
+
+                        element.querySelector(".teams-table").style.display =
                             "block";
                     } else {
                         element.querySelector(".red").innerHTML =
                             data.error || "Unknown error.";
                     }
-                } catch (err) {}
+                } catch (err) {
+                    console.error(err);
+                }
                 hideOverlay();
             };
-            element.querySelector("button.show-parsed-data").onclick =
-                async () => {
-                    showOverlay();
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    let teamNumber = element.querySelector(
-                        ".data-window input.team-number"
-                    ).value;
-                    element.querySelector(".notes").innerHTML = "";
-                    element.querySelector(".data-table > tbody").innerHTML = "";
-                    element.querySelector(".analysis-content").innerHTML =
-                        defAnalysis;
-                    element.querySelector(".analysis").style.display = "none";
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv/parsed`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = Papa.parse(
-                                data.body.csv.replaceAll('\\"', "&quot;")
-                            ).data;
-                            element.querySelector(
-                                ".data-table > tbody"
-                            ).innerHTML = csv
-                                .slice(1)
-                                .filter(
-                                    (data) =>
-                                        teamNumber == "" ||
-                                        data.slice(1).includes(`${teamNumber}`)
-                                )
-                                .map((data) => {
-                                    return `<tr>${data
-                                        .map(
-                                            (cell, i) =>
-                                                `<td${
-                                                    cell.length > 40 ||
-                                                    cell.includes("\\n")
-                                                        ? ` style="min-width: 200px; overflow-wrap: anywhere;"`
-                                                        : ""
-                                                }>${
-                                                    csv[0][i] == "timestamp"
-                                                        ? new Date(
-                                                              parseInt(cell)
-                                                          ).toLocaleString()
-                                                        : _this
-                                                              .escape(
-                                                                  cell.replaceAll(
-                                                                      "&quot;",
-                                                                      '"'
-                                                                  )
-                                                              )
-                                                              .replaceAll(
-                                                                  "\\n",
-                                                                  "<br>"
-                                                              )
-                                                }</td>`
-                                        )
-                                        .join("")}</tr>`;
-                                })
-                                .join("");
-                            element.querySelector(
-                                ".data-table > thead"
-                            ).innerHTML = `<tr>${csv[0]
-                                .map(
-                                    (cell) =>
-                                        `<th>${cell
-                                            .replaceAll('"', "")
-                                            .replaceAll("\\n", "<br>")}</th>`
-                                )
-                                .join("")}</tr>`;
-                            element.querySelector(
-                                ".data-window > .notes"
-                            ).innerHTML = data.body.notes.replaceAll(
-                                "\n",
-                                "<br>"
-                            );
+            resolve();
+        });
+    };
+
+    _this.getDefaultAnalysis = (comp) => {
+        if (comp) {
+            return `
+                <div class="overall-graphs"></div>
+            `;
+        }
+        return `
+            <div class="score-graphs"></div>
+            <div class="none overall-graphs"></div>
+            <div class="none predictions"></div>
+        `;
+    };
+
+    _this.getAnalysisOptions = (comp) => {
+        if (comp) {
+            return `
+                <nav>
+                    <a class="active" data-refer="overall-graphs">Overall</a>
+                </nav>
+            `;
+        }
+        return `
+            <nav>
+                <a class="active" data-refer="score-graphs">Scoring</a>
+                <a data-refer="overall-graphs">Overall</a>
+                <a data-refer="predictions">Predictions</a>
+            </nav>
+        `;
+    };
+
+    _this.showAnalysisPage = () => {
+        return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
+            let events = await _this.getEvents(year);
+            element.innerHTML = `
+                <div class="data-window">
+                    <h2>Event:</h2>
+                    <select class="event-code">
+                        <option value=""${
+                            _this.getEventCode() == null ||
+                            _this.getEventCode() == ""
+                                ? " selected"
+                                : ""
+                        }>Select an event...</option>
+                        ${events.map(
+                            (event) =>
+                                `<option value="${event.key}"${
+                                    _this.getEventCode() == event.key
+                                        ? " selected"
+                                        : ""
+                                }>${event.name}</option>`
+                        )}
+                    </select>
+                    <button class="show-analysis">Open Analyzer</button>
+                    <button class="run-analysis none">Run Analysis</button>
+                    <h3 class="red">&nbsp;</h3>
+                    <table class="analysis-table" style="display: none;"></table>
+                    <div class="analysis" style="display: none;">
+                        <div class="analysis-options">
+                            <nav>
+                                <a class="active" data-refer="score-graphs">Scoring</a>
+                                <a data-refer="overall-graphs">Overall</a>
+                                <a data-refer="predictions">Predictions</a>
+                            </nav>
+                        </div>
+                        <div class="analysis-content"></div>
+                    </div>
+                    <div class="overlay" style="display: none;"></div>
+                </div>
+            `;
+            let overlayShown = false;
+            function showOverlay() {
+                overlayShown = true;
+                if (overlayShown) {
+                    element.querySelector(".overlay").style.display = "block";
+                }
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                setTimeout(() => {
+                    if (!overlayShown) {
+                        element.querySelector(".overlay").style.display =
+                            "none";
+                    }
+                }, 500);
+            }
+            const defineAnalysisNav = () => {
+                element
+                    .querySelectorAll(".analysis-options > nav > a")
+                    .forEach((el) => {
+                        el.onclick = () => {
                             element
-                                .querySelector(".data-window")
-                                .classList.add("data-window-visible");
-                            element.querySelector(".data-table").style.display =
-                                "block";
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {}
-                    hideOverlay();
-                };
-            element
-                .querySelectorAll(".analysis-options > nav > a")
-                .forEach((el) => {
-                    el.onclick = () => {
-                        element
-                            .querySelectorAll(".analysis-options > nav > a")
-                            .forEach((el) => {
-                                el.classList.remove("active");
-                            });
-                        element
-                            .querySelectorAll(".analysis-content > div")
-                            .forEach((el) => {
-                                el.classList.add("none");
-                            });
-                        el.classList.add("active");
-                        element
-                            .querySelector(
-                                `.analysis-content > .${el.getAttribute(
-                                    "data-refer"
-                                )}`
-                            )
-                            .classList.remove("none");
-                    };
-                });
+                                .querySelectorAll(".analysis-options > nav > a")
+                                .forEach((el) => {
+                                    el.classList.remove("active");
+                                });
+                            element
+                                .querySelectorAll(".analysis-content > div")
+                                .forEach((el) => {
+                                    el.classList.add("none");
+                                });
+                            el.classList.add("active");
+                            element
+                                .querySelector(
+                                    `.analysis-content > .${el.getAttribute(
+                                        "data-refer"
+                                    )}`
+                                )
+                                .classList.remove("none");
+                        };
+                    });
+            };
             const resetOptions = () => {
                 element
                     .querySelectorAll(".analysis-options > nav > a")
@@ -1745,33 +1702,211 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     .querySelector(".analysis-options > nav > a:first-child")
                     .classList.add("active");
             };
+            let selectData;
             element.querySelector("button.show-analysis").onclick =
                 async () => {
                     showOverlay();
                     let eventCode = element.querySelector(
                         ".data-window > select.event-code"
                     ).value;
-                    let teamNumber =
-                        element.querySelector(".data-window input.team-number")
-                            .value || config.account.team;
-                    element.querySelector(".notes").innerHTML = "";
-                    element.querySelector(".data-table > tbody").innerHTML = "";
-                    element.querySelector(".data-table").style.display = "none";
+                    let teamNumber = config.account.team;
+                    element.querySelector(".analysis-table").innerHTML = "";
+                    element.querySelector(".analysis-table").style.display =
+                        "none";
+                    element.querySelector(".analysis").style.display =
+                        "none";
                     resetOptions();
                     element.querySelector(".analysis-content").innerHTML =
-                        defAnalysis;
+                        _this.getDefaultAnalysis(false);
                     try {
                         let data = await (
                             await fetch(
                                 `/api/v1/scouting/entry/analysis/event/${encodeURIComponent(
                                     eventCode
-                                )}/${teamNumber}`
+                                )}`
                             )
                         ).json();
                         if (data.success) {
+                            console.log(data.body.display);
                             element.querySelector(".red").innerHTML = "&nbsp;";
                             let run = [];
-                            // score graphs
+                            // rankings
+                            let gridOptions;
+                            const rankingsTable = data.body.display.find(
+                                (item) =>
+                                    item.category === "rank" &&
+                                    item.type === "table"
+                            );
+                            if (rankingsTable) {
+                                const container = document.createElement("div");
+                                container.id = "rankingGrid";
+                                container.style.height = "400px";
+                                element
+                                    .querySelector(".analysis-table")
+                                    .appendChild(container);
+
+                                const [headersRaw, ...rowsRaw] =
+                                    rankingsTable.values;
+                                const headers = headersRaw.map((h) =>
+                                    h.replace(/<[^>]*>/g, "")
+                                );
+                                const rowData = rowsRaw.map((row) => {
+                                    return {
+                                        team: row[0].replace(/<[^>]*>/g, ""),
+                                        score: row[1]
+                                    };
+                                });
+
+                                gridOptions = {
+                                    columnDefs: [
+                                        {
+                                            headerName: headers[0],
+                                            field: "team",
+                                            sortable: true,
+                                            filter: true,
+                                            flex: 1,
+                                            cellRenderer: (params) => {
+                                                const team = params.value;
+                                                const yourteam =
+                                                    team == teamNumber;
+                                                const tag = yourteam
+                                                    ? `<span class="current-team-tag">Your Team</span>`
+                                                    : "";
+                                                return `<span class="team-cell">${team} ${tag}</span>`;
+                                            }
+                                        },
+                                        {
+                                            headerName: headers[1],
+                                            field: "score",
+                                            sortable: true,
+                                            filter: true,
+                                            flex: 1
+                                        }
+                                    ],
+                                    rowData: rowData,
+                                    rowSelection: {
+                                        mode: "multiRow",
+                                        headerCheckbox: false,
+                                        enableClickSelection: false
+                                    },
+                                    domLayout: "autoHeight",
+                                    theme: agGrid.themeQuartz,
+                                    suppressCellFocus: true,
+                                    onRowClicked: function (event) {
+                                        const api = gridOptions.api;
+                                        const selected = api.getSelectedNodes();
+                                        if (event.node.isSelected()) {
+                                            event.node.setSelected(false);
+                                            return;
+                                        }
+                                        if (selected.length >= 5) {
+                                            return;
+                                        }
+                                        event.node.setSelected(true);
+                                    },
+                                    onGridReady: function (params) {
+                                        gridOptions.api = params.api;
+                                        gridOptions.colApi = params.colApi;
+                                    },
+                                    onSelectionChanged: () => {
+                                        if (!gridOptions.api) return;
+                                        const selected =
+                                            gridOptions.api.getSelectedNodes();
+                                        selectData = selected.map(
+                                            (node) => node.data
+                                        );
+                                        gridOptions.api.refreshCells({
+                                            force: true
+                                        });
+                                        console.log(
+                                            "selected so far:",
+                                            selectData.map((d) => d.team)
+                                        );
+                                    }
+                                };
+                                new agGrid.createGrid(container, gridOptions);
+                            }
+                            let scripts = [
+                                ...element.querySelectorAll(".analysis script")
+                            ];
+                            for (let i = 0; i < scripts.length; i++) {
+                                if (!run.includes(scripts[i].innerHTML)) {
+                                    run.push(scripts[i].innerHTML);
+                                    eval(scripts[i].innerHTML);
+                                }
+                            }
+                            element
+                                .querySelector(".data-window")
+                                .classList.add("data-window-visible");
+                            element.querySelector(
+                                ".analysis-table"
+                            ).style.display = "";
+                            element
+                                .querySelector("button.run-analysis")
+                                .classList.remove("none");
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                    hideOverlay();
+                };
+            element.querySelector("button.run-analysis").onclick = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                if (!selectData) {
+                    element.querySelector(".red").innerHTML =
+                        "Please select teams from the analyzer table to run analysis.";
+                    hideOverlay();
+                    return;
+                }
+                const teams = selectData.map((d) => d.team);
+                let endpoint = teams.length == 1 ? "analysis" : "compare";
+                let compare = endpoint == "compare";
+                element.querySelector(".analysis-content").innerHTML =
+                    _this.getDefaultAnalysis(compare);
+                element.querySelector(".analysis-options").innerHTML =
+                    _this.getAnalysisOptions(compare);
+                element.querySelector(".analysis").style.display = "none";
+                if (!teams || teams.length < 1) {
+                    element.querySelector(".red").innerHTML =
+                        "1 or more teams should be selected on the analyzer table to run analysis.";
+                    hideOverlay();
+                    return;
+                }
+                if (teams.length > 5) {
+                    element.querySelector(".red").innerHTML =
+                        "5 or less teams should be selected on the analyzer table to run analysis.";
+                    hideOverlay();
+                    return;
+                }
+
+                element.querySelector(".red").innerHTML = "&nbsp;";
+                try {
+                    let data = await (
+                        await fetch(
+                            `/api/v1/scouting/entry/${endpoint}/event/${encodeURIComponent(
+                                eventCode
+                            )}/${teams.join(",")}`
+                        )
+                    ).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        defineAnalysisNav();
+                        let run = [];
+                        console.log(data);
+                        console.log(data.body);
+                        console.log(data.body.display);
+                        // score graphs
+                        if (
+                            element.querySelector(
+                                ".analysis-content .score-graphs"
+                            )
+                        )
                             element.querySelector(
                                 ".analysis-content .score-graphs"
                             ).innerHTML = data.body.display
@@ -1814,7 +1949,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                 })
                                 .join("");
-                            // overall graphs
+                        // overall graphs
+                        if (
+                            element.querySelector(
+                                ".analysis-content .overall-graphs"
+                            )
+                        )
                             element.querySelector(
                                 ".analysis-content .overall-graphs"
                             ).innerHTML = data.body.display
@@ -1857,7 +1997,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                 })
                                 .join("");
-                            // predictions
+                        // predictions
+                        if (
+                            element.querySelector(
+                                ".analysis-content .predictions"
+                            )
+                        )
                             element.querySelector(
                                 ".analysis-content .predictions"
                             ).innerHTML = data.body.display
@@ -1926,239 +2071,33 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     }
                                 })
                                 .join("");
-                            // rankings
-                            element.querySelector(
-                                ".analysis-content .rankings"
-                            ).innerHTML = data.body.display
-                                .map((item) => {
-                                    if (item.category == "rank") {
-                                        if (item.type == "table") {
-                                            return `<h2>${item.label}</h2>
-                                            <table class="data-table">
-                                                <thead>
-                                                    <tr>${item.values[0]
-                                                        .map(
-                                                            (cell) =>
-                                                                `<th>${cell
-                                                                    .replaceAll(
-                                                                        '"',
-                                                                        ""
-                                                                    )
-                                                                    .replaceAll(
-                                                                        "\\n",
-                                                                        "<br>"
-                                                                    )}</th>`
-                                                        )
-                                                        .join("")}</tr>
-                                                </thead>
-                                                <tbody>
-                                                    ${item.values
-                                                        .slice(1)
-                                                        .map((data) => {
-                                                            return `<tr>${data
-                                                                .map(
-                                                                    (cell) =>
-                                                                        `<td${
-                                                                            cell
-                                                                                .toString()
-                                                                                .includes(
-                                                                                    `<b>${teamNumber}</b>`
-                                                                                )
-                                                                                ? ` style="background-color: yellow;"`
-                                                                                : ""
-                                                                        }>${cell
-                                                                            .toString()
-                                                                            .replaceAll(
-                                                                                "\\n",
-                                                                                "<br>"
-                                                                            )}</td>`
-                                                                )
-                                                                .join(
-                                                                    ""
-                                                                )}</tr>`;
-                                                        })
-                                                        .join("")}
-                                                </tbody>
-                                            </table>`;
-                                        }
-                                    }
-                                })
-                                .join("");
-                            let scripts = [
-                                ...element.querySelectorAll(".analysis script")
-                            ];
-                            for (let i = 0; i < scripts.length; i++) {
-                                if (!run.includes(scripts[i].innerHTML)) {
-                                    run.push(scripts[i].innerHTML);
-                                    eval(scripts[i].innerHTML);
-                                }
+                        let scripts = [
+                            ...element.querySelectorAll(".analysis script")
+                        ];
+                        for (let i = 0; i < scripts.length; i++) {
+                            if (!run.includes(scripts[i].innerHTML)) {
+                                run.push(scripts[i].innerHTML);
+                                eval(scripts[i].innerHTML);
                             }
-                            element
-                                .querySelector(".data-window")
-                                .classList.add("data-window-visible");
-                            element.querySelector(".analysis").style.display =
-                                "";
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
                         }
-                    } catch (err) {}
-                    hideOverlay();
-                };
-            element.querySelector("button.download-csv").onclick = async () => {
-                showOverlay();
-                await _this.showExportOptions();
-            };
-            resolve();
-        });
-    };
-
-    _this.showExportOptions = () => {
-        return new Promise(async (resolve, reject) => {
-            function showOverlay() {
-                overlayShown = true;
-                if (overlayShown) {
-                    element.querySelector(".overlay").style.display = "block";
-                }
-            }
-            function hideOverlay() {
-                overlayShown = false;
-                if (!overlayShown) {
-                    element.querySelector(".overlay").style.display = "none";
-                }
-            }
-            element.querySelector(".export-popup").innerHTML = `
-                <div class="export-options">
-                    <h2>Export Options</h2>
-                    <div class="export-toggle">
-                        <p>Export only my team's contributions</p>
-                        <div>
-						    <input type="checkbox" id="export-toggle"/>
-						    <label for="export-toggle"></label>
-                        </div>
-					</div>
-                    <p id="current-export">Currently exporting <span>all data.</span></p>
-                    <div class="button-group" style="display: flex; gap: 15px;">
-                        <button class="cancel-export">Cancel</button>
-                        <button class="export-csv">Export CSV</button>
-                    </div>
-                </div>
-            `;
-            element.querySelector(".export-popup").style.display = "flex";
-            element.querySelector(".export-popup .cancel-export").onclick =
-                () => {
-                    element.querySelector(".export-popup").style.display =
-                        "none";
-                    hideOverlay();
-                };
-            element.querySelector(
-                ".export-popup input#export-toggle"
-            ).onchange = () => {
-                if (
-                    element.querySelector(".export-popup input#export-toggle")
-                        .checked
-                ) {
-                    element.querySelector(
-                        ".export-popup p span"
-                    ).innerText = `data contributed by my team.`;
-                } else {
-                    element.querySelector(".export-popup p span").innerText =
-                        "all data.";
-                }
-            };
-            element.querySelector(".export-popup .export-csv").onclick =
-                async () => {
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    let teamNumber =
-                        element.querySelector(".data-window input.team-number")
-                            .value || config.account.team;
-                    let toggle = element.querySelector(
-                        ".export-popup input#export-toggle"
-                    ).checked; // true = my team's data
-                    if (toggle) {
-                        if (!teamNumber) {
-                            console.error(
-                                "export error: no team number found."
-                            );
-                            return;
-                        }
-                        try {
-                            let data = await (
-                                await fetch(
-                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                        eventCode
-                                    )}/csv/${teamNumber}`
-                                )
-                            ).json();
-                            if (data.success) {
-                                element.querySelector(".red").innerHTML =
-                                    "&nbsp;";
-                                let csv = data.body.csv;
-                                let download =
-                                    "data:text/csv;charset=utf-8," +
-                                    encodeURIComponent(csv);
-                                let link = document.createElement("a");
-                                link.style.display = "none";
-                                link.setAttribute("href", download);
-                                link.setAttribute(
-                                    "download",
-                                    `tpw-scouting-${eventCode}-${teamNumber}.csv`
-                                );
-                                element.appendChild(link);
-                                link.click();
-                                link.remove();
-                            } else {
-                                element.querySelector(".red").innerHTML =
-                                    data.error || "Unknown error.";
-                            }
-                        } catch (err) {
-                            console.log("export csv error", err);
-                        }
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".analysis").style.display = "";
                     } else {
-                        try {
-                            let data = await (
-                                await fetch(
-                                    `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                        eventCode
-                                    )}/csv`
-                                )
-                            ).json();
-                            if (data.success) {
-                                element.querySelector(".red").innerHTML =
-                                    "&nbsp;";
-                                let csv = data.body.csv;
-                                let download =
-                                    "data:text/csv;charset=utf-8," +
-                                    encodeURIComponent(csv);
-                                let link = document.createElement("a");
-                                link.style.display = "none";
-                                link.setAttribute("href", download);
-                                link.setAttribute(
-                                    "download",
-                                    `tpw-scouting-${eventCode}.csv`
-                                );
-                                element.appendChild(link);
-                                link.click();
-                                link.remove();
-                            } else {
-                                element.querySelector(".red").innerHTML =
-                                    data.error || "Unknown error.";
-                            }
-                        } catch (err) {
-                            console.log("export csv error", err);
-                        }
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
-                    element.querySelector(".export-popup").style.display =
-                        "none";
-                    hideOverlay();
-                };
+                } catch (err) {
+                    console.error(err);
+                }
+                hideOverlay();
+            };
             resolve();
         });
     };
 
-    _this.showComparePage = () => {
+    _this.showDataPage = () => {
         return new Promise(async (resolve, reject) => {
             await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =
@@ -2183,47 +2122,27 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 }>${event.name}</option>`
                         )}
                     </select>
-                    <h2>Team Numbers (up to 5)</h2>
-                    <div class="group">
-                        <input class="team-number-1" id="team-number-1" autocomplete="off" name="Team Number 1" type="number" min="0" required="required"/></span><span class="bar"></span>
-                        <label for="team-number-1">Team Number 1</label>
-                    </div>
-                    <div class="group">
-                        <input class="team-number-2" id="team-number-2" autocomplete="off" name="Team Number 2" type="number" min="0" required="required"/></span><span class="bar"></span>
-                        <label for="team-number-2">Team Number 2</label>
-                    </div>
-                    <div class="group">
-                        <input class="team-number-3" id="team-number-3" autocomplete="off" name="Team Number 3" type="number" min="0" required="required"/></span><span class="bar"></span>
-                        <label for="team-number-3">Team Number 3</label>
-                    </div>
-                    <div class="group">
-                        <input class="team-number-4" id="team-number-4" autocomplete="off" name="Team Number 4" type="number" min="0" required="required"/></span><span class="bar"></span>
-                        <label for="team-number-4">Team Number 4</label>
-                    </div>
-                    <div class="group">
-                        <input class="team-number-5" id="team-number-5" autocomplete="off" name="Team Number 5" type="number" min="0" required="required"/></span><span class="bar"></span>
-                        <label for="team-number-5">Team Number 5</label>
-                    </div>
-                    <button class="show-comparison">Compare Teams</button>
+                    <button class="show-data">Show Data</button>
+                    <button class="show-parsed-data">Show Parsed Data</button>
+                    <button class="export-options">Export Options</button>
+                    <p class="notes"></p>
                     <h3 class="red">&nbsp;</h3>
-                    <div class="comparison" style="display: none;"></div>
+                    <table class="data-table" style="display: none;">
+                        <thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                     <div class="overlay" style="display: none;"></div>
                 </div>
+                <div class="data-popup popup-modal"></div>
             `;
             let overlayShown = false;
-            const defComparison = `
-                <div class="graphs"></div>
-                <div class="predictions"></div>
-                <div class="rankings"></div>
-            `;
             function showOverlay() {
                 overlayShown = true;
-                setTimeout(() => {
-                    if (overlayShown) {
-                        element.querySelector(".overlay").style.display =
-                            "block";
-                    }
-                }, 500);
+                if (overlayShown) {
+                    element.querySelector(".overlay").style.display = "block";
+                }
             }
             function hideOverlay() {
                 overlayShown = false;
@@ -2234,197 +2153,369 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     }
                 }, 500);
             }
-            element.querySelector("button.show-comparison").onclick =
+            const showData = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                // let teamNumber = element.querySelector(".data-popup .show-data-content input.team-number").value;
+                element.querySelector(".notes").innerHTML = "";
+                element.querySelector("table.data-table").innerHTML = "";
+
+                try {
+                    let response = await fetch(
+                        `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                            eventCode
+                        )}/csv`
+                    );
+                    let data = await response.json();
+
+                    if (data.success) {
+                        let csv = Papa.parse(
+                            data.body.csv.replaceAll('\\"', "&quot;")
+                        ).data;
+
+                        if (csv.length < 2) {
+                            console.warn("no data available for show data");
+                            return;
+                        }
+
+                        let columnDefs = csv[0].map((header, index) => ({
+                            headerName: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
+                            field: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
+                            filter: true,
+                            sortable: true,
+                            resizable: true,
+                            suppressMovable: true,
+                            cellClass: "wrap-text",
+                            autoHeight: true
+                        }));
+
+                        columnDefs[0].width = 75;
+                        columnDefs[0].sortable = false;
+                        columnDefs[0].filter = false;
+                        columnDefs[0].resizable = false;
+
+                        let rowData = csv.slice(1).map((row) => {
+                            let obj = {};
+                            row.forEach((cell, index) => {
+                                let key = csv[0][index]
+                                    .replaceAll('"', "")
+                                    .replaceAll("\\n", " ");
+                                obj[key] =
+                                    key === "timestamp"
+                                        ? new Date(
+                                              parseInt(cell)
+                                          ).toLocaleString()
+                                        : cell
+                                              .replaceAll("&quot;", '"')
+                                              .replaceAll("\\n", "<br>");
+                            });
+                            return obj;
+                        });
+
+                        let gridTable = document.querySelector("#dataGrid");
+                        if (!gridTable) {
+                            gridTable = document.createElement("div");
+                            gridTable.id = "dataGrid";
+                            gridTable.style.height = "500px";
+                            element.querySelector(".data-table").innerHTML = "";
+                            element
+                                .querySelector(".data-table")
+                                .appendChild(gridTable);
+                        }
+
+                        new agGrid.createGrid(gridTable, {
+                            columnDefs: columnDefs,
+                            rowData: rowData,
+                            pagination: true,
+                            paginationPageSize: 20,
+                            theme: agGrid.themeQuartz
+                        });
+
+                        element.querySelector(".notes").innerHTML =
+                            data.body.notes.replaceAll("\n", "<br>");
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+                hideOverlay();
+            };
+            const showParsedData = async () => {
+                showOverlay();
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                // let teamNumber = element.querySelector(".data-popup .show-data-content input.team-number").value;
+                element.querySelector(".notes").innerHTML = "";
+                element.querySelector("table.data-table").innerHTML = "";
+
+                try {
+                    let response = await fetch(
+                        `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                            eventCode
+                        )}/csv/parsed`
+                    );
+                    let data = await response.json();
+
+                    if (data.success) {
+                        let csv = Papa.parse(
+                            data.body.csv.replaceAll('\\"', "&quot;")
+                        ).data;
+
+                        if (csv.length < 2) {
+                            console.warn("No parsed data available");
+                            return;
+                        }
+
+                        let columnDefs = csv[0].map((header, index) => ({
+                            headerName: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
+                            field: header
+                                .replaceAll('"', "")
+                                .replaceAll("\\n", " "),
+                            filter: true,
+                            sortable: true,
+                            resizable: true,
+                            suppressMovable: true,
+                            cellClass: "wrap-text",
+                            autoHeight: true
+                        }));
+
+                        columnDefs[0].width = 75;
+                        columnDefs[0].filter = false;
+                        columnDefs[0].sortable = false;
+                        columnDefs[0].resizable = false;
+
+                        let rowData = csv.slice(1).map((row) => {
+                            let obj = {};
+                            row.forEach((cell, index) => {
+                                let key = csv[0][index]
+                                    .replaceAll('"', "")
+                                    .replaceAll("\\n", " ");
+                                obj[key] =
+                                    key === "timestamp"
+                                        ? new Date(
+                                              parseInt(cell)
+                                          ).toLocaleString()
+                                        : cell
+                                              .replaceAll("&quot;", '"')
+                                              .replaceAll("\\n", ", ");
+                            });
+                            return obj;
+                        });
+
+                        let gridTable = document.querySelector("#dataGrid");
+                        if (!gridTable) {
+                            gridTable = document.createElement("div");
+                            gridTable.id = "dataGrid";
+                            gridTable.style.height = "500px";
+                            element.querySelector(".data-table").innerHTML = "";
+                            element
+                                .querySelector(".data-table")
+                                .appendChild(gridTable);
+                        }
+
+                        new agGrid.createGrid(gridTable, {
+                            columnDefs: columnDefs,
+                            rowData: rowData,
+                            pagination: true,
+                            paginationPageSize: 20,
+                            theme: agGrid.themeQuartz
+                        });
+
+                        element.querySelector(".notes").innerHTML =
+                            data.body.notes.replaceAll("\n", "<br>");
+                        element
+                            .querySelector(".data-window")
+                            .classList.add("data-window-visible");
+                        element.querySelector(".data-table").style.display =
+                            "block";
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+                hideOverlay();
+            };
+            element.querySelector("button.show-data").onclick = async () => {
+                showOverlay();
+                await showData();
+            };
+            element.querySelector("button.show-parsed-data").onclick =
                 async () => {
                     showOverlay();
-                    let eventCode = element.querySelector(
-                        ".data-window > select.event-code"
-                    ).value;
-                    let teamNumber1 =
-                        element.querySelector(
-                            ".data-window input.team-number-1"
-                        ).value || config.account.team;
-                    let teamNumber2 =
-                        element.querySelector(
-                            ".data-window input.team-number-2"
-                        ).value || "";
-                    let teamNumber3 =
-                        element.querySelector(
-                            ".data-window input.team-number-3"
-                        ).value || "";
-                    let teamNumber4 =
-                        element.querySelector(
-                            ".data-window input.team-number-4"
-                        ).value || "";
-                    let teamNumber5 =
-                        element.querySelector(
-                            ".data-window input.team-number-5"
-                        ).value || "";
-                    let teamNumbers = [
-                        teamNumber1,
-                        teamNumber2,
-                        teamNumber3,
-                        teamNumber4,
-                        teamNumber5
-                    ]
-                        .filter((teamNumber) => teamNumber != "")
-                        .join(",");
-                    element.querySelector(".comparison").innerHTML =
-                        defComparison;
+                    await showParsedData();
+                };
+            element.querySelector("button.export-options").onclick =
+                async () => {
+                    showOverlay();
+                    await _this.showExportOptions();
+                };
+            resolve();
+        });
+    };
+
+    _this.showExportOptions = () => {
+        return new Promise(async (resolve, reject) => {
+            function showOverlay() {
+                overlayShown = true;
+                if (overlayShown) {
+                    element.querySelector(".overlay").style.display = "block";
+                }
+            }
+            function hideOverlay() {
+                overlayShown = false;
+                if (!overlayShown) {
+                    element.querySelector(".overlay").style.display = "none";
+                }
+            }
+            function openOptions() {
+                const options = element.querySelector(".data-popup");
+                options.style.display = "flex";
+                setTimeout(() => {
+                    options.classList.add("open");
+                }, 100);
+            }
+            function closeOptions() {
+                const options = element.querySelector(".data-popup");
+                options.classList.remove("open");
+                setTimeout(() => {
+                    options.style.display = "none";
+                    hideOverlay();
+                }, 100);
+            }
+            element.querySelector(".data-popup").innerHTML = `
+                <div class="data-options popup-options">
+                    <span class="close-btn">&times;</span>
+                    <div class="data-options-back opacity-none options-back" style="transform: rotate(180deg);"><svg fill="#000000" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+                        <path id="XMLID_222_" d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001 c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213 C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.60 C255,161.018,253.42,157.202,250.606,154.389z"/></svg>
+                    </div>
+                    <header>
+                        <h2>Export Options</h2>
+                    </header>
+                    <div class="export-content popup-content">
+                        <div class="toggle-element popup-element">
+                            <div class="popup-label">
+                                <p>Filter Export</p>
+                                <p class="subtext">Export only my team's contributions</p>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="export-toggle"/>
+                                <label data-checkbox for="export-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="export-confirm popup-confirm popup-element">
+                            <div class="popup-label">
+                                <p>Export CSV</p>
+                            </div>
+                            <div class="options-expand">
+                                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 19.980469 2.9902344 A 1.0001 1.0001 0 0 0 19.869141 3 L 15 3 A 1.0001 1.0001 0 1 0 15 5 L 17.585938 5 L 8.2929688 14.292969 A 1.0001 1.0001 0 1 0 9.7070312 15.707031 L 19 6.4140625 L 19 9 A 1.0001 1.0001 0 1 0 21 9 L 21 4.1269531 A 1.0001 1.0001 0 0 0 19.980469 2.9902344 z M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 13 A 1.0001 1.0001 0 1 0 19 13 L 19 19 L 5 19 L 5 5 L 11 5 A 1.0001 1.0001 0 1 0 11 3 L 5 3 z"/></svg>
+                            </div>
+                        </div>
+					</div>
+                </div>
+            `;
+            openOptions();
+            element.querySelector(".data-popup .close-btn").onclick = () => {
+                closeOptions();
+            };
+            element.querySelector(
+                ".data-popup .export-content .export-confirm"
+            ).onclick = async () => {
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+                let teamNumber = config.account.team;
+                let toggle = element.querySelector(
+                    ".data-popup input#export-toggle"
+                ).checked; // true = my team's data
+                if (toggle) {
+                    if (!teamNumber) {
+                        console.error("export error: no team number found.");
+                        return;
+                    }
                     try {
                         let data = await (
                             await fetch(
-                                `/api/v1/scouting/entry/compare/event/${encodeURIComponent(
+                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
                                     eventCode
-                                )}/${teamNumbers}`
+                                )}/csv/${teamNumber}`
                             )
                         ).json();
                         if (data.success) {
                             element.querySelector(".red").innerHTML = "&nbsp;";
-                            let run = [];
-                            // graphs
-                            element.querySelector(
-                                ".comparison .graphs"
-                            ).innerHTML = data.body.display
-                                .map((item) => {
-                                    if (item.type == "html") {
-                                        return `<h2>${item.label}</h2>${item.value}`;
-                                    } else if (item.type == "config") {
-                                        const config = item.value;
-                                        const id = _this.random();
-                                        console.log(config);
-                                        return `<canvas id="${id}">
-                                                <script>
-                                                    var chart_config = ${JSON.stringify(
-                                                        config
-                                                    )};
-                                                    new Chart(document.getElementById("${id}").getContext("2d"), chart_config);
-                                                </script>
-                                            </canvas>`;
-                                    }
-                                })
-                                .join("");
-                            // predictions
-                            element.querySelector(
-                                ".comparison .predictions"
-                            ).innerHTML = data.body.display
-                                .map((item) => {
-                                    if (item.type == "predictions") {
-                                        return `<h2>${item.label}</h2>
-                                        ${item.values
-                                            .map((data) => {
-                                                let firstListed = "red";
-                                                if (
-                                                    (data.win &&
-                                                        data.winner ==
-                                                            "blue") ||
-                                                    (!data.win &&
-                                                        data.winner == "red")
-                                                ) {
-                                                    firstListed = "blue";
-                                                }
-                                                return `<h3>Match ${
-                                                    data.match
-                                                } (Predicted ${
-                                                    data.win ? "WIN" : "LOSS"
-                                                })</h3>
-                                                <div class="prediction-bar">
-                                                    <div class="prediction-bar-${
-                                                        firstListed == "red"
-                                                            ? "red"
-                                                            : "blue"
-                                                    }" style="width: calc(${
-                                                    firstListed == "red"
-                                                        ? data.red * 100
-                                                        : data.blue * 100
-                                                }% - 2px);"><p>${Math.round(
-                                                    firstListed == "red"
-                                                        ? data.red * 100
-                                                        : data.blue * 100
-                                                )}%</p></div>
-                                                    <div class="prediction-bar-${
-                                                        firstListed == "red"
-                                                            ? "blue"
-                                                            : "red"
-                                                    }" style="width: calc(${
-                                                    firstListed == "red"
-                                                        ? data.blue * 100
-                                                        : data.red * 100
-                                                }% - 3px);"><p>${Math.round(
-                                                    firstListed == "red"
-                                                        ? data.blue * 100
-                                                        : data.red * 100
-                                                )}%</p></div>
-                                                </div>`;
-                                            })
-                                            .join("")}`;
-                                    }
-                                })
-                                .join("");
-                            // rankings
-                            element.querySelector(
-                                ".comparison .rankings"
-                            ).innerHTML = data.body.display
-                                .map((item) => {
-                                    if (item.type == "table") {
-                                        return `<h2>${item.label}</h2>
-                                    <table class="data-table">
-                                        <thead>
-                                            <tr>${item.values[0]
-                                                .map(
-                                                    (cell) =>
-                                                        `<th>${cell
-                                                            .replaceAll('"', "")
-                                                            .replaceAll(
-                                                                "\\n",
-                                                                "<br>"
-                                                            )}</th>`
-                                                )
-                                                .join("")}</tr>
-                                        </thead>
-                                        <tbody>
-                                            ${item.values
-                                                .slice(1)
-                                                .map((data) => {
-                                                    return `<tr>${data
-                                                        .map(
-                                                            (cell) =>
-                                                                `<td>${cell.replaceAll(
-                                                                    "\\n",
-                                                                    "<br>"
-                                                                )}</td>`
-                                                        )
-                                                        .join("")}</tr>`;
-                                                })
-                                                .join("")}
-                                        </tbody>
-                                    </table>`;
-                                    }
-                                })
-                                .join("");
-                            let scripts = [
-                                ...element.querySelectorAll(
-                                    ".comparison script"
-                                )
-                            ];
-                            for (let i = 0; i < scripts.length; i++) {
-                                if (!run.includes(scripts[i].innerHTML)) {
-                                    run.push(scripts[i].innerHTML);
-                                    eval(scripts[i].innerHTML);
-                                }
-                            }
-                            element
-                                .querySelector(".data-window")
-                                .classList.add("data-window-visible");
-                            element.querySelector(".comparison").style.display =
-                                "";
+                            let csv = data.body.csv;
+                            let download =
+                                "data:text/csv;charset=utf-8," +
+                                encodeURIComponent(csv);
+                            let link = document.createElement("a");
+                            link.style.display = "none";
+                            link.setAttribute("href", download);
+                            link.setAttribute(
+                                "download",
+                                `tpw-scouting-${eventCode}-${teamNumber}.csv`
+                            );
+                            element.appendChild(link);
+                            link.click();
+                            link.remove();
                         } else {
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
                         }
-                    } catch (err) {}
-                    hideOverlay();
-                };
+                    } catch (err) {
+                        console.log("export csv error", err);
+                    }
+                } else {
+                    try {
+                        let data = await (
+                            await fetch(
+                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                                    eventCode
+                                )}/csv`
+                            )
+                        ).json();
+                        if (data.success) {
+                            element.querySelector(".red").innerHTML = "&nbsp;";
+                            let csv = data.body.csv;
+                            let download =
+                                "data:text/csv;charset=utf-8," +
+                                encodeURIComponent(csv);
+                            let link = document.createElement("a");
+                            link.style.display = "none";
+                            link.setAttribute("href", download);
+                            link.setAttribute(
+                                "download",
+                                `tpw-scouting-${eventCode}.csv`
+                            );
+                            element.appendChild(link);
+                            link.click();
+                            link.remove();
+                        } else {
+                            element.querySelector(".red").innerHTML =
+                                data.error || "Unknown error.";
+                        }
+                    } catch (err) {
+                        console.log("export csv error", err);
+                    }
+                }
+                closeOptions();
+            };
             resolve();
         });
     };
@@ -2673,7 +2764,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             element.querySelector(".red").innerHTML =
                                 data.error || "Unknown error.";
                         }
-                    } catch (err) {}
+                    } catch (err) {
+                        console.error(err);
+                    }
                     hideOverlay();
                 };
             resolve();
@@ -2916,6 +3009,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).json();
                 resolve(latestMatchData);
             } catch (err) {
+                console.error(err);
                 resolve({
                     success: false
                 });
@@ -2935,6 +3029,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).json();
                 resolve(team.body.team);
             } catch (err) {
+                console.error(err);
                 resolve({
                     success: false
                 });
@@ -2974,6 +3069,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).json();
                 resolve(add);
             } catch (err) {
+                console.error(err);
                 resolve({
                     success: false
                 });
@@ -2997,6 +3093,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 ).json();
                 resolve(list);
             } catch (err) {
+                console.error(err);
                 resolve({
                     success: false
                 });
@@ -3298,61 +3395,69 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         return `
 						<div data-option="${_this.escape(option.value)}">
 							<h2>${option.label}</h2>
-							${
-                                option.type == "toggle"
-                                    ? `<button class="toggle" data-type="${
-                                          option.type
-                                      }" data-value="${_this.escape(
-                                          option.value
-                                      )}">[${
-                                          locationData.filter(
-                                              (loc) =>
-                                                  loc.value == option.value &&
-                                                  loc.index == index
-                                          ).length
-                                      }/${
-                                          locationData.filter(
-                                              (loc) => loc.value == option.value
-                                          ).length
-                                      }] ${
-                                          locationData.filter(
-                                              (loc) =>
-                                                  loc.value == option.value &&
-                                                  loc.index == index
-                                          ).length > 0
-                                              ? "Deselect"
-                                              : "Select"
-                                      }</button>`
-                                    : `<button data-increment="-1"${
-                                          option.max
-                                              ? ` data-max="${option.max}"`
-                                              : ""
-                                      } data-type="${
-                                          option.type
-                                      }" data-value="${_this.escape(
-                                          option.value
-                                      )}"><span>-</span></button>
-							<h3>${
-                                locationData.filter(
-                                    (loc) =>
-                                        loc.value == option.value &&
-                                        loc.index == index
-                                ).length
-                            } here<br>${
-                                          locationData.filter(
-                                              (loc) =>
-                                                  loc.value == option.value ||
-                                                  tracks.includes(loc.value)
-                                          ).length
-                                      } total</h3>
-							<button data-increment="1"${
-                                option.max ? ` data-max="${option.max}"` : ""
-                            } data-type="${
-                                          option.type
-                                      }" data-value="${_this.escape(
-                                          option.value
-                                      )}"><span>+</span></button>`
-                            }
+                            <div class="option-container">
+                                ${
+                                    option.type == "toggle"
+                                        ? `<button class="toggle" data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}">[${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value &&
+                                                      loc.index == index
+                                              ).length
+                                          }/${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value == option.value
+                                              ).length
+                                          }] ${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value &&
+                                                      loc.index == index
+                                              ).length > 0
+                                                  ? "Deselect"
+                                                  : "Select"
+                                          }</button>`
+                                        : `<button data-increment="-1"${
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>-</span></button>
+                                <div><div><h3>${
+                                    locationData.filter(
+                                        (loc) =>
+                                            loc.value == option.value &&
+                                            loc.index == index
+                                    ).length
+                                }</h3><h4>here</h4></div><div><h3>${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value ||
+                                                      tracks.includes(loc.value)
+                                              ).length
+                                          }</h3><h4>total</h4></div></div>
+                                <button data-increment="1"${
+                                    option.max
+                                        ? ` data-max="${option.max}"`
+                                        : ""
+                                } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>+</span></button>`
+                                }
+                            </div>
 						</div>
 					`;
                     })
@@ -3372,7 +3477,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 resolve(locationData);
             };
             let elements = element.querySelectorAll(
-                ".location-popup > div > button"
+                ".location-popup > div button"
             );
             for (let i = 0; i < elements.length; i++) {
                 elements[i].onclick = async () => {
@@ -3436,7 +3541,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 if (max != null) {
                                     try {
                                         max = parseInt(max);
-                                    } catch (err) {}
+                                    } catch (err) {
+                                        console.error(err);
+                                    }
                                 }
                                 if (
                                     max == null ||
@@ -3496,20 +3603,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 element.querySelector(
                                     `.location-popup > div[data-option="${_this.escape(
                                         options[j].value
-                                    )}"] > h3`
-                                ).innerHTML = `${
+                                    )}"] > .option-container > div`
+                                ).innerHTML = `<div><h3>${
                                     locationData.filter(
                                         (loc) =>
                                             loc.value == options[j].value &&
                                             loc.index == index
                                     ).length
-                                } here<br>${
+                                }</h3><h4>here</h4></div><div><h3>${
                                     locationData.filter(
                                         (loc) =>
                                             loc.value == options[j].value ||
                                             tracks.includes(loc.value)
                                     ).length
-                                } total`;
+                                }</h3><h4>total</h4></div>`;
                             }
                         }
                     }
@@ -3533,9 +3640,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     } else {
                         theadElements[i].classList.remove("fixed");
                     }
-                } catch (err) {}
+                } catch (err) {
+                    console.error(err);
+                }
             }
-        } catch (err) {}
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     _this.compileComponent = (
@@ -4980,66 +5091,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         </div>
 					</div>
 				`);
-                /* } else if (component.type == "select") {
-                let id = _this.random();
-                let label = "";
-                if (component.label != null) {
-                    if (component.label.type == "function") {
-                        label = eval(component.label.definition)(getState());
-                    } else {
-                        label = component.label.toString();
-                    }
-                }
-                let defaultValue = 0;
-                if (typeof component.default == "number") {
-                    defaultValue = component.default;
-                }
-                let options = [];
-                if (component.options instanceof Array) {
-                    options = component.options;
-                }
-                pendingFunctions.push(async () => {
-                    element.querySelector(
-                        `[data-id="${_this.escape(id)}"] > select`
-                    ).oninput = async () => {
-                        await _this.setData(
-                            "abilities",
-                            component.data,
-                            parseInt(
-                                element.querySelector(
-                                    `[data-id="${_this.escape(id)}"] > select`
-                                ).value
-                            )
-                        );
-                    };
-                    await _this.setData(
-                        "abilities",
-                        component.data,
-                        parseInt(
-                            element.querySelector(
-                                `[data-id="${_this.escape(id)}"] > select`
-                            ).value
-                        )
-                    );
-                });
-                resolve(`
-					<div class="component-select" data-id="${_this.escape(id)}">
-						<h2>${_this.escape(label)}</h2>
-						<select>
-							${options.map((option, index) => {
-                                return `<option value="${index}" ${
-                                    index ==
-                                    checkNull(
-                                        data.abilities[component.data],
-                                        defaultValue
-                                    )
-                                        ? "selected"
-                                        : ""
-                                }>${_this.escape(option.label)}</option>`;
-                            })}
-						</select>
-					</div>
-				`); */
             } else if (component.type == "select") {
                 let id = _this.random();
                 let label = "";
@@ -5479,7 +5530,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             }</h3>`;
                         }
                     } catch (err) {
-                        // console.error(err);
+                        console.error(err);
                         const uploadBox = element.querySelector(
                             "[data-status='upload']"
                         );
@@ -5806,6 +5857,110 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <div class="leaderboard-container">
                         <h2>Error Loading Leaderboard</h2>
                         <p>Failed to load leaderboard data. Please try again later.</p>
+                    </div>`;
+            }
+            resolve();
+        });
+    };
+
+    _this.showShopPage = async () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let nutsElement = document.querySelector(
+                    ".header-incentives .nuts > p"
+                );
+                let boltsElement = document.querySelector(
+                    ".header-incentives .bolts > p"
+                );
+                element.innerHTML = `
+                    <div class="shop-container">
+                        <h2>Shop</h2>
+                        <div class="shop-balance">
+                            <div class="currency">
+                                <div class="nuts">
+                                    <span>${nutsElement.innerHTML}</span>
+                                    <img src="/img/nuts.png" alt="Nuts" />
+                                </div>
+                                <div class="bolts">
+                                    <span>${boltsElement.innerHTML}</span>
+                                    <img src="/img/bolts.png" alt="Bolts" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="shop-grid">
+                            ${[
+                                {
+                                    name: "Coming Soon",
+                                    description:
+                                        "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                },
+                                {
+                                    name: "Coming Soon",
+                                    description:
+                                        "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                },
+                                {
+                                    name: "Coming Soon",
+                                    description:
+                                        "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                },
+                                {
+                                    name: "Coming Soon",
+                                    description:
+                                        "This item will be available soon!",
+                                    price: { nuts: "???", bolts: "???" },
+                                    image: "🎁",
+                                    disabled: true
+                                }
+                            ]
+                                .map(
+                                    (item) => `
+                                <div class="shop-item${
+                                    item.disabled ? " disabled" : ""
+                                }">
+                                    <div class="item-image">${item.image}</div>
+                                    <div class="item-info">
+                                        <h3>${_this.escape(item.name)}</h3>
+                                        <p>${_this.escape(item.description)}</p>
+                                        <div class="item-price">
+                                            <div class="nuts">
+                                                <span>${item.price.nuts}</span>
+                                                <img src="/img/nuts.png" alt="Nuts" />
+                                            </div>
+                                            <div class="bolts">
+                                                <span>${item.price.bolts}</span>
+                                                <img src="/img/bolts.png" alt="Bolts" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button ${item.disabled ? "disabled" : ""}>
+                                        ${
+                                            item.disabled
+                                                ? "Coming Soon"
+                                                : "Purchase"
+                                        }
+                                    </button>
+                                </div>
+                            `
+                                )
+                                .join("")}
+                        </div>
+                    </div>`;
+            } catch (error) {
+                console.error("Error loading shop:", error);
+                element.innerHTML = `
+                    <div class="shop-container">
+                        <h2>Error Loading Shop</h2>
+                        <p>Failed to load shop data. Please try again later.</p>
                     </div>`;
             }
             resolve();

@@ -14,6 +14,7 @@
     <meta name="theme-color" content="#7d4090" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#7d4090">
 
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
   </head>
   <body>
     {{> scoutingHeader}}
@@ -44,25 +45,34 @@
       });
 
       async function updatePage() {
+
+        document.querySelectorAll(".navbar a.active").forEach(a => a.classList.remove("active"));
+
         if(window.location.hash != null && window.location.hash.startsWith("#/")) {
           let page = window.location.hash.substring(2);
           if(page == "scan-data") {
             document.querySelector(".navbar a[data-page='scan-data']").classList.add("active");
             window.readerForNav = await sdk.showScannerPage();
+          } else if(page == "teams") {
+            document.querySelector(".navbar a[data-page='teams']").classList.add("active");
+            await sdk.showTeamPage();
           } else if(page == "view-data") {
             document.querySelector(".navbar a[data-page='view-data']").classList.add("active");
             await sdk.showDataPage();
-          } else if(page == "compare-teams") {
-            document.querySelector(".navbar a[data-page='compare-teams']").classList.add("active");
-            await sdk.showComparePage();
-          } else if(page == "predict-outcomes") {
-            document.querySelector(".navbar a[data-page='predict-outcomes']").classList.add("active");
+          } else if(page == "analysis") {
+            document.querySelector(".navbar a[data-page='analysis']").classList.add("active");
+            await sdk.showAnalysisPage();
+          } else if(page == "predict") {
+            document.querySelector(".navbar a[data-page='predict']").classList.add("active");
             await sdk.showPredictPage();
           } else if(page == "admin") {
             await sdk.showAdminPage();
           } else if(page == "leaderboard") {
             document.querySelector(".navbar a[data-page='leaderboard']").classList.add("active");
             await sdk.showLeaderboardPage();
+          } else if(page == "shop") {
+            document.querySelector(".navbar a[data-page='shop']").classList.add("active");
+            await sdk.showShopPage();
           } else {
             document.querySelector(".navbar a[data-page='home']").classList.add("active");
             await sdk.showHomePage();

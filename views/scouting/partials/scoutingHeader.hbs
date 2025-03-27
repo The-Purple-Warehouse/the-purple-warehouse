@@ -6,10 +6,12 @@
     </div>
     <a data-page="home" href="#/">Home</a>
     <a data-page="scan-data" href="#/scan-data">Upload Data</a>
-    <a data-page="view-data" href="#/view-data">View Data/Analysis</a>
-    <a data-page="compare-teams" href="#/compare-teams">Compare Teams</a>
-    <a data-page="predict-outcomes" href="#/predict-outcomes">Predict Outcomes</a>
+    <a data-page="teams" href="#/teams">Teams</a>
+    <a data-page="view-data" href="#/view-data">View Data</a>
+    <a data-page="analysis" href="#/analysis">Analysis</a>
+    <a data-page="predict" href="#/predict">Predict</a>
     <a data-page="leaderboard" href="#/leaderboard">Leaderboard</a>
+    <a data-page="shop" href="#/shop">Shop</a>
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
 </nav>
 <header>
@@ -92,7 +94,7 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          if(!["#/scan-data", "#/view-data", "#/compare-teams", "#/predict-outcomes", "#/leaderboard", "#/admin"].includes(window.location.hash)) {
+          if(!["#/scan-data", "#/teams", "#/view-data", "#/analysis", "#/predict", "#/leaderboard", "#/shop", "#/admin"].includes(window.location.hash)) {
               try {
                   updatePage();
               } catch(err) {
@@ -119,6 +121,20 @@
               // window.readerForNav = await sdk.showScannerPage();
           }
         };
+    document.querySelector(".navbar a[data-page='teams']").onclick =
+        async (e) => {
+          e.preventDefault();
+          if(window.location.hash == "#/teams") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+              // window.location.reload();
+          } else {
+            window.location.hash = "#/teams";
+          }
+        };
     document.querySelector(".navbar a[data-page='view-data']").onclick =
         async (e) => {
           e.preventDefault();
@@ -134,24 +150,25 @@
             // await sdk.showDataPage();
           }
         };
-    document.querySelector(".navbar a[data-page='compare-teams']").onclick =
+    document.querySelector(".navbar a[data-page='analysis']").onclick =
         async (e) => {
           e.preventDefault();
-          if(window.location.hash == "#/compare-teams") {
+          if(window.location.hash == "#/analysis") {
               try {
                   updatePage();
               } catch(err) {
 
               }
               // window.location.reload();
+          } else {
+            window.location.hash = "#/analysis";
+            // await sdk.showDataPage();
           }
-          window.location.hash = "#/compare-teams";
-          // await sdk.showComparePage();
         };
-    document.querySelector(".navbar a[data-page='predict-outcomes']").onclick =
+    document.querySelector(".navbar a[data-page='predict']").onclick =
         async (e) => {
           e.preventDefault();
-          if(window.location.hash == "#/predict-outcomes") {
+          if(window.location.hash == "#/predict") {
               try {
                   updatePage();
               } catch(err) {
@@ -159,7 +176,7 @@
               }
               // window.location.reload();
           }
-          window.location.hash = "#/predict-outcomes";
+          window.location.hash = "#/predict";
           // await sdk.showPredictPage();
         };
     document.querySelector(".navbar a[data-page='leaderboard']").onclick =
@@ -173,6 +190,18 @@
               }
           }
           window.location.hash = "#/leaderboard";
+        };
+    document.querySelector(".navbar a[data-page='shop']").onclick =
+        async (e) => {
+          e.preventDefault();
+          if(window.location.hash == "#/shop") {
+              try {
+                  updatePage();
+              } catch(err) {
+
+              }
+          }
+          window.location.hash = "#/shop";
         };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
         async (e) => {

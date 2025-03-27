@@ -17,6 +17,7 @@ import {
     getLatestMatch,
     getNumberOfEntriesByEvent,
     getSharedData,
+    getTeamsAtEvent,
     getTeamData,
     getTotalIncentives,
     getLevelAndProgress,
@@ -37,6 +38,11 @@ import {
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
 import Team from "../../models/team";
+import {
+    getShopItems,
+    purchaseShopItem,
+    getUserInventory
+} from "../../helpers/shop";
 import { processAdmin } from "../../helpers/adminHelpers";
 
 const router = new Router<Koa.DefaultState, Koa.Context>();
@@ -319,6 +325,47 @@ router.post("/team/add/:team", requireScoutingAuth, async (ctx, next) => {
 });
 
 router.get(
+    "/entry/analysis/event/:event",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        // let entries = await getTeamEntriesByEvent(
+        //     ctx.params.event,
+        //     ctx.session.scoutingTeamNumber
+        // );
+        let entries = await getNumberOfEntriesByEvent(ctx.params.event);
+        let analysis: any = {
+            display: [],
+            data: {}
+        };
+        if (
+            // entries.length >= 5 ||
+            // config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)
+            entries >= 1
+        ) {
+            analysis = await scoutingConfig.analysis(
+                ctx.params.event,
+                undefined
+            );
+        }
+        if (analysis.display.length > 0) {
+            ctx.body = {
+                success: true,
+                body: {
+                    display: analysis.display,
+                    data: analysis.data
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Not enough data has been collected at this event to run the analyzer for this team. Please try entering a different event or check back later after scouting more matches!`
+            };
+        }
+    }
+);
+
+router.get(
     "/entry/analysis/event/:event/:team",
     requireScoutingAuth,
     async (ctx, next) => {
@@ -449,6 +496,65 @@ router.get(
     }
 );
 
+router.get(
+    "/:event/:year/teams/tpw/:team",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        let y = ctx.params.year;
+        let year: number;
+
+        try {
+            year = parseInt(y);
+        } catch (err) {
+            console.error(err);
+            ctx.body = {
+                success: false,
+                error: `An error occured. Invalid parameters.`
+            };
+        }
+
+        if (config.auth.blacklist.includes(String(ctx.params.team))) {
+            ctx.status = 418; // im a teapot! - nelson gou 2025
+            ctx.body = {
+                success: false,
+                error: "An internal error occured. Please try again later or try entering a different event!"
+            };
+            return;
+        }
+
+        let teams = await getTeamsAtEvent(
+            ctx.params.event,
+            ctx.params.team,
+            year
+        );
+
+        if (teams) {
+            const blacklist = new Set(config.auth.blacklist.map(String));
+            teams = teams.map((team) => {
+                if (blacklist.has(String(team.team)) && team.tpw == true) {
+                    return { ...team, tpw: false };
+                }
+                return team;
+            });
+        }
+
+        if (teams) {
+            ctx.body = {
+                success: true,
+                body: {
+                    data: teams
+                }
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Your team is not attending this event. Please try entering a different event to check which teams use TPW!`
+            };
+        }
+    }
+);
+
 router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
@@ -519,6 +625,91 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
             success: false,
             error: "Unable to fetch leaderboard, please try again later.",
             message: error.message
+        };
+    }
+});
+
+router.get("/shop/items", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    try {
+        const items = await getShopItems();
+        const userTotals = await getTotalIncentives(
+            ctx.session.scoutingTeamNumber,
+            ctx.session.scoutingUsername
+        );
+
+        ctx.body = {
+            success: true,
+            body: {
+                items,
+                balance: {
+                    nuts: userTotals.nuts || 0,
+                    bolts: userTotals.bolts || 0
+                }
+            }
+        };
+    } catch (error) {
+        ctx.body = {
+            success: false,
+            error: "Failed to fetch shop items"
+        };
+    }
+});
+
+router.post(
+    "/shop/purchase/:itemId",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        try {
+            const result = await purchaseShopItem(
+                ctx.params.itemId,
+                ctx.session.scoutingTeamNumber,
+                ctx.session.scoutingUsername
+            );
+
+            if (result.success) {
+                ctx.body = {
+                    success: true,
+                    body: {
+                        message: "Purchase successful",
+                        item: result.item,
+                        newBalance: result.newBalance
+                    }
+                };
+            } else {
+                ctx.body = {
+                    success: false,
+                    error: result.error
+                };
+            }
+        } catch (error) {
+            ctx.body = {
+                success: false,
+                error: "Failed to process purchase"
+            };
+        }
+    }
+);
+
+router.get("/shop/inventory", requireScoutingAuth, async (ctx, next) => {
+    addAPIHeaders(ctx);
+    try {
+        const inventory = await getUserInventory(
+            ctx.session.scoutingTeamNumber,
+            ctx.session.scoutingUsername
+        );
+
+        ctx.body = {
+            success: true,
+            body: {
+                inventory
+            }
+        };
+    } catch (error) {
+        ctx.body = {
+            success: false,
+            error: "Failed to fetch inventory"
         };
     }
 });

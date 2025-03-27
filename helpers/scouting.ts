@@ -2,6 +2,7 @@ import ScoutingEntry from "../models/scoutingEntry";
 import ScoutingCategory from "../models/scoutingCategory";
 import Team from "../models/team";
 import { getTeamByNumber } from "./teams";
+import { getEventTeams } from "./tba";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
@@ -659,6 +660,30 @@ export async function getSharedData(
     } else {
         return scoutingConfig.formatData(data, categories, teams);
     }
+}
+
+export async function getTeamsAtEvent(
+    event: string,
+    teamNumber: string,
+    year: number
+) {
+    let teams = await getEventTeams(event, year);
+    let data = await Promise.all(
+        teams.map(async (t) => {
+            const check = await getTeamByNumber(t.team_number);
+            return {
+                team: t.team_number,
+                tpw: Boolean(check && check._id) // true if team exists
+            };
+        })
+    );
+
+    if (config.auth.scoutingAdmins.includes(teamNumber)) {
+        return data;
+    }
+
+    const atevent = teams.some((t) => t.team_number == teamNumber); // team at event
+    return atevent ? data : undefined;
 }
 
 export async function getTeamData(

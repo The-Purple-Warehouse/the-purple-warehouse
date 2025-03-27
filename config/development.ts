@@ -28,6 +28,7 @@ const config: Config = {
         scoutingKeys: ["1", "2", "3", "4", "I declare a thumb war"],
         tba: secret.development.auth.tba,
         scoutingAdmins: secret.development.auth.scoutingAdmins || [""],
+        blacklist: secret.development.auth.blacklist || [""],
         scoutingInternal: {
             teamNumber: "admin",
             accessToken: "admin"
