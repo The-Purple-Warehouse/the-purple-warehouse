@@ -2743,7 +2743,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         firstListed == "red"
                                                             ? data.red * 100
                                                             : data.blue * 100
-                                                    }% - 2px);"><p>${Math.round(
+                                                    }%);"><p>${Math.round(
                                                         firstListed == "red"
                                                             ? data.red * 100
                                                             : data.blue * 100
@@ -2756,7 +2756,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         firstListed == "red"
                                                             ? data.blue * 100
                                                             : data.red * 100
-                                                    }% - 3px);"><p>${Math.round(
+                                                    }%);"><p>${Math.round(
                                                         firstListed == "red"
                                                             ? data.blue * 100
                                                             : data.red * 100
