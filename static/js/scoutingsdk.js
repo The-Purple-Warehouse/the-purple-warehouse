@@ -2079,6 +2079,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         )}
                     </select>
                     <button class="show-data">Show Data</button>
+                    <button class="show-parsed-data">Show Parsed Data</button>
                     <button class="export-options">Export Options</button>
                     <p class="notes"></p>
                     <h3 class="red">&nbsp;</h3>
@@ -2133,35 +2134,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             filter: true,
                             sortable: true,
                             resizable: true,
+                            suppressMovable: true,
                             cellClass: "wrap-text",
                             autoHeight: true
                         }));
 
-                        columnDefs[0].headerComponent = class {
-                            init(params) {
-                                this.eGui = document.createElement("div");
-                                const btn = document.createElement("button");
-                                btn.innerText = "Parsed Data";
-                                btn.style.padding = "5px 10px";
-                                btn.style.cursor = "pointer";
-                                btn.style.border = "1px solid #ccc";
-                                btn.style.background = "#f0f0f0";
-                                btn.style.fontSize = "14px";
-                                btn.style.margin = "5px";
-                                btn.style["margin-left"] = "auto";
-                                btn.style["margin-right"] = "auto";
-                                btn.onclick = showParsedData;
-                                this.eGui.appendChild(btn);
-                            }
-                            getGui() {
-                                return this.eGui;
-                            }
-                        };
-                        columnDefs[0].width = 160;
-                        columnDefs[0].filter = false;
+                        columnDefs[0].width = 75;
                         columnDefs[0].sortable = false;
+                        columnDefs[0].filter = false;
                         columnDefs[0].resizable = false;
-                        columnDefs[0].pinned = "left";
 
                         let rowData = csv.slice(1)
                         .map(row => {
@@ -2226,33 +2207,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             filter: true,
                             sortable: true,
                             resizable: true,
+                            suppressMovable: true,
                             cellClass: "wrap-text",
                             autoHeight: true
                         }));
-            
-                        columnDefs[0].headerComponent = class {
-                            init(params) {
-                                this.eGui = document.createElement("div");
-                                const btn = document.createElement("button");
-                                btn.innerText = "Raw Data";
-                                btn.style.padding = "5px 10px";
-                                btn.style.cursor = "pointer";
-                                btn.style.border = "1px solid #ccc";
-                                btn.style.background = "#f0f0f0";
-                                btn.style.fontSize = "14px";
-                                btn.style.margin = "5px";
-                                btn.onclick = showData;
-                                this.eGui.appendChild(btn);
-                            }
-                            getGui() {
-                                return this.eGui;
-                            }
-                        };
-                        columnDefs[0].width = 160;
+
+                        columnDefs[0].width = 75;
                         columnDefs[0].filter = false;
                         columnDefs[0].sortable = false;
                         columnDefs[0].resizable = false;
-                        columnDefs[0].pinned = "left";
             
                         let rowData = csv.slice(1)
                             .map(row => {
@@ -2295,6 +2258,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             element.querySelector("button.show-data").onclick = async () => {
                 showOverlay();
                 await showData();
+            };
+            element.querySelector("button.show-parsed-data").onclick = async () => {
+                showOverlay();
+                await showParsedData();
             };
             element.querySelector("button.export-options").onclick = async () => {
                 showOverlay();
