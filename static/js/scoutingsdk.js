@@ -2218,14 +2218,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         columnDefs[0].resizable = false;
             
                         let rowData = csv.slice(1)
-                            .map(row => {
+                        .map(row => {
                                 let obj = {};
                                 row.forEach((cell, index) => {
                                     let key = csv[0][index].replaceAll('"', "").replaceAll("\\n", " ");
                                     obj[key] = key === "timestamp" ? new Date(parseInt(cell)).toLocaleString() : cell.replaceAll("&quot;", '"').replaceAll("\\n", ", ");
                                 });
                                 return obj;
-                            });
+                        });
             
                         let gridTable = document.querySelector("#dataGrid");
                         if (!gridTable) {
