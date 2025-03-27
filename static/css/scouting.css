@@ -1714,6 +1714,8 @@ header .icon-button .send-container svg {
     border-radius: 5px;
     box-sizing: border-box;
     background-color: var(--primaryBackgroundColor);
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 .data-window
@@ -1741,6 +1743,7 @@ header .icon-button .send-container svg {
     display: inline-block;
     color: var(--backgroundColor);
     position: relative;
+    overflow: hidden;
 }
 
 .data-window .analysis .prediction-bar > div > p,
