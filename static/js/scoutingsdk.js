@@ -2008,7 +2008,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 .map((item) => {
                                     if (item.category == "predict") {
                                         if (item.type == "predictions") {
-                                            const clamp = (value) => Math.min(100, Math.max(0, Math.round(value)));
+                                            const clamp = (value) =>
+                                                Math.min(
+                                                    100,
+                                                    Math.max(
+                                                        0,
+                                                        Math.round(value)
+                                                    )
+                                                );
                                             return `<h2>${item.label}</h2>
                                                 ${item.values
                                                     .map((data) => {
@@ -2024,8 +2031,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             firstListed =
                                                                 "blue";
                                                         }
-                                                        const redp = clamp(data.red * 100);
-                                                        const bluep = clamp(data.blue * 100);
+                                                        const redp = clamp(
+                                                            data.red * 100
+                                                        );
+                                                        const bluep = clamp(
+                                                            data.blue * 100
+                                                        );
                                                         return `<h3>Match ${
                                                             data.match
                                                         } (Predicted ${
@@ -2044,7 +2055,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 ? redp : bluep
                                                         }%;"><p>${Math.round(
                                                             firstListed == "red"
-                                                                ? redp : bluep
+                                                                ? redp
+                                                                : bluep
                                                         )}%</p></div>
                                                             <div class="prediction-bar-${
                                                                 firstListed ==
@@ -2056,7 +2068,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 ? bluep : redp
                                                         }%;"><p>${Math.round(
                                                             firstListed == "red"
-                                                                ? bluep : redp
+                                                                ? bluep
+                                                                : redp
                                                         )}%</p></div>
                                                         </div>`;
                                                     })
