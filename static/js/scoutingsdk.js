@@ -2039,10 +2039,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 "red"
                                                                     ? "red"
                                                                     : "blue"
-                                                            }" style="width: calc(${
+                                                            }" style="width: ${
                                                             firstListed == "red"
                                                                 ? redp : bluep
-                                                        }% - 2px);"><p>${Math.round(
+                                                        }%;"><p>${Math.round(
                                                             firstListed == "red"
                                                                 ? redp : bluep
                                                         )}%</p></div>
@@ -2051,10 +2051,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                 "red"
                                                                     ? "blue"
                                                                     : "red"
-                                                            }" style="width: calc(${
+                                                            }" style="width: ${
                                                             firstListed == "red"
                                                                 ? bluep : redp
-                                                        }% - 3px);"><p>${Math.round(
+                                                        }%;"><p>${Math.round(
                                                             firstListed == "red"
                                                                 ? bluep : redp
                                                         )}%</p></div>
