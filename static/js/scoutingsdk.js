@@ -2052,12 +2052,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                     : "blue"
                                                             }" style="width: ${
                                                             firstListed == "red"
-                                                                ? redp : bluep
-                                                        }%;"><p>${Math.round(
-                                                            firstListed == "red"
                                                                 ? redp
                                                                 : bluep
-                                                        )}%</p></div>
+                                                        }%;"><p>${
+                                                            firstListed == "red"
+                                                                ? (redp <= 3 ? "" : Math.round(redp))
+                                                                : (bluep <= 3 ? "" : Math.round(bluep))
+                                                        }%</p></div>
                                                             <div class="prediction-bar-${
                                                                 firstListed ==
                                                                 "red"
@@ -2065,12 +2066,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                                     : "red"
                                                             }" style="width: ${
                                                             firstListed == "red"
-                                                                ? bluep : redp
-                                                        }%;"><p>${Math.round(
-                                                            firstListed == "red"
                                                                 ? bluep
                                                                 : redp
-                                                        )}%</p></div>
+                                                        }%;"><p>${
+                                                            firstListed == "red"
+                                                                ? (bluep <= 3 ? "" : Math.round(bluep))
+                                                                : (redp <= 3 ? "" : Math.round(redp))
+                                                        }%</p></div>
                                                         </div>`;
                                                     })
                                                     .join("")}`;
