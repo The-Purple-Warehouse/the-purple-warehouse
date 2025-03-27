@@ -2058,14 +2058,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             firstListed == "red"
                                                                 ? redp <= 3
                                                                     ? ""
-                                                                    : (Math.round(
+                                                                    : Math.round(
                                                                           redp
-                                                                      ) + "%")
+                                                                      ) + "%"
                                                                 : bluep <= 3
                                                                 ? ""
-                                                                : (Math.round(
+                                                                : Math.round(
                                                                       bluep
-                                                                  ) + "%")
+                                                                  ) + "%"
                                                         }</p></div>
                                                             <div class="prediction-bar-${
                                                                 firstListed ==
@@ -2080,14 +2080,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                             firstListed == "red"
                                                                 ? bluep <= 3
                                                                     ? ""
-                                                                    : (Math.round(
+                                                                    : Math.round(
                                                                           bluep
-                                                                      ) + "%")
+                                                                      ) + "%"
                                                                 : redp <= 3
                                                                 ? ""
-                                                                : (Math.round(
+                                                                : Math.round(
                                                                       redp
-                                                                  ) + "%")
+                                                                  ) + "%"
                                                         }</p></div>
                                                         </div>`;
                                                     })
@@ -2743,7 +2743,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         firstListed == "red"
                                                             ? data.red * 100
                                                             : data.blue * 100
-                                                    }% - 2px);"><p>${Math.round(
+                                                    }%);"><p>${Math.round(
                                                         firstListed == "red"
                                                             ? data.red * 100
                                                             : data.blue * 100
@@ -2756,7 +2756,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                         firstListed == "red"
                                                             ? data.blue * 100
                                                             : data.red * 100
-                                                    }% - 3px);"><p>${Math.round(
+                                                    }%);"><p>${Math.round(
                                                         firstListed == "red"
                                                             ? data.blue * 100
                                                             : data.red * 100
