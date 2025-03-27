@@ -1117,7 +1117,7 @@ header .icon-button .send-container svg {
 }
 
 .data-window:has(> h3.red) {
-    padding: 10px clamp(0px, 5dvw, 40px) 10px clamp(0px, 5dvw, 40px);
+    padding: 10px clamp(0px, 3dvw, 40px) 10px clamp(0px, 3dvw, 40px);
 }
 
 .overlay {
@@ -1905,7 +1905,7 @@ div.half-ag-grid > div {
 
 table.teams-table .ag-center-cols-viewport,
 table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
-    min-height: unset !important;
+    min-height: 40px !important;
 }
 
 @media screen and (min-width: 750px) {
