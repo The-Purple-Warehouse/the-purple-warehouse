@@ -2132,7 +2132,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             field: header.replaceAll('"', "").replaceAll("\\n", " "),
                             filter: true,
                             sortable: true,
-                            resizable: true
+                            resizable: true,
+                            cellClass: "wrap-text",
+                            autoHeight: true
                         }));
 
                         columnDefs[0].headerComponent = class {
@@ -2223,7 +2225,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             field: header.replaceAll('"', "").replaceAll("\\n", " "),
                             filter: true,
                             sortable: true,
-                            resizable: true
+                            resizable: true,
+                            cellClass: "wrap-text",
+                            autoHeight: true
                         }));
             
                         columnDefs[0].headerComponent = class {

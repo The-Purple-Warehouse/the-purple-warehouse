@@ -1908,6 +1908,11 @@ table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
     min-height: unset !important;
 }
 
+.ag-cell.wrap-text {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
 @media (max-width: 420px) {
     .match-window {
         padding: 0 !important;
