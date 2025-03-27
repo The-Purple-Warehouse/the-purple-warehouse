@@ -5864,17 +5864,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     _this.showShopPage = async () => {
         return new Promise(async (resolve, reject) => {
             try {
+                let nutsElement = document.querySelector(
+                    ".header-incentives .nuts > p"
+                );
+                let boltsElement = document.querySelector(
+                    ".header-incentives .bolts > p"
+                );
                 element.innerHTML = `
                     <div class="shop-container">
                         <h2>Shop</h2>
                         <div class="shop-balance">
                             <div class="currency">
                                 <div class="nuts">
-                                    <span>0</span>
+                                    <span>${nutsElement.innerHTML}</span>
                                     <img src="/img/nuts.png" alt="Nuts" />
                                 </div>
                                 <div class="bolts">
-                                    <span>0</span>
+                                    <span>${boltsElement.innerHTML}</span>
                                     <img src="/img/bolts.png" alt="Bolts" />
                                 </div>
                             </div>
