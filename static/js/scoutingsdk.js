@@ -1751,7 +1751,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 );
                                 const rowData = rowsRaw.map((row) => {
                                     return {
-                                        team: parseInt(row[0].replace(/<[^>]*>/g, "")),
+                                        team: parseInt(
+                                            row[0].replace(/<[^>]*>/g, "")
+                                        ),
                                         score: parseInt(row[1])
                                     };
                                 });

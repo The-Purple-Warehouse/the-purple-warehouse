@@ -805,7 +805,7 @@ export async function updateAccuracy(event: string) {
                 );
             })
         );
-    } catch(err) {
+    } catch (err) {
         console.error(err);
     }
 }
