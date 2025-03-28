@@ -1985,8 +1985,6 @@ table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
 .leaderboard-item .rank {
     font-size: calc(1em + 0.5rem);
     font-weight: bold;
-    width: 40px;
-    text-align: center;
 }
 
 .leaderboard-item .user-info {
