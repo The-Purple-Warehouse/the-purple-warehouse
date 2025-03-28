@@ -783,27 +783,31 @@ export async function updateAccuracy(event: string) {
             delete matches[matchNumbers[i]];
         }
     }
-    let calculated = await scoutingConfig.accuracy(
-        event,
-        matches,
-        data,
-        categories,
-        teams
-    );
-    let hashes = Object.keys(calculated);
-    await Promise.all(
-        hashes.map((hash) => {
-            return ScoutingEntry.findOneAndUpdate(
-                {
-                    hash
-                },
-                {
-                    "accuracy.calculated": true,
-                    "accuracy.percentage": calculated[hash]
-                }
-            );
-        })
-    );
+    try {
+        let calculated = await scoutingConfig.accuracy(
+            event,
+            matches,
+            data,
+            categories,
+            teams
+        );
+        let hashes = Object.keys(calculated);
+        await Promise.all(
+            hashes.map((hash) => {
+                return ScoutingEntry.findOneAndUpdate(
+                    {
+                        hash
+                    },
+                    {
+                        "accuracy.calculated": true,
+                        "accuracy.percentage": calculated[hash]
+                    }
+                );
+            })
+        );
+    } catch(err) {
+        console.error(err);
+    }
 }
 
 function getDataPoints(data) {
