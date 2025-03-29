@@ -1519,7 +1519,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(".red").innerHTML = "&nbsp;";
                         const container = document.createElement("div");
                         container.id = "teamsGrid";
-                        container.style["max-height"] = "500px";
+                        container.style["max-height"] = "50vh";
                         container.style.display = "flex";
                         container.style.gap = "20px";
                         element
@@ -1739,7 +1739,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (rankingsTable) {
                                 const container = document.createElement("div");
                                 container.id = "rankingGrid";
-                                container.style.height = "400px";
+                                container.style.height = "40vh";
                                 element
                                     .querySelector(".analysis-table")
                                     .appendChild(container);
