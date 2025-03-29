@@ -1916,6 +1916,7 @@ table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
     .ag-cell.wrap-text {
         white-space: normal;
         word-wrap: break-word;
+        line-height: 1.5rem;
     }
 }
 
