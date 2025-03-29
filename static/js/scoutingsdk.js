@@ -1519,7 +1519,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(".red").innerHTML = "&nbsp;";
                         const container = document.createElement("div");
                         container.id = "teamsGrid";
-                        container.style["max-height"] = "500px";
+                        container.style["max-height"] = "50vh";
                         container.style.display = "flex";
                         container.style.gap = "20px";
                         element
@@ -1739,7 +1739,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (rankingsTable) {
                                 const container = document.createElement("div");
                                 container.id = "rankingGrid";
-                                container.style.height = "400px";
+                                container.style.height = "40vh";
                                 element
                                     .querySelector(".analysis-table")
                                     .appendChild(container);
@@ -1751,7 +1751,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 );
                                 const rowData = rowsRaw.map((row) => {
                                     return {
-                                        team: parseInt(row[0].replace(/<[^>]*>/g, "")),
+                                        team: parseInt(
+                                            row[0].replace(/<[^>]*>/g, "")
+                                        ),
                                         score: parseInt(row[1])
                                     };
                                 });
@@ -2236,9 +2238,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ? new Date(
                                               parseInt(cell)
                                           ).toLocaleString()
-                                        : cell
-                                              .replaceAll("&quot;", '"')
-                                              .replaceAll("\\n", "<br>");
+                                        : cell.replace(/&quot;|\\n|<br>/g, "");
                             });
                             return obj;
                         });
@@ -2247,7 +2247,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
-                            gridTable.style.height = "500px";
+                            gridTable.style.height = "50vh";
                             element.querySelector(".data-table").innerHTML = "";
                             element
                                 .querySelector(".data-table")
@@ -2336,9 +2336,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ? new Date(
                                               parseInt(cell)
                                           ).toLocaleString()
-                                        : cell
-                                              .replaceAll("&quot;", '"')
-                                              .replaceAll("\\n", ", ");
+                                        : cell.replace(/&quot;|\\n|<br>/g, "");
                             });
                             return obj;
                         });
@@ -2347,7 +2345,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
-                            gridTable.style.height = "500px";
+                            gridTable.style.height = "50vh";
                             element.querySelector(".data-table").innerHTML = "";
                             element
                                 .querySelector(".data-table")
