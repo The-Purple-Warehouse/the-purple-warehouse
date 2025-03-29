@@ -2238,8 +2238,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ? new Date(
                                               parseInt(cell)
                                           ).toLocaleString()
-                                        : cell
-                                              .replace(/&quot;|\\n|<br>/g, "");
+                                        : cell.replace(/&quot;|\\n|<br>/g, "");
                             });
                             return obj;
                         });
@@ -2248,7 +2247,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
-                            gridTable.style.height = "500px";
+                            gridTable.style.height = "50vh";
                             element.querySelector(".data-table").innerHTML = "";
                             element
                                 .querySelector(".data-table")
@@ -2337,9 +2336,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         ? new Date(
                                               parseInt(cell)
                                           ).toLocaleString()
-                                        : cell
-                                              .replaceAll("&quot;", '"')
-                                              .replaceAll("\\n", ", ");
+                                        : cell.replace(/&quot;|\\n|<br>/g, "");
                             });
                             return obj;
                         });
@@ -2348,7 +2345,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
-                            gridTable.style.height = "500px";
+                            gridTable.style.height = "50vh";
                             element.querySelector(".data-table").innerHTML = "";
                             element
                                 .querySelector(".data-table")
