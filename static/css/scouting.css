@@ -1912,13 +1912,13 @@ table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
     min-height: 40px !important;
 }
 
-@media screen and (min-width: 750px) {
+/* @media screen and (min-width: 750px) { */
     .ag-cell.wrap-text {
         white-space: normal;
         word-wrap: break-word;
         line-height: 1.5rem;
     }
-}
+/* } */
 
 @media (max-width: 420px) {
     .match-window {
