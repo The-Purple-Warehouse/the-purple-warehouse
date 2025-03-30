@@ -6,6 +6,7 @@ import { getEventTeams } from "./tba";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
+import * as fs from "fs";
 
 const DIVISIONS = [
     "2025arc",
@@ -447,7 +448,7 @@ export async function addEntry(
             }
         });
         await entry.save();
-        await updateAccuracy(event);
+        await appendAnalysisCache(event, match)
     }
     return entry;
 }
@@ -760,6 +761,114 @@ export async function getTeamData(
         return scoutingConfig.formatParsedData(data, categories, teams);
     } else {
         return scoutingConfig.formatData(data, categories, teams);
+    }
+}
+
+export async function appendAnalysisCache(event: string, match: number) {
+    try {
+        let analysisCache;
+        if (fs.existsSync("../analysis_cache.json")) {
+            analysisCache = JSON.parse(fs.readFileSync("../analysis_cache.json").toString());
+        } else {
+            analysisCache = {};
+        }
+        if (!analysisCache) {
+            analysisCache = {};
+        }
+        // match string in the form matchXX
+        if (!analysisCache[event]) {
+            analysisCache[event] = [];
+        }
+        analysisCache[event].push(match);
+        fs.writeFileSync("../analysis_cache.json", JSON.stringify(analysisCache));
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export async function clearAnalysisCache() {
+    try {
+        let analysisCache = {};
+        fs.writeFileSync("../analysis_cache.json", JSON.stringify(analysisCache));
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export async function updateAccuracyFromCache() {
+    let cache;
+    try {
+        let mid = fs.readFileSync("../analysis_cache.json").toString();
+        cache = JSON.parse(mid);
+        console.log("mid: " + mid);
+        console.log("cache: " + cache);
+        if (!cache) {
+            cache = {};
+        }
+    } catch (err) {
+        console.error(err);
+    }
+    if (!cache) {
+        console.warn("Called accuracy updates with an incomplete cache.");
+        return;
+    }
+    let events = Object.keys(cache);
+    for (let i = 0; i < events.length; i++) {
+        let event = events[i];
+        if (!cache[event])
+            continue;
+        let matchNumbers = cache[event];
+        if (!matchNumbers) {
+            console.warn("No matches for " + event + " found in analysis cache. Aborting accuracy updates...");
+        }
+        await updateAccuracyFromMatches(event, matchNumbers);
+    }
+    await clearAnalysisCache();
+}
+
+export async function updateAccuracyFromMatches(event: string, matchNumbers) {
+    let { data, categories, teams } = await getAllRawDataByEvent(event);
+    let matches: any = {};
+    for (let i = 0; i < data.length; i++) {
+        let entry = data[i] as any;
+        if (matches[`match${entry.match}`] == null) {
+            matches[`match${entry.match}`] = [];
+        }
+        matches[`match${entry.match}`].push(entry);
+    }
+    for (let i = 0; i < matchNumbers.length; i++) {
+        if (
+            matches[`match${matchNumbers[i]}`].filter(
+                (entry) => !entry.accuracy || !entry.accuracy.calculated
+            ).length == 0
+        ) {
+            delete matches[matchNumbers[i]];
+        }
+    }
+    try {
+        let calculated = await scoutingConfig.accuracy(
+            event,
+            matches,
+            data,
+            categories,
+            teams
+        );
+        let hashes = Object.keys(calculated);
+        await Promise.all(
+            hashes.map((hash) => {
+                return ScoutingEntry.findOneAndUpdate(
+                    {
+                        hash
+                    },
+                    {
+                        "accuracy.calculated": true,
+                        "accuracy.percentage": calculated[hash]
+                    }
+                );
+            })
+        );
+    } catch (err) {
+        console.error(err);
     }
 }
 

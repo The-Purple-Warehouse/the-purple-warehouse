@@ -15,7 +15,7 @@ import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
-import { getStats, initializeCategories } from "./helpers/scouting";
+import { getStats, initializeCategories, updateAccuracyFromCache } from "./helpers/scouting";
 
 // import loginRouter from "./routers/login"; // contains base route "/"
 import defaultRouter from "./routers/default"; // contains base route "/"
@@ -206,6 +206,11 @@ router.get("/discord", async (ctx) => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 app.use(serve("./static", {}));
+
+const accuracyUpdates = setInterval(async () => {
+    console.log("calling accuracy");
+    await updateAccuracyFromCache();
+}, 1000 * 30); // 30 seconds
 
 const httpServer = createServer(app.callback());
 
