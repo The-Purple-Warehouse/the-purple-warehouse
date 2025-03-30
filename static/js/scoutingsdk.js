@@ -2239,8 +2239,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               parseInt(cell)
                                           ).toLocaleString()
                                         : cell
-					.replace(/&quot;/g, "")
-					.replace(/\\n|<br>/g, " ");
+                                              .replace(/&quot;/g, "")
+                                              .replace(/\\n|<br>/g, " ");
                             });
                             return obj;
                         });
@@ -2339,8 +2339,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               parseInt(cell)
                                           ).toLocaleString()
                                         : cell
-					.replace(/&quot;/g, "")
-					.replace(/\\n|<br>/g, " ");
+                                              .replace(/&quot;/g, "")
+                                              .replace(/\\n|<br>/g, " ");
                             });
                             return obj;
                         });
