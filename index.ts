@@ -210,7 +210,7 @@ app.use(serve("./static", {}));
 const accuracyUpdates = setInterval(async () => {
     console.log("calling accuracy");
     await updateAccuracyFromCache();
-}, 1000 * 30); // 30 seconds
+}, 1000 * 60 * 5); // 5 minutes
 
 const httpServer = createServer(app.callback());
 
