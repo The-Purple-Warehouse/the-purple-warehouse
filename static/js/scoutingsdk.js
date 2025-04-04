@@ -3166,7 +3166,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     !err.toString().toLowerCase().includes("failed to fetch") &&
                     !err.toString().toLowerCase().includes("load failed")
                 ) {
-                    alert(
+                    console.warn(
                         `/api/v1/scouting/events/${encodeURIComponent(
                             year
                         )}/team ${err}`
@@ -3225,7 +3225,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     !err.toString().toLowerCase().includes("load failed") &&
                     eventCode != ""
                 ) {
-                    alert(
+                    console.warn(
                         `/api/v1/scouting/matches/${encodeURIComponent(
                             eventCode
                         )} ${err}`
