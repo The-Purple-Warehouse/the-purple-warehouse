@@ -264,6 +264,8 @@ export function randomBolts() {
     }
 }
 
+let pendingAccuracy = new Set();
+
 export async function addEntry(
     contributingTeam: string,
     contributingUsername: string,
@@ -447,7 +449,9 @@ export async function addEntry(
             }
         });
         await entry.save();
-        await updateAccuracy(event);
+        if(!event.endsWith("-prac")) {
+            pendingAccuracy.add(event);
+        }
     }
     return entry;
 }
@@ -763,7 +767,16 @@ export async function getTeamData(
     }
 }
 
+export async function updatePendingAccuracy() {
+    let events = [...pendingAccuracy] as any;
+    for(let i = 0; i < events.length; i++) {
+        pendingAccuracy.delete(events[i]);
+        await updateAccuracy(events[i]);
+    }
+}
+
 export async function updateAccuracy(event: string) {
+    console.log("calculating accuracy for event", event);
     let { data, categories, teams } = await getAllRawDataByEvent(event);
     let matches: any = {};
     for (let i = 0; i < data.length; i++) {
