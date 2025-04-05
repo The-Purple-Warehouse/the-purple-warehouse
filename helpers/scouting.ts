@@ -449,7 +449,7 @@ export async function addEntry(
             }
         });
         await entry.save();
-        if(!event.endsWith("-prac")) {
+        if (!event.endsWith("-prac")) {
             pendingAccuracy.add(event);
         }
     }
@@ -769,7 +769,7 @@ export async function getTeamData(
 
 export async function updatePendingAccuracy() {
     let events = [...pendingAccuracy] as any;
-    for(let i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; i++) {
         pendingAccuracy.delete(events[i]);
         await updateAccuracy(events[i]);
     }
