@@ -1739,7 +1739,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (rankingsTable) {
                                 const container = document.createElement("div");
                                 container.id = "rankingGrid";
-                                container.style.height = "100%";
+                                container.style.height = "40vh";
                                 element
                                     .querySelector(".analysis-table")
                                     .appendChild(container);
