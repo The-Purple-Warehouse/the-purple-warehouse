@@ -769,8 +769,8 @@ export async function getTeamData(
 
 export async function updatePendingAccuracy() {
     let events = [...pendingAccuracy] as any;
-    pendingAccuracy.clear();
     for(let i = 0; i < events.length; i++) {
+        pendingAccuracy.remove(events[i]);
         await updateAccuracy(events[i]);
     }
 }
