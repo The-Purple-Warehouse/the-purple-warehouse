@@ -1519,7 +1519,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         element.querySelector(".red").innerHTML = "&nbsp;";
                         const container = document.createElement("div");
                         container.id = "teamsGrid";
-                        container.style["max-height"] = "50vh";
+                        container.style["max-height"] = "80vh";
                         container.style.display = "flex";
                         container.style.gap = "20px";
                         element
@@ -1739,7 +1739,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (rankingsTable) {
                                 const container = document.createElement("div");
                                 container.id = "rankingGrid";
-                                container.style.height = "40vh";
+                                container.style.height = "100%";
                                 element
                                     .querySelector(".analysis-table")
                                     .appendChild(container);
@@ -1750,10 +1750,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     h.replace(/<[^>]*>/g, "")
                                 );
                                 const rowData = rowsRaw.map((row) => {
+				    let team = row[0].replace(/<[^>]*>/g, "");
+                                    let number = /^\d+$/.test(team);
                                     return {
-                                        team: parseInt(
-                                            row[0].replace(/<[^>]*>/g, "")
-                                        ),
+                                        team: number ? parseInt(team) : team,
                                         score: parseInt(row[1])
                                     };
                                 });
@@ -2249,7 +2249,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
-                            gridTable.style.height = "50vh";
+                            gridTable.style.height = "80vh";
                             element.querySelector(".data-table").innerHTML = "";
                             element
                                 .querySelector(".data-table")
@@ -2349,7 +2349,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         if (!gridTable) {
                             gridTable = document.createElement("div");
                             gridTable.id = "dataGrid";
-                            gridTable.style.height = "50vh";
+                            gridTable.style.height = "80vh";
                             element.querySelector(".data-table").innerHTML = "";
                             element
                                 .querySelector(".data-table")
