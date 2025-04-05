@@ -6,7 +6,6 @@ import { getEventTeams } from "./tba";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
-import * as fs from "fs";
 
 const DIVISIONS = [
     "2025arc",
