@@ -770,7 +770,7 @@ export async function getTeamData(
 export async function updatePendingAccuracy() {
     let events = [...pendingAccuracy] as any;
     for(let i = 0; i < events.length; i++) {
-        pendingAccuracy.remove(events[i]);
+        pendingAccuracy.delete(events[i]);
         await updateAccuracy(events[i]);
     }
 }
