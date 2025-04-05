@@ -1739,7 +1739,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             if (rankingsTable) {
                                 const container = document.createElement("div");
                                 container.id = "rankingGrid";
-                                container.style.height = "100%";
+                                container.style.height = "40vh";
                                 element
                                     .querySelector(".analysis-table")
                                     .appendChild(container);
@@ -1750,7 +1750,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     h.replace(/<[^>]*>/g, "")
                                 );
                                 const rowData = rowsRaw.map((row) => {
-				    let team = row[0].replace(/<[^>]*>/g, "");
+                                    let team = row[0].replace(/<[^>]*>/g, "");
                                     let number = /^\d+$/.test(team);
                                     return {
                                         team: number ? parseInt(team) : team,
