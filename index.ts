@@ -218,7 +218,7 @@ setInterval(async () => {
     } else {
         console.log("skipping accuracy");
     }
-}, 1000 * 20); // 1 minute
+}, 1000 * 60); // 1 minute
 
 const httpServer = createServer(app.callback());
 
