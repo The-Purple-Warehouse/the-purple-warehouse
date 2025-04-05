@@ -15,7 +15,7 @@ import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
-import { getStats, initializeCategories, updateAccuracyFromCache } from "./helpers/scouting";
+import { getStats, initializeCategories, updatePendingAccuracy } from "./helpers/scouting";
 
 // import loginRouter from "./routers/login"; // contains base route "/"
 import defaultRouter from "./routers/default"; // contains base route "/"
@@ -207,10 +207,18 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 app.use(serve("./static", {}));
 
-const accuracyUpdates = setInterval(async () => {
-    console.log("calling accuracy");
-    await updateAccuracyFromCache();
-}, 1000 * 60 * 5); // 5 minutes
+let calculatingAccuracy = false;
+setInterval(async () => {
+    if(!calculatingAccuracy) {
+        calculatingAccuracy = true;
+        console.log("calculating accuracy");
+        await updatePendingAccuracy();
+        console.log("done calculating accuracy");
+        calculatingAccuracy = false;
+    } else {
+        console.log("skipping accuracy");
+    }
+}, 1000 * 20); // 1 minute
 
 const httpServer = createServer(app.callback());
 
