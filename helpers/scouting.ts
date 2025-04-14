@@ -2,7 +2,7 @@ import ScoutingEntry from "../models/scoutingEntry";
 import ScoutingCategory from "../models/scoutingCategory";
 import Team from "../models/team";
 import { getTeamByNumber } from "./teams";
-import { getEventTeams } from "./tba";
+import { getEventTeams, getTeamEvents } from "./tba";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
@@ -664,6 +664,38 @@ export async function getSharedData(
     } else {
         return scoutingConfig.formatData(data, categories, teams);
     }
+}
+
+export async function getPicklistData(
+    event: string,
+    teamNumber: string
+) {
+    let teams = await getEventTeams(event, config.year);
+    let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
+    let events = new Set<string>();
+    for (const t of teams) {
+        let tevents = await getTeamEvents(config.year, t.team_number);
+        for (let i = 0; i < tevents.length; ++i) {
+            events.add(tevents[i].key);
+        }
+    }
+    events.delete(`${config.year}all-prac`);
+    // get all the data from all of the events
+    let categories;
+    let aData: {[team: string]: any[]} = {};
+    for (const event of events) {
+        let { data, categories: nCategories } = await getAllRawDataByEvent(event);
+        if (categories == null) categories = nCategories;
+        for (const d of data) {
+            if (isNaN(d.team))
+                continue;
+            if (aData[d.team] == null)
+                aData[d.team] = [];
+            aData[d.team].push(d);
+        }
+    }
+
+    return (await scoutingConfig.formPicklist(aData, categories, teams));
 }
 
 export async function getTeamsAtEvent(

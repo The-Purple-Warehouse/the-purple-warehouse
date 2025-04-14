@@ -1131,6 +1131,119 @@ export function formatParsedData(data, categories, teams) {
         .join("\n")}`;
 }
 
+export interface picklist {
+    team: string,
+    "avg-auto-pieces": number,
+    "avg-tele-pieces": number,
+    "avg-l1": number,
+    "avg-l2": number,
+    "avg-l3": number,
+    "avg-l4": number,
+    "avg-proc": number,
+    "avg-net": number,
+    "deep-climbs": number
+}
+
+export async function formPicklist(data: {[team: string]: any[]}, categories, teams: any[]) {
+    let analysis: picklist[] = [];
+    console.log(teams);
+    for (const t1 of teams) {
+        const t = t1.team_number;
+        console.log("on team: " + t);
+        let dat = data[t];
+        if (!dat)
+            continue;
+        let autoPieces = 0;
+        let telePieces = 0;
+        let l1 = 0;
+        let l2 = 0;
+        let l3 = 0;
+        let l4 = 0;
+        let proc = 0;
+        let net = 0;
+        let deepClimbs = 0;
+        for (const d of dat) {
+            autoPieces += find(d, "counters", categories, "25-20", 0);
+            telePieces += find(d, "counters", categories, "25-24", 0);
+            let autocoral = find(d, "data", categories, "25-18", []);
+            let telecoral = find(d, "data", categories, "25-22", []);
+            let autol4 = autocoral.filter(el => el == 0).length;
+            let autol3 = autocoral.filter(el => el == 1).length;
+            let autol2 = autocoral.filter(el => el == 2).length;
+            let autol1 = autocoral.filter(el => el == 3).length;
+            let telel4 = telecoral.filter(el => el == 0).length;
+            let telel3 = telecoral.filter(el => el == 1).length;
+            let telel2 = telecoral.filter(el => el == 2).length;
+            let telel1 = telecoral.filter(el => el == 3).length;
+            l1 += autol1 + telel1;
+            l2 += autol2 + telel2;
+            l3 += autol3 + telel3;
+            l4 += autol4 + telel4;
+            let autoalgae = find(d, "data", categories, "25-17", []);
+            let telealgae = find(d, "data", categories, "25-21", []);
+            let autoNe = autoalgae.filter(el => el == 4).length;
+            let autoPr = autoalgae.filter(el => el == 5).length;
+            let teleNe = telealgae.filter(el => el == 4).length;
+            let telePr = telealgae.filter(el => el == 5).length;
+            net += autoNe + teleNe;
+            proc += autoPr + telePr;
+            let climb = find(d, "abilities", categories, "25-8", 0);
+            deepClimbs += (climb == 3) ? 1 : 0;
+        }
+        if (dat.length == 0) {
+            console.log("team: " + t + ", has no data!");
+            analysis.push({
+                team: t,
+                "avg-auto-pieces": NaN,
+                "avg-tele-pieces": NaN,
+                "avg-l1": NaN,
+                "avg-l2": NaN,
+                "avg-l3": NaN,
+                "avg-l4": NaN,
+                "avg-proc": NaN,
+                "avg-net": NaN,
+                "deep-climbs": NaN
+            });
+        } else {
+            console.log("team: " + t + ", IS GOOD!");
+            analysis.push({
+                team: t,
+                "avg-auto-pieces": autoPieces / dat.length,
+                "avg-tele-pieces": telePieces / dat.length,
+                "avg-l1": l1 / dat.length,
+                "avg-l2": l2 / dat.length,
+                "avg-l3": l3 / dat.length,
+                "avg-l4": l4 / dat.length,
+                "avg-proc": proc / dat.length,
+                "avg-net": net / dat.length,
+                "deep-climbs": deepClimbs
+            });
+        }
+    }
+
+    return formatPicklist(analysis);
+}
+
+function formatPicklist(analysis) {
+    return `entry,team,"avg auto pieces","avg tele pieces","avg l1","avg l2","avg l3","avg l4","avg processor","avg net","# of deep climbs"\n${analysis
+        .map((entry, i) => {
+            return [
+                i,
+                entry.team || 0,
+                entry["avg-auto-pieces"],
+                entry["avg-tele-pieces"],
+                entry["avg-l1"],
+                entry["avg-l2"],
+                entry["avg-l3"],
+                entry["avg-l4"],
+                entry["avg-proc"],
+                entry["avg-net"],
+                entry["deep-climbs"],
+            ].join(",");
+        })
+        .join("\n")}`;
+}
+
 export function notes() {
     return ``;
 }
@@ -1547,6 +1660,7 @@ const scouting2025 = {
     preload,
     formatData,
     formatParsedData,
+    formPicklist,
     notes,
     analysis,
     compare,

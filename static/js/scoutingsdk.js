@@ -2447,6 +2447,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 <label data-checkbox for="export-toggle"></label>
                             </div>
                         </div>
+                        <div class="toggle-element popup-element">
+                            <div class="popup-label">
+                                <p>Include Analysis</p>
+                                <p class="subtext">Include an analysis for each team in the export</p>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="export-analysis-toggle"/>
+                                <label data-checkbox for="export-analysis-toggle"></label>
+                            </div>
+                        </div>
                         <div class="export-confirm popup-confirm popup-element">
                             <div class="popup-label">
                                 <p>Export CSV</p>
@@ -2472,74 +2482,42 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let toggle = element.querySelector(
                     ".data-popup input#export-toggle"
                 ).checked; // true = my team's data
-                if (toggle) {
-                    if (!teamNumber) {
-                        console.error("export error: no team number found.");
-                        return;
+                let analysisToggle = element.querySelector(
+                    ".data-popup input#export-analysis-toggle"
+                ).checked; // include some analysis
+                if (toggle && !teamNumber) {
+                    console.error("export error: no team number found.");
+                    return;
+                }
+                
+                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(eventCode)}`
+                furl += analysisToggle ? "/picklist" : "/csv";
+                furl += toggle ? teamNumber.toString() : "";
+
+                try {
+                    let data = await (await fetch(furl)).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = data.body.csv;
+                        let download =
+                            "data:text/csv;charset=utf-8," +
+                            encodeURIComponent(csv);
+                        let link = document.createElement("a");
+                        link.style.display = "none";
+                        link.setAttribute("href", download);
+                        link.setAttribute(
+                            "download",
+                            `tpw-scouting-${eventCode}-${teamNumber}.csv`
+                        );
+                        element.appendChild(link);
+                        link.click();
+                        link.remove();
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv/${teamNumber}`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," +
-                                encodeURIComponent(csv);
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                `tpw-scouting-${eventCode}-${teamNumber}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.log("export csv error", err);
-                    }
-                } else {
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," +
-                                encodeURIComponent(csv);
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                `tpw-scouting-${eventCode}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.log("export csv error", err);
-                    }
+                } catch (err) {
+                    console.log("export csv error", err);
                 }
                 closeOptions();
             };
