@@ -2476,8 +2476,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let eventCode = element.querySelector(
                     ".data-window > select.event-code"
                 ).value;
-                
-                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(eventCode)}/picklist`
+
+                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                    eventCode
+                )}/picklist`;
 
                 try {
                     let data = await (await fetch(furl)).json();
@@ -2520,8 +2522,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     console.error("export error: no team number found.");
                     return;
                 }
-                
-                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(eventCode)}/csv`
+
+                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                    eventCode
+                )}/csv`;
                 furl += toggle ? `/${teamNumber.toString()}` : "";
 
                 try {
