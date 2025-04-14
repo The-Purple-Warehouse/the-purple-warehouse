@@ -666,10 +666,7 @@ export async function getSharedData(
     }
 }
 
-export async function getPicklistData(
-    event: string,
-    teamNumber: string
-) {
+export async function getPicklistData(event: string, teamNumber: string) {
     let teams = await getEventTeams(event, config.year);
     let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
     let events = new Set<string>();
@@ -682,20 +679,20 @@ export async function getPicklistData(
     events.delete(`${config.year}all-prac`);
     // get all the data from all of the events
     let categories;
-    let aData: {[team: string]: any[]} = {};
+    let aData: { [team: string]: any[] } = {};
     for (const event of events) {
-        let { data, categories: nCategories } = await getAllRawDataByEvent(event);
+        let { data, categories: nCategories } = await getAllRawDataByEvent(
+            event
+        );
         if (categories == null) categories = nCategories;
         for (const d of data) {
-            if (isNaN(d.team))
-                continue;
-            if (aData[d.team] == null)
-                aData[d.team] = [];
+            if (isNaN(d.team)) continue;
+            if (aData[d.team] == null) aData[d.team] = [];
             aData[d.team].push(d);
         }
     }
 
-    return (await scoutingConfig.formPicklist(aData, categories, teams));
+    return await scoutingConfig.formPicklist(aData, categories, teams);
 }
 
 export async function getTeamsAtEvent(

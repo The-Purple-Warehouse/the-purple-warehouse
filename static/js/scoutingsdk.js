@@ -2489,8 +2489,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     console.error("export error: no team number found.");
                     return;
                 }
-                
-                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(eventCode)}`
+
+                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                    eventCode
+                )}`;
                 furl += analysisToggle ? "/picklist" : "/csv";
                 furl += toggle ? teamNumber.toString() : "";
 
