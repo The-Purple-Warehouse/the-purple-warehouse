@@ -1196,7 +1196,7 @@ export async function formPicklist(
             net += acc * (autoNe + teleNe);
             proc += acc * (autoPr + telePr);
             let climb = find(d, "abilities", categories, "25-8", 0);
-            if (acc > 0.5) deepClimbs += (climb == 3 ? 1 : 0);
+            if (acc > 0.5) deepClimbs += climb == 3 ? 1 : 0;
 
             total += acc;
         }
