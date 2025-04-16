@@ -1153,7 +1153,6 @@ export async function formPicklist(
     console.log(teams);
     for (const t1 of teams) {
         const t = t1.team_number;
-        console.log("on team: " + t);
         let dat = data[t];
         if (!dat) continue;
         let autoPieces = 0;
@@ -1194,7 +1193,6 @@ export async function formPicklist(
             deepClimbs += climb == 3 ? 1 : 0;
         }
         if (dat.length == 0) {
-            console.log("team: " + t + ", has no data!");
             analysis.push({
                 team: t,
                 "avg-auto-pieces": NaN,
@@ -1208,7 +1206,6 @@ export async function formPicklist(
                 "deep-climbs": NaN
             });
         } else {
-            console.log("team: " + t + ", IS GOOD!");
             analysis.push({
                 team: t,
                 "avg-auto-pieces": autoPieces / dat.length,
