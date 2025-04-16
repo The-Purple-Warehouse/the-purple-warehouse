@@ -1164,9 +1164,15 @@ export async function formPicklist(
         let proc = 0;
         let net = 0;
         let deepClimbs = 0;
+        let total = 0;
         for (const d of dat) {
-            autoPieces += find(d, "counters", categories, "25-20", 0);
-            telePieces += find(d, "counters", categories, "25-24", 0);
+            if (!d || !d.accuracy || !d.accuracy.calculated) {
+                continue;
+            }
+            let acc = d.accuracy.percentage;
+
+            autoPieces += acc * find(d, "counters", categories, "25-20", 0);
+            telePieces += acc * find(d, "counters", categories, "25-24", 0);
             let autocoral = find(d, "data", categories, "25-18", []);
             let telecoral = find(d, "data", categories, "25-22", []);
             let autol4 = autocoral.filter((el) => el == 0).length;
@@ -1177,22 +1183,24 @@ export async function formPicklist(
             let telel3 = telecoral.filter((el) => el == 1).length;
             let telel2 = telecoral.filter((el) => el == 2).length;
             let telel1 = telecoral.filter((el) => el == 3).length;
-            l1 += autol1 + telel1;
-            l2 += autol2 + telel2;
-            l3 += autol3 + telel3;
-            l4 += autol4 + telel4;
+            l1 += acc * (autol1 + telel1);
+            l2 += acc * (autol2 + telel2);
+            l3 += acc * (autol3 + telel3);
+            l4 += acc * (autol4 + telel4);
             let autoalgae = find(d, "data", categories, "25-17", []);
             let telealgae = find(d, "data", categories, "25-21", []);
             let autoNe = autoalgae.filter((el) => el == 4).length;
             let autoPr = autoalgae.filter((el) => el == 5).length;
             let teleNe = telealgae.filter((el) => el == 4).length;
             let telePr = telealgae.filter((el) => el == 5).length;
-            net += autoNe + teleNe;
-            proc += autoPr + telePr;
+            net += acc * (autoNe + teleNe);
+            proc += acc * (autoPr + telePr);
             let climb = find(d, "abilities", categories, "25-8", 0);
-            deepClimbs += climb == 3 ? 1 : 0;
+            if (acc > 0.5) deepClimbs += (climb == 3 ? 1 : 0);
+
+            total += acc;
         }
-        if (dat.length == 0) {
+        if (dat.length == 0 || total == 0) {
             analysis.push({
                 team: t,
                 "avg-auto-pieces": NaN,
@@ -1208,14 +1216,14 @@ export async function formPicklist(
         } else {
             analysis.push({
                 team: t,
-                "avg-auto-pieces": autoPieces / dat.length,
-                "avg-tele-pieces": telePieces / dat.length,
-                "avg-l1": l1 / dat.length,
-                "avg-l2": l2 / dat.length,
-                "avg-l3": l3 / dat.length,
-                "avg-l4": l4 / dat.length,
-                "avg-proc": proc / dat.length,
-                "avg-net": net / dat.length,
+                "avg-auto-pieces": autoPieces / total,
+                "avg-tele-pieces": telePieces / total,
+                "avg-l1": l1 / total,
+                "avg-l2": l2 / total,
+                "avg-l3": l3 / total,
+                "avg-l4": l4 / total,
+                "avg-proc": proc / total,
+                "avg-net": net / total,
                 "deep-climbs": deepClimbs
             });
         }
