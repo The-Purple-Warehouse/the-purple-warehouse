@@ -15,7 +15,11 @@ import { addAPIHeaders } from "./helpers/utils";
 
 import config from "./config";
 import { registerComponentsWithinDirectory } from "./helpers/componentRegistration";
-import { getStats, initializeCategories, updatePendingAccuracy } from "./helpers/scouting";
+import {
+    getStats,
+    initializeCategories,
+    updatePendingAccuracy
+} from "./helpers/scouting";
 
 // import loginRouter from "./routers/login"; // contains base route "/"
 import defaultRouter from "./routers/default"; // contains base route "/"
@@ -209,7 +213,7 @@ app.use(serve("./static", {}));
 
 let calculatingAccuracy = false;
 setInterval(async () => {
-    if(!calculatingAccuracy) {
+    if (!calculatingAccuracy) {
         calculatingAccuracy = true;
         console.log("calculating accuracy");
         await updatePendingAccuracy();
