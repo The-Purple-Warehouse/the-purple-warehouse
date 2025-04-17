@@ -20,6 +20,13 @@ if (scoutingConfig[year].formatParsedData != null) {
 } else {
     scoutingConfig.formatParsedData = scoutingConfig[year].formatData;
 }
+if (scoutingConfig[year].formPicklist != null) {
+    scoutingConfig.formPicklist = scoutingConfig[year].formPicklist;
+} else {
+    scoutingConfig.formPicklist = async (data, teams) => {
+        return "";
+    };
+}
 scoutingConfig.notes = scoutingConfig[year].notes;
 scoutingConfig.analysis = scoutingConfig[year].analysis;
 scoutingConfig.accuracy = scoutingConfig[year].accuracy;

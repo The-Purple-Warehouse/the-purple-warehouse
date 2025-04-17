@@ -21,7 +21,8 @@ import {
     getTeamData,
     getTotalIncentives,
     getLevelAndProgress,
-    aggregateLeaderboard
+    aggregateLeaderboard,
+    getPicklistData
 } from "../../helpers/scouting";
 import {
     getTeamByNumber,
@@ -204,6 +205,24 @@ router.get(
                 csv: await getTeamData(
                     ctx.params.event,
                     ctx.params.team,
+                    ctx.session.scoutingTeamNumber
+                ),
+                notes: scoutingConfig.notes()
+            }
+        };
+    }
+);
+
+router.get(
+    "/entry/data/event/:event/picklist",
+    requireScoutingAuth,
+    async (ctx, next) => {
+        addAPIHeaders(ctx);
+        ctx.body = {
+            success: true,
+            body: {
+                csv: await getPicklistData(
+                    ctx.params.event,
                     ctx.session.scoutingTeamNumber
                 ),
                 notes: scoutingConfig.notes()

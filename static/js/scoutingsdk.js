@@ -2455,11 +2455,57 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 19.980469 2.9902344 A 1.0001 1.0001 0 0 0 19.869141 3 L 15 3 A 1.0001 1.0001 0 1 0 15 5 L 17.585938 5 L 8.2929688 14.292969 A 1.0001 1.0001 0 1 0 9.7070312 15.707031 L 19 6.4140625 L 19 9 A 1.0001 1.0001 0 1 0 21 9 L 21 4.1269531 A 1.0001 1.0001 0 0 0 19.980469 2.9902344 z M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 13 A 1.0001 1.0001 0 1 0 19 13 L 19 19 L 5 19 L 5 5 L 11 5 A 1.0001 1.0001 0 1 0 11 3 L 5 3 z"/></svg>
                             </div>
                         </div>
+                        <div class="picklist-confim popup-confirm popup-element">
+                            <div class="popup-label">
+                                <p>Export Picklist Helper</p>
+                            </div>
+                            <div class="options-expand">
+                                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 19.980469 2.9902344 A 1.0001 1.0001 0 0 0 19.869141 3 L 15 3 A 1.0001 1.0001 0 1 0 15 5 L 17.585938 5 L 8.2929688 14.292969 A 1.0001 1.0001 0 1 0 9.7070312 15.707031 L 19 6.4140625 L 19 9 A 1.0001 1.0001 0 1 0 21 9 L 21 4.1269531 A 1.0001 1.0001 0 0 0 19.980469 2.9902344 z M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 13 A 1.0001 1.0001 0 1 0 19 13 L 19 19 L 5 19 L 5 5 L 11 5 A 1.0001 1.0001 0 1 0 11 3 L 5 3 z"/></svg>
+                            </div>
+                        </div>
 					</div>
                 </div>
             `;
             openOptions();
             element.querySelector(".data-popup .close-btn").onclick = () => {
+                closeOptions();
+            };
+            element.querySelector(
+                ".data-popup .export-content .picklist-confim"
+            ).onclick = async () => {
+                let eventCode = element.querySelector(
+                    ".data-window > select.event-code"
+                ).value;
+
+                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                    eventCode
+                )}/picklist`;
+
+                try {
+                    let data = await (await fetch(furl)).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = data.body.csv;
+                        let download =
+                            "data:text/csv;charset=utf-8," +
+                            encodeURIComponent(csv);
+                        let link = document.createElement("a");
+                        link.style.display = "none";
+                        link.setAttribute("href", download);
+                        link.setAttribute(
+                            "download",
+                            `tpw-picklist-${eventCode}.csv`
+                        );
+                        element.appendChild(link);
+                        link.click();
+                        link.remove();
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
+                    }
+                } catch (err) {
+                    console.log("export csv error", err);
+                }
                 closeOptions();
             };
             element.querySelector(
@@ -2472,74 +2518,40 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let toggle = element.querySelector(
                     ".data-popup input#export-toggle"
                 ).checked; // true = my team's data
-                if (toggle) {
-                    if (!teamNumber) {
-                        console.error("export error: no team number found.");
-                        return;
+                if (toggle && !teamNumber) {
+                    console.error("export error: no team number found.");
+                    return;
+                }
+
+                let furl = `/api/v1/scouting/entry/data/event/${encodeURIComponent(
+                    eventCode
+                )}/csv`;
+                furl += toggle ? `/${teamNumber.toString()}` : "";
+
+                try {
+                    let data = await (await fetch(furl)).json();
+                    if (data.success) {
+                        element.querySelector(".red").innerHTML = "&nbsp;";
+                        let csv = data.body.csv;
+                        let download =
+                            "data:text/csv;charset=utf-8," +
+                            encodeURIComponent(csv);
+                        let link = document.createElement("a");
+                        link.style.display = "none";
+                        link.setAttribute("href", download);
+                        link.setAttribute(
+                            "download",
+                            `tpw-scouting-${eventCode}-${teamNumber}.csv`
+                        );
+                        element.appendChild(link);
+                        link.click();
+                        link.remove();
+                    } else {
+                        element.querySelector(".red").innerHTML =
+                            data.error || "Unknown error.";
                     }
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv/${teamNumber}`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," +
-                                encodeURIComponent(csv);
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                `tpw-scouting-${eventCode}-${teamNumber}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.log("export csv error", err);
-                    }
-                } else {
-                    try {
-                        let data = await (
-                            await fetch(
-                                `/api/v1/scouting/entry/data/event/${encodeURIComponent(
-                                    eventCode
-                                )}/csv`
-                            )
-                        ).json();
-                        if (data.success) {
-                            element.querySelector(".red").innerHTML = "&nbsp;";
-                            let csv = data.body.csv;
-                            let download =
-                                "data:text/csv;charset=utf-8," +
-                                encodeURIComponent(csv);
-                            let link = document.createElement("a");
-                            link.style.display = "none";
-                            link.setAttribute("href", download);
-                            link.setAttribute(
-                                "download",
-                                `tpw-scouting-${eventCode}.csv`
-                            );
-                            element.appendChild(link);
-                            link.click();
-                            link.remove();
-                        } else {
-                            element.querySelector(".red").innerHTML =
-                                data.error || "Unknown error.";
-                        }
-                    } catch (err) {
-                        console.log("export csv error", err);
-                    }
+                } catch (err) {
+                    console.log("export csv error", err);
                 }
                 closeOptions();
             };
