@@ -222,102 +222,102 @@ export function getLevelAndProgress(xp) {
         return {
             level: 10,
             progress: (xp - 10000) / 2000
-        }
+        };
     } else if (xp < 14000) {
         return {
             level: 11,
             progress: (xp - 12000) / 2000
-        }
+        };
     } else if (xp < 16000) {
         return {
             level: 12,
             progress: (xp - 14000) / 2000
-        }
+        };
     } else if (xp < 18000) {
         return {
             level: 13,
             progress: (xp - 16000) / 2000
-        }
+        };
     } else if (xp < 20000) {
         return {
             level: 14,
             progress: (xp - 18000) / 2000
-        }
+        };
     } else if (xp < 22000) {
         return {
             level: 15,
             progress: (xp - 20000) / 2000
-        }
+        };
     } else if (xp < 24000) {
         return {
             level: 16,
             progress: (xp - 22000) / 2000
-        }
+        };
     } else if (xp < 26000) {
         return {
             level: 17,
             progress: (xp - 24000) / 2000
-        }
+        };
     } else if (xp < 28000) {
         return {
             level: 18,
             progress: (xp - 26000) / 2000
-        }
+        };
     } else if (xp < 30000) {
         return {
             level: 19,
             progress: (xp - 28000) / 2000
-        }
+        };
     } else if (xp < 32000) {
         return {
             level: 20,
             progress: (xp - 30000) / 2000
-        }
+        };
     } else if (xp < 35000) {
         return {
             level: 21,
             progress: (xp - 32000) / 3000
-        }
+        };
     } else if (xp < 39000) {
         return {
             level: 22,
             progress: (xp - 35000) / 4000
-        }
+        };
     } else if (xp < 44000) {
         return {
             level: 23,
             progress: (xp - 39000) / 5000
-        }
+        };
     } else if (xp < 50000) {
         return {
             level: 24,
             progress: (xp - 44000) / 6000
-        }
+        };
     } else if (xp < 57000) {
         return {
             level: 25,
             progress: (xp - 50000) / 7000
-        }
+        };
     } else if (xp < 65000) {
         return {
             level: 26,
             progress: (xp - 57000) / 8000
-        }
+        };
     } else if (xp < 74000) {
         return {
             level: 27,
             progress: (xp - 65000) / 9000
-        }
+        };
     } else if (xp < 84000) {
         return {
             level: 28,
             progress: (xp - 74000) / 10000
-        }
+        };
     } else if (xp < 95000) {
         return {
             level: 29,
             progress: (xp - 84000) / 11000
-        }
+        };
     } else {
         return {
             level: 30 + Math.floor((xp - 95000) / 12000),
