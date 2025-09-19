@@ -2788,7 +2788,7 @@ div.preset {
 }
 
 .shop-item {
-    background: rgb(0, 0, 0);
+    background: #000000;
     border-radius: 10px;
     padding: 15px;
     display: flex;
