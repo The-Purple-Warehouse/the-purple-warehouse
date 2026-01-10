@@ -3398,7 +3398,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         )}`;
     };
 
-    _this.showLocationPopup = (index, options, locations, values, state, increment) => {
+    _this.showLocationPopup = (
+        index,
+        options,
+        locations,
+        values,
+        state,
+        increment
+    ) => {
         return new Promise(async (resolve, reject) => {
             locations = [...locations];
             values = [...values];
@@ -3465,54 +3472,54 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                   : "Select"
                                           }</button>`
                                         : `<button data-increment="-${increment}"${
-                                            option.max
-                                                ? ` data-max="${option.max}"`
-                                                : ""
-                                        } data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}"><span>-${increment}</span></button><button data-increment="-1"${
-                                            option.max
-                                                ? ` data-max="${option.max}"`
-                                                : ""
-                                        } data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}"><span>-</span></button>
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>-${increment}</span></button><button data-increment="-1"${
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>-</span></button>
                                 <div><div><h3>${
-                                            locationData.filter(
-                                                (loc) =>
-                                                    loc.value == option.value &&
-                                                    loc.index == index
-                                            ).length
-                                        }</h3><h4>here</h4></div><div><h3>${
-                                            locationData.filter(
-                                                (loc) =>
-                                                    loc.value ==
-                                                    option.value ||
-                                                    tracks.includes(loc.value)
-                                            ).length
-                                        }</h3><h4>total</h4></div></div>
+                                    locationData.filter(
+                                        (loc) =>
+                                            loc.value == option.value &&
+                                            loc.index == index
+                                    ).length
+                                }</h3><h4>here</h4></div><div><h3>${
+                                              locationData.filter(
+                                                  (loc) =>
+                                                      loc.value ==
+                                                          option.value ||
+                                                      tracks.includes(loc.value)
+                                              ).length
+                                          }</h3><h4>total</h4></div></div>
                                 <button data-increment="1"${
-                                            option.max
-                                                ? ` data-max="${option.max}"`
-                                                : ""
-                                        } data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}"><span>+</span></button>
+                                    option.max
+                                        ? ` data-max="${option.max}"`
+                                        : ""
+                                } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>+</span></button>
                                 <button data-increment="${increment}"${
-                                            option.max
-                                                ? ` data-max="${option.max}"`
-                                                : ""
-                                        } data-type="${
-                                            option.type
-                                        }" data-value="${_this.escape(
-                                            option.value
-                                        )}"><span>+${increment}</span></button>`
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>+${increment}</span></button>`
                                 }
                             </div>
 						</div>

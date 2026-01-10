@@ -362,9 +362,11 @@ export function layout() {
                                         definition: ((state) => {
                                             return `${state.locations
                                                 .filter((location) =>
-                                                    ["fsa", "fma", "fhi"].includes(
-                                                        location.value
-                                                    )
+                                                    [
+                                                        "fsa",
+                                                        "fma",
+                                                        "fhi"
+                                                    ].includes(location.value)
                                                 )
                                                 .map((location, i, arr) => {
                                                     if (i > 5) {
