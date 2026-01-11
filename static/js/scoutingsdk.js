@@ -3398,10 +3398,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         )}`;
     };
 
-    _this.showLocationPopup = (index, options, locations, values, state) => {
+    _this.showLocationPopup = (
+        index,
+        options,
+        locations,
+        values,
+        state,
+        increment
+    ) => {
         return new Promise(async (resolve, reject) => {
             locations = [...locations];
             values = [...values];
+            increment = increment || 5; // default to 5 if not specified
             let locationData = locations.map((loc, i) => {
                 return {
                     value: values[i],
@@ -3463,7 +3471,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                   ? "Deselect"
                                                   : "Select"
                                           }</button>`
-                                        : `<button data-increment="-1"${
+                                        : `<button data-increment="-${increment}"${
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>-${increment}</span></button><button data-increment="-1"${
                                               option.max
                                                   ? ` data-max="${option.max}"`
                                                   : ""
@@ -3494,7 +3510,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                               option.type
                                           }" data-value="${_this.escape(
                                               option.value
-                                          )}"><span>+</span></button>`
+                                          )}"><span>+</span></button>
+                                <button data-increment="${increment}"${
+                                              option.max
+                                                  ? ` data-max="${option.max}"`
+                                                  : ""
+                                          } data-type="${
+                                              option.type
+                                          }" data-value="${_this.escape(
+                                              option.value
+                                          )}"><span>+${increment}</span></button>`
                                 }
                             </div>
 						</div>
@@ -3880,6 +3905,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 if (component.options instanceof Array) {
                     options = component.options;
                 }
+                let increment = 5;
+                if (typeof component.increment == "number") {
+                    increment = component.increment;
+                }
                 let defaultValue = {
                     locations: [],
                     values: [],
@@ -3962,7 +3991,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         data.data[component.data.values],
                                         defaultValue.values
                                     ),
-                                    getState()
+                                    getState(),
+                                    increment
                                 );
                                 if (result != null) {
                                     await _this.setData(
