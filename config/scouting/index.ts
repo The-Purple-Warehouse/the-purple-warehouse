@@ -1,12 +1,14 @@
 import scouting2023 from "./2023";
 import scouting2024 from "./2024";
 import scouting2025 from "./2025";
+import scouting2026 from "./2026";
 import config from "../";
 
 const scoutingConfig: any = {
     "2023": scouting2023,
     "2024": scouting2024,
-    "2025": scouting2025
+    "2025": scouting2025,
+    "2026": scouting2026
 };
 
 // let year = new Date().toLocaleDateString().split("/")[2];
@@ -19,6 +21,13 @@ if (scoutingConfig[year].formatParsedData != null) {
     scoutingConfig.formatParsedData = scoutingConfig[year].formatParsedData;
 } else {
     scoutingConfig.formatParsedData = scoutingConfig[year].formatData;
+}
+if (scoutingConfig[year].formPicklist != null) {
+    scoutingConfig.formPicklist = scoutingConfig[year].formPicklist;
+} else {
+    scoutingConfig.formPicklist = async (data, teams) => {
+        return "";
+    };
 }
 scoutingConfig.notes = scoutingConfig[year].notes;
 scoutingConfig.analysis = scoutingConfig[year].analysis;

@@ -11,7 +11,7 @@ const config: Config = {
     db: secret.staging.db,
     auth: secret.staging.auth,
     features: ["scouting", "tps"],
-    year: 2025
+    year: 2026
 };
 
 export default config;

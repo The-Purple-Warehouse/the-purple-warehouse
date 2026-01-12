@@ -2,7 +2,7 @@ import ScoutingEntry from "../models/scoutingEntry";
 import ScoutingCategory from "../models/scoutingCategory";
 import Team from "../models/team";
 import { getTeamByNumber } from "./teams";
-import { getEventTeams } from "./tba";
+import { getEventTeams, getTeamEvents } from "./tba";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
@@ -218,10 +218,110 @@ export function getLevelAndProgress(xp) {
             level: 9,
             progress: (xp - 8000) / 2000
         };
+    } else if (xp < 12000) {
+        return {
+            level: 10,
+            progress: (xp - 10000) / 2000
+        };
+    } else if (xp < 14000) {
+        return {
+            level: 11,
+            progress: (xp - 12000) / 2000
+        };
+    } else if (xp < 16000) {
+        return {
+            level: 12,
+            progress: (xp - 14000) / 2000
+        };
+    } else if (xp < 18000) {
+        return {
+            level: 13,
+            progress: (xp - 16000) / 2000
+        };
+    } else if (xp < 20000) {
+        return {
+            level: 14,
+            progress: (xp - 18000) / 2000
+        };
+    } else if (xp < 22000) {
+        return {
+            level: 15,
+            progress: (xp - 20000) / 2000
+        };
+    } else if (xp < 24000) {
+        return {
+            level: 16,
+            progress: (xp - 22000) / 2000
+        };
+    } else if (xp < 26000) {
+        return {
+            level: 17,
+            progress: (xp - 24000) / 2000
+        };
+    } else if (xp < 28000) {
+        return {
+            level: 18,
+            progress: (xp - 26000) / 2000
+        };
+    } else if (xp < 30000) {
+        return {
+            level: 19,
+            progress: (xp - 28000) / 2000
+        };
+    } else if (xp < 32000) {
+        return {
+            level: 20,
+            progress: (xp - 30000) / 2000
+        };
+    } else if (xp < 35000) {
+        return {
+            level: 21,
+            progress: (xp - 32000) / 3000
+        };
+    } else if (xp < 39000) {
+        return {
+            level: 22,
+            progress: (xp - 35000) / 4000
+        };
+    } else if (xp < 44000) {
+        return {
+            level: 23,
+            progress: (xp - 39000) / 5000
+        };
+    } else if (xp < 50000) {
+        return {
+            level: 24,
+            progress: (xp - 44000) / 6000
+        };
+    } else if (xp < 57000) {
+        return {
+            level: 25,
+            progress: (xp - 50000) / 7000
+        };
+    } else if (xp < 65000) {
+        return {
+            level: 26,
+            progress: (xp - 57000) / 8000
+        };
+    } else if (xp < 74000) {
+        return {
+            level: 27,
+            progress: (xp - 65000) / 9000
+        };
+    } else if (xp < 84000) {
+        return {
+            level: 28,
+            progress: (xp - 74000) / 10000
+        };
+    } else if (xp < 95000) {
+        return {
+            level: 29,
+            progress: (xp - 84000) / 11000
+        };
     } else {
         return {
-            level: 10 + Math.floor((xp - 10000) / 2500),
-            progress: (xp % 2500) / 2500
+            level: 30 + Math.floor((xp - 95000) / 12000),
+            progress: (xp % 12000) / 12000
         };
     }
 }
@@ -449,7 +549,7 @@ export async function addEntry(
             }
         });
         await entry.save();
-        if(!event.endsWith("-prac")) {
+        if (!event.endsWith("-prac")) {
             pendingAccuracy.add(event);
         }
     }
@@ -666,6 +766,35 @@ export async function getSharedData(
     }
 }
 
+export async function getPicklistData(event: string, teamNumber: string) {
+    let teams = await getEventTeams(event, config.year);
+    let team = (await getTeamByNumber(teamNumber)) || { _id: "" };
+    let events = new Set<string>();
+    for (const t of teams) {
+        let tevents = await getTeamEvents(config.year, t.team_number);
+        for (let i = 0; i < tevents.length; ++i) {
+            events.add(tevents[i].key);
+        }
+    }
+    events.delete(`${config.year}all-prac`);
+    // get all the data from all of the events
+    let categories;
+    let aData: { [team: string]: any[] } = {};
+    for (const event of events) {
+        let { data, categories: nCategories } = await getAllRawDataByEvent(
+            event
+        );
+        if (categories == null) categories = nCategories;
+        for (const d of data) {
+            if (isNaN(d.team)) continue;
+            if (aData[d.team] == null) aData[d.team] = [];
+            aData[d.team].push(d);
+        }
+    }
+
+    return await scoutingConfig.formPicklist(aData, categories, teams);
+}
+
 export async function getTeamsAtEvent(
     event: string,
     teamNumber: string,
@@ -769,7 +898,7 @@ export async function getTeamData(
 
 export async function updatePendingAccuracy() {
     let events = [...pendingAccuracy] as any;
-    for(let i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; i++) {
         pendingAccuracy.delete(events[i]);
         await updateAccuracy(events[i]);
     }
