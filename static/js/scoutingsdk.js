@@ -5908,7 +5908,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let nutsElement = document.querySelector(
                     ".header-incentives .nuts > p"
                 );
-                let boltsElement = document.querySelector(
+                let bltsElement = document.querySelector(
                     ".header-incentives .bolts > p"
                 );
                 element.innerHTML = `

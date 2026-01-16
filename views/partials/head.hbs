@@ -1,11 +1,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<script>
+  (function () {
+    const saved = localStorage.getItem("theme");
+    if (saved) document.documentElement.dataset.theme = saved;
+    else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = prefersDark ? "dark" : "light";
+    }
+  })();
+</script>
+
 <!-- <link rel="stylesheet" type="text/css" href="/css/index.css"/> -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/theme.css?v=1">
+
 <script src="{{path}}/js/makeRequest.js"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.png">
 <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
+<script>
+  (function () {
+    const saved = localStorage.getItem("theme");
+    if (saved) document.documentElement.dataset.theme = saved;
+    else document.documentElement.dataset.theme =
+      window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  })();
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    localStorage.setItem("theme", next);
+
+    // optional: swap icon if present
+    document.querySelectorAll("[data-theme-icon]").forEach((el) => {
+      el.className = next === "dark" ? "fa fa-sun-o" : "fa fa-moon-o";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const next = document.documentElement.dataset.theme;
+    document.querySelectorAll("[data-theme-icon]").forEach((el) => {
+      el.className = next === "dark" ? "fa fa-sun-o" : "fa fa-moon-o";
+    });
+  });
+</script>
