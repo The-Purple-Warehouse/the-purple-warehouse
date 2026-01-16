@@ -24,7 +24,7 @@
 html,
 body {
     overflow-x: hidden;
-    background: #fefefe;
+    background: #323131;
 }
 
 body {
@@ -2788,7 +2788,7 @@ div.preset {
 }
 
 .shop-item {
-    background: white;
+    background: #000000;
     border-radius: 10px;
     padding: 15px;
     display: flex;
@@ -2811,7 +2811,7 @@ div.preset {
     font-size: 48px;
     text-align: center;
     padding: 20px;
-    background: var(--backgroundColor);
+    background: #3b3b3b;
     border-radius: 8px;
 }
 
@@ -2848,6 +2848,8 @@ div.preset {
 .item-price img {
     width: 20px;
     height: 20px;
+    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg) brightness(102%) contrast(105%);
+
 }
 
 .shop-item button {
@@ -2855,7 +2857,7 @@ div.preset {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background: var(--primaryBackgroundColor);
+    background: #000000;
     color: var(--primaryContentColor);
     cursor: pointer;
     transition: background 0.2s;
@@ -2879,5 +2881,6 @@ div.preset {
 
     .shop-container {
         padding: 10px;
+        color: #ffffff;
     }
 }

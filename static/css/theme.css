@@ -1,0 +1,108 @@
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #6b7280;
+  --card: #f4f4f5;
+  --border: #e5e7eb;
+  --nav-bg: #ffffff;
+  --nav-text: #111111;
+  --nav-border: #e5e7eb;
+  --link: #1d4ed8;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Global tokens */
+  --bg: #0b0b0f;
+  --text: #e7e7ea;
+  --muted: #a1a1aa;
+  --card: #14141b;
+  --border: #27272a;
+  --nav-bg: #0b0b0f;
+  --nav-text: #e7e7ea;
+  --nav-border: #27272a;
+  --link: #93c5fd;
+
+  /* Scouting.css variables */
+  --backgroundColor: #0b0b0f;
+  --contentColor: #e7e7ea;
+  --primaryBackgroundColor: #14141b;
+  --primaryDarkerBackgroundColor: #0f0f14;
+  --primaryDarkerBackgroundColor2: #1f1f2a;
+  --primaryContentColor: #e7e7ea;
+  --disabledColor: #3f3f46;
+  --option-bg: #14141b;
+  --select-bg: rgba(255,255,255,0.06);
+  --cgray: rgba(255,255,255,0.12);
+}
+
+/* Global baseline */
+html, body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+a { color: var(--link); }
+
+/* Nav baseline (scoped) */
+nav, .navbar, #navbar, header {
+  background: var(--nav-bg) !important;
+  color: var(--nav-text) !important;
+  border-color: var(--nav-border) !important;
+}
+nav a, .navbar a, #navbar a, header a {
+  color: var(--nav-text) !important;
+}
+
+/* Forms (safer) */
+input, textarea, select {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+button {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+html[data-theme="dark"] ::placeholder {
+  color: var(--muted) !important;
+}
+
+/* Fix hardcoded globals in common.css */
+html[data-theme="dark"] blockquote { color: var(--text) !important; }
+html[data-theme="dark"] table,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td { border-color: var(--border) !important; }
+html[data-theme="dark"] table {
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+
+/* SmartMenus (sm-clean) */
+html[data-theme="dark"] .sm-clean { background: transparent !important; }
+html[data-theme="dark"] .sm-clean a,
+html[data-theme="dark"] .sm-clean a:hover,
+html[data-theme="dark"] .sm-clean a:focus { color: var(--text) !important; }
+html[data-theme="dark"] .sm-clean ul {
+  background: var(--card) !important;
+  border-color: var(--border) !important;
+}
+html[data-theme="dark"] .sm-clean ul a:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+.theme-toggle {
+  background: transparent !important;
+  border: 0 !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle-icon {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--primaryContentColor, var(--nav-text)) !important;
+}
