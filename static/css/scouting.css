@@ -2832,10 +2832,18 @@ div.component-score-counter div.tally {
     color: var(--primaryContentColor);
 }
 
-.component-counter .counter-controls > .counter-bulk[data-amount="5"]  { grid-column: 1; }
-.component-counter .counter-controls > .counter-minus                  { grid-column: 2; }
-.component-counter .counter-controls > .counter-bulk[data-amount="-5"] { grid-column: 3; }
-.component-counter .counter-controls > .counter-bulk[data-amount="-10"]{ grid-column: 4; }
+.component-counter .counter-controls > .counter-bulk[data-amount="5"] {
+    grid-column: 1;
+}
+.component-counter .counter-controls > .counter-minus {
+    grid-column: 2;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="-5"] {
+    grid-column: 3;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="-10"] {
+    grid-column: 4;
+}
 
 .component-counter .counter-controls > .counter-minus svg {
     width: 16px;
