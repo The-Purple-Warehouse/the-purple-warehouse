@@ -692,8 +692,17 @@ export function formatParsedData(data, categories, teams) {
                 find(entry, "abilities", categories, "26-6", false)
                     ? "true"
                     : "false",
-                `"${find(entry, "data", categories, "26-7", []).filter(v => v === "fsa").length} Scored"`,
-                `"${find(entry, "data", categories, "26-8", []).filter(v => v === "fsa").length} Scored ${find(entry, "data", categories, "26-8", []).filter(v => v === "fp").length} Passed"`,
+                `"${(() => {
+                    const arr = find(entry, "data", categories, "26-7", []);
+                    const scored = arr.filter((e) => e === "fsa").length;
+                    return `${scored} Scored`;
+                })()} "`,
+                `"${(() => {
+                    const arr = find(entry, "data", categories, "26-8", []);
+                    const scored = arr.filter((e) => e === "fsa").length;
+                    const passed = arr.filter((e) => e === "fp").length;
+                    return `${scored} Scored | ${passed} Passed`;
+                })()} "`,
                 ["none", "level 1", "level 2", "level 3"][
                     parseInt(find(entry, "abilities", categories, "26-9", 0))
                 ],
@@ -752,7 +761,6 @@ export function formatParsedData(data, categories, teams) {
         .join("\n")}`;
 }
 
-/*
 export interface picklist {
     team: string;
     "avg-auto-fuel": number;
@@ -831,12 +839,12 @@ function formatPicklist(analysis) {
             ].join(",");
         })
         .join("\n")}`;
-} */
+}
 
 export function notes() {
     return ``;
 }
-/*
+
 function run(command) {
     return new Promise(async (resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -1249,7 +1257,7 @@ export async function tps(data, categories, teams) {
         };
     });
 }
-*/
+
 
 const scouting2026 = {
     categories,
@@ -1258,11 +1266,11 @@ const scouting2026 = {
     formatData,
     formatParsedData,
     notes,
-    /* formPicklist,
+    formPicklist,
     analysis,
     compare,
     predict,
     accuracy,
-    tps */
+    tps
 };
 export default scouting2026;
