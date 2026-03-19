@@ -2,7 +2,10 @@ import { execSync, exec } from "child_process";
 import * as fs from "fs";
 import { getMatchesFull } from "../../../helpers/tba";
 import { getAllDataByEvent } from "../../../helpers/scouting";
-import accuracy2025 from "./accuracy";
+import accuracy2026 from "./accuracy";
+import { getGraph } from "./graphs_2026";
+import { computePrediction } from "./predictions_2026";
+import { computeRankings } from "./rankings_2026";
 
 export interface parsedRow {
     match: number;
@@ -10,11 +13,11 @@ export interface parsedRow {
     alliance: string;
     leave: boolean;
     "fuel ground intake": boolean;
-    "fuel station intake": boolean;
-    "can ferry": boolean;
+    "outpost intake": boolean;
+    "passing from neutral zone": boolean;
     "traverse under trench": boolean;
     "traverse over bump": boolean;
-    "auto l1 climb": boolean;
+    "l1 climb": boolean;
     "auto fuel scoring": string;
     "teleop fuel scoring": string;
     "climb level": number;
@@ -26,6 +29,7 @@ export interface parsedRow {
     speed: number;
     stability: number;
     "intake consistency": number;
+    "balls per second": number;
     scouter: string;
     comments: string;
     accuracy: number | "";
@@ -45,12 +49,12 @@ export function categories() {
             dataType: "boolean"
         },
         {
-            name: "Fuel Station Intake",
+            name: "Outpost Intake",
             identifier: "26-2",
             dataType: "boolean"
         },
         {
-            name: "Can Ferry",
+            name: "Passing from Neutral Zone",
             identifier: "26-3",
             dataType: "boolean"
         },
@@ -65,12 +69,12 @@ export function categories() {
             dataType: "boolean"
         },
         {
-            name: "Auto L1 Climb",
+            name: "L1 Climb",
             identifier: "26-6",
             dataType: "boolean"
         },
-        { name: "Auto Fuel Scoring", identifier: "26-7", dataType: "array" }, // 'asf' 'amf' | auto score, auto miss
-        { name: "Teleop Fuel Scoring", identifier: "26-8", dataType: "array" }, // 'saf', 'maf', 'hif' | score active, miss active, shot inactive
+        { name: "Auto Fuel Scoring", identifier: "26-7", dataType: "array" }, // 'fsa' | scored
+        { name: "Teleop Fuel Scoring", identifier: "26-8", dataType: "array" }, // 'fsa', 'fp' | scored, passed
         { name: "Climb Level", identifier: "26-9" },
         { name: "Climb Time", identifier: "26-10" },
         { name: "Brick Time", identifier: "26-11" },
@@ -95,7 +99,8 @@ export function categories() {
             identifier: "26-20",
             dataType: "array"
         },
-        { name: "Teleop Fuel Count", identifier: "26-21" }
+        { name: "Teleop Fuel Count", identifier: "26-21" },
+        { name: "Balls Per Second", identifier: "26-22" }
     ];
 }
 
@@ -133,13 +138,13 @@ export function layout() {
                                 },
                                 {
                                     type: "checkbox",
-                                    label: "Fuel Station Intake",
+                                    label: "Outpost Intake",
                                     default: false,
                                     data: "26-2"
                                 },
                                 {
                                     type: "checkbox",
-                                    label: "Can Ferry?",
+                                    label: "Passing from Neutral Zone",
                                     default: false,
                                     data: "26-3"
                                 },
@@ -157,7 +162,7 @@ export function layout() {
                                 },
                                 {
                                     type: "checkbox",
-                                    label: "Did L1 Climb?",
+                                    label: "L1 Climb",
                                     default: false,
                                     data: "26-6"
                                 },
@@ -170,103 +175,18 @@ export function layout() {
                                     restricts: ["cage_time", "defense_time"]
                                 },
                                 {
-                                    type: "locations",
-                                    increment: 8,
-                                    src: {
-                                        type: "function",
-                                        definition: ((state) =>
-                                            `/img/2026hub.png`).toString()
-                                    },
-                                    default: {
-                                        locations: [],
-                                        values: [],
-                                        counter: 0
-                                    },
+                                    type: "counter",
+                                    src: "/img/2026hub.png",
+                                    location: 0,
                                     data: {
                                         values: "26-7",
                                         locations: "26-18",
                                         counter: "26-19"
                                     },
-                                    rows: 1,
-                                    columns: 1,
-                                    orientation: 0,
-                                    flip: false,
-                                    disabled: [],
-                                    marker: {
-                                        type: "function",
-                                        definition: ((state) => {
-                                            return `${state.locations
-                                                .filter((location) =>
-                                                    ["fsa", "fsi"].includes(
-                                                        location.value
-                                                    )
-                                                )
-                                                .map((location, i, arr) => {
-                                                    if (i > 5) {
-                                                        return "";
-                                                    } else {
-                                                        let colors = [
-                                                            "#ebebeb",
-                                                            "#fd3f0d",
-                                                            "#b700ff",
-                                                            "#5300ff",
-                                                            "#000000"
-                                                        ];
-                                                        if (
-                                                            arr.length > 18 ||
-                                                            i + 12 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 12 ||
-                                                            i + 6 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 6 ||
-                                                            i < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;"></div>`;
-                                                        }
-                                                    }
-                                                    return "";
-                                                })
-                                                .filter(
-                                                    (marker) => marker != ""
-                                                )
-                                                .slice(0, 6)
-                                                .join("")}`;
-                                        }).toString()
-                                    },
-                                    // TODO: Score Active, Missed Active, Shot Inactive
                                     options: [
                                         {
                                             label: "Scored",
-                                            value: "fsa",
-                                            tracks: ["fsi"],
-                                            type: "counter",
-                                            show: {
-                                                type: "function",
-                                                definition: ((state) => {
-                                                    return state.index == 0;
-                                                }).toString()
-                                            }
-                                        },
-                                        {
-                                            label: "Missed",
-                                            value: "fma",
-                                            tracks: ["fmi"],
-                                            type: "counter",
-                                            show: {
-                                                type: "function",
-                                                definition: ((state) => {
-                                                    return state.index == 0;
-                                                }).toString()
-                                            }
+                                            value: "fsa"
                                         }
                                     ]
                                 }
@@ -296,13 +216,13 @@ export function layout() {
                                 },
                                 {
                                     type: "checkbox",
-                                    label: "Fuel Station Intake",
+                                    label: "Outpost Intake",
                                     default: false,
                                     data: "26-2"
                                 },
                                 {
                                     type: "checkbox",
-                                    label: "Can Ferry?",
+                                    label: "Passing from Neutral Zone",
                                     default: false,
                                     data: "26-3"
                                 },
@@ -335,119 +255,31 @@ export function layout() {
                                     restricts: ["cage_time", "brick_time"]
                                 },
                                 {
-                                    type: "locations",
-                                    increment: 5,
-                                    src: {
-                                        type: "function",
-                                        definition: ((state) =>
-                                            `/img/2026hub.png`).toString()
-                                    },
-                                    default: {
-                                        locations: [],
-                                        values: [],
-                                        counter: 0
-                                    },
+                                    type: "counter",
+                                    src: "/img/2026hub.png",
+                                    location: 0,
                                     data: {
                                         values: "26-8",
                                         locations: "26-20",
                                         counter: "26-21"
                                     },
-                                    rows: 1,
-                                    columns: 1,
-                                    orientation: 0,
-                                    flip: false,
-                                    disabled: [],
-                                    marker: {
-                                        type: "function",
-                                        definition: ((state) => {
-                                            return `${state.locations
-                                                .filter((location) =>
-                                                    [
-                                                        "fsa",
-                                                        "fma",
-                                                        "fhi"
-                                                    ].includes(location.value)
-                                                )
-                                                .map((location, i, arr) => {
-                                                    if (i > 5) {
-                                                        return "";
-                                                    } else {
-                                                        let colors = [
-                                                            "#ebebeb",
-                                                            "#fd3f0d",
-                                                            "#b700ff",
-                                                            "#5300ff",
-                                                            "#000000"
-                                                        ];
-                                                        if (
-                                                            arr.length > 18 ||
-                                                            i + 12 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: ${colors[0]}; border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 12 ||
-                                                            i + 6 < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;">
-                                                                <div style="display: inline-block; vertical-align: middle; width: calc(1px + 2.33vw); height: calc(1px + 2.33vw); background-color: rgba(0, 0, 0, 0); border: calc(1px + 0.33vw) solid ${colors[0]}; border-radius: 50%; margin-left: 50%; margin-top: 50%; transform: translate(-50%, -50%);"></div>
-                                                            </div>`;
-                                                        } else if (
-                                                            arr.length > 6 ||
-                                                            i < arr.length
-                                                        ) {
-                                                            return `<div style="display: inline-block; vertical-align: middle; margin: 3px; width: min(calc(2px + 3.66vw), 65px); height: min(calc(2px + 3.66vw), 65px); background-color: rgba(0, 0, 0, 0); border: min(calc(2px + 0.66vw), 13px) solid ${colors[0]}; border-radius: 50%;"></div>`;
-                                                        }
-                                                    }
-                                                    return "";
-                                                })
-                                                .filter(
-                                                    (marker) => marker != ""
-                                                )
-                                                .slice(0, 6)
-                                                .join("")}`;
-                                        }).toString()
-                                    },
-                                    // TODO: Score Active, Missed Active, Shot Inactive
                                     options: [
                                         {
-                                            label: "Scored (Active)",
-                                            value: "fsa",
-                                            tracks: ["fma", "fhi"],
-                                            type: "counter",
-                                            show: {
-                                                type: "function",
-                                                definition: ((state) => {
-                                                    return state.index == 0;
-                                                }).toString()
-                                            }
+                                            label: "Scored",
+                                            value: "fsa"
                                         },
                                         {
-                                            label: "Missed (Active)",
-                                            value: "fma",
-                                            tracks: ["fsa", "fhi"],
-                                            type: "counter",
-                                            show: {
-                                                type: "function",
-                                                definition: ((state) => {
-                                                    return state.index == 0;
-                                                }).toString()
-                                            }
-                                        },
-                                        {
-                                            label: "Shot (Inactive)",
-                                            value: "fhi",
-                                            tracks: ["fsa", "fma"],
-                                            type: "counter",
-                                            show: {
-                                                type: "function",
-                                                definition: ((state) => {
-                                                    return state.index == 0;
-                                                }).toString()
-                                            }
+                                            label: "Passed",
+                                            value: "fp"
                                         }
                                     ]
+                                },
+                                {
+                                    type: "textbox",
+                                    placeholder:
+                                        "Enter notes here (and include team number if scouting practice matches)...",
+                                    default: "",
+                                    data: "comments"
                                 }
                             ]
                         }
@@ -562,6 +394,15 @@ export function layout() {
                                         "/img/star-outline.png",
                                         "/img/star-filled.png"
                                     ]
+                                },
+                                {
+                                    type: "rating",
+                                    label: "Balls Per Second",
+                                    default: 0,
+                                    data: "26-22",
+                                    max: 11,
+                                    step: 1,
+                                    maxLabel: "10+"
                                 },
                                 {
                                     type: "textbox",
@@ -707,7 +548,7 @@ function find(entry, type, categories, category, fallback: any = "") {
 }
 
 export function formatData(data, categories, teams) {
-    return `entry,match,team,alliance,leave,"fuel ground intake","fuel station intake","can ferry","traverse under trench","traverse over bump","auto l1 climb","auto fuel scoring","teleop fuel scoring","climb level","climb time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `entry,match,team,alliance,leave,"fuel ground intake","outpost intake","passing from neutral zone","traverse under trench","traverse over bump","l1 climb","auto fuel scoring","teleop fuel scoring","climb level","climb time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency","balls per second",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
@@ -746,6 +587,7 @@ export function formatData(data, categories, teams) {
                 parseInt(find(entry, "ratings", categories, "26-15", "")),
                 parseInt(find(entry, "ratings", categories, "26-16", "")),
                 parseInt(find(entry, "ratings", categories, "26-17", "")),
+                parseInt(find(entry, "ratings", categories, "26-22", 0)),
                 JSON.stringify(
                     `${entry.contributor.username || "username"} (${
                         teams[entry.contributor.team] || 0
@@ -791,13 +633,13 @@ export function parseFormatted(format: string): parsedRow[] {
             alliance: columns[3],
             leave: columns[4] === "true",
             "fuel ground intake": columns[5] === "true",
-            "fuel station intake": columns[6] === "true",
-            "can ferry": columns[7] === "true",
+            "outpost intake": columns[6] === "true",
+            "passing from neutral zone": columns[7] === "true",
             "traverse under trench": columns[8] === "true",
             "traverse over bump": columns[9] === "true",
-            "auto l1 climb": columns[10] === "true",
-            "auto fuel scoring": parseArr(columns[11]).join(", "),
-            "teleop fuel scoring": parseArr(columns[12]).join(", "),
+            "l1 climb": columns[10] === "true",
+            "auto fuel scoring": columns[11],
+            "teleop fuel scoring": columns[12],
             "climb level": parseInt(columns[13], 10),
             "climb time": parseInt(columns[14], 10),
             "brick time": parseInt(columns[15], 10),
@@ -807,22 +649,22 @@ export function parseFormatted(format: string): parsedRow[] {
             speed: parseInt(columns[19], 10),
             stability: parseInt(columns[20], 10),
             "intake consistency": parseInt(columns[21], 10),
-            scouter: columns[22].replace(/^"|"$/g, ""),
-            comments: columns[23].replace(/^"|"$/g, ""),
-            accuracy: columns[24] ? parseFloat(columns[24]) : "",
-            timestamp: parseInt(columns[25], 10)
+            "balls per second": parseInt(columns[22], 10),
+            scouter: columns[23].replace(/^"|"$/g, ""),
+            comments: columns[24].replace(/^"|"$/g, ""),
+            accuracy: columns[25] ? parseFloat(columns[25]) : "",
+            timestamp: parseInt(columns[26], 10)
         };
     });
 }
 
 let parsedScoring = {
-    fsa: "Scored when Active",
-    fma: "Missed when Active",
-    fhi: "Shot when Inactive"
+    fsa: "Scored",
+    fp: "Passed"
 };
 
 export function formatParsedData(data, categories, teams) {
-    return `entry,match,team,alliance,leave,"fuel ground intake","fuel station intake","can ferry","traverse under trench","traverse over bump","auto l1 climb","auto fuel scoring","teleop fuel scoring","climb level","climb time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency",scouter,comments,accuracy,timestamp\n${data
+    return `entry,match,team,alliance,leave,"fuel ground intake","outpost intake","passing from neutral zone","traverse under trench","traverse over bump","l1 climb","auto fuel scoring","teleop fuel scoring","climb level","climb time","brick time","defense time","driver skill","defense skill",speed,stability,"intake consistency","balls per second",scouter,comments,accuracy,timestamp\n${data
         .map((entry, i) => {
             return [
                 i,
@@ -850,12 +692,17 @@ export function formatParsedData(data, categories, teams) {
                 find(entry, "abilities", categories, "26-6", false)
                     ? "true"
                     : "false",
-                `"${find(entry, "data", categories, "26-7", [])
-                    .map((entry) => parsedScoring[entry])
-                    .join("\\n")}"`,
-                `"${find(entry, "data", categories, "26-8", [])
-                    .map((entry) => parsedScoring[entry])
-                    .join("\\n")}"`,
+                `"${(() => {
+                    const arr = find(entry, "data", categories, "26-7", []);
+                    const scored = arr.filter((e) => e === "fsa").length;
+                    return `${scored} Scored`;
+                })()} "`,
+                `"${(() => {
+                    const arr = find(entry, "data", categories, "26-8", []);
+                    const scored = arr.filter((e) => e === "fsa").length;
+                    const passed = arr.filter((e) => e === "fp").length;
+                    return `${scored} Scored | ${passed} Passed`;
+                })()} "`,
                 ["none", "level 1", "level 2", "level 3"][
                     parseInt(find(entry, "abilities", categories, "26-9", 0))
                 ],
@@ -896,6 +743,9 @@ export function formatParsedData(data, categories, teams) {
                         find(entry, "ratings", categories, "26-17", "") + 1
                     )
                 ),
+                parseInt(find(entry, "ratings", categories, "26-22", 0)) >= 11
+                    ? "10+"
+                    : parseInt(find(entry, "ratings", categories, "26-22", 0)),
                 JSON.stringify(
                     `${entry.contributor.username || "username"} (${
                         teams[entry.contributor.team] || 0
@@ -913,19 +763,12 @@ export function formatParsedData(data, categories, teams) {
         .join("\n")}`;
 }
 
-/*
-
 export interface picklist {
     team: string;
-    "avg-auto-pieces": number;
-    "avg-tele-pieces": number;
-    "avg-l1": number;
-    "avg-l2": number;
-    "avg-l3": number;
-    "avg-l4": number;
-    "avg-proc": number;
-    "avg-net": number;
-    "deep-climbs": number;
+    "avg-auto-fuel": number;
+    "avg-tele-fuel": number;
+    "avg-tele-passed": number;
+    "high-climbs": number;
 }
 
 export async function formPicklist(
@@ -939,15 +782,10 @@ export async function formPicklist(
         const t = t1.team_number;
         let dat = data[t];
         if (!dat) continue;
-        let autoPieces = 0;
-        let telePieces = 0;
-        let l1 = 0;
-        let l2 = 0;
-        let l3 = 0;
-        let l4 = 0;
-        let proc = 0;
-        let net = 0;
-        let deepClimbs = 0;
+        let autoFuel = 0;
+        let teleFuel = 0;
+        let telePassed = 0;
+        let highClimbs = 0;
         let total = 0;
         for (const d of dat) {
             if (!d || !d.accuracy || !d.accuracy.calculated) {
@@ -955,60 +793,34 @@ export async function formPicklist(
             }
             let acc = d.accuracy.percentage;
 
-            autoPieces += acc * find(d, "counters", categories, "26-20", 0);
-            telePieces += acc * find(d, "counters", categories, "26-24", 0);
-            let autocoral = find(d, "data", categories, "26-18", []);
-            let telecoral = find(d, "data", categories, "26-22", []);
-            let autol4 = autocoral.filter((el) => el == 0).length;
-            let autol3 = autocoral.filter((el) => el == 1).length;
-            let autol2 = autocoral.filter((el) => el == 2).length;
-            let autol1 = autocoral.filter((el) => el == 3).length;
-            let telel4 = telecoral.filter((el) => el == 0).length;
-            let telel3 = telecoral.filter((el) => el == 1).length;
-            let telel2 = telecoral.filter((el) => el == 2).length;
-            let telel1 = telecoral.filter((el) => el == 3).length;
-            l1 += acc * (autol1 + telel1);
-            l2 += acc * (autol2 + telel2);
-            l3 += acc * (autol3 + telel3);
-            l4 += acc * (autol4 + telel4);
-            let autoalgae = find(d, "data", categories, "26-17", []);
-            let telealgae = find(d, "data", categories, "26-21", []);
-            let autoNe = autoalgae.filter((el) => el == 4).length;
-            let autoPr = autoalgae.filter((el) => el == 5).length;
-            let teleNe = telealgae.filter((el) => el == 4).length;
-            let telePr = telealgae.filter((el) => el == 5).length;
-            net += acc * (autoNe + teleNe);
-            proc += acc * (autoPr + telePr);
-            let climb = find(d, "abilities", categories, "26-8", 0);
-            if (acc > 0.5) deepClimbs += climb == 3 ? 1 : 0;
+            let autoFuelData = find(d, "data", categories, "26-7", []);
+            let teleFuelData = find(d, "data", categories, "26-8", []);
+            let autoScored = autoFuelData.filter((el) => el === "fsa").length;
+            let teleScored = teleFuelData.filter((el) => el === "fsa").length;
+            let telePas = teleFuelData.filter((el) => el === "fp").length;
+            autoFuel += acc * autoScored;
+            teleFuel += acc * teleScored;
+            telePassed += acc * telePas;
+            let climb = parseInt(find(d, "abilities", categories, "26-9", 0));
+            if (acc > 0.5) highClimbs += climb >= 3 ? 1 : 0;
 
             total += acc;
         }
         if (dat.length == 0 || total == 0) {
             analysis.push({
                 team: t,
-                "avg-auto-pieces": NaN,
-                "avg-tele-pieces": NaN,
-                "avg-l1": NaN,
-                "avg-l2": NaN,
-                "avg-l3": NaN,
-                "avg-l4": NaN,
-                "avg-proc": NaN,
-                "avg-net": NaN,
-                "deep-climbs": NaN
+                "avg-auto-fuel": NaN,
+                "avg-tele-fuel": NaN,
+                "avg-tele-passed": NaN,
+                "high-climbs": NaN
             });
         } else {
             analysis.push({
                 team: t,
-                "avg-auto-pieces": autoPieces / total,
-                "avg-tele-pieces": telePieces / total,
-                "avg-l1": l1 / total,
-                "avg-l2": l2 / total,
-                "avg-l3": l3 / total,
-                "avg-l4": l4 / total,
-                "avg-proc": proc / total,
-                "avg-net": net / total,
-                "deep-climbs": deepClimbs
+                "avg-auto-fuel": autoFuel / total,
+                "avg-tele-fuel": teleFuel / total,
+                "avg-tele-passed": telePassed / total,
+                "high-climbs": highClimbs
             });
         }
     }
@@ -1017,29 +829,24 @@ export async function formPicklist(
 }
 
 function formatPicklist(analysis) {
-    return `entry,team,"avg auto pieces","avg tele pieces","avg l1","avg l2","avg l3","avg l4","avg processor","avg net","# of deep climbs"\n${analysis
+    return `entry,team,"avg auto fuel","avg tele fuel","avg tele passed","# of high climbs"\n${analysis
         .map((entry, i) => {
             return [
                 i,
                 entry.team || 0,
-                entry["avg-auto-pieces"],
-                entry["avg-tele-pieces"],
-                entry["avg-l1"],
-                entry["avg-l2"],
-                entry["avg-l3"],
-                entry["avg-l4"],
-                entry["avg-proc"],
-                entry["avg-net"],
-                entry["deep-climbs"]
+                entry["avg-auto-fuel"],
+                entry["avg-tele-fuel"],
+                entry["avg-tele-passed"],
+                entry["high-climbs"]
             ].join(",");
         })
         .join("\n")}`;
-} */
+}
 
 export function notes() {
     return ``;
 }
-/*
+
 function run(command) {
     return new Promise(async (resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -1215,13 +1022,13 @@ export async function analysis(event, teamNumber) {
         analyzed.push({
             type: "config",
             category: "score",
-            label: "Algae Scoring",
+            label: "Fuel Scoring",
             value: graph0
         });
         analyzed.push({
             type: "config",
             category: "score",
-            label: "Coral Scoring",
+            label: "Auto vs Teleop",
             value: graph3
         });
         analyzed.push({
@@ -1233,7 +1040,7 @@ export async function analysis(event, teamNumber) {
         analyzed.push({
             type: "config",
             category: "score",
-            label: "Shot Accuracy",
+            label: "Fuel Breakdown",
             value: graph5
         });
         analyzed.push({
@@ -1366,24 +1173,23 @@ export async function predict(event, redTeamNumbers, blueTeamNumbers) {
 }
 
 export async function accuracy(event, matches, data, categories, teams) {
-    return await accuracy2025(event, matches, data, categories, teams);
+    return await accuracy2026(event, matches, data, categories, teams);
 }
 
-/*
 export async function tps(data, categories, teams) {
     return data.map((entry) => {
-        if(!entry.event.startsWith("2024")) {
+        if (!entry.event.startsWith("2026")) {
             return {
                 silentlyFail: true,
-                hash: event.hash
+                hash: entry.hash
             };
         }
         return {
             silentlyFail: false,
-            hash: event.hash,
+            hash: entry.hash,
             entry: {
                 metadata: {
-                    event: entry.event || "2024all-prac",
+                    event: entry.event || "2026all-prac",
                     match: {
                         level: "qm",
                         number: entry.match || 0,
@@ -1398,29 +1204,128 @@ export async function tps(data, categories, teams) {
                     }
                 },
                 abilities: {
-                    "auto-leave-starting-zone": find(entry, "abilities", categories, "24-0", false),
-                    "ground-pick-up": find(entry, "abilities", categories, "24-1", false),
-                    "auto-center-line-pick-up": find(entry, "abilities", categories, "24-18", false),
-                    "teleop-stage-level-2024": parseInt(find(entry, "abilities", categories, "24-4", false)),
-                    "teleop-spotlight-2024": find(entry, "abilities", categories, "24-5", false)
+                    "auto-leave-starting-zone": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-0",
+                        false
+                    ),
+                    "fuel-ground-intake": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-1",
+                        false
+                    ),
+                    "outpost-intake": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-2",
+                        false
+                    ),
+                    "passing-from-neutral-zone": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-3",
+                        false
+                    ),
+                    "traverse-under-trench": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-4",
+                        false
+                    ),
+                    "traverse-over-bump": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-5",
+                        false
+                    ),
+                    "l1-climb": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-6",
+                        false
+                    ),
+                    "climb-level-2026": parseInt(
+                        find(entry, "abilities", categories, "26-9", 0)
+                    )
                 },
-                counters: {},
+                counters: {
+                    "auto-fuel-count": parseInt(
+                        find(entry, "counters", categories, "26-19", 0)
+                    ),
+                    "teleop-fuel-count": parseInt(
+                        find(entry, "counters", categories, "26-21", 0)
+                    )
+                },
                 data: {
-                    "auto-scoring-2024": find(entry, "data", categories, "24-2", []),
-                    "teleop-scoring-2024": find(entry, "data", categories, "24-3", []),
+                    "auto-fuel-scoring-2026": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-7",
+                        []
+                    ),
+                    "teleop-fuel-scoring-2026": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-8",
+                        []
+                    ),
+                    "auto-fuel-locations": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-18",
+                        []
+                    ),
+                    "teleop-fuel-locations": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-20",
+                        []
+                    ),
                     notes: entry.comments || ""
                 },
                 ratings: {
-                    "driver-skill": parseInt(find(entry, "ratings", categories, "24-9", 0)),
-                    "defense-skill": parseInt(find(entry, "ratings", categories, "24-10", 0)),
-                    speed: parseInt(find(entry, "ratings", categories, "24-11", 0)),
-                    stability: parseInt(find(entry, "ratings", categories, "24-12", 0)),
-                    "intake-consistency": parseInt(find(entry, "ratings", categories, "24-13", 0))
+                    "driver-skill": parseInt(
+                        find(entry, "ratings", categories, "26-13", 0)
+                    ),
+                    "defense-skill": parseInt(
+                        find(entry, "ratings", categories, "26-14", 0)
+                    ),
+                    speed: parseInt(
+                        find(entry, "ratings", categories, "26-15", 0)
+                    ),
+                    stability: parseInt(
+                        find(entry, "ratings", categories, "26-16", 0)
+                    ),
+                    "intake-consistency": parseInt(
+                        find(entry, "ratings", categories, "26-17", 0)
+                    ),
+                    "balls-per-second": parseInt(
+                        find(entry, "ratings", categories, "26-22", 0)
+                    )
                 },
                 timers: {
-                    "brick-time": parseInt(find(entry, "timers", categories, "24-7", 0))
-                    "defense-time": parseInt(find(entry, "timers", categories, "24-8", 0)),
-                    "stage-time-2024": parseInt(find(entry, "timers", categories, "24-6", 0))
+                    "climb-time": parseInt(
+                        find(entry, "timers", categories, "26-10", 0)
+                    ),
+                    "brick-time": parseInt(
+                        find(entry, "timers", categories, "26-11", 0)
+                    ),
+                    "defense-time": parseInt(
+                        find(entry, "timers", categories, "26-12", 0)
+                    )
                 }
             },
             privacy: [
@@ -1444,20 +1349,19 @@ export async function tps(data, categories, teams) {
         };
     });
 }
-*/
 
-const scouting2025 = {
+const scouting2026 = {
     categories,
     layout,
     preload,
     formatData,
     formatParsedData,
-    notes
-    /* formPicklist,
+    notes,
+    formPicklist,
     analysis,
     compare,
     predict,
     accuracy,
-    tps*/
+    tps
 };
-export default scouting2025;
+export default scouting2026;

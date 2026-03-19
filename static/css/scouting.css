@@ -2685,6 +2685,199 @@ div.component-score-counter div.tally {
     user-select: none;
 }
 
+/* COUNTER */
+
+.component-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px 2% 0px 2%;
+    gap: 0;
+    padding: 0.8rem;
+    background: #ffffff;
+    border-radius: var(--standard-border-radius);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.component-counter .counter-image {
+    display: none;
+}
+
+.component-counter .counter-image img {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+}
+
+.component-counter .counter-counters {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.component-counter .counter-total {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 6px 0;
+    margin: 0;
+}
+
+.component-counter .counter-total-label,
+.component-counter .counter-tally {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--contentColor);
+    user-select: none;
+    margin: 0;
+}
+
+.component-counter .counter-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 8px 0;
+    width: 100%;
+}
+
+.component-counter .counter-row + .counter-row {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.component-counter .counter-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    user-select: none;
+    color: var(--contentColor);
+    margin: 0;
+    padding-bottom: 8px;
+}
+
+.component-counter .counter-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.component-counter .counter-controls > div {
+    padding: 0;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 5px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    user-select: none;
+}
+
+.component-counter .counter-controls > .counter-plus {
+    grid-row: 2;
+    grid-column: 1 / 4;
+    min-height: 56px;
+    background-color: var(--primaryBackgroundColor);
+    border: 2px solid var(--primaryBackgroundColor);
+}
+
+.component-counter .counter-controls > .counter-plus:active {
+    background-color: var(--primaryDarkerBackgroundColor);
+    border-color: var(--primaryDarkerBackgroundColor);
+}
+
+.component-counter .counter-controls > .counter-plus svg {
+    width: 26px;
+    height: 26px;
+    fill: var(--primaryContentColor);
+}
+
+.component-counter .counter-controls > .counter-bulk[data-amount="10"] {
+    grid-row: 2;
+    grid-column: 4;
+    min-height: 56px;
+    background-color: var(--primaryBackgroundColor);
+    border: 2px solid var(--primaryBackgroundColor);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primaryContentColor);
+}
+
+.component-counter .counter-controls > .counter-bulk[data-amount="10"]:active {
+    background-color: var(--primaryDarkerBackgroundColor);
+    border-color: var(--primaryDarkerBackgroundColor);
+}
+
+.component-counter .counter-controls > .counter-bulk[data-amount="5"],
+.component-counter .counter-controls > .counter-minus,
+.component-counter .counter-controls > .counter-bulk[data-amount="-5"],
+.component-counter .counter-controls > .counter-bulk[data-amount="-10"] {
+    grid-row: 3;
+    min-height: 42px;
+    background-color: transparent;
+    border: 2px solid var(--primaryBackgroundColor);
+    color: var(--primaryBackgroundColor);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.component-counter .counter-controls > .counter-bulk[data-amount="5"]:active,
+.component-counter .counter-controls > .counter-minus:active,
+.component-counter .counter-controls > .counter-bulk[data-amount="-5"]:active,
+.component-counter .counter-controls > .counter-bulk[data-amount="-10"]:active {
+    background-color: var(--primaryBackgroundColor);
+    color: var(--primaryContentColor);
+}
+
+.component-counter .counter-controls > .counter-bulk[data-amount="5"] {
+    grid-column: 1;
+}
+.component-counter .counter-controls > .counter-minus {
+    grid-column: 2;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="-5"] {
+    grid-column: 3;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="-10"] {
+    grid-column: 4;
+}
+
+.component-counter .counter-controls > .counter-minus svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--primaryBackgroundColor);
+}
+
+.component-counter .counter-controls > .counter-minus:active svg {
+    fill: var(--primaryContentColor);
+}
+
+.component-counter .counter-count {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    font-size: 1.6rem;
+    font-weight: 800;
+    min-width: auto;
+    text-align: center;
+    padding: 0 0 2px 0;
+    user-select: none;
+    color: var(--primaryBackgroundColor);
+}
+
+.component-counter .counter-mobile-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--contentColor);
+    user-select: none;
+    margin: 0;
+    padding: 0 0 4px 0;
+    text-align: center;
+}
+
 /* MAIN APP */
 
 .component-layout-preset-manager {
@@ -2728,7 +2921,8 @@ div.preset {
 
     div.preset > div.component-layout-rows div.component-score-counter,
     div.preset > div.component-layout-rows div.component-textarea,
-    div.preset > div.component-layout-rows div.component-locations {
+    div.preset > div.component-layout-rows div.component-locations,
+    div.preset > div.component-layout-rows div.component-counter {
         grid-column: 1 / -1;
         margin: 0px 1% 0px 1%;
     }
