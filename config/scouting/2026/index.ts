@@ -633,7 +633,7 @@ export function parseFormatted(format: string): parsedRow[] {
             alliance: columns[3],
             leave: columns[4] === "true",
             "fuel ground intake": columns[5] === "true",
-            "outpost intake": columns[6]=== "true",
+            "outpost intake": columns[6] === "true",
             "passing from neutral zone": columns[7] === "true",
             "traverse under trench": columns[8] === "true",
             "traverse over bump": columns[9] === "true",
@@ -1176,7 +1176,7 @@ export async function accuracy(event, matches, data, categories, teams) {
 
 export async function tps(data, categories, teams) {
     return data.map((entry) => {
-        if(!entry.event.startsWith("2026")) {
+        if (!entry.event.startsWith("2026")) {
             return {
                 silentlyFail: true,
                 hash: entry.hash
@@ -1202,38 +1202,128 @@ export async function tps(data, categories, teams) {
                     }
                 },
                 abilities: {
-                    "auto-leave-starting-zone": find(entry, "abilities", categories, "26-0", false),
-                    "fuel-ground-intake": find(entry, "abilities", categories, "26-1", false),
-                    "outpost-intake": find(entry, "abilities", categories, "26-2", false),
-                    "passing-from-neutral-zone": find(entry, "abilities", categories, "26-3", false),
-                    "traverse-under-trench": find(entry, "abilities", categories, "26-4", false),
-                    "traverse-over-bump": find(entry, "abilities", categories, "26-5", false),
-                    "l1-climb": find(entry, "abilities", categories, "26-6", false),
-                    "climb-level-2026": parseInt(find(entry, "abilities", categories, "26-9", 0))
+                    "auto-leave-starting-zone": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-0",
+                        false
+                    ),
+                    "fuel-ground-intake": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-1",
+                        false
+                    ),
+                    "outpost-intake": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-2",
+                        false
+                    ),
+                    "passing-from-neutral-zone": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-3",
+                        false
+                    ),
+                    "traverse-under-trench": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-4",
+                        false
+                    ),
+                    "traverse-over-bump": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-5",
+                        false
+                    ),
+                    "l1-climb": find(
+                        entry,
+                        "abilities",
+                        categories,
+                        "26-6",
+                        false
+                    ),
+                    "climb-level-2026": parseInt(
+                        find(entry, "abilities", categories, "26-9", 0)
+                    )
                 },
                 counters: {
-                    "auto-fuel-count": parseInt(find(entry, "counters", categories, "26-19", 0)),
-                    "teleop-fuel-count": parseInt(find(entry, "counters", categories, "26-21", 0))
+                    "auto-fuel-count": parseInt(
+                        find(entry, "counters", categories, "26-19", 0)
+                    ),
+                    "teleop-fuel-count": parseInt(
+                        find(entry, "counters", categories, "26-21", 0)
+                    )
                 },
                 data: {
-                    "auto-fuel-scoring-2026": find(entry, "data", categories, "26-7", []),
-                    "teleop-fuel-scoring-2026": find(entry, "data", categories, "26-8", []),
-                    "auto-fuel-locations": find(entry, "data", categories, "26-18", []),
-                    "teleop-fuel-locations": find(entry, "data", categories, "26-20", []),
+                    "auto-fuel-scoring-2026": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-7",
+                        []
+                    ),
+                    "teleop-fuel-scoring-2026": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-8",
+                        []
+                    ),
+                    "auto-fuel-locations": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-18",
+                        []
+                    ),
+                    "teleop-fuel-locations": find(
+                        entry,
+                        "data",
+                        categories,
+                        "26-20",
+                        []
+                    ),
                     notes: entry.comments || ""
                 },
                 ratings: {
-                    "driver-skill": parseInt(find(entry, "ratings", categories, "26-13", 0)),
-                    "defense-skill": parseInt(find(entry, "ratings", categories, "26-14", 0)),
-                    speed: parseInt(find(entry, "ratings", categories, "26-15", 0)),
-                    stability: parseInt(find(entry, "ratings", categories, "26-16", 0)),
-                    "intake-consistency": parseInt(find(entry, "ratings", categories, "26-17", 0)),
-                    "balls-per-second": parseInt(find(entry, "ratings", categories, "26-22", 0))
+                    "driver-skill": parseInt(
+                        find(entry, "ratings", categories, "26-13", 0)
+                    ),
+                    "defense-skill": parseInt(
+                        find(entry, "ratings", categories, "26-14", 0)
+                    ),
+                    speed: parseInt(
+                        find(entry, "ratings", categories, "26-15", 0)
+                    ),
+                    stability: parseInt(
+                        find(entry, "ratings", categories, "26-16", 0)
+                    ),
+                    "intake-consistency": parseInt(
+                        find(entry, "ratings", categories, "26-17", 0)
+                    ),
+                    "balls-per-second": parseInt(
+                        find(entry, "ratings", categories, "26-22", 0)
+                    )
                 },
                 timers: {
-                    "climb-time": parseInt(find(entry, "timers", categories, "26-10", 0)),
-                    "brick-time": parseInt(find(entry, "timers", categories, "26-11", 0)),
-                    "defense-time": parseInt(find(entry, "timers", categories, "26-12", 0))
+                    "climb-time": parseInt(
+                        find(entry, "timers", categories, "26-10", 0)
+                    ),
+                    "brick-time": parseInt(
+                        find(entry, "timers", categories, "26-11", 0)
+                    ),
+                    "defense-time": parseInt(
+                        find(entry, "timers", categories, "26-12", 0)
+                    )
                 }
             },
             privacy: [
@@ -1257,7 +1347,6 @@ export async function tps(data, categories, teams) {
         };
     });
 }
-
 
 const scouting2026 = {
     categories,

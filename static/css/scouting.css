@@ -2772,13 +2772,27 @@ div.component-score-counter div.tally {
     touch-action: manipulation;
 }
 
-.component-counter .counter-controls > .counter-bulk[data-amount="-10"] { order: 1; }
-.component-counter .counter-controls > .counter-bulk[data-amount="-5"]  { order: 2; }
-.component-counter .counter-controls > .counter-minus                   { order: 3; }
-.component-counter .counter-count                                          { order: 4; }
-.component-counter .counter-controls > .counter-plus                    { order: 5; }
-.component-counter .counter-controls > .counter-bulk[data-amount="5"]   { order: 6; }
-.component-counter .counter-controls > .counter-bulk[data-amount="10"]  { order: 7; }
+.component-counter .counter-controls > .counter-bulk[data-amount="-10"] {
+    order: 1;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="-5"] {
+    order: 2;
+}
+.component-counter .counter-controls > .counter-minus {
+    order: 3;
+}
+.component-counter .counter-count {
+    order: 4;
+}
+.component-counter .counter-controls > .counter-plus {
+    order: 5;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="5"] {
+    order: 6;
+}
+.component-counter .counter-controls > .counter-bulk[data-amount="10"] {
+    order: 7;
+}
 
 .component-counter .counter-controls > div svg {
     width: 15px;
@@ -2911,7 +2925,9 @@ div.component-score-counter div.tally {
         color: var(--primaryContentColor);
     }
 
-    .component-counter .counter-controls > .counter-bulk[data-amount="10"]:active {
+    .component-counter
+        .counter-controls
+        > .counter-bulk[data-amount="10"]:active {
         background-color: var(--primaryDarkerBackgroundColor);
         border-color: var(--primaryDarkerBackgroundColor);
     }
@@ -2929,18 +2945,32 @@ div.component-score-counter div.tally {
         font-size: 0.9rem;
     }
 
-    .component-counter .counter-controls > .counter-bulk[data-amount="5"]:active,
+    .component-counter
+        .counter-controls
+        > .counter-bulk[data-amount="5"]:active,
     .component-counter .counter-controls > .counter-minus:active,
-    .component-counter .counter-controls > .counter-bulk[data-amount="-5"]:active,
-    .component-counter .counter-controls > .counter-bulk[data-amount="-10"]:active {
+    .component-counter
+        .counter-controls
+        > .counter-bulk[data-amount="-5"]:active,
+    .component-counter
+        .counter-controls
+        > .counter-bulk[data-amount="-10"]:active {
         background-color: var(--primaryBackgroundColor);
         color: var(--primaryContentColor);
     }
 
-    .component-counter .counter-controls > .counter-bulk[data-amount="5"]  { grid-column: 1; }
-    .component-counter .counter-controls > .counter-minus                  { grid-column: 2; }
-    .component-counter .counter-controls > .counter-bulk[data-amount="-5"] { grid-column: 3; }
-    .component-counter .counter-controls > .counter-bulk[data-amount="-10"]{ grid-column: 4; }
+    .component-counter .counter-controls > .counter-bulk[data-amount="5"] {
+        grid-column: 1;
+    }
+    .component-counter .counter-controls > .counter-minus {
+        grid-column: 2;
+    }
+    .component-counter .counter-controls > .counter-bulk[data-amount="-5"] {
+        grid-column: 3;
+    }
+    .component-counter .counter-controls > .counter-bulk[data-amount="-10"] {
+        grid-column: 4;
+    }
 
     .component-counter .counter-controls > .counter-minus svg {
         width: 16px;

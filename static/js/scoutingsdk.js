@@ -4687,7 +4687,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                                 if (amount > 0) {
                                     if (opt.max !== undefined) {
-                                        amount = Math.min(amount, opt.max - cur);
+                                        amount = Math.min(
+                                            amount,
+                                            opt.max - cur
+                                        );
                                     }
                                     if (amount <= 0) return;
                                     for (let i = 0; i < amount; i++) {
@@ -4836,12 +4839,20 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                     ) {
                                         presets[j].classList.remove("none");
 
-                                        presets[j].querySelectorAll("textarea[data-key]").forEach((textarea) => {
-                                            let key = textarea.getAttribute("data-key");
-                                            if (data.data[key] != null) {
-                                                textarea.value = data.data[key];
-                                            }
-                                        });
+                                        presets[j]
+                                            .querySelectorAll(
+                                                "textarea[data-key]"
+                                            )
+                                            .forEach((textarea) => {
+                                                let key =
+                                                    textarea.getAttribute(
+                                                        "data-key"
+                                                    );
+                                                if (data.data[key] != null) {
+                                                    textarea.value =
+                                                        data.data[key];
+                                                }
+                                            });
                                     } else {
                                         presets[j].classList.add("none");
                                     }
