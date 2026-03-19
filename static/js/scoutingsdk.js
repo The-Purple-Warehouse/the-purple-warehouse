@@ -2222,6 +2222,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             autoHeight: true
                         }));
 
+                        columnDefs.forEach((def) => {
+                            if (def.field === "match" || def.field === "team") {
+                                def.pinned = "left";
+                            }
+                        });
+
                         columnDefs[0].width = 75;
                         columnDefs[0].sortable = false;
                         columnDefs[0].filter = false;
@@ -2321,6 +2327,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             cellClass: "wrap-text",
                             autoHeight: true
                         }));
+
+                        columnDefs.forEach((def) => {
+                            if (def.field === "match" || def.field === "team") {
+                                def.pinned = "left";
+                            }
+                        });
 
                         columnDefs[0].width = 75;
                         columnDefs[0].filter = false;
@@ -3745,6 +3757,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 "locations",
                 "pagebutton",
                 "scorecount",
+                "counter",
                 "pagebar",
                 "checkbox",
                 "timer",
@@ -4309,6 +4322,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         else if (controlLabel === "Missed") values.push("amp");
                         locations.push(5);
                     }
+
                     dcounter++;
                     await saveData();
                 };
@@ -4520,6 +4534,222 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         id
                     )}">${htmlcont}</div>`
                 );
+            } else if (component.type == "counter") {
+                let id = _this.random();
+
+                let src = "";
+                if (component.src != null) {
+                    if (
+                        typeof component.src === "object" &&
+                        component.src.type === "function"
+                    ) {
+                        src = eval(component.src.definition)(getState());
+                    } else {
+                        src = component.src.toString();
+                    }
+                }
+
+                let values = [];
+                let locations = [];
+                let dcounter = 0;
+                let location =
+                    component.location != null ? component.location : 0;
+
+                if (component.data) {
+                    values = checkNull(data.data[component.data.values], []);
+                    locations = checkNull(
+                        data.data[component.data.locations],
+                        []
+                    );
+                    dcounter = checkNull(
+                        data.counters[component.data.counter],
+                        0
+                    );
+                }
+
+                const hub = async () => {
+                    await _this.setData(
+                        "data",
+                        component.data.locations,
+                        locations
+                    );
+                    await _this.setData("data", component.data.values, values);
+                    await _this.setData(
+                        "counters",
+                        component.data.counter,
+                        dcounter
+                    );
+                };
+
+                let options =
+                    component.options instanceof Array ? component.options : [];
+
+                let rows = options
+                    .map((opt, optIndex) => {
+                        let optId = `${id}-hubopt-${optIndex}`;
+                        let initCount = values.filter(
+                            (v) => v === opt.value
+                        ).length;
+                        return `
+                        <div class="counter-row" id="${_this.escape(optId)}">
+                            <div class="counter-label">${_this.escape(
+                                opt.label
+                            )}</div>
+                            <div class="counter-controls">
+                                <div class="counter-plus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+                                </div>
+                                <div class="counter-bulk" data-amount="10">+10</div>
+                                <div class="counter-bulk" data-amount="5">+5</div>
+                                <div class="counter-minus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
+                                </div>
+                                <div class="counter-bulk" data-amount="-5">-5</div>
+                                <div class="counter-bulk" data-amount="-10">-10</div>
+                                <div class="counter-count">${initCount}</div>
+                            </div>
+                        </div>`;
+                    })
+                    .join("");
+
+                let totalInit = options.reduce(
+                    (sum, opt) =>
+                        sum + values.filter((v) => v === opt.value).length,
+                    0
+                );
+
+                pendingFunctions.push(async () => {
+                    options.forEach((opt, optIndex) => {
+                        let optId = `${id}-hubopt-${optIndex}`;
+                        let row = document.getElementById(optId);
+                        if (!row) return;
+                        let ecount = row.querySelector(".counter-count");
+                        let plus = row.querySelector(".counter-plus");
+                        let minus = row.querySelector(".counter-minus");
+                        let etally = element.querySelector(
+                            `[data-id="${_this.escape(id)}"] .counter-tally`
+                        );
+
+                        let tally = () => {
+                            if (etally) {
+                                etally.innerText = options.reduce(
+                                    (sum, o) =>
+                                        sum +
+                                        values.filter((v) => v === o.value)
+                                            .length,
+                                    0
+                                );
+                            }
+                        };
+
+                        plus.addEventListener("click", async (e) => {
+                            e.stopPropagation();
+                            let cur = parseInt(ecount.innerText) || 0;
+                            if (opt.max !== undefined && cur >= opt.max) {
+                                return;
+                            }
+                            values.push(opt.value);
+                            locations.push(location);
+                            dcounter++;
+                            ecount.innerText = cur + 1;
+                            tally();
+                            await hub();
+                        });
+
+                        minus.addEventListener("click", async (e) => {
+                            e.stopPropagation();
+                            let cur = parseInt(ecount.innerText) || 0;
+                            if (cur <= 0) {
+                                return;
+                            }
+                            const idv = values.lastIndexOf(opt.value);
+                            if (idv !== -1) {
+                                values.splice(idv, 1);
+                            }
+                            const idl = locations.lastIndexOf(location);
+                            if (idl !== -1) {
+                                locations.splice(idl, 1);
+                            }
+                            dcounter = Math.max(0, dcounter - 1);
+                            ecount.innerText = cur - 1;
+                            tally();
+                            await hub();
+                        });
+
+                        let bulk = row.querySelectorAll(".counter-bulk");
+                        bulk.forEach((b) => {
+                            b.addEventListener("click", async (e) => {
+                                e.stopPropagation();
+                                let amount = parseInt(
+                                    b.getAttribute("data-amount")
+                                );
+                                let cur = parseInt(ecount.innerText) || 0;
+
+                                if (amount > 0) {
+                                    if (opt.max !== undefined) {
+                                        amount = Math.min(amount, opt.max - cur);
+                                    }
+                                    if (amount <= 0) return;
+                                    for (let i = 0; i < amount; i++) {
+                                        values.push(opt.value);
+                                        locations.push(location);
+                                        dcounter++;
+                                    }
+                                    ecount.innerText = cur + amount;
+                                } else {
+                                    let smaller = Math.min(
+                                        Math.abs(amount),
+                                        cur
+                                    );
+                                    if (smaller <= 0) return;
+                                    for (let i = 0; i < smaller; i++) {
+                                        const idv = values.lastIndexOf(
+                                            opt.value
+                                        );
+                                        if (idv !== -1) {
+                                            values.splice(idv, 1);
+                                        }
+
+                                        const idl =
+                                            locations.lastIndexOf(location);
+                                        if (idl !== -1) {
+                                            locations.splice(idl, 1);
+                                        }
+
+                                        dcounter = Math.max(0, dcounter - 1);
+                                    }
+                                    ecount.innerText = cur - smaller;
+                                }
+                                tally();
+                                await hub();
+                            });
+                        });
+                    });
+
+                    await hub();
+                });
+
+                resolve(`
+                    <div class="component-counter" data-id="${_this.escape(
+                        id
+                    )}">
+                        ${
+                            src
+                                ? `<div class="counter-image"><img src="${_this.escape(
+                                      src
+                                  )}" alt="Hub" /></div>`
+                                : ""
+                        }
+                        <div class="counter-counters">
+                            <div class="counter-mobile-label">Hub</div>
+                            <div class="counter-total">
+                                <span class="counter-total-label">Total</span>
+                                <span class="counter-tally">${totalInit}</span>
+                            </div>
+                            ${rows}
+                        </div>
+                    </div>
+                `);
             } else if (component.type == "pagebutton") {
                 let id = _this.random();
                 let page = -1;
@@ -4605,6 +4835,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         refers
                                     ) {
                                         presets[j].classList.remove("none");
+
+                                        presets[j].querySelectorAll("textarea[data-key]").forEach((textarea) => {
+                                            let key = textarea.getAttribute("data-key");
+                                            if (data.data[key] != null) {
+                                                textarea.value = data.data[key];
+                                            }
+                                        });
                                     } else {
                                         presets[j].classList.add("none");
                                     }
@@ -5327,11 +5564,13 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         id
                     )}">
                         <p>Comments</p>
-                        <p class="subtext">Scoring ability? Stability? Fouls? Issues?</p>
+                        <p class="subtext">Scoring ability? Stability? Fouls? Issues? Shooting type? (turret, shoot on the move..) Beached?</p>
                         <p class="subtext">Team Number? (if practice match)</p>
                         <textarea data-id="${_this.escape(
                             id
-                        )}" placeholder="${_this.escape(
+                        )}" data-key="${_this.escape(
+                        component.data
+                    )}" placeholder="${_this.escape(
                         placeholder
                     )}">${_this.escape(
                         checkNull(data.data[component.data], defaultValue)
@@ -5362,6 +5601,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         src = component.src;
                     }
                 }
+                let hasCustomRange =
+                    component.min != null || component.max != null;
+                let offset = hasCustomRange ? 0 : 1;
+                let min = component.min != null ? parseInt(component.min) : 0;
+                let max = component.max != null ? parseInt(component.max) : 4;
+                let step =
+                    component.step != null ? parseInt(component.step) : 1;
+                let displayMin = min + offset;
+                let displayMax = max + offset;
+                let maxLabel = component.maxLabel || null;
                 if (data.ratings[component.data]) {
                     defaultValue = data.ratings[component.data];
                 }
@@ -5378,18 +5627,26 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                     sliders.forEach((slider) => {
                         values.forEach((vel) => {
-                            vel.innerHTML = parseInt(defaultValue) + 1;
+                            vel.innerHTML =
+                                maxLabel &&
+                                parseInt(defaultValue) + offset == displayMax
+                                    ? maxLabel
+                                    : parseInt(defaultValue) + offset;
                         });
 
                         ranges.forEach(async (rel) => {
-                            rel.value = parseInt(defaultValue) + 1;
+                            rel.value = parseInt(defaultValue) + offset;
                             rel.addEventListener("input", async function () {
                                 var vel = this.nextElementSibling;
-                                vel.innerHTML = this.value;
+                                let displayVal = parseInt(this.value);
+                                vel.innerHTML =
+                                    maxLabel && displayVal == displayMax
+                                        ? maxLabel
+                                        : displayVal;
 
-                                let val = rel.value - 1;
-                                if (val < 0) val = 0;
-                                if (val > 4) val = 4;
+                                let val = rel.value - offset;
+                                if (val < min) val = min;
+                                if (val > max) val = max;
                                 await _this.setData(
                                     "ratings",
                                     component.data,
@@ -5411,8 +5668,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     )}">
                         <h2>${_this.escape(label)}</h2>
                         <div>
-                            <input class="range-slider" type="range" value="1" min="1" max="5" step="1">
-                            <span class="range-span">1</span>
+                            <input class="range-slider" type="range" value="${
+                                parseInt(defaultValue) + offset
+                            }" min="${displayMin}" max="${displayMax}" step="${step}">
+                            <span class="range-span">${
+                                maxLabel &&
+                                parseInt(defaultValue) + offset == displayMax
+                                    ? maxLabel
+                                    : parseInt(defaultValue) + offset
+                            }</span>
                         </div>
                     </div>`
                 );
