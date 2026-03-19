@@ -743,7 +743,9 @@ export function formatParsedData(data, categories, teams) {
                         find(entry, "ratings", categories, "26-17", "") + 1
                     )
                 ),
-                parseInt(find(entry, "ratings", categories, "26-22", 0)),
+                parseInt(find(entry, "ratings", categories, "26-22", 0)) >= 11
+                    ? "10+"
+                    : parseInt(find(entry, "ratings", categories, "26-22", 0)),
                 JSON.stringify(
                     `${entry.contributor.username || "username"} (${
                         teams[entry.contributor.team] || 0
