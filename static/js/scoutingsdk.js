@@ -6213,7 +6213,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 let nutsElement = document.querySelector(
                     ".header-incentives .nuts > p"
                 );
-                let boltsElement = document.querySelector(
+                let bltsElement = document.querySelector(
                     ".header-incentives .bolts > p"
                 );
                 element.innerHTML = `
@@ -6234,12 +6234,12 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <div class="shop-grid">
                             ${[
                                 {
-                                    name: "Coming Soon",
+                                    name: "Dark Mode",
                                     description:
-                                        "This item will be available soon!",
-                                    price: { nuts: "???", bolts: "???" },
-                                    image: "🎁",
-                                    disabled: true
+                                        "A sleek, dark theme for the app.",
+                                    price: { nuts: "500", bolts: "5" },
+                                    image: "🌑",
+                                    disabled: false
                                 },
                                 {
                                     name: "Coming Soon",
