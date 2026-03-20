@@ -1965,6 +1965,29 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             )};
                                                         const resizetypes = ["line", "boxplot"];
                                                         chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
+                                                        if (chart_config${ind}.type === "line" || chart_config${ind}.type === "bar" && document.documentElement.getAttribute("data-theme") === "dark") {
+                                                            chart_config${ind}.options.scales.x.grid = chart_config${ind}.options.scales.x.grid || {};
+                                                            chart_config${ind}.options.scales.x.angleLines = chart_config${ind}.options.scales.x.angleLines || {};
+                                                            chart_config${ind}.options.scales.x.pointLabels = chart_config${ind}.options.scales.x.pointLabels || {};
+                                                            chart_config${ind}.options.scales.x.ticks = chart_config${ind}.options.scales.x.ticks || {};
+                                                            chart_config${ind}.options.scales.x.grid.color = "rgba(255, 255, 255, 0.2)";
+                                                            chart_config${ind}.options.scales.x.angleLines.color = "rgba(255, 255, 255, 0.3)";
+                                                            chart_config${ind}.options.scales.x.pointLabels.color = "rgba(255, 255, 255, 0.85)";
+                                                            chart_config${ind}.options.scales.x.pointLabels.backdropColor = "transparent";
+                                                            chart_config${ind}.options.scales.x.ticks.backdropColor = "transparent";
+                                                            chart_config${ind}.options.scales.x.ticks.color = "rgba(255, 255, 255, 0.6)";
+                                                            
+                                                            chart_config${ind}.options.scales.y.grid = chart_config${ind}.options.scales.y.grid || {};
+                                                            chart_config${ind}.options.scales.y.angleLines = chart_config${ind}.options.scales.y.angleLines || {};
+                                                            chart_config${ind}.options.scales.y.pointLabels = chart_config${ind}.options.scales.y.pointLabels || {};
+                                                            chart_config${ind}.options.scales.y.ticks = chart_config${ind}.options.scales.y.ticks || {};
+                                                            chart_config${ind}.options.scales.y.grid.color = "rgba(255, 255, 255, 0.2)";
+                                                            chart_config${ind}.options.scales.y.angleLines.color = "rgba(255, 255, 255, 0.3)";
+                                                            chart_config${ind}.options.scales.y.pointLabels.color = "rgba(255, 255, 255, 0.85)";
+                                                            chart_config${ind}.options.scales.y.pointLabels.backdropColor = "transparent";
+                                                            chart_config${ind}.options.scales.y.ticks.backdropColor = "transparent";
+                                                            chart_config${ind}.options.scales.y.ticks.color = "rgba(255, 255, 255, 0.6)";
+                                                        }
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
                                                         if (resizetypes.includes(chart_config${ind}.type)) {
                                                             window.addEventListener("resize", () => {
@@ -2013,6 +2036,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                             )};
                                                         const resizetypes = ["line", "boxplot"];
                                                         chart_config${ind} = (resizetypes.includes(chart_config${ind}.type)) ? parse(chart_config${ind}) : chart_config${ind};
+                                                        if (chart_config${ind}.type === "radar" && document.documentElement.getAttribute("data-theme") === "dark") {
+                                                            chart_config${ind}.options.scales.r.grid = chart_config${ind}.options.scales.r.grid || {};
+                                                            chart_config${ind}.options.scales.r.angleLines = chart_config${ind}.options.scales.r.angleLines || {};
+                                                            chart_config${ind}.options.scales.r.pointLabels = chart_config${ind}.options.scales.r.pointLabels || {};
+                                                            chart_config${ind}.options.scales.r.ticks = chart_config${ind}.options.scales.r.ticks || {};
+                                                            chart_config${ind}.options.scales.r.grid.color = "rgba(255, 255, 255, 0.2)";
+                                                            chart_config${ind}.options.scales.r.angleLines.color = "rgba(255, 255, 255, 0.3)";
+                                                            chart_config${ind}.options.scales.r.pointLabels.color = "rgba(255, 255, 255, 0.85)";
+                                                            chart_config${ind}.options.scales.r.pointLabels.backdropColor = "transparent";
+                                                            chart_config${ind}.options.scales.r.ticks.backdropColor = "transparent";
+                                                            chart_config${ind}.options.scales.r.ticks.color = "rgba(255, 255, 255, 0.6)";
+                                                        }
                                                         let chart${ind} = new Chart(document.getElementById("${id}").getContext("2d"), chart_config${ind});
                                                         if (resizetypes.includes(chart_config${ind}.type)) {
                                                             window.addEventListener("resize", () => {
