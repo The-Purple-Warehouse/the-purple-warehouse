@@ -1,4 +1,5 @@
 import ScoutingEntry from "../models/scoutingEntry";
+import PurchaseEntry from "../models/purchaseEntry";
 import ScoutingCategory from "../models/scoutingCategory";
 import Team from "../models/team";
 import { getTeamByNumber } from "./teams";
@@ -334,13 +335,21 @@ export async function getTotalIncentives(contributingTeam, contributingUser) {
     })
         .select({ xp: 1, nuts: 1, bolts: 1 })
         .lean();
+
+    let purchases = await PurchaseEntry.find({
+        "contributor.team": (await getTeamByNumber(contributingTeam))._id,
+        "contributor.username": contributingUser,
+    })
+        .select({ xp: 1, nuts: 1, bolts: 1 })
+        .lean();
+
+    let nuts = Number(entries.reduce((total, current: any) => total + current.nuts, 0)) - Number(purchases.reduce((total, current: any) => total + current.nuts, 0));
+    let bolts = Number(entries.reduce((total, current: any) => total + current.bolts, 0)) - Number(purchases.reduce((total, current: any) => total + current.bolts, 0));
+
     return {
         xp: entries.reduce((total, current: any) => total + current.xp, 0),
-        nuts: entries.reduce((total, current: any) => total + current.nuts, 0),
-        bolts: entries.reduce(
-            (total, current: any) => total + current.bolts,
-            0
-        ),
+        nuts: nuts,
+        bolts: bolts,
         ...getLevelAndProgress(
             entries.reduce((total, current: any) => total + current.xp, 0)
         )

@@ -2,7 +2,19 @@
 <html lang="en">
 
 <head>
-	{{> head}}
+  {{> head}}
+  <script>
+      (function () {
+          var stored = localStorage.getItem("theme");
+          if (stored === "dark") {
+              document.documentElement.setAttribute("data-theme", "dark");
+          } else if (stored === "light") {
+              document.documentElement.removeAttribute("data-theme");
+          } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+              document.documentElement.setAttribute("data-theme", "dark");
+          }
+      })();
+  </script>
   <link href="/css/scouting.css" rel="stylesheet">
   <script src="/js/snackbar.js" defer></script>
   <script src="/js/scoutingLogin.js?v=3" defer></script>

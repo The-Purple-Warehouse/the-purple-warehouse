@@ -295,9 +295,19 @@ const ScoutingAppSDK = function (element, config) {
         let nutsElement = document.querySelector(
             ".header-incentives .nuts > p"
         );
+
+        let nutsElementShop = document.querySelector(
+            ".shop-balance .nuts span"
+        );
+
         let boltsElement = document.querySelector(
             ".header-incentives .bolts > p"
         );
+
+        let boltsElementShop = document.querySelector(
+            ".shop-balance .bolts span"
+        )
+
         let levelsElement = document.querySelector(".header-incentives .xp p");
         let progressElement = document.querySelector(
             ".header-incentives .xp .xp-filled"
@@ -306,6 +316,12 @@ const ScoutingAppSDK = function (element, config) {
             incentives.totals.nuts - parseInt(nutsElement.innerHTML);
         let differenceBolts =
             incentives.totals.bolts - parseInt(boltsElement.innerHTML);
+
+        let differenceNutsShop =
+            incentives.totals.nuts - parseInt(nutsElementShop.innerHTML);
+        let differenceBoltsShop =
+            incentives.totals.bolts - parseInt(nutsElementShop.innerHTML);
+
         let differenceLevels =
             incentives.totals.level - parseInt(levelsElement.innerHTML);
         let differenceProgress =
@@ -317,7 +333,11 @@ const ScoutingAppSDK = function (element, config) {
                 nutsElement.innerHTML =
                     parseInt(nutsElement.innerHTML) +
                     Math.abs(differenceNuts) / differenceNuts;
-            },
+
+                nutsElementShop.innerHTML =
+                    parseInt(nutsElementShop.innerHTML) +
+                    Math.abs(differenceNutsShop) / differenceNutsShop;
+                },
             Math.abs(differenceNuts),
             500
         );
@@ -326,6 +346,10 @@ const ScoutingAppSDK = function (element, config) {
                 boltsElement.innerHTML =
                     parseInt(boltsElement.innerHTML) +
                     Math.abs(differenceBolts) / differenceBolts;
+
+                boltsElementShop.innerHTML =
+                    parseInt(boltsElementShop.innerHTML) +
+                    Math.abs(differenceBoltsShop) / differenceBoltsShop;
             },
             Math.abs(differenceBolts),
             500
@@ -1556,7 +1580,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ],
                                 rowData,
                                 domLayout: "autoHeight",
-                                theme: agGrid.themeQuartz
+                                theme: document.documentElement.getAttribute("data-theme") === "dark"
+                                    ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
+                                    : agGrid.themeQuartz
                             });
                         };
 
@@ -1791,7 +1817,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         enableClickSelection: false
                                     },
                                     // domLayout: "autoHeight",
-                                    theme: agGrid.themeQuartz,
+                                    theme: document.documentElement.getAttribute("data-theme") === "dark"
+                                        ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
+                                        : agGrid.themeQuartz,
                                     suppressCellFocus: true,
                                     onRowClicked: function (event) {
                                         const api = gridOptions.api;
@@ -2267,7 +2295,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             rowData: rowData,
                             pagination: true,
                             paginationPageSize: 20,
-                            theme: agGrid.themeQuartz
+                            theme: document.documentElement.getAttribute("data-theme") === "dark"
+                                ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
+                                : agGrid.themeQuartz
                         });
 
                         element.querySelector(".notes").innerHTML =
@@ -2373,7 +2403,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             rowData: rowData,
                             pagination: true,
                             paginationPageSize: 20,
-                            theme: agGrid.themeQuartz
+                            theme: document.documentElement.getAttribute("data-theme") === "dark"
+                              ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
+                              : agGrid.themeQuartz
                         });
 
                         element.querySelector(".notes").innerHTML =
@@ -6026,30 +6058,51 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         if (configuration.latest.autofill == null) {
             configuration.latest.autofill = true;
         }
-        document.documentElement.style.setProperty(
-            "--backgroundColor",
-            configuration.theme.backgroundColor
-        );
-        document.documentElement.style.setProperty(
-            "--contentColor",
-            configuration.theme.contentColor
-        );
-        document.documentElement.style.setProperty(
-            "--primaryBackgroundColor",
-            configuration.theme.primaryBackgroundColor
-        );
-        document.documentElement.style.setProperty(
-            "--primaryContentColor",
-            configuration.theme.primaryContentColor
-        );
-        document.documentElement.style.setProperty(
-            "--primaryDarkerBackgroundColor",
-            configuration.theme.primaryDarkerBackgroundColor
-        );
-        document.documentElement.style.setProperty(
-            "--disabledColor",
-            configuration.theme.disabledColor
-        );
+        // Store both light and dark theme configs for toggling
+        configuration.theme.dark = {
+            backgroundColor: "#110814",
+            contentColor: "#f4f4f4",
+            primaryBackgroundColor: "#5c2d6e",
+            primaryContentColor: "#d4c8de",
+            primaryDarkerBackgroundColor: "#3d1a4d",
+            disabledColor: "#888888"
+        };
+
+        function applyThemeVars() {
+            let t = document.documentElement.getAttribute("data-theme") === "dark" ? configuration.theme.dark : configuration.theme;
+            document.documentElement.style.setProperty(
+                "--backgroundColor",
+                t.backgroundColor
+            );
+            document.documentElement.style.setProperty(
+                "--contentColor",
+                t.contentColor
+            );
+            document.documentElement.style.setProperty(
+                "--primaryBackgroundColor",
+                t.primaryBackgroundColor
+            );
+            document.documentElement.style.setProperty(
+                "--primaryContentColor",
+                t.primaryContentColor
+            );
+            document.documentElement.style.setProperty(
+                "--primaryDarkerBackgroundColor",
+                t.primaryDarkerBackgroundColor
+            );
+            document.documentElement.style.setProperty(
+                "--disabledColor",
+                t.disabledColor
+            );
+        }
+        applyThemeVars();
+
+        new MutationObserver(function () {
+            applyThemeVars();
+        }).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"]
+        });
         if (configuration.pages == null) {
             configuration.pages = [];
         }
@@ -6210,6 +6263,19 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
     _this.showShopPage = async () => {
         return new Promise(async (resolve, reject) => {
             try {
+                const [shop, inventory] = await Promise.all([
+                    fetch("/api/v1/scouting/shop/items"),
+                    fetch("/api/v1/scouting/shop/inventory")
+                ]);
+                const data = await shop.json();
+                const inventoryData = await inventory.json();
+                const items = data.body.items;
+                const ownedIds = new Set(
+                    (inventoryData.body?.inventory || []).map(
+                        (entry) => entry.itemId?._id?.toString() || entry.itemId?.toString()
+                    )
+                );
+
                 let nutsElement = document.querySelector(
                     ".header-incentives .nuts > p"
                 );
@@ -6232,73 +6298,65 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             </div>
                         </div>
                         <div class="shop-grid">
-                            ${[
-                                {
-                                    name: "Coming Soon",
-                                    description:
-                                        "This item will be available soon!",
-                                    price: { nuts: "???", bolts: "???" },
-                                    image: "🎁",
-                                    disabled: true
-                                },
-                                {
-                                    name: "Coming Soon",
-                                    description:
-                                        "This item will be available soon!",
-                                    price: { nuts: "???", bolts: "???" },
-                                    image: "🎁",
-                                    disabled: true
-                                },
-                                {
-                                    name: "Coming Soon",
-                                    description:
-                                        "This item will be available soon!",
-                                    price: { nuts: "???", bolts: "???" },
-                                    image: "🎁",
-                                    disabled: true
-                                },
-                                {
-                                    name: "Coming Soon",
-                                    description:
-                                        "This item will be available soon!",
-                                    price: { nuts: "???", bolts: "???" },
-                                    image: "🎁",
-                                    disabled: true
-                                }
-                            ]
+                            ${items
                                 .map(
                                     (item) => `
-                                <div class="shop-item${
-                                    item.disabled ? " disabled" : ""
-                                }">
-                                    <div class="item-image">${item.image}</div>
-                                    <div class="item-info">
-                                        <h3>${_this.escape(item.name)}</h3>
-                                        <p>${_this.escape(item.description)}</p>
-                                        <div class="item-price">
-                                            <div class="nuts">
-                                                <span>${item.price.nuts}</span>
-                                                <img src="/img/nuts.png" alt="Nuts" />
-                                            </div>
-                                            <div class="bolts">
-                                                <span>${item.price.bolts}</span>
-                                                <img src="/img/bolts.png" alt="Bolts" />
-                                            </div>
+                            <div class="shop-item">
+                                <div class="item-image">${item.image}</div>
+                                <div class="item-info">
+                                    <h3>${_this.escape(item.name)}</h3>
+                                    <p>${_this.escape(item.description)}</p>
+                                    <div class="item-price">
+                                        <div class="nuts">
+                                            <span>${item.price.nuts}</span>
+                                            <img src="/img/nuts.png" alt="Nuts" />
+                                        </div>
+                                        <div class="bolts">
+                                            <span>${item.price.bolts}</span>
+                                            <img src="/img/bolts.png" alt="Bolts" />
                                         </div>
                                     </div>
-                                    <button ${item.disabled ? "disabled" : ""}>
-                                        ${
-                                            item.disabled
-                                                ? "Coming Soon"
-                                                : "Purchase"
-                                        }
-                                    </button>
                                 </div>
-                            `
+                                <button class="purchasebtn" data-id="${
+                                    item.id
+                                }" ${ownedIds.has(item.id) ? "disabled" : ""}>
+                                    ${ownedIds.has(item.id) ? "Owned" : "Purchase"}
+                                </button>
+                            </div>
+                        `
                                 )
                                 .join("")}
                         </div>
                     </div>`;
+
+                element.querySelectorAll(".purchasebtn").forEach((btn) => {
+                    btn.addEventListener("click", async () => {
+                        const itemId = btn.dataset.id;
+
+                        let purchase = await fetch(`/api/v1/scouting/shop/purchase/${itemId}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json;charset=UTF-8"
+                            }
+                        }).then(r => r.json());
+
+                        if (purchase.success) {
+                            await _this.updateIncentives({
+                                totals: {
+                                    nuts: purchase.body.newBalance.nuts,
+                                    bolts: purchase.body.newBalance.bolts
+                                }
+                            });
+
+                            btn.disabled = true;
+                            btn.textContent = "Owned";
+
+                            document.querySelector(".dark-mode-toggle-scouting").style.display = "flex";
+                        } else {
+                            alert(purchase.error);
+                        }
+                    });
+                });
             } catch (error) {
                 console.error("Error loading shop:", error);
                 element.innerHTML = `
@@ -6307,6 +6365,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         <p>Failed to load shop data. Please try again later.</p>
                     </div>`;
             }
+
             resolve();
         });
     };
