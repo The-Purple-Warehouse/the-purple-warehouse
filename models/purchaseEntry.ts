@@ -21,6 +21,6 @@ export default mongoose.model(
             type: Number,
             required: false,
             default: 0
-        },
+        }
     })
 );

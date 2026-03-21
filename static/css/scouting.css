@@ -413,7 +413,7 @@ select.team {
     font: inherit;
     padding: 1rem 4rem 1rem 1rem;
     background: var(--arrow-icon) no-repeat right 0.8em center / 1.4em,
-    linear-gradient(to left, var(--arrow-bg) 3em, var(--select-bg) 3em);
+        linear-gradient(to left, var(--arrow-bg) 3em, var(--select-bg) 3em);
     border-radius: 0.25em;
     box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -451,7 +451,8 @@ select.team > option {
 
 .home-window select,
 .data-window select {
-    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+) no-repeat 100% 50%;
+    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+)
+        no-repeat 100% 50%;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
@@ -922,7 +923,8 @@ header .icon-button .send-container svg {
 }
 
 .match-window .component-select > select {
-    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+) no-repeat 100% 50%;
+    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+)
+        no-repeat 100% 50%;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
@@ -1038,10 +1040,10 @@ header .icon-button .send-container svg {
 }
 
 .match-window
-.component-locations
-> .component-locations-container
-> .grid
-> div {
+    .component-locations
+    > .component-locations-container
+    > .grid
+    > div {
     position: relative;
     /* border: 1px solid var(--contentColor); */
     cursor: pointer;
@@ -1050,11 +1052,11 @@ header .icon-button .send-container svg {
 }
 
 .match-window
-.component-locations
-> .component-locations-container
-> .grid
-> div
-> .marker {
+    .component-locations
+    > .component-locations-container
+    > .grid
+    > div
+    > .marker {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -1063,19 +1065,19 @@ header .icon-button .send-container svg {
 }
 
 .match-window
-.component-locations
-> .component-locations-container
-> .grid
-> div.active {
+    .component-locations
+    > .component-locations-container
+    > .grid
+    > div.active {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 .match-window
-.component-locations
-> .component-locations-container
-> .grid[data-orientation="1"]
-> div
-> .marker {
+    .component-locations
+    > .component-locations-container
+    > .grid[data-orientation="1"]
+    > div
+    > .marker {
     transform: translate(-50%, -50%) rotate(180deg);
 }
 
@@ -1674,7 +1676,7 @@ header .icon-button .send-container svg {
     width: 90px;
     user-select: none;
     transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out,
-    color 0.2s ease-in-out;
+        color 0.2s ease-in-out;
 }
 
 @media (max-width: 515px) {
@@ -1726,20 +1728,20 @@ header .icon-button .send-container svg {
 }
 
 .data-window
-.analysis
-div:not(.prediction-bar)
-.svg-container
-> .main-svg:nth-child(1),
+    .analysis
+    div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1),
 .data-window
-.comparison
-div:not(.prediction-bar)
-.svg-container
-> .main-svg:nth-child(1),
+    .comparison
+    div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1),
 .data-window
-.prediction
-div:not(.prediction-bar)
-.svg-container
-> .main-svg:nth-child(1) {
+    .prediction
+    div:not(.prediction-bar)
+    .svg-container
+    > .main-svg:nth-child(1) {
     background: var(--backgroundColor) !important;
 }
 
@@ -1796,7 +1798,8 @@ div:not(.prediction-bar)
 .header-incentives .nuts > img,
 .header-incentives .bolts > img {
     width: 20px;
-    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg) brightness(102%) contrast(105%);
+    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg)
+        brightness(102%) contrast(105%);
     display: inline-block;
     vertical-align: middle;
 }
@@ -2051,9 +2054,9 @@ table.teams-table .ag-center-cols-viewport .ag-center-cols-container {
     }
 
     .match-window
-    .component-locations-container.small-grid-x
-    > .grid
-    > .grid-item {
+        .component-locations-container.small-grid-x
+        > .grid
+        > .grid-item {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -2269,7 +2272,8 @@ div.disabled {
 }
 
 .component-dropdown > select {
-    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+) no-repeat 100% 50%;
+    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+)
+        no-repeat 100% 50%;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
@@ -2325,7 +2329,7 @@ div.disabled {
     width: 95%;
     height: 20dvh;
     transition: background-color 0.2s ease, border-color 0.2s ease,
-    box-shadow 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
 textarea:focus {
@@ -2464,7 +2468,7 @@ aside#controls {
     display: flex;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 15px,
-    rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 aside#controls > div {
@@ -2569,16 +2573,16 @@ div.component-score-counter .score-controls .score-control div:has(svg) {
 }
 
 div.component-score-counter
-.score-controls
-.score-control
-div:has(svg):first-child {
+    .score-controls
+    .score-control
+    div:has(svg):first-child {
     justify-content: flex-end;
 }
 
 div.component-score-counter
-.score-controls
-.score-control
-div:has(svg):last-child {
+    .score-controls
+    .score-control
+    div:has(svg):last-child {
     justify-content: flex-start;
 }
 
@@ -2638,7 +2642,7 @@ div.component-score-counter > div.active:not(.disabled) {
 }
 
 div.component-score-counter:has(> div.active:not(.disabled))
-> div:not(.active) {
+    > div:not(.active) {
     width: 0% !important;
     /* flex: 0; */
     visibility: hidden;
@@ -2971,7 +2975,8 @@ div.preset {
 .shop-balance img {
     width: 24px;
     height: 24px;
-    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg) brightness(102%) contrast(105%);
+    filter: invert(91%) sepia(12%) saturate(713%) hue-rotate(201deg)
+        brightness(102%) contrast(105%);
 }
 
 .shop-grid {
@@ -3131,7 +3136,8 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .home-window select,
 [data-theme="dark"] .component-dropdown select,
 [data-theme="dark"] .data-window select {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4.95 10'%3E%3Crect fill='%232a1d35' width='4.95' height='10'/%3E%3Cpolygon fill='%23bbb' points='1.41 4.67 2.48 3.18 3.54 4.67'/%3E%3Cpolygon fill='%23bbb' points='3.54 5.33 2.48 6.82 1.41 5.33'/%3E%3C/svg%3E") no-repeat 100% 50%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4.95 10'%3E%3Crect fill='%232a1d35' width='4.95' height='10'/%3E%3Cpolygon fill='%23bbb' points='1.41 4.67 2.48 3.18 3.54 4.67'/%3E%3Cpolygon fill='%23bbb' points='3.54 5.33 2.48 6.82 1.41 5.33'/%3E%3C/svg%3E")
+        no-repeat 100% 50%;
     color: var(--contentColor);
 }
 
@@ -3154,7 +3160,7 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .match-window select,
 [data-theme="dark"] select.event-code,
 [data-theme="dark"] select.team {
-    box-shadow: 0 0 1em 0 rgba(150, 150, 150, 0.2)
+    box-shadow: 0 0 1em 0 rgba(150, 150, 150, 0.2);
 }
 
 /* Component dropdown select */
@@ -3331,8 +3337,11 @@ html[data-theme="dark"] body {
     background: #9b59b6;
 }
 
-[data-theme="dark"] .component-rating .range-slider:focus::-webkit-slider-thumb {
-    box-shadow: 0 0 0 3px var(--surface-color), 0 0 0 6px var(--primaryBackgroundColor);
+[data-theme="dark"]
+    .component-rating
+    .range-slider:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px var(--surface-color),
+        0 0 0 6px var(--primaryBackgroundColor);
 }
 
 [data-theme="dark"] ::-moz-range-track {
@@ -3366,8 +3375,7 @@ html[data-theme="dark"] body {
 
 /* Pagebar / controls */
 [data-theme="dark"] aside#controls {
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 15px,
-    rgba(0, 0, 0, 0.4) 0px 3px 6px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 15px, rgba(0, 0, 0, 0.4) 0px 3px 6px;
     background: var(--surface-color);
 }
 
@@ -3390,15 +3398,27 @@ html[data-theme="dark"] body {
 }
 
 [data-theme="dark"] .leaderboard-item:first-child {
-    background: linear-gradient(to right, rgba(255, 215, 0, 0.2), var(--surface-color));
+    background: linear-gradient(
+        to right,
+        rgba(255, 215, 0, 0.2),
+        var(--surface-color)
+    );
 }
 
 [data-theme="dark"] .leaderboard-item:nth-child(2) {
-    background: linear-gradient(to right, rgba(192, 192, 192, 0.2), var(--surface-color));
+    background: linear-gradient(
+        to right,
+        rgba(192, 192, 192, 0.2),
+        var(--surface-color)
+    );
 }
 
 [data-theme="dark"] .leaderboard-item:nth-child(3) {
-    background: linear-gradient(to right, rgba(129, 37, 37, 0.3), var(--surface-color));
+    background: linear-gradient(
+        to right,
+        rgba(129, 37, 37, 0.3),
+        var(--surface-color)
+    );
 }
 
 [data-theme="dark"] .leaderboard-item .team {
@@ -3422,7 +3442,11 @@ html[data-theme="dark"] body {
     border-color: var(--contentColor);
 }
 
-[data-theme="dark"] .match-window .component-checkbox:hover > input ~ .checkmark {
+[data-theme="dark"]
+    .match-window
+    .component-checkbox:hover
+    > input
+    ~ .checkmark {
     background-color: #555;
 }
 

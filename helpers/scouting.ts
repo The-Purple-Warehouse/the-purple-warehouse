@@ -338,13 +338,25 @@ export async function getTotalIncentives(contributingTeam, contributingUser) {
 
     let purchases = await PurchaseEntry.find({
         "contributor.team": (await getTeamByNumber(contributingTeam))._id,
-        "contributor.username": contributingUser,
+        "contributor.username": contributingUser
     })
         .select({ xp: 1, nuts: 1, bolts: 1 })
         .lean();
 
-    let nuts = Number(entries.reduce((total, current: any) => total + current.nuts, 0)) - Number(purchases.reduce((total, current: any) => total + current.nuts, 0));
-    let bolts = Number(entries.reduce((total, current: any) => total + current.bolts, 0)) - Number(purchases.reduce((total, current: any) => total + current.bolts, 0));
+    let nuts =
+        Number(
+            entries.reduce((total, current: any) => total + current.nuts, 0)
+        ) -
+        Number(
+            purchases.reduce((total, current: any) => total + current.nuts, 0)
+        );
+    let bolts =
+        Number(
+            entries.reduce((total, current: any) => total + current.bolts, 0)
+        ) -
+        Number(
+            purchases.reduce((total, current: any) => total + current.bolts, 0)
+        );
 
     return {
         xp: entries.reduce((total, current: any) => total + current.xp, 0),

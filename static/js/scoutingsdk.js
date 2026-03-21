@@ -306,7 +306,7 @@ const ScoutingAppSDK = function (element, config) {
 
         let boltsElementShop = document.querySelector(
             ".shop-balance .bolts span"
-        )
+        );
 
         let levelsElement = document.querySelector(".header-incentives .xp p");
         let progressElement = document.querySelector(
@@ -337,7 +337,7 @@ const ScoutingAppSDK = function (element, config) {
                 nutsElementShop.innerHTML =
                     parseInt(nutsElementShop.innerHTML) +
                     Math.abs(differenceNutsShop) / differenceNutsShop;
-                },
+            },
             Math.abs(differenceNuts),
             500
         );
@@ -1580,9 +1580,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 ],
                                 rowData,
                                 domLayout: "autoHeight",
-                                theme: document.documentElement.getAttribute("data-theme") === "dark"
-                                    ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
-                                    : agGrid.themeQuartz
+                                theme:
+                                    document.documentElement.getAttribute(
+                                        "data-theme"
+                                    ) === "dark"
+                                        ? agGrid.themeQuartz.withPart(
+                                              agGrid.colorSchemeDark
+                                          )
+                                        : agGrid.themeQuartz
                             });
                         };
 
@@ -1817,9 +1822,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         enableClickSelection: false
                                     },
                                     // domLayout: "autoHeight",
-                                    theme: document.documentElement.getAttribute("data-theme") === "dark"
-                                        ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
-                                        : agGrid.themeQuartz,
+                                    theme:
+                                        document.documentElement.getAttribute(
+                                            "data-theme"
+                                        ) === "dark"
+                                            ? agGrid.themeQuartz.withPart(
+                                                  agGrid.colorSchemeDark
+                                              )
+                                            : agGrid.themeQuartz,
                                     suppressCellFocus: true,
                                     onRowClicked: function (event) {
                                         const api = gridOptions.api;
@@ -2330,9 +2340,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             rowData: rowData,
                             pagination: true,
                             paginationPageSize: 20,
-                            theme: document.documentElement.getAttribute("data-theme") === "dark"
-                                ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
-                                : agGrid.themeQuartz
+                            theme:
+                                document.documentElement.getAttribute(
+                                    "data-theme"
+                                ) === "dark"
+                                    ? agGrid.themeQuartz.withPart(
+                                          agGrid.colorSchemeDark
+                                      )
+                                    : agGrid.themeQuartz
                         });
 
                         element.querySelector(".notes").innerHTML =
@@ -2438,9 +2453,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             rowData: rowData,
                             pagination: true,
                             paginationPageSize: 20,
-                            theme: document.documentElement.getAttribute("data-theme") === "dark"
-                              ? agGrid.themeQuartz.withPart(agGrid.colorSchemeDark)
-                              : agGrid.themeQuartz
+                            theme:
+                                document.documentElement.getAttribute(
+                                    "data-theme"
+                                ) === "dark"
+                                    ? agGrid.themeQuartz.withPart(
+                                          agGrid.colorSchemeDark
+                                      )
+                                    : agGrid.themeQuartz
                         });
 
                         element.querySelector(".notes").innerHTML =
@@ -6104,7 +6124,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         };
 
         function applyThemeVars() {
-            let t = document.documentElement.getAttribute("data-theme") === "dark" ? configuration.theme.dark : configuration.theme;
+            let t =
+                document.documentElement.getAttribute("data-theme") === "dark"
+                    ? configuration.theme.dark
+                    : configuration.theme;
             document.documentElement.style.setProperty(
                 "--backgroundColor",
                 t.backgroundColor
@@ -6307,7 +6330,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 const items = data.body.items;
                 const ownedIds = new Set(
                     (inventoryData.body?.inventory || []).map(
-                        (entry) => entry.itemId?._id?.toString() || entry.itemId?.toString()
+                        (entry) =>
+                            entry.itemId?._id?.toString() ||
+                            entry.itemId?.toString()
                     )
                 );
 
@@ -6355,7 +6380,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 <button class="purchasebtn" data-id="${
                                     item.id
                                 }" ${ownedIds.has(item.id) ? "disabled" : ""}>
-                                    ${ownedIds.has(item.id) ? "Owned" : "Purchase"}
+                                    ${
+                                        ownedIds.has(item.id)
+                                            ? "Owned"
+                                            : "Purchase"
+                                    }
                                 </button>
                             </div>
                         `
@@ -6368,12 +6397,16 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     btn.addEventListener("click", async () => {
                         const itemId = btn.dataset.id;
 
-                        let purchase = await fetch(`/api/v1/scouting/shop/purchase/${itemId}`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json;charset=UTF-8"
+                        let purchase = await fetch(
+                            `/api/v1/scouting/shop/purchase/${itemId}`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json;charset=UTF-8"
+                                }
                             }
-                        }).then(r => r.json());
+                        ).then((r) => r.json());
 
                         if (purchase.success) {
                             await _this.updateIncentives({
@@ -6386,7 +6419,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             btn.disabled = true;
                             btn.textContent = "Owned";
 
-                            document.querySelector(".dark-mode-toggle-scouting").style.display = "flex";
+                            document.querySelector(
+                                ".dark-mode-toggle-scouting"
+                            ).style.display = "flex";
                         } else {
                             alert(purchase.error);
                         }
