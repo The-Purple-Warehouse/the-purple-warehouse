@@ -6586,4 +6586,173 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             resolve();
         });
     };
+
+    _this.showBazaarPage = async () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!document.getElementById("trading-css")) {
+                    const link = document.createElement("link");
+                    link.id = "trading-css";
+                    link.rel = "stylesheet";
+                    link.href = "/css/trading.css";
+                    document.head.appendChild(link);
+                }
+
+                if (!window.initBazaar) {
+                    await new Promise((res, rej) => {
+                        const script = document.createElement("script");
+                        script.src = "/js/trading.js";
+                        script.onload = res;
+                        script.onerror = rej;
+                        document.head.appendChild(script);
+                    });
+                }
+
+                const data = await fetch(
+                    "/api/v1/trading/team/" +
+                        encodeURIComponent(config.account.team)
+                ).then((res) => res.json());
+                const teamName =
+                    data.success && data.body
+                        ? data.body.teamName
+                        : "Team " + config.account.team;
+
+                element.innerHTML = `
+                    <div class="trading-main" style="padding: 0 16px;">
+                        <section class="trading-section" id="about">
+                            <div class="trading-title-block">
+                                <h1>Purple Bazaar</h1>
+                                <h3>share parts, build together</h3>
+                            </div>
+                            <p class="trading-intro-text">
+                                Help other teams &mdash; or your own! &mdash; succeed at the competitions by sharing resources in the
+                                spirit of <strong style="color: var(--primaryBackgroundColor)">coopertition</strong>.
+                            </p>
+                            <p class="trading-intro-text">
+                                Purple Bazaar allows teams to volunteer or request resources from others.
+                            </p>
+                            <div class="trading-stats-row">
+                                <div class="trading-stat-box">
+                                    <span class="trading-stat-num" id="stat-offers">0</span>
+                                    <span class="trading-stat-label">Offers</span>
+                                </div>
+                                <div class="trading-stat-box">
+                                    <span class="trading-stat-num" id="stat-requests">0</span>
+                                    <span class="trading-stat-label">Requests</span>
+                                </div>
+                                <div class="trading-stat-box">
+                                    <span class="trading-stat-num" id="stat-teams">0</span>
+                                    <span class="trading-stat-label">Teams</span>
+                                </div>
+                                <div class="trading-stat-box">
+                                    <span class="trading-stat-num" id="stat-matched">0</span>
+                                    <span class="trading-stat-label">Matched</span>
+                                </div>
+                            </div>
+                            <button class="trading-btn-primary" onclick="goToForm('toffer')">Offer Resources</button>
+                            <button class="trading-btn-outline" onclick="goToForm('trequest')">Request Parts</button>
+                        </section>
+
+                        <section class="trading-section" id="browse">
+                            <h2>Browse Listings</h2>
+                            <div class="trading-filter-bar">
+                                <div class="trading-filter-tabs">
+                                    <button class="trading-tab active" data-filter="all">All</button>
+                                    <button class="trading-tab" data-filter="offer">Offers</button>
+                                    <button class="trading-tab" data-filter="request">Requests</button>
+                                </div>
+                                <div class="trading-search-wrapper">
+                                    <input type="text" id="trading-search" class="trading-search" placeholder="Search parts, tools, supplies...">
+                                </div>
+                                <select id="trading-category" class="trading-select">
+                                    <option value="all">All Categories</option>
+                                </select>
+                                <select id="trading-event-filter" class="trading-select">
+                                    <option value="all">All Events</option>
+                                </select>
+                            </div>
+                            <div class="trading-listings" id="trading-listings"></div>
+                            <div class="trading-empty-state" id="trading-empty" style="display: none;">
+                                <p>No listings found matching your criteria.</p>
+                                <button class="trading-btn-primary" onclick="document.getElementById('post').scrollIntoView({behavior:'smooth'})">Post One</button>
+                            </div>
+                        </section>
+
+                        <section class="trading-section" id="post">
+                            <h2>Post a Listing</h2>
+                            <p>Whether you have spare parts to share or need something to compete, fill out the form to connect with other teams.</p>
+                            <form id="trading-form" class="trading-form">
+                                <div class="trading-form-group">
+                                    <label class="trading-form-label">Listing Type</label>
+                                    <div class="trading-type-toggle">
+                                        <button type="button" id="toffer" class="trading-type-btn active" data-type="offer">Offer</button>
+                                        <button type="button" id="trequest" class="trading-type-btn" data-type="request">Request</button>
+                                    </div>
+                                </div>
+                                <div class="trading-team-fields">
+                                    <div class="trading-team-field">
+                                        <label class="trading-form-label">Team Number</label>
+                                        <input id="form-team" type="text" readonly />
+                                    </div>
+                                    <div class="trading-team-field">
+                                        <label class="trading-form-label">Team Name</label>
+                                        <input id="form-team-name" type="text" readonly />
+                                    </div>
+                                </div>
+                                <div class="trading-input-group">
+                                    <input id="form-item" autocomplete="off" type="text" required="required" />
+                                    <span class="trading-bar"></span>
+                                    <label for="form-item">Item / Resource</label>
+                                </div>
+                                <div class="trading-form-group">
+                                    <label class="trading-form-label" for="form-category">Category</label>
+                                    <select id="form-category" class="trading-select"></select>
+                                </div>
+                                <div class="trading-input-group">
+                                    <input id="form-quantity" autocomplete="off" type="number" min="1" value="1" />
+                                    <span class="trading-bar"></span>
+                                    <label for="form-quantity">Quantity</label>
+                                </div>
+                                <div class="trading-form-group">
+                                    <label class="trading-form-label" for="form-description">Description / Notes</label>
+                                    <textarea id="form-description" class="trading-textarea" rows="3" placeholder="Condition, availability, pit location..."></textarea>
+                                </div>
+                                <div class="trading-input-group">
+                                    <input id="form-contact" autocomplete="off" type="text" required="required" />
+                                    <span class="trading-bar"></span>
+                                    <label for="form-contact">Contact (email, phone, Discord)</label>
+                                </div>
+                                <div class="trading-form-group">
+                                    <label class="trading-form-label" for="form-event">Event</label>
+                                    <select id="form-event" class="trading-select">
+                                        <option value="general">General / Any Event</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="trading-btn-primary trading-submit">Submit Listing</button>
+                            </form>
+                        </section>
+
+                        <footer class="trading-footer">
+                            <p>The Purple Bazaar is a service provided by <a href="/">The Purple Warehouse</a></p>
+                        </footer>
+                    </div>`;
+
+                window.initBazaar({
+                    team: {
+                        team: parseInt(config.account.team),
+                        teamName: teamName
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading bazaar:", error);
+                element.innerHTML = `
+                    <div class="trading-main" style="padding: 20px;">
+                        <h2>Error Loading Bazaar</h2>
+                        <p>Failed to load bazaar. Please try again later.</p>
+                    </div>`;
+            }
+
+            resolve();
+        });
+    };
 };
