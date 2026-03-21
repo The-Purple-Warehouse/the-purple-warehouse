@@ -42,7 +42,8 @@ import Team from "../../models/team";
 import {
     getShopItems,
     purchaseShopItem,
-    getUserInventory
+    getUserInventory,
+    addShopItem
 } from "../../helpers/shop";
 import { processAdmin } from "../../helpers/adminHelpers";
 
@@ -731,6 +732,33 @@ router.get("/shop/inventory", requireScoutingAuth, async (ctx, next) => {
             error: "Failed to fetch inventory"
         };
     }
+});
+
+router.post("/shop/item/add", requireScoutingAuth, async (ctx, next) => {
+    let body = ctx.request.body as any;
+    if (config.auth.adminTokens[body.adminToken] != null) {
+        ctx.body = {
+            success: true,
+            body: {
+                item: (
+                    await addShopItem(
+                        body.name,
+                        body.description,
+                        body.image,
+                        Number(body.priceBolts),
+                        Number(body.priceNuts),
+                        body.type
+                    )
+                ).item
+            }
+        };
+    } else {
+        ctx.body = {
+            success: false,
+            error: "Invalid admin token!"
+        };
+    }
+    addAPIHeaders(ctx);
 });
 
 export default router;
