@@ -6739,7 +6739,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                 window.initBazaar({
                     team: {
-                        team: parseInt(teamNumber),
+                        team: parseInt(config.account.team),
                         teamName: teamName
                     }
                 });
