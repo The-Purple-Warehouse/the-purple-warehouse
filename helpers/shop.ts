@@ -137,8 +137,8 @@ export async function addShopItem(
     name: string,
     description: string,
     image: string,
-    priceBolts: number,
     priceNuts: number,
+    priceBolts: number,
     type: string
 ): Promise<{ success: boolean; error?: string; item?: ShopItem }> {
     try {

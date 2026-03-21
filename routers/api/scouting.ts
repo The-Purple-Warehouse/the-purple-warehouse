@@ -735,30 +735,28 @@ router.get("/shop/inventory", requireScoutingAuth, async (ctx, next) => {
 });
 
 router.post("/shop/item/add", requireScoutingAuth, async (ctx, next) => {
-    let body = ctx.request.body as any;
-    if (config.auth.adminTokens[body.adminToken] != null) {
-        ctx.body = {
-            success: true,
-            body: {
-                item: (
-                    await addShopItem(
-                        body.name,
-                        body.description,
-                        body.image,
-                        Number(body.priceBolts),
-                        Number(body.priceNuts),
-                        body.type
-                    )
-                ).item
-            }
-        };
-    } else {
-        ctx.body = {
-            success: false,
-            error: "Invalid admin token!"
-        };
-    }
-    addAPIHeaders(ctx);
+  let body = ctx.request.body as any;
+  if (config.auth.adminTokens[body.adminToken] != null) {
+    ctx.body = {
+      success: true,
+      body: {
+        item: (await addShopItem(
+          body.name,
+          body.description,
+          body.image,
+          Number(body.priceNuts),
+          Number(body.priceBolts),
+          body.type
+        )).item
+      }
+    };
+  } else {
+    ctx.body = {
+      success: false,
+      error: "Invalid admin token!"
+    };
+  }
+  addAPIHeaders(ctx);
 });
 
 export default router;

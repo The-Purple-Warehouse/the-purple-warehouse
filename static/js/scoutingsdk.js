@@ -3351,8 +3351,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         name,
         description,
         image,
-        priceBolts,
         priceNuts,
+        priceBolts,
         type,
         adminToken
     ) => {
@@ -3368,8 +3368,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             name,
                             description,
                             image,
-                            priceBolts,
                             priceNuts,
+                            priceBolts,
                             type,
                             adminToken
                         })
