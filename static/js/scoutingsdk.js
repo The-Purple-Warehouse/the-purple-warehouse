@@ -6609,7 +6609,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 }
 
                 const data = await fetch(
-                    "/api/v1/trading/team/" + encodeURIComponent(config.account.team)
+                    "/api/v1/trading/team/" +
+                        encodeURIComponent(config.account.team)
                 ).then((res) => res.json());
                 const teamName =
                     data.success && data.body

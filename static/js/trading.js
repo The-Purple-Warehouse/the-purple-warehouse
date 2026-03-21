@@ -308,63 +308,85 @@ window.initBazaar = function (opts) {
     });
 
     if (document.getElementById("trading-search")) {
-        document.getElementById("trading-search").addEventListener("input", function () {
-            currentSearch = document.getElementById("trading-search").value.trim();
-            renderListings();
-        });
+        document
+            .getElementById("trading-search")
+            .addEventListener("input", function () {
+                currentSearch = document
+                    .getElementById("trading-search")
+                    .value.trim();
+                renderListings();
+            });
     }
 
     if (document.getElementById("trading-category")) {
-        document.getElementById("trading-category").addEventListener("change", function () {
-            currentCategory = document.getElementById("trading-category").value;
-            renderListings();
-        });
+        document
+            .getElementById("trading-category")
+            .addEventListener("change", function () {
+                currentCategory =
+                    document.getElementById("trading-category").value;
+                renderListings();
+            });
     }
 
     if (document.getElementById("trading-event-filter")) {
-        document.getElementById("trading-event-filter").addEventListener("change", function () {
-            currentEvent = document.getElementById("trading-event-filter").value;
-            renderListings();
-        });
+        document
+            .getElementById("trading-event-filter")
+            .addEventListener("change", function () {
+                currentEvent = document.getElementById(
+                    "trading-event-filter"
+                ).value;
+                renderListings();
+            });
     }
 
     document.querySelectorAll(".trading-type-btn").forEach(function (btn) {
         btn.addEventListener("click", function () {
-            document.querySelectorAll(".trading-type-btn").forEach(function (b) {
-                b.classList.remove("active");
-            });
+            document
+                .querySelectorAll(".trading-type-btn")
+                .forEach(function (b) {
+                    b.classList.remove("active");
+                });
             btn.classList.add("active");
             selectedType = btn.getAttribute("data-type");
         });
     });
 
     if (document.getElementById("trading-form")) {
-        document.getElementById("trading-form").addEventListener("submit", function (e) {
-            e.preventDefault();
+        document
+            .getElementById("trading-form")
+            .addEventListener("submit", function (e) {
+                e.preventDefault();
 
-            if (!savedTeam) {
-                return;
-            }
+                if (!savedTeam) {
+                    return;
+                }
 
-            if (!document.getElementById("form-item").value.trim()
-              || !document.getElementById("form-contact").value.trim()) {
-                return;
-            }
+                if (
+                    !document.getElementById("form-item").value.trim() ||
+                    !document.getElementById("form-contact").value.trim()
+                ) {
+                    return;
+                }
 
-            submitListing({
-                type: selectedType,
-                team: savedTeam.team,
-                teamName: savedTeam.teamName,
-                item: document.getElementById("form-item").value.trim(),
-                category: document.getElementById("form-category").value,
-                quantity: parseInt(document.getElementById("form-quantity").value) || 1,
-                description: document
-                  .getElementById("form-description")
-                  .value.trim(),
-                contact: document.getElementById("form-contact").value.trim(),
-                event: document.getElementById("form-event").value
+                submitListing({
+                    type: selectedType,
+                    team: savedTeam.team,
+                    teamName: savedTeam.teamName,
+                    item: document.getElementById("form-item").value.trim(),
+                    category: document.getElementById("form-category").value,
+                    quantity:
+                        parseInt(
+                            document.getElementById("form-quantity").value
+                        ) || 1,
+                    description: document
+                        .getElementById("form-description")
+                        .value.trim(),
+                    contact: document
+                        .getElementById("form-contact")
+                        .value.trim(),
+                    event: document.getElementById("form-event").value
+                });
             });
-        });
     }
 
     function fetchEvents() {
@@ -394,7 +416,9 @@ window.initBazaar = function (opts) {
                 let option = document.createElement("option");
                 option.value = evt.key;
                 option.textContent = evt.name;
-                document.getElementById("trading-event-filter").appendChild(option);
+                document
+                    .getElementById("trading-event-filter")
+                    .appendChild(option);
             });
         }
         if (document.getElementById("form-event")) {
