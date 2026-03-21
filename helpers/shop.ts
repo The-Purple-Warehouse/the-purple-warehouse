@@ -142,7 +142,7 @@ export async function addShopItem(
     type: string
 ): Promise<{ success: boolean; error?: string; item?: ShopItem }> {
     try {
-        const item = await ShopItem.create({
+        const item = (await ShopItem.create({
             name,
             description,
             image,
@@ -152,7 +152,7 @@ export async function addShopItem(
             },
             type,
             enabled: true
-        }) as any;
+        })) as any;
         return {
             success: true,
             item: {
