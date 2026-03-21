@@ -133,6 +133,46 @@ export async function purchaseShopItem(
     }
 }
 
+export async function addShopItem(
+    name: string,
+    description: string,
+    image: string,
+    priceBolts: number,
+    priceNuts: number,
+    type: string
+): Promise<{ success: boolean; error?: string; item?: ShopItem }> {
+    try {
+        const item = await ShopItem.create({
+            name,
+            description,
+            image,
+            price: {
+                bolts: priceBolts,
+                nuts: priceNuts
+            },
+            type,
+            enabled: true
+        }) as any;
+        return {
+            success: true,
+            item: {
+                id: item._id.toString(),
+                name: item.name,
+                description: item.description,
+                image: item.image,
+                price: item.price,
+                type: item.type,
+                enabled: item.enabled
+            }
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
 export async function getUserInventory(
     teamNumber: string,
     username: string

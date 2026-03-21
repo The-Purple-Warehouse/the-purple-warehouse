@@ -2932,6 +2932,23 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                     <p class="warning">Make sure to double check all information before adding/updating a team.</p>
                     <button class="add">Add/Update Team</button>
                     <p class="message warning"></p>
+                    <hr style="margin: 24px 0;" />
+                    <h2>Add Shop Item:</h2>
+                    <h2>Item Name:</h2>
+                    <input class="item-name" type="text" />
+                    <h2>Description:</h2>
+                    <input class="item-description" type="text" />
+                    <h2>Image (Emoji):</h2>
+                    <input class="item-image" type="text" />
+                    <h2>Price (Nuts):</h2>
+                    <input class="item-price-nuts" type="number" min="0" />
+                    <h2>Price (Bolts):</h2>
+                    <input class="item-price-bolts" type="number" min="0" />
+                    <h2>Type:</h2>
+                    <input class="item-type" type="text" />
+                    <p class="warning">Make sure to double check all information before adding a shop item.</p>
+                    <button class="add-item">Add Shop Item</button>
+                    <p class="item-message warning"></p>
                 </div>
                 <div class="data-window">
                     <table class="data-table" style="display: none;">
@@ -3113,6 +3130,97 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         }
                     }
                 };
+
+            element.querySelector(".home-window > button.add-item").onclick =
+                async () => {
+                    let itemName = element.querySelector(
+                        ".home-window > input.item-name"
+                    ).value;
+                    let itemDescription = element.querySelector(
+                        ".home-window > input.item-description"
+                    ).value;
+                    let itemImage = element.querySelector(
+                        ".home-window > input.item-image"
+                    ).value;
+                    let itemPriceNuts = element.querySelector(
+                        ".home-window > input.item-price-nuts"
+                    ).value;
+                    let itemPriceBolts = element.querySelector(
+                        ".home-window > input.item-price-bolts"
+                    ).value;
+                    let itemType = element.querySelector(
+                        ".home-window > input.item-type"
+                    ).value;
+                    let adminToken = element.querySelector(
+                        ".home-window > input.admin-token"
+                    ).value;
+                    if (
+                        itemName != null &&
+                        itemName != "" &&
+                        itemDescription != null &&
+                        itemDescription != "" &&
+                        itemImage != null &&
+                        itemImage != "" &&
+                        itemPriceNuts != null &&
+                        itemPriceNuts != "" &&
+                        itemPriceBolts != null &&
+                        itemPriceBolts != "" &&
+                        itemType != null &&
+                        itemType != "" &&
+                        adminToken != null &&
+                        adminToken != ""
+                    ) {
+                        let result = await _this.addShopItem(
+                            itemName,
+                            itemDescription,
+                            itemImage,
+                            Number(itemPriceNuts),
+                            Number(itemPriceBolts),
+                            itemType,
+                            adminToken
+                        );
+                        if (result.success) {
+                            element
+                                .querySelector(".home-window > .item-message")
+                                .classList.remove("red");
+                            element
+                                .querySelector(".home-window > .item-message")
+                                .classList.add("green");
+                            element.querySelector(
+                                ".home-window > input.item-name"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.item-description"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.item-image"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.item-price-nuts"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.item-price-bolts"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > input.item-type"
+                            ).value = "";
+                            element.querySelector(
+                                ".home-window > .item-message"
+                            ).innerHTML = `Shop item "${itemName}" added successfully!`;
+                        } else {
+                            element
+                                .querySelector(".home-window > .item-message")
+                                .classList.remove("green");
+                            element
+                                .querySelector(".home-window > .item-message")
+                                .classList.add("red");
+                            element.querySelector(
+                                ".home-window > .item-message"
+                            ).innerHTML = result.error;
+                        }
+                    }
+                };
+
             resolve();
         });
     };
@@ -3234,6 +3342,45 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                 console.error(err);
                 resolve({
                     success: false
+                });
+            }
+        });
+    };
+
+    _this.addShopItem = (
+        name,
+        description,
+        image,
+        priceBolts,
+        priceNuts,
+        type,
+        adminToken
+    ) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let result = await (
+                    await fetch(`/api/v1/scouting/shop/item/add`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json;charset=UTF-8"
+                        },
+                        body: JSON.stringify({
+                            name,
+                            description,
+                            image,
+                            priceBolts,
+                            priceNuts,
+                            type,
+                            adminToken
+                        })
+                    })
+                ).json();
+                resolve(result);
+            } catch (err) {
+                console.error(err);
+                resolve({
+                    success: false,
+                    error: "An error occurred while adding the shop item."
                 });
             }
         });
