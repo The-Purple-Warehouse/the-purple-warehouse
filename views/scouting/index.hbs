@@ -58,7 +58,6 @@
             const inv = await fetch("/api/v1/scouting/shop/inventory");
             const invdata = await inv.json();
             const inventory = invdata.body?.inventory || [];
-            console.log(inventory);
             const ownsDarkMode = inventory.some(entry => (entry.itemId?._id));
             if (ownsDarkMode) {
                 document.querySelector(".dark-mode-toggle-scouting").style.display = "flex";
@@ -94,6 +93,9 @@
           } else if(page == "shop") {
             document.querySelector(".navbar a[data-page='shop']").classList.add("active");
             await sdk.showShopPage();
+          } else if(page == "bazaar") {
+            document.querySelector(".navbar a[data-page='bazaar']").classList.add("active");
+            await sdk.showBazaarPage();
           } else {
             document.querySelector(".navbar a[data-page='home']").classList.add("active");
             await sdk.showHomePage();

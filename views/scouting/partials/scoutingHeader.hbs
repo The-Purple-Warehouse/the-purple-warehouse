@@ -12,6 +12,7 @@
     <a data-page="predict" href="#/predict">Predict</a>
     <a data-page="leaderboard" href="#/leaderboard">Leaderboard</a>
     <a data-page="shop" href="#/shop">Shop</a>
+<!--    <a data-page="bazaar" href="#/bazaar">Bazaar</a>-->
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
     <hr style="border-color: rgba(255,255,255,0.15); margin: 0.5em 0;">
     <button class="dark-mode-toggle-scouting" id="dark-mode-toggle">
@@ -230,6 +231,11 @@
           }
           window.location.hash = "#/shop";
         };
+    // document.querySelector(".navbar a[data-page='bazaar']").onclick =
+    //     async (e) => {
+    //       e.preventDefault();
+    //       window.location.hash = "#/bazaar";
+    //     };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
         async (e) => {
           e.preventDefault();
