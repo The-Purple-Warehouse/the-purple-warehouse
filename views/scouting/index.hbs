@@ -2,12 +2,22 @@
 <html lang="en-US">
   <head>
     {{> head}}
-    <link href="/css/scouting.css?v=30" rel="stylesheet">
+    <script>
+        (function () {
+            var stored = localStorage.getItem("theme");
+            if (stored === "dark") {
+                document.documentElement.setAttribute("data-theme", "dark");
+            } else if (stored === "light") {
+                document.documentElement.removeAttribute("data-theme");
+            }
+        })();
+    </script>
+    <link href="/css/scouting.css?v=32" rel="stylesheet">
     <script src="/js/easy.qrcode.min.js"></script>
-    <script src="js/html5-qrcode.min.js"></script>
+    <script src="/js/html5-qrcode.min.js"></script>
     <script src="/js/sha256.min.js"></script>
     <script src="/js/papaparse.min.js"></script>
-    <script src="/js/scoutingsdk.js?v=38"></script>
+    <script src="/js/scoutingsdk.js?v=39"></script>
     <script src="/js/js-confetti.browser.js"></script>
     <script src="/js/npm.chart.js"></script>
     <script src="/js/chartjs-chart-boxplot.js"></script>
@@ -43,6 +53,17 @@
         },
         year: {{ year }}
       });
+
+        (async () => {
+            const inv = await fetch("/api/v1/scouting/shop/inventory");
+            const invdata = await inv.json();
+            const inventory = invdata.body?.inventory || [];
+            console.log(inventory);
+            const ownsDarkMode = inventory.some(entry => (entry.itemId?._id));
+            if (ownsDarkMode) {
+                document.querySelector(".dark-mode-toggle-scouting").style.display = "flex";
+            }
+        })();
 
       async function updatePage() {
 
