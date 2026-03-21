@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import ShopItem from "../models/shopItem";
 import UserInventory from "../models/userInventory";
 import { getTotalIncentives } from "./scouting";
+import PurchaseEntry from "../models/purchaseEntry";
+import { getTeamByNumber } from "./teams";
 
 export interface ShopItem {
     id: string;
@@ -53,9 +55,6 @@ export async function purchaseShopItem(
     item?: ShopItem;
     newBalance?: { nuts: number; bolts: number };
 }> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
         const item = await ShopItem.findById(itemId);
         if (!item || !item.enabled) {
@@ -73,6 +72,15 @@ export async function purchaseShopItem(
             throw new Error("Insufficient funds");
         }
 
+        const existingInventory = await UserInventory.findOne({
+            "user.team": teamNumber,
+            "user.username": username,
+            "items.itemId": item._id
+        });
+        if (existingInventory) {
+            throw new Error("You already own this item");
+        }
+
         await UserInventory.findOneAndUpdate(
             {
                 "user.team": teamNumber,
@@ -86,12 +94,15 @@ export async function purchaseShopItem(
                     }
                 }
             },
-            { upsert: true, session }
+            { upsert: true }
         );
 
-        // await deductCurrency(teamNumber, username, item.price);
-
-        await session.commitTransaction();
+        await PurchaseEntry.create({
+            "contributor.team": (await getTeamByNumber(teamNumber))._id,
+            "contributor.username": username,
+            nuts: item.price.nuts,
+            bolts: item.price.bolts
+        });
 
         const newBalance = (await getTotalIncentives(
             teamNumber,
@@ -115,13 +126,10 @@ export async function purchaseShopItem(
             }
         };
     } catch (error) {
-        await session.abortTransaction();
         return {
             success: false,
             error: error.message
         };
-    } finally {
-        session.endSession();
     }
 }
 
