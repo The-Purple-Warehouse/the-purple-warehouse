@@ -745,8 +745,8 @@ router.post("/shop/item/add", requireScoutingAuth, async (ctx, next) => {
                         body.name,
                         body.description,
                         body.image,
-                        Number(body.priceBolts),
                         Number(body.priceNuts),
+                        Number(body.priceBolts),
                         body.type
                     )
                 ).item
