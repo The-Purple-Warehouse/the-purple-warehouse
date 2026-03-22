@@ -4895,8 +4895,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 if (opt.max !== undefined && cur >= opt.max) {
                                     return;
                                 }
-                                console.log(opt);
-                                // console.log(locations);
                                 values.push(opt.value);
                                 locations.push(location);
                                 dcounter++;
@@ -4913,7 +4911,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 return;
                             }
                             values.push(opt.value);
-                            console.log(opt);
                             locations.push(location);
                             dcounter++;
                             ecount.innerText = cur + 1;
