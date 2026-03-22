@@ -4876,6 +4876,36 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             }
                         };
 
+                        document.addEventListener("keydown", async (e) => {
+                            if (e.code === "Space") {
+                                if (
+                                    row
+                                        .closest(".preset")
+                                        ?.classList.contains("none")
+                                ) {
+                                    return;
+                                }
+
+                                if (opt.value !== "fsa") {
+                                    return;
+                                }
+
+                                e.stopPropagation();
+                                let cur = parseInt(ecount.innerText) || 0;
+                                if (opt.max !== undefined && cur >= opt.max) {
+                                    return;
+                                }
+                                console.log(opt);
+                                // console.log(locations);
+                                values.push(opt.value);
+                                locations.push(location);
+                                dcounter++;
+                                ecount.innerText = cur + 1;
+                                tally();
+                                await hub();
+                            }
+                        });
+
                         plus.addEventListener("click", async (e) => {
                             e.stopPropagation();
                             let cur = parseInt(ecount.innerText) || 0;
@@ -4883,6 +4913,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 return;
                             }
                             values.push(opt.value);
+                            console.log(opt);
                             locations.push(location);
                             dcounter++;
                             ecount.innerText = cur + 1;
