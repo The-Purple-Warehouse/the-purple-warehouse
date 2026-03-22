@@ -4876,14 +4876,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             }
                         };
 
-                        document.addEventListener('keydown', async (e) => {
-                            if (e.code === 'Space') {
-
-                                if (row.closest('.preset')?.classList.contains('none')) {
+                        document.addEventListener("keydown", async (e) => {
+                            if (e.code === "Space") {
+                                if (
+                                    row
+                                        .closest(".preset")
+                                        ?.classList.contains("none")
+                                ) {
                                     return;
                                 }
 
-                                if (opt.value !== 'fsa') {
+                                if (opt.value !== "fsa") {
                                     return;
                                 }
 
@@ -4901,7 +4904,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 tally();
                                 await hub();
                             }
-                        })
+                        });
 
                         plus.addEventListener("click", async (e) => {
                             e.stopPropagation();
