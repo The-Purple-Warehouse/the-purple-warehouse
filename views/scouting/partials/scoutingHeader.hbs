@@ -122,8 +122,8 @@
     document.querySelector(".navbar a[data-page='home']").onclick =
         async (e) => {
           e.preventDefault();
-          if(!["#/scan-data", "#/teams", "#/view-data", "#/analysis", "#/predict", "#/leaderboard", "#/shop", "#/admin"].includes(window.location.hash)) {
-              try {
+          if(!["#/scan-data", "#/teams", "#/view-data", "#/analysis", "#/predict", "#/leaderboard", "#/shop", "#/admin", "#/bazaar"].includes(window.location.hash)) {
+            try {
                   updatePage();
               } catch(err) {
 
@@ -234,6 +234,11 @@
     document.querySelector(".navbar a[data-page='bazaar']").onclick =
         async (e) => {
           e.preventDefault();
+          if(window.location.hash == "#/bazaar") {
+            try {
+              updatePage();
+            } catch(err) {}
+          }
           window.location.hash = "#/bazaar";
         };
     document.querySelector(".navbar a[data-page='log-out']").onclick =
