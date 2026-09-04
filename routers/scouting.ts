@@ -212,12 +212,13 @@ router.post("/login", bodyParser(), async (ctx) => {
                 }
             };
         } else if (!(await teamExistsByNumber(body.teamNumber))) {
+            const link = "https://discord.com/invite/gT9ZZDqTyx";
             ctx.body = {
                 success: false,
                 error: {
                     code: 0,
                     message:
-                        "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                        `Your team is not registered to use the scouting app. Please join our <a href = ${link} target="_blank">discord</a> or contact harker1072@students.harker.org to register your team.`
                 }
             };
         } else {
