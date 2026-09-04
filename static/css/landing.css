@@ -32,7 +32,6 @@
 17. Responsive CSS
 -------------------------------------------------------------------*/
 
-
 /* ===================================
     1. 3rd Part CSS Libraries
 ====================================== */
@@ -43,7 +42,7 @@
 @import url("/css/owl.carousel.min.css");
 @import url("/css/owl.theme.default.min.css");
 @import url("/css/common.css");
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Manrope:wght@200..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Manrope:wght@200..800&display=swap");
 :root {
     --purple: #be47ea;
 }
@@ -565,7 +564,7 @@ body .social a:hover {
     width: 73%;
 }
 
-.three_fifths{
+.three_fifths {
     width: 53%;
 }
 
@@ -866,7 +865,11 @@ a.button-dot:hover:before {
 ====================================== */
 
 #home {
-    background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%),
+    background: radial-gradient(
+            circle,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.4) 100%
+        ),
         url(/img/landing/quote_image_01.jpg);
     background-position: center center;
     background-size: cover;
@@ -2221,7 +2224,7 @@ footer .footer-social-divider:before {
         width: calc(318% / 4);
     }
 
-    .three_fifths{
+    .three_fifths {
         width: 50%;
     }
 

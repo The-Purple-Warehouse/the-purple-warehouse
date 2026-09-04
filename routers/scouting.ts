@@ -217,8 +217,7 @@ router.post("/login", bodyParser(), async (ctx) => {
                 success: false,
                 error: {
                     code: 0,
-                    message:
-                        `Your team is not registered to use the scouting app. Please join our <a href = ${link} target="_blank">discord</a> or contact harker1072@students.harker.org to register your team.`
+                    message: `Your team is not registered to use the scouting app. Please join our <a href = ${link} target="_blank">discord</a> or contact harker1072@students.harker.org to register your team.`
                 }
             };
         } else {
