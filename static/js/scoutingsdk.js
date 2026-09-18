@@ -5,7 +5,7 @@ const ScoutingAppSDK = function (element, config) {
     element.innerHTML = ``;
 
     const importantQuotes = [
-        "What is Red? How can you prove the Red you see is the Red others see? Its just labels",
+        "What is Red? How can you prove the Red you see is the Red others see? It's just labels",
         "The Brain to notes synapse is much faster than limited app tracking.",
         "Try doing that sheet over and over , not faster than paper, pen highlighters",
         "Whatever… not trying to counter that as its non- stuff",
@@ -93,7 +93,7 @@ const ScoutingAppSDK = function (element, config) {
 
     const MAX_QR_LENGTH = 128;
 
-    function checkNull(object1, object2) {
+    function checkNull(object1, object2) { 
         return object1 !== null && object1 !== undefined ? object1 : object2;
     }
 
