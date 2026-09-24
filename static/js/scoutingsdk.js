@@ -93,7 +93,7 @@ const ScoutingAppSDK = function (element, config) {
 
     const MAX_QR_LENGTH = 128;
 
-    function checkNull(object1, object2) { 
+    function checkNull(object1, object2) {
         return object1 !== null && object1 !== undefined ? object1 : object2;
     }
 
@@ -4875,6 +4875,34 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 );
                             }
                         };
+
+                        document.addEventListener("keydown", async (e) => {
+                            if (e.code === "Space") {
+                                if (
+                                    row
+                                        .closest(".preset")
+                                        ?.classList.contains("none")
+                                ) {
+                                    return;
+                                }
+
+                                if (opt.value !== "fsa") {
+                                    return;
+                                }
+
+                                e.stopPropagation();
+                                let cur = parseInt(ecount.innerText) || 0;
+                                if (opt.max !== undefined && cur >= opt.max) {
+                                    return;
+                                }
+                                values.push(opt.value);
+                                locations.push(location);
+                                dcounter++;
+                                ecount.innerText = cur + 1;
+                                tally();
+                                await hub();
+                            }
+                        });
 
                         plus.addEventListener("click", async (e) => {
                             e.stopPropagation();
