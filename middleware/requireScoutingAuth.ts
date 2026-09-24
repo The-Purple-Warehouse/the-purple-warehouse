@@ -11,7 +11,7 @@ export default async (ctx: Koa.Context, next: Koa.Next) => {
                 error: {
                     code: 0,
                     message:
-                        "Your team is not registered to use the scouting app. Please contact kabir@ramzan.me to register your team."
+                        "Your team is not registered to use the scouting app. Please contact harker1072@students.harker.org to register your team."
                 }
             };
         } else {
