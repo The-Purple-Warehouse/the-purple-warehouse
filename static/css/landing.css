@@ -42,7 +42,7 @@
 @import url("/css/owl.carousel.min.css");
 @import url("/css/owl.theme.default.min.css");
 @import url("/css/common.css");
-
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Manrope:wght@200..800&display=swap");
 :root {
     --purple: #be47ea;
 }
@@ -52,7 +52,7 @@
 ====================================== */
 
 body {
-    font-family: "Rubik", sans-serif;
+    font-family: "Manrope", sans-serif;
     font-size: 18px;
     line-height: 35px;
     font-weight: 400;
@@ -519,11 +519,18 @@ body .social a:hover {
 .one_third,
 .two_third,
 .three_fourth,
-.one_fourth {
-    margin-right: 8%;
+.one_fourth,
+.three_fifths {
+    margin-right: 4%;
     float: left;
     position: relative;
     margin-bottom: 30px;
+}
+
+.stepTwoWrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    height: auto;
 }
 
 .last {
@@ -555,6 +562,10 @@ body .social a:hover {
 
 .three_fourth {
     width: 73%;
+}
+
+.three_fifths {
+    width: 53%;
 }
 
 .one_half.margin-0 {
@@ -854,7 +865,11 @@ a.button-dot:hover:before {
 ====================================== */
 
 #home {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    background: radial-gradient(
+            circle,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.4) 100%
+        ),
         url(/img/landing/quote_image_01.jpg);
     background-position: center center;
     background-size: cover;
@@ -873,6 +888,7 @@ h1.big-text {
     font-size: 80px;
     line-height: 120%;
     margin-bottom: 40px;
+    /* margin-right:40%; */
 }
 
 /* ===================================
@@ -2177,12 +2193,19 @@ footer .footer-social-divider:before {
     .one_third,
     .two_third,
     .one_fourth,
-    .three_fourth {
-        margin-right: 6%;
+    .three_fourth,
+    .three_fifths {
+        margin-right: 4%;
     }
 
     .one_half {
         width: 47%;
+    }
+
+    .stepTwoWrapper {
+        display: flex;
+        flex-direction: column;
+        height: auto;
     }
 
     .one_third {
@@ -2199,6 +2222,10 @@ footer .footer-social-divider:before {
 
     .three_fourth {
         width: calc(318% / 4);
+    }
+
+    .three_fifths {
+        width: 50%;
     }
 
     .section h3.entry-title {
@@ -2309,7 +2336,7 @@ footer .footer-social-divider:before {
 
     h1.big-text {
         text-align: center;
-        font-size: 60px;
+        font-size: 70px;
     }
 
     .section-wrapper {
@@ -2403,12 +2430,19 @@ footer .footer-social-divider:before {
     .one_third,
     .one_fourth,
     .two_third,
-    .three_fourth {
+    .three_fourth,
+    .three_fifths {
         width: 100% !important;
         float: none;
         margin-right: auto !important;
         margin-left: auto !important;
         text-align: center;
+    }
+
+    .stepTwoWrapper {
+        display: flex;
+        flex-direction: column;
+        height: auto;
     }
 
     .margin-0 img {
@@ -2674,7 +2708,7 @@ footer .footer-social-divider:before {
 
     h1.big-text {
         text-align: center;
-        font-size: 40px;
+        font-size: 60px;
     }
 }
 @media screen and (max-width: 485px) {

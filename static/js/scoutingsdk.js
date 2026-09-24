@@ -5,7 +5,7 @@ const ScoutingAppSDK = function (element, config) {
     element.innerHTML = ``;
 
     const importantQuotes = [
-        "What is Red? How can you prove the Red you see is the Red others see? Its just labels",
+        "What is Red? How can you prove the Red you see is the Red others see? It's just labels",
         "The Brain to notes synapse is much faster than limited app tracking.",
         "Try doing that sheet over and over , not faster than paper, pen highlighters",
         "Whatever… not trying to counter that as its non- stuff",
@@ -4875,6 +4875,34 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 );
                             }
                         };
+
+                        document.addEventListener("keydown", async (e) => {
+                            if (e.code === "Space") {
+                                if (
+                                    row
+                                        .closest(".preset")
+                                        ?.classList.contains("none")
+                                ) {
+                                    return;
+                                }
+
+                                if (opt.value !== "fsa") {
+                                    return;
+                                }
+
+                                e.stopPropagation();
+                                let cur = parseInt(ecount.innerText) || 0;
+                                if (opt.max !== undefined && cur >= opt.max) {
+                                    return;
+                                }
+                                values.push(opt.value);
+                                locations.push(location);
+                                dcounter++;
+                                ecount.innerText = cur + 1;
+                                tally();
+                                await hub();
+                            }
+                        });
 
                         plus.addEventListener("click", async (e) => {
                             e.stopPropagation();
