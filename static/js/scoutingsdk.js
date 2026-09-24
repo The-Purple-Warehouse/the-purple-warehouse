@@ -93,7 +93,7 @@ const ScoutingAppSDK = function (element, config) {
 
     const MAX_QR_LENGTH = 128;
 
-    function checkNull(object1, object2) { 
+    function checkNull(object1, object2) {
         return object1 !== null && object1 !== undefined ? object1 : object2;
     }
 
@@ -4875,7 +4875,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                 );
                             }
                         };
-                        
+
                         document.addEventListener("keydown", async (e) => {
                             if (e.code === "Space") {
                                 if (
