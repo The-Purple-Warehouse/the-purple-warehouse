@@ -12,8 +12,8 @@ export interface parsedRow {
     team: string;
     alliance: string;
     "left zone": boolean;
-    "balanced": boolean;
-    "park": boolean;
+    balanced: boolean;
+    park: boolean;
     "auto scoring": string;
     "teleop scoring": string;
     "defense time": number;
@@ -62,9 +62,8 @@ export function categories() {
          */
         { name: "Auto Count", identifier: "26-7" },
         { name: "Teleop Count", identifier: "26-8" },
-        { name: "Park", identifier: "26-9"}
+        { name: "Park", identifier: "26-9" }
     ];
-
 }
 
 export function layout() {
@@ -710,8 +709,8 @@ export function parseFormatted(format: string): parsedRow[] {
             alliance: columns[3],
             leave: columns[4] === "true",
             "left zone": columns[5] === "true",
-            "balanced": columns[6] === "true",
-            "park": columns[7] == "true",
+            balanced: columns[6] === "true",
+            park: columns[7] == "true",
             "auto scoring": parseArr(columns[8]).join(", "),
             "teleop scoring": parseArr(columns[9]).join(", "),
             "defense time": parseInt(columns[10], 10),
@@ -758,7 +757,7 @@ export function formatParsedData(data, categories, teams) {
                     const low = arr.filter((e) => e === "cs3").length;
                     const high = arr.filter((e) => e === "cs4").length;
                     return `${ground} Ground | ${stack} Stack | ${low} Low | ${high} High`;
-                })()} "`,   
+                })()} "`,
                 `"${(() => {
                     const arr = find(entry, "data", categories, "26-3", []);
                     const ground = arr.filter((e) => e === "cs1").length;

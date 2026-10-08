@@ -2,7 +2,7 @@ import scouting2023 from "./2023";
 import scouting2024 from "./2024";
 import scouting2025 from "./2025";
 import scouting2026 from "./2026";
-import scouting3000 from "./3000"
+import scouting3000 from "./3000";
 import config from "../";
 
 const scoutingConfig: any = {
