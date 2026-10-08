@@ -6,10 +6,7 @@ const ScoutingAppSDK = function (element, config) {
 
     const importantQuotes = [
         "What is Red? How can you prove the Red you see is the Red others see? It's just labels",
-<<<<<<< HEAD
-=======
         "It is not our weaknesses that define us but our strengths - Hanwen (Not Boltman)",
->>>>>>> ba4db8c (2026 ma)
         "The Brain to notes synapse is much faster than limited app tracking.",
         "Try doing that sheet over and over , not faster than paper, pen highlighters",
         "Whatever… not trying to counter that as its non- stuff",
