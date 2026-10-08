@@ -4,6 +4,7 @@ import production from "./production";
 import production2023 from "./production2023";
 import production2024 from "./production2024";
 import production2025 from "./production2025";
+import production3000 from "./production3000";
 
 const env = process.env.NODE_ENV || "development";
 
@@ -14,7 +15,8 @@ if (
         "production",
         "production2023",
         "production2024",
-        "production2025"
+        "production2025",
+        "production3000"
     ].includes(env)
 )
     throw new Error(`Config file for environment ${env} could not be found.`);
@@ -23,6 +25,7 @@ const config: Config = {
     production2023,
     production2024,
     production2025,
+    production3000,
     staging,
     development
 }[env];

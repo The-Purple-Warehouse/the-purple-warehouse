@@ -28,6 +28,9 @@ try {
         if (secretFile.production2025 != null) {
             secret.production2025 = secretFile.production2025;
         }
+        if (secretFile.production3000 != null) {
+            secret.production3000 = secretFile.production3000;
+        }
     }
 } catch (err) {}
 
