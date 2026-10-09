@@ -6,7 +6,7 @@ const config: Config = {
     branch: "3000",
     server: {
         port: 18900,
-        domain: "3000.thepurplewarehouse.com"
+        domain: "2026ma.thepurplewarehouse.com"
     },
     db: secret.production3000.db,
     auth: secret.production3000.auth,
