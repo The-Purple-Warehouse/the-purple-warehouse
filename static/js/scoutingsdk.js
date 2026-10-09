@@ -6,7 +6,6 @@ const ScoutingAppSDK = function (element, config) {
 
     const importantQuotes = [
         "What is Red? How can you prove the Red you see is the Red others see? It's just labels",
-        "It is not our weaknesses that define us but our strengths - Hanwen (Not Boltman)",
         "The Brain to notes synapse is much faster than limited app tracking.",
         "Try doing that sheet over and over , not faster than paper, pen highlighters",
         "Whatever… not trying to counter that as its non- stuff",
@@ -5838,7 +5837,8 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                         id
                     )}">
                         <p>Comments</p>
-                        <p class="subtext">Scoring ability? Stability? Fouls? Issues? Bricks?</p>
+                        <p class="subtext">Scoring ability? Stability? Fouls? Issues? Shooting type? (turret, shoot on the move..) Beached?</p>
+                        <p class="subtext">Team Number? (if practice match)</p>
                         <textarea data-id="${_this.escape(
                             id
                         )}" data-key="${_this.escape(
@@ -6784,4 +6784,3 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 };
-w;

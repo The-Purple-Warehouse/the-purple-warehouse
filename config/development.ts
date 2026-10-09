@@ -36,7 +36,7 @@ const config: Config = {
         adminTokens: secret.development.auth.adminTokens
     },
     features: ["scouting", "resources", "tps"],
-    year: 3000
+    year: 2026
 };
 
 export default config;
