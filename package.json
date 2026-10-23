@@ -38,7 +38,7 @@
         "update-prod2023": "git fetch && npm run drop-changes & git checkout 2023 && git pull && npm run deploy-prod2023",
         "update-prod2024": "git fetch && npm run drop-changes & git checkout 2024 && git pull && npm run deploy-prod2024",
         "update-prod2025": "git fetch && npm run drop-changes & git checkout 2025 && git pull && npm run deploy-prod2025",
-        "update-prod3000": "git fetch && npm run drop-changes & git checkout 3000 && git pull && npm run deploy-prod3000",
+        "update-prod3000": "git fetch && npm run drop-changes & git checkout 2026ma && git pull && npm run deploy-prod3000",
         "pm2-dev": "pm2 start \"npm run update-dev\"",
         "pm2-staging": "pm2 start \"npm run update-staging\"",
         "pm2-prod": "pm2 start \"npm run update-prod\"",
