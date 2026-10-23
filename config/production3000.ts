@@ -3,7 +3,7 @@ import { Config } from ".";
 import secret from "./secret";
 
 const config: Config = {
-    branch: "3000",
+    branch: "2026ma",
     server: {
         port: 18900,
         domain: "2026ma.thepurplewarehouse.com"
