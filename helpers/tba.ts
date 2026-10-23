@@ -169,6 +169,7 @@ export async function getEvents(year) {
     }
 }
 
+//gets a team's events for the year
 export async function getTeamEvents(year, team) {
     try {
         if (cache.teamEvents == null) {
@@ -207,6 +208,7 @@ export async function getTeamEvents(year, team) {
     }
 }
 
+//gets all the teams that are at a specific event during a year
 export async function getEventTeams(event, year) {
     if (!cache.eventTeams) {
         cache.eventTeams = {};
