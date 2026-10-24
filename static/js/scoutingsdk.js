@@ -4878,9 +4878,14 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                         document.addEventListener("keydown", async (e) => {
                             if (e.code === "Space") {
-                                
-                                if (document.activeElement == element.querySelector(".component-textarea > textarea")) return;
-                                
+                                if (
+                                    document.activeElement ==
+                                    element.querySelector(
+                                        ".component-textarea > textarea"
+                                    )
+                                )
+                                    return;
+
                                 if (
                                     row
                                         .closest(".preset")
