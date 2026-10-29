@@ -1,0 +1,301 @@
+:root {
+    --backgroundColor: #f8f0ff;
+    --contentColor: #404040;
+    --primaryBackgroundColor: #7d4090;
+    --primaryContentColor: #f4f4f4;
+    --primaryDarkerBackgroundColor: #5d2e6c;
+    --primaryDarkerBackgroundColor2: #6c377d;
+    --disabledColor: #747474;
+    --outline-img: "";
+    --filled-img: "";
+    --standard-border-radius: 7px;
+    --arrow-bg: rgba(255, 255, 255, 0.3);
+    --arrow-icon: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg);
+    --option-bg: white;
+    --select-bg: rgba(255, 255, 255, 0.2);
+    --cgray: rgba(45, 45, 45, 0.68);
+}
+
+#app {
+    padding: 1em 0 0 0;
+    height: auto !important;
+    align-self: start !important;
+}
+
+.analysisPageButton {
+    background-color: var(--primaryBackgroundColor);
+    border: 2px solid var(--primaryBackgroundColor);
+    padding: 10px;
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    color: var(--primaryContentColor);
+    margin: 0;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: filter 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    border-radius: var(--standard-border-radius);
+    user-select: none;
+    overflow: hidden;
+}
+
+.analysisPageButton:hover {
+    filter: brightness(1.25);
+}
+
+.analysis-selection-box-wrapper {
+    display: flex; 
+    align-items: center; 
+    gap: 20px; 
+    margin-bottom: 0.5rem;
+}
+
+.analysis-selection-wrapper {
+    background-color: rgb(253, 250, 255); 
+    display: flex; 
+    flex-direction: flex-column; border-radius: 0.5rem;
+}
+
+
+
+.analysis-graphs {
+    display: flex;
+    justify-content: center;
+    width: 99vw;
+    margin-bottom: 5vh;
+}
+
+.stat-graphs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.graph-select {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    padding: 10px;
+}
+
+.graph-select-wrapper {
+    display: flex;
+    margin: 8px 0 8px 0;
+}
+
+.graph-select-wrapper > p {
+    margin: 0 0 0 20px;
+    font-size: 1rem;
+}
+
+input[name="graphs"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primaryBackgroundColor);
+}
+
+.graph-selections {
+    width: 20%; border: none; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#team-select-header {
+    align-items: center;
+}
+
+.team-intro {
+    border-right: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+}
+
+#team-select-name {
+    margin: 0 0 0 8px;
+    height: auto
+}
+
+
+.robot-data-table {
+    width: 60vw;
+}
+
+#robot-analysis-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pitscout-data {
+    margin-left: 2rem;
+}
+
+.analysis-mode-select {
+    display: flex;
+}
+
+.mode-select-button {
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    transition: filter 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.mode-select-button > h3 {
+    max-width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.mode-select-button:hover {
+    cursor: pointer;
+    background-color: rgb(218, 208, 218);
+}
+
+#analysis-mode-info {
+    fill: black;
+}
+
+[data-theme=dark]#analysis-mode-info{
+    fill: white;
+}  
+
+#analysis-mode-info:hover {
+    cursor: pointer;
+}
+
+#analysis-info-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+#mode-selection-wrapper {
+    border-radius: 15px;
+    height: auto;
+    border: 1px solid var(--primaryBackgroundColor);
+    margin: 0 0.75rem 0 0;
+}
+
+.analysis-mode-select-wrapper {
+    width: 100%;
+    justify-content: center;
+    margin: 0 0 1em 0;
+    display: flex;
+}
+
+#analysis-mode-modal {
+    position: absolute;
+    display:none;
+    background-color: white;
+    top: 50px;
+    left: -15vw;
+    width: 30vw;
+    font-size: 0.75em;
+    z-index: 50;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.match-window select,
+select.analysisSelect,
+div.analysisSelect, 
+select.event-code,
+select.team {
+    appearance: none;
+    border: 0;
+    outline: 0;
+    width: 100%;
+    font: inherit;
+    padding: 1rem 4rem 1rem 1rem;
+    border-radius: 0.5em;
+    cursor: pointer;
+    background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+)
+        no-repeat 100% 50%;
+}
+
+div.analysisSelect {
+    overflow-x: hidden;
+    width: auto;
+}
+
+#team-selections {
+    position: absolute;
+    width: 20vw;
+    height: 40vh;
+    overflow-y: scroll;
+    z-index: 50;
+    background-color:rgb(235, 222, 235);
+}
+
+#team-selections > div {
+    display: flex;
+    font-size: 1em;
+    padding: 0.25em;
+}
+
+#team-selections > div > input {
+    width: auto;
+}
+
+select.analysisSelect:not(:last-of-type), 
+select.event-code:not(:last-of-type),
+select.team:not(:last-of-type) {
+    margin-bottom: 25px;
+}
+
+select.analysisSelect::-ms-expand, 
+select.event-code::-ms-expand,
+select.team::-ms-expand {
+    display: none;
+}
+
+.component-select select {
+    outline: none;
+}
+
+select.analysisSelect > option, 
+select.event-code > option,
+select.team > option {
+    color: inherit;
+    background-color: var(--option-bg);
+}
+
+.graphs-overlay {
+    display: none;
+    z-index: 100;
+    overflow: hidden;
+    text-align: center;
+    align-items:center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(70, 35, 83, 0.6);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.graph-overlay > p {
+    margin: 0;
+    color: white;
+    font-size: 2rem;
+}
+
+.image-slide-show {
+    display:flex;
+    justify-content: center;
+}
+
+.image-slide-show img {
+    width: 90%;
+    max-height: 12em;
+}
+
+/* MEDIA QUERIES */
+
+/* PHONES */
+@media only screen and (max-width: 700px) {
+    #analysis-mode-modal {
+        left: -60px;
+        width: 120px;
+    }
+}

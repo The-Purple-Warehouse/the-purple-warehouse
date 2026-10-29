@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Sen:wght@400..800&display=swap');
+
 :root {
     --backgroundColor: #f8f0ff;
     --contentColor: #404040;
@@ -403,7 +405,10 @@ button.clear {
     max-width: 600px;
 }
 
+/*ANALYSIS*/
+
 .match-window select,
+select.analysisSelect, 
 select.event-code,
 select.team {
     appearance: none;
@@ -414,8 +419,7 @@ select.team {
     padding: 1rem 4rem 1rem 1rem;
     background: var(--arrow-icon) no-repeat right 0.8em center / 1.4em,
         linear-gradient(to left, var(--arrow-bg) 3em, var(--select-bg) 3em);
-    border-radius: 0.25em;
-    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    border-radius: 0.5em;
     cursor: pointer;
 }
 
@@ -423,11 +427,13 @@ select.team {
     box-shadow: none;
 }
 
+select.analysisSelect:not(:last-of-type), 
 select.event-code:not(:last-of-type),
 select.team:not(:last-of-type) {
     margin-bottom: 25px;
 }
 
+select.analysisSelect::-ms-expand, 
 select.event-code::-ms-expand,
 select.team::-ms-expand {
     display: none;
@@ -437,6 +443,7 @@ select.team::-ms-expand {
     outline: none;
 }
 
+select.analysisSelect > option, 
 select.event-code > option,
 select.team > option {
     color: inherit;
@@ -1130,8 +1137,18 @@ header .icon-button .send-container svg {
     height: 100vh;
     z-index: 100;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.8);
+    text-align: center;
+    align-items:center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgb(184, 159, 194);
     transition: background-color 0.2s ease-in-out;
+}
+
+.overlay > p {
+    margin: 0;
+    color: white;
+    font-size: 2rem;
 }
 
 .location-popup {
@@ -1376,6 +1393,11 @@ header .icon-button .send-container svg {
         border-radius: 0px;
     }
 
+    #analysis-mode-modal {
+        left: -60px;
+        width: 120px;
+    }
+
     .popup-modal.open {
         transform: none;
     }
@@ -1496,8 +1518,7 @@ header .icon-button .send-container svg {
 }
 
 .component-upload > h3,
-.download-window > h3,
-.data-window h3 {
+.download-window > h3{
     text-align: center;
     color: var(--contentColor);
     width: calc(100% - 20px);
@@ -1706,8 +1727,7 @@ header .icon-button .send-container svg {
     width: 100%;
 }
 
-.data-window .analysis-content > .score-graphs,
-.data-window .analysis-content > .overall-graphs,
+
 .data-window .analysis-content > .predictions,
 .data-window > .prediction,
 .data-window .comparison > .graphs {

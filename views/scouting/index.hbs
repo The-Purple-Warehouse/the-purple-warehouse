@@ -67,6 +67,11 @@
       async function updatePage() {
 
         document.querySelectorAll(".navbar a.active").forEach(a => a.classList.remove("active"));
+        if (document.getElementById("analysisSheet") != undefined) {
+          var link = document.getElementById('analysisSheet');
+          document.getElementsByTagName("head")[0].removeChild(link);
+        }
+
 
         if(window.location.hash != null && window.location.hash.startsWith("#/")) {
           let page = window.location.hash.substring(2);
@@ -80,6 +85,13 @@
             document.querySelector(".navbar a[data-page='view-data']").classList.add("active");
             await sdk.showDataPage();
           } else if(page == "analysis") {
+            var link = document.createElement( "link" );
+            link.href = "/css/pages/analysis.css"
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            link.media = "screen,print";
+            link.id = "analysisSheet";
+            document.getElementsByTagName( "head" )[0].appendChild( link );
             document.querySelector(".navbar a[data-page='analysis']").classList.add("active");
             await sdk.showAnalysisPage();
           } else if(page == "predict") {

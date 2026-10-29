@@ -341,3 +341,23 @@ export async function getTeam(teamNumber) {
     } catch (err) {}
     return {};
 }
+
+export async function getTeamTBAMedia(teamNumber, year){
+    try {
+        let imgData = await (
+            await fetch(
+                `https://www.thebluealliance.com/api/v3/team/frc${
+                    encodeURIComponent(teamNumber)}/media/${
+                    encodeURIComponent(year)}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "X-TBA-Auth-Key" : config.auth.tba
+                    }
+                }
+            )
+        ).json();
+        return imgData;
+    } catch (err) {console.log(err)}
+    return {};
+}

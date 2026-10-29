@@ -28,14 +28,17 @@ import {
     getTeamByNumber,
     addTeam,
     hashAccessToken,
-    getAllTeams
+    getAllTeams,
+    getTeamsWithPracticeEntries
 } from "../../helpers/teams";
 import {
     getEvents,
     getEventsSorted,
     getMatches,
     getMatchesFull,
-    getTeam
+    getTeam,
+    getEventTeams,
+    getTeamTBAMedia
 } from "../../helpers/tba";
 import scoutingConfig from "../../config/scouting";
 import Team from "../../models/team";
@@ -246,6 +249,20 @@ router.get(
     }
 );
 
+router.get("/team/get/:team/media/:year", requireScoutingAuth, async (ctx, next) => {
+
+    try {
+        const data = await getTeamTBAMedia(ctx.params.team, ctx.params.year);
+        ctx.body = {
+            success: true,
+            body: data
+        }
+    } catch (e) {
+        ctx.body = {success: false, error: "Something went wrong"}
+    }
+
+} )
+
 router.get("/team/get/:team", requireScoutingAuth, async (ctx, next) => {
     ctx.body = {
         success: true,
@@ -378,7 +395,7 @@ router.get(
             };
         } else {
             ctx.body = {
-                success: false,
+                success: true,
                 error: `Not enough data has been collected at this event to run the analyzer for this team. Please try entering a different event or check back later after scouting more matches!`
             };
         }
@@ -404,12 +421,20 @@ router.get(
             // config.auth.scoutingAdmins.includes(ctx.session.scoutingTeamNumber)
             entries >= 1
         ) {
-            analysis = await scoutingConfig.analysis(
-                ctx.params.event,
-                ctx.params.team
-            );
+            try {
+                analysis = await scoutingConfig.analysis(
+                    ctx.params.event,
+                    ctx.params.team
+                );
+            } catch (e) {
+                console.log(e);
+                analysis = {
+                    display: [],
+                    data: {}
+                }
+            }
         }
-        if (analysis.display.length > 0) {
+        if (analysis.display) {
             ctx.body = {
                 success: true,
                 body: {
@@ -436,6 +461,7 @@ router.get(
         //     ctx.session.scoutingTeamNumber
         // );
         let entries = await getNumberOfEntriesByEvent(ctx.params.event);
+        console.log(entries);
         let comparison: any = {
             display: [],
             data: {}
@@ -450,20 +476,27 @@ router.get(
                 ctx.params.teams.split(",")
             );
         }
-        if (comparison.display.length > 0) {
-            ctx.body = {
-                success: true,
-                body: {
-                    display: comparison.display,
-                    data: comparison.data
-                }
-            };
-        } else {
-            ctx.body = {
-                success: false,
-                error: `Not enough data has been collected on these teams at this event to run comparisons on them. Please try entering different team numbers, or check back later after scouting more matches!`
-            };
-        }
+        ctx.body = {
+            success: true,
+            body: {
+                display: comparison.display,
+                data: comparison.data
+            }
+        };
+        // if (comparison.display.length > 0) {
+        //     ctx.body = {
+        //         success: true,
+        //         body: {
+        //             display: comparison.display,
+        //             data: comparison.data
+        //         }
+        //     };
+        // } else {
+        //     ctx.body = {
+        //         success: false,
+        //         error: `Not enough data has been collected on these teams at this event to run comparisons on them. Please try entering different team numbers, or check back later after scouting more matches!`
+        //     };
+        // }
     }
 );
 
@@ -515,6 +548,41 @@ router.get(
         }
     }
 );
+
+// Retrieves all teams from a given event and year (idk if we have this yet)
+router.get(
+    "/:event/:year/teams/all",
+    requireScoutingAuth,
+    async(ctx, next) => {
+        let teams = await getEventTeams(
+            ctx.params.event,
+            ctx.params.year
+        );
+
+        if (!(teams.Error)) {
+            ctx.body = {success: true, body: teams};
+        }
+        else {
+            ctx.body = {sucess: false, error: "Error occurred, try again later!"}
+        }
+    }
+)
+
+router.get(
+    "/:event/:year/teams/db",
+    requireScoutingAuth,
+    async(ctx, next) => {
+        try {
+            let teams = await getTeamsWithPracticeEntries();
+            ctx.body = {success: true, body: teams};
+        }
+        catch (e) {
+            console.log(e);
+            ctx.body = {success: false, error: "Something went wrong"};
+        }
+
+    }
+)
 
 router.get(
     "/:event/:year/teams/tpw/:team",
