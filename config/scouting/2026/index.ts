@@ -6,6 +6,7 @@ import accuracy2026 from "./accuracy";
 import { getGraph } from "./graphs_2026";
 import { computePrediction } from "./predictions_2026";
 import { computeRankings } from "./rankings_2026";
+import { analysisNew, compareNew } from "./analysisOverhaul";
 
 export interface parsedRow {
     match: number;
@@ -856,6 +857,17 @@ function run(command) {
 }
 
 export async function analysis(event, teamNumber) {
+    try {
+        const d = await analysisNew(event, teamNumber);
+        return d;
+    }
+    catch (e) {console.log(e);}
+}
+
+
+// Old analysis
+
+export async function analysisOld(event, teamNumber) {
     let analyzed = [];
     let data: any = {
         offenseRankings: [],
@@ -1074,39 +1086,46 @@ export async function analysis(event, teamNumber) {
 }
 
 export async function compare(event, teamNumbers) {
-    teamNumbers = [...new Set(teamNumbers)].sort((a: string, b: string) =>
-        a.length != b.length ? a.length - b.length : a.localeCompare(b)
-    );
-    let comparison = [];
     try {
-        let matchesFull = (await getMatchesFull(event)) as any;
-        let allScoutingData = await getAllDataByEvent(event);
-        let allParsedData = parseFormatted(allScoutingData);
-        fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
-        fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
-        const graph1 = getGraph(1, allParsedData, teamNumbers as string[]);
-        const graph2 = getGraph(2, allParsedData, teamNumbers as string[]);
-        comparison.push({
-            type: "config",
-            category: "overall",
-            label: `Radar Chart<br>(${
-                teamNumbers.length == 1
-                    ? "Single Team"
-                    : `${teamNumbers.length} Teams`
-            })`,
-            value: graph1
-        });
-        comparison.push({
-            type: "config",
-            category: "overall",
-            label: "Radar Chart<br>(Compared to Best Scores)",
-            value: graph2
-        });
-    } catch (err) {
-        console.error(err);
-    }
-    return { display: comparison, data: {} };
+        console.log("here");
+        return await compareNew(event, teamNumbers);
+    } catch (e) {console.log(e);}
 }
+
+// export async function compareOld(event, teamNumbers) {
+//     teamNumbers = [...new Set(teamNumbers)].sort((a: string, b: string) =>
+//         a.length != b.length ? a.length - b.length : a.localeCompare(b)
+//     );
+//     let comparison = [];
+//     try {
+//         let matchesFull = (await getMatchesFull(event)) as any;
+//         let allScoutingData = await getAllDataByEvent(event);
+//         let allParsedData = parseFormatted(allScoutingData);
+//         fs.writeFileSync(`../${event}-tba.json`, JSON.stringify(matchesFull));
+//         fs.writeFileSync(`../${event}.csv`, await getAllDataByEvent(event));
+//         const graph1 = getGraph(1, allParsedData, teamNumbers as string[]);
+//         const graph2 = getGraph(2, allParsedData, teamNumbers as string[]);
+//         comparison.push({
+//             type: "config",
+//             category: "overall",
+//             label: `Radar Chart<br>(${
+//                 teamNumbers.length == 1
+//                     ? "Single Team"
+//                     : `${teamNumbers.length} Teams`
+//             })`,
+//             value: graph1
+//         });
+//         comparison.push({
+//             type: "config",
+//             category: "overall",
+//             label: "Radar Chart<br>(Compared to Best Scores)",
+//             value: graph2
+//         });
+//     } catch (err) {
+//         console.error(err);
+//     }
+//     return { display: comparison, data: {} };
+// }
 
 export async function predict(event, redTeamNumbers, blueTeamNumbers) {
     redTeamNumbers = [...new Set(redTeamNumbers)].sort((a: string, b: string) =>

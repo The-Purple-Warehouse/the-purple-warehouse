@@ -394,11 +394,11 @@ export async function addEntry(
     match: number,
     team: string,
     color: string,
-    data: [any],
-    abilities: [any],
-    counters: [any],
-    timers: [any],
-    ratings: [any],
+    data: any[],
+    abilities: any[],
+    counters: any[],
+    timers: any[],
+    ratings: any[],
     comments: string,
     timestamp: number
 ) {

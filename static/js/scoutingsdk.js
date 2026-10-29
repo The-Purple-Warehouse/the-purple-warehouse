@@ -1639,7 +1639,719 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         `;
     };
 
+
+    /*
+        analysis overhaul as of august 2026:
+
+        rough docs are scattered throughout code, everything should have at least a brief 
+        explanation on what they do
+    */
     _this.showAnalysisPage = () => {
+        /*
+        event select
+        team select
+        table
+            tba image
+            data (tbd)
+            charts
+        overlay + other stuff
+        */
+
+        // rough HTML structure for the page
+
+        const questionSVG = `
+        <svg id = "analysis-mode-info" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#392b3f"><path d="M440-280h80v-240h-80v240Zm68.5-331.5Q520-623 520-640t-11.5-28.5Q497-680 480-680t-28.5 11.5Q440-657 440-640t11.5 28.5Q463-600 480-600t28.5-11.5ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+        `
+        const questionSVGDark = `
+        <svg id = "analysis-mode-info" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-280h80v-240h-80v240Zm68.5-331.5Q520-623 520-640t-11.5-28.5Q497-680 480-680t-28.5 11.5Q440-657 440-640t11.5 28.5Q463-600 480-600t28.5-11.5ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>`
+
+        const analysisModeModal = `
+            <div id = "analysis-mode-modal">
+                <p><b>Analysis:  </b>Provides scoring & data graphs for 1 team only.</p>
+                <p><b>Comparison:  </b>Presents data graphs for multiple teams and supports easy side-by-side comparison.</p>
+            </div>
+        `
+
+        const analysisModeInternal = `
+            <div class = "analysis-mode-select" id = "mode-selection-wrapper">
+                <div id = "mode-analyze" class = "mode-select-button" style = "border-top-left-radius: 15px; border-bottom-left-radius: 15px;">
+                    <h3>Analysis</h3>
+                </div>
+                <div id = "mode-comparison" class = "mode-select-button" style = "border-left: 1px solid var(--primaryBackgroundColor); border-top-right-radius: 15px; border-bottom-right-radius: 15px;">
+                    <h3>Comparison</h3>
+                </div> 
+            </div>
+            <div id = "analysis-info-wrapper">
+                ${analysisModeModal}
+            </div>
+        `
+
+        const robotAnalysisDataInternal = `
+            <div class = "robot-data-table" style = "display:none;">
+                <div class = "team-intro">
+                    <div style = "display:flex;" id = "team-select-header">
+                        <img src = "" id = "team-avatar" height = "50"/>
+                        <h2 id = "team-select-name"></h2>
+                    </div>
+                    <div class = "image-slide-show">
+                    </div>
+                </div>
+                <div class = "pitscout-data">
+
+                </div>
+            </div>
+            <h1 style = "display: none" >Graphs & Stats</h1>
+            <div class = "analysis-graphs" style = "display:none">
+                <div class = "graph-selections">
+                    <p style = "font-size: 1rem" >Select a graph:</p>
+                    <p style = "margin: 0">------</p>
+                    <div class = "graph-select">
+                        <div class = "graph-select-wrapper">
+                            <input name = "graphs" type = "radio" id = "total-fuel-select" value = "total-fuel" checked/>
+                            <p>Total fuel</p>
+                        </div>
+                        <div class = "graph-select-wrapper">
+                            <input name = "graphs" type = "radio" id = "auto-fuel-select" value = "auto-fuel"/>
+                            <p>Auto Fuel</p>
+                        </div>
+                        <div class = "graph-select-wrapper">
+                            <input name = "graphs" type = "radio" id = "teleop-fuel-select" value = "teleop-fuel"/>
+                            <p>Teleop Fuel</p>
+                        </div>
+                        <div class = "graph-select-wrapper">
+                            <input name = "graphs" type = "radio" id = "brick-time-select" value = "brick-time"/>
+                            <p>Brick time</p>
+                        </div>
+                        <div class = "graph-select-wrapper">
+                            <input name = "graphs" type = "radio" id = "defense-time-select" value = "defense-time"/>
+                            <p>Defense time</p>
+                        </div>
+                    </div>
+                </div>
+                <div class = "overall-graphs">
+                    <div class = "graphs-overlay" style = "display: none; width: 100%; height: 100%">
+                        <p>Loading, please wait!</p>
+                        <p>...</p>
+                    </div>
+                </div>
+                </div>
+            <div class = "stat-graphs">
+
+            </div>
+        `
+
+        let HTMLStruct = `
+        <div class="data-window analysis-data-window">
+            <div id = "config-selects">
+                <p id = "analysisErrorMsg" style = "color: red"></p>
+                <div class = "analysis-mode-select-wrapper">
+                    ${analysisModeInternal}
+                </div>
+                <hr>
+                <div class = "analysis-selection-box-wrapper">
+                    <h2 style = "margin: 0">Event:</h2>
+                    <div class = "analysis-selection-wrapper">
+                        <select class="event-code analysisSelect"></select>
+                    </div>
+                    <button style = "width: 100%" class = "show-analysis analysisPageButton">Go!</button>
+                </div>
+                <div class = "analysis-selection-box-wrapper" style = "display: none" id = "team-selection-box-wrapper">
+                    <h2 style = "margin: 0px 0px 0px 0px;">Team(s):</h2>
+                    <div class = "analysis-selection-wrapper">
+                    </div>
+                    <button class = "run-analysis analysisPageButton">Go!</button>
+                </div>
+            </div>
+            <div id = "robot-analysis-data">
+                ${robotAnalysisDataInternal}
+            </div>
+            <div class="overlay" style="display: none;">
+                <p>Loading, please wait!</p>
+                <p>...</p>
+            </div>
+        </div>`
+        
+        function showOverlay() {
+            overlayShown = true;
+            if (overlayShown) {
+                element.querySelector(".overlay").style.display = "flex";
+            }
+        }
+
+        function hideOverlay() {
+            overlayShown = false;
+            setTimeout(() => {
+                if (!overlayShown) {
+                    element.querySelector(".overlay").style.display =
+                        "none";
+                }
+            }, 500);
+        }
+
+        /*
+            function to populate team selection options.
+            prereq: an event has been selected
+            returns: string (assigned to innerHTML)
+        */
+        function populateTeamSelect(data, teamNumber, isPrac) {
+            document.getElementById("team-selection-box-wrapper").style.display = "flex";
+            let teams = new Set();
+            for (let i=0; i<data.length; i++) {
+                if (data[i].team && !(data[i].team.toLowerCase() == "1r" ||
+                    data[i].team.toLowerCase() == "2r" ||
+                    data[i].team.toLowerCase() == "3r" ||
+                    data[i].team.toLowerCase() == "1b" ||
+                    data[i].team.toLowerCase() == "2b" ||
+                    data[i].team.toLowerCase() == "3b")) {
+                        teams.add(parseInt(data[i].team));
+                    }
+            }
+            let teamdata = [...teams];
+            if (analysisMode == "analysis") {
+                let int = "";
+                if (isPrac) {
+                    int =  `
+                    <option value = "">Select a team..</option>
+                    ${  
+                        teamdata?.map(team =>
+                            `
+                            <option 
+                                value = ${team} 
+                                ${team == teamNumber ? 'style= "font-weight: 600"' : ""}
+                            >
+                                ${team}
+                            </option>`
+                    )}`
+                }
+                else {
+                    int = `
+                        <option value = "">Select a team..</option>
+                        ${  
+                            data?.map(team =>
+                                `
+                                <option 
+                                    value = ${team.team_number} 
+                                    ${team.team_number == teamNumber ? 'style= "font-weight: 600"' : ""}
+                                >
+                                ${team.team_number}
+                                </option>`
+                            )}`;
+                } 
+                return "<select class = 'team-select analysisSelect'> " + int +" </select>" 
+            }
+            // Otherwise, return a drop down of checkboxes
+            else {
+
+                let selections = isPrac ? 
+                teamdata?.map(team => `
+                    <div>
+                        <input type="checkbox" value=${team} name = "teams-selection-collection">
+                        <p>${team}</p>
+                    </div>
+                `).join("")
+                :
+                data?.map(team => `
+                    <div>
+                        <input type="checkbox" value=${team.team_number} name = "teams-selection-collection">
+                        <p>${team.team_number}</p>
+                    </div>
+\                `).join("");
+
+                let dropdown = `
+                    <div>
+                        <div class = "analysisSelect" 
+                            onclick = "
+                                let sel = document.getElementById('team-selections');
+                                if (sel.style.display == 'none') sel.style.display = 'block';
+                                else sel.style.display = 'none';
+                            "
+                            style = "position: relative"
+                            > 
+                            Select
+                        </div>
+                        <div id = "team-selections" style = "display:none">
+                            ${selections}
+                        </div>
+                    </div>
+                `
+
+                return dropdown;
+            }
+        }
+                
+        // helpers for running analysis
+        
+        // To keep track of the photos for a selected team and for the image carousel (TODO)
+        const imageList = [];
+        const graphList = [];
+        let selectedGraph = 0;
+        let analysisMode = ""; // analysis | comparison
+        let clicked = false;   // analysis mode clicked
+        let robotData = {
+
+        };
+
+        function reset() {
+            element.querySelector("#team-selection-box-wrapper > .analysis-selection-wrapper").innerHTML = "";
+            element.querySelector("#team-selection-box-wrapper").style.display = "none";
+            clearAnalysisData();
+        }
+
+        function clearAnalysisData() {
+            selectedGraph = 0;
+            const radios = document.querySelectorAll('input[name="graphs"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+            })
+            radios[0].checked = true;
+            element.querySelector(".robot-data-table").style.display = "none";
+            element.querySelector(".analysis-graphs").style.display = "none";
+            element.querySelector("#robot-analysis-data").style.display = "none";
+            element.querySelector(".image-slide-show").innerHTML = "";
+            element.querySelector("#team-select-header").innerHTML = `
+                <img src = "" id = "team-avatar" height = "50"/>
+                <p id = "team-select-name"></p>
+            `;
+            element.querySelector(".overall-graphs").innerHTML = "";
+            element.querySelector(".stat-graphs").innerHTML = "";
+            graphList.length = 0;
+            imageList.length = 0;
+        }
+
+        function addImage(imageSource, w = 200, h = 200) {
+            element.querySelector(".image-slide-show").innerHTML += `
+                <img src = "${imageSource}"/>
+            `;
+        }
+
+        function addGraph(location, config, configCategory) {
+
+            const canvasId = _this.random();
+            const containerId = _this.random();
+            const canvasContainer = document.createElement("div");
+            canvasContainer.style = "display: none; height: 60vh; width: 60vw;"
+            canvasContainer.id = containerId;
+            const canvas = document.createElement("canvas");
+            canvas.id = canvasId;
+            canvasContainer.appendChild(canvas);
+            element.querySelector(`.${location}`).appendChild(canvasContainer);
+            let chartConfig = config.graph;
+
+            let c = new Chart(
+                document.getElementById(canvasId).getContext('2d'),
+                chartConfig
+            )
+
+            document.getElementById(canvasId).style = "";
+            c.resize(window.innerWidth * 0.6, window.innerHeight * 0.6);
+
+            if (configCategory == "score") {
+                document.getElementById(containerId).style.display = "none";
+                graphList.push({containerId: containerId, id: canvasId, graph: c});
+            } else {
+                document.getElementById(containerId).style.display = "flex";
+                document.getElementById(containerId).style.justifyContent = "center";
+            }
+
+        }
+        
+        /*
+            Handles graph selections (scoring, brick, defense, etc..)
+            Essentially just adds an event listener to each..
+        */
+        function handleGraphSelections() {
+            const radios = document.querySelectorAll('input[name="graphs"]');
+            const values = [
+                "total-fuel",
+                "auto-fuel",
+                "teleop-fuel",
+                "brick-time",
+                "defense-time"
+            ]
+            // Index of each radio value corresponds to index of graph to be selected from graphList
+            radios.forEach((radio) => {
+                radio.addEventListener('change', (e) => {
+                    // Make current selected graph hidden
+                    document.getElementById(graphList[selectedGraph].containerId).style.display = "none";
+                    // if this value is selected ...
+                    if (radio.checked) {
+                        // then make it the new selectedGraph index
+                        selectedGraph = values.indexOf(e.target.value)
+                    }
+                    document.getElementById(graphList[selectedGraph].containerId).style.display = "block";
+                })
+            })
+        }
+
+        /* 
+            Populates robot data in data table for analysis according to robotData object
+        */
+        function populateRobotData() {
+            element.querySelector(".pitscout-data").innerHTML = "";
+            for (const x in robotData) {
+                if (x != "Graphs") {
+                    element.querySelector(".pitscout-data").innerHTML += `
+                        <p><b>${x}:</b>   ${robotData[x]}</p>
+                    `
+                }
+            }
+        }
+
+        return new Promise(async (resolve, reject) => {
+            await _this.setMatchNav(0, undefined, undefined, undefined);
+            let year =
+                config.year || new Date().toLocaleDateString().split("/")[2];
+            let events = await _this.getEvents(year);
+
+            // Basic outline
+            element.innerHTML = HTMLStruct;
+
+            // populate event selection options
+            element.querySelector(".event-code").innerHTML = `
+                <option value=""${
+                    _this.getEventCode() == null ||
+                    _this.getEventCode() == ""
+                        ? " selected"
+                        : ""
+                    }>Select an event...</option>
+                ${events.map(
+                    (event) =>
+                        `<option value="${event.key}"${
+                            _this.getEventCode() == event.key
+                                ? " selected"
+                                : ""
+                        }>${event.name}</option>`
+                )}
+            `
+            // analysis/comparison modal
+            // svg color based on dark/light mode
+            document.getElementById("analysis-info-wrapper").innerHTML = (
+                document.documentElement.getAttribute("data-theme") == "dark" ?
+                questionSVGDark : questionSVG      
+            ) + document.getElementById("analysis-info-wrapper").innerHTML;
+            // on hover, show modal
+            document.getElementById("analysis-mode-info").onmouseover = () => {
+                setTimeout(() => {
+                    if (document.getElementById("analysis-mode-info").matches(":hover")) {
+                        document.getElementById("analysis-mode-modal").style.display = "block";
+                    }
+                }, 500)
+            }
+            // on click, show/hide modal
+            document.getElementById("analysis-mode-info").onclick = () => {
+                const curr = document.getElementById("analysis-mode-modal").style.display;
+                clicked = !clicked;
+                document.getElementById("analysis-mode-modal").style.display = (
+                    curr == "block" && !clicked ? "none" : "block"
+                );
+            }
+            // on mouse leave, hide modal
+            document.getElementById("analysis-mode-info").onmouseleave = () => {
+                if (!clicked) document.getElementById("analysis-mode-modal").style.display = "none";
+            }
+            // handle mode selection clicks (+ modify team select)
+            element.querySelector("#mode-analyze").onclick = () => {
+                reset();
+                if (analysisMode == "comparison") {
+                    element.querySelector("#mode-comparison").style.backgroundColor = null;
+                }
+                element.querySelector("#mode-analyze").style.backgroundColor = "rgb(194, 178, 194)";
+                analysisMode = "analysis";
+            }
+            element.querySelector("#mode-comparison").onclick = () => {
+                reset();
+                if (analysisMode == "analysis") {
+                    element.querySelector("#mode-analyze").style.backgroundColor = null;
+                }
+                element.querySelector("#mode-comparison").style.backgroundColor = "rgb(194, 178, 194)";
+                analysisMode = "comparison";
+            }
+
+            /*
+                Resizing certain elements
+            */
+            window.addEventListener("resize", () => {
+                element.querySelector(".robot-data-table").style.display = 
+                        element.clientWidth < 700 ? "block" : "flex";
+            })
+
+            /*
+                handles event selection
+                ensures both valid mode & event have been selected
+                upon success, populates the team selection dropdown
+            */
+            element.querySelector(".analysis-selection-box-wrapper > .show-analysis").onclick = async () => {
+                // check that mode & event are selected
+                let eventCode = element.querySelector(".analysis-selection-wrapper > select.event-code").value;
+                if (eventCode == "") {
+                    element.querySelector("#analysisErrorMsg").innerHTML = "No event selected!";
+                    return;
+                }
+                else {
+                    element.querySelector("#analysisErrorMsg").innerHTML = "";
+                }
+                if (analysisMode == "") {
+                    element.querySelector("#analysisErrorMsg").innerHTML = "Choose either analysis or comparsion first!";
+                    return;
+                } else {
+                    element.querySelector("#analysisErrorMsg").innerHTML = "";
+                }
+
+                let teamNumber = config.account.team;
+                try {
+                    let data = {};
+                    // depending on whether the user is running analysis for practice matches or 
+                    // actual event matches, the code retrieves all or specific teams from the
+                    // backend
+                    if (eventCode.endsWith("prac")) {
+                        data = await (await fetch(`
+                            api/v1/scouting/${encodeURIComponent(eventCode)}/2026/teams/db
+                            `)).json();
+                    }
+                    else {
+                        data = await (await fetch(
+                            `api/v1/scouting/${encodeURIComponent(eventCode)
+                            }/2026/teams/all`
+                        )).json();
+                    }
+
+                    if (data.success) {
+                        // Populate the team select drop down
+                        element.querySelector(
+                            "#team-selection-box-wrapper > .analysis-selection-wrapper"
+                        ).innerHTML = populateTeamSelect(data.body, teamNumber, eventCode.endsWith("prac"));
+                    }    
+                } catch (err) {
+                    console.error(err);
+                }
+            }   
+
+            /* 
+                handles team(s) selection & runs analysis 
+            */
+            element.querySelector(".analysis-selection-box-wrapper > .run-analysis").onclick = async () => {
+                
+                const eventCode = element.querySelector(".analysis-selection-wrapper > select.event-code").value;
+                console.log(analysisMode)
+                showOverlay();
+
+                // Checks analysis mode and retrieves analysis/comparsion data
+                // analysis
+                if (analysisMode == "analysis") {
+                    const teamNum = element.querySelector(".analysis-selection-wrapper > select.team-select").value;
+                    
+                    // confirm the team selected is a valid team
+                    if (teamNum == "0" || teamNum == "") {
+                        element.querySelector("#analysisErrorMsg").innerHTML = "Invalid team selection!";
+                        return;
+                    }
+                    else {
+                        element.querySelector("#analysisErrorMsg").innerHTML = "";
+                    }
+
+                    // clears all previous analysis data
+                    clearAnalysisData();
+
+                    // populate data table
+                    // left: team name, robot image
+                    try {
+                        let data = await (await fetch(
+                            `
+                                api/v1/scouting/team/get/${encodeURIComponent(teamNum)}
+                            `
+                        )).json();
+    
+                        if (data.success) {
+                            // add team name header in left of robot data table
+                            element.querySelector("#team-select-name").innerHTML = data.body.team.nickname + "  |  " + data.body.team.country; 
+                        }
+    
+                        // retrieve media for team (images, avatar)
+                        data = await(await fetch(
+                            `
+                                api/v1/scouting/team/get/${encodeURIComponent(teamNum)}/media/2026
+                            `
+                        )).json();
+
+                        // TODO: Implement an image carousel
+                        
+                        // depending on screen size, make table horizontal / vertical
+                        element.querySelector(".robot-data-table").style.display = 
+                            element.clientWidth < 700 ? "block" : "flex";
+
+                        // iterate through retrieved media data to find usable images
+                        for (let i=0; i<data.body.length && data.success; i++) {
+                            if (data.body[i]["type"] == "imgur") {
+                                // TODO
+                                imageList.push(data.body[i]["direct_url"]);
+                                addImage(data.body[i]["direct_url"]);
+                                break;
+                            }
+                            if (data.body[i]["type"] == "avatar") {
+                                element.querySelector("#team-avatar").src = "data:image/png; base64," + data.body[i]["details"]["base64Image"];
+                            }
+                        }
+                        // check if a robot image is available
+                        if (imageList.length == 0) {
+                            // Add default robot image
+                            addImage("../img/defaultRobotImage.png");
+                            element.querySelector(".image-slide-show").innerHTML += `<p>no robot image found!</p>`
+                        }
+                        if (element.querySelector("#team-avatar").src == "data:image/png; base64,") {
+                            element.querySelector("#team-avatar").src = "../img/defaultRobotImage.png";
+                        }
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    // Right: Google sheets API stuff, tba data, etc..
+                    // TODO: Google sheets data
+                    try {
+                        let data = await (await fetch(
+                            `
+                            /path/to/spread/sheet/(later)
+                            `
+                        ))
+                        // Deal with spreadsheet api later, for now:
+                        // Data structure
+                        data = {
+                           "Drivetrain": "Unknown",
+                           "Trench": "Unknown",
+                           "Hopper Capacity": "Unknown"
+                        } // For now
+                        robotData = {...data};
+                        populateRobotData();
+                    } catch (e) {
+                        console.log(e);
+                    }
+
+                    // grab charts
+                    try {
+                        const data = await (await fetch(
+                            `
+                                api/v1/scouting/entry/analysis/event/${encodeURIComponent(eventCode)}/${teamNum}
+                            `
+                        )).json();
+                        if (data.success) {
+                            // Display robot analysis data
+                            document.querySelector("#robot-analysis-data").style.display = "flex";
+                            document.querySelector(".data-window > #robot-analysis-data > h1").style.display = "block";
+                            
+                            // Unhide graphs div
+                            document.querySelector(".analysis-graphs").style.display = "flex";
+
+                            // Add general graphs (scoring, brick time, defense time)
+                            console.log(data.body.display.graphs)
+                            data?.body?.display?.graphs?.forEach((configObj) => {
+                                if (configObj.category == "score" && configObj.type == "config"
+                                    && configObj.label != "Auto vs Teleop"
+                                ) {
+                                    addGraph("overall-graphs", configObj, "score");
+                                }
+                            })
+
+                            // Add stat graphs
+                            data.body.display.stats.forEach((confObj) => {
+                                addGraph("stat-graphs", confObj, "stats");
+                            })
+    
+                            // show all graphs
+                            document.getElementById(graphList[0].containerId).style.display= "block";
+                            handleGraphSelections();
+    
+                            // Update robot data in table based on retrieved data & stats
+                            robotData["Climb"] = data.body.data.parsed["has-climb"] ? "Yes" : "No";
+                            robotData["Average Defense Time"] = data.body.data.parsed["avg-def"] + "s";
+                            robotData["% of Matches Bricked"] = `${data.body.data.parsed["bricked-percent"] * 100}` + "%";
+                            
+                            // Repopulate
+                            populateRobotData();
+                            
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+                // comparison
+                else { 
+                    // retrieve list of teams!
+                    let elem = document.querySelectorAll("input[name=teams-selection-collection]");
+                    const selected = [];
+                    elem.forEach(team => {
+                        if (team.checked) {
+                            selected.push(parseInt(team.value));
+                        }
+                    })
+
+                    // Ensure that number of teams is between 1 and 5
+                    if (selected.length > 5) {
+                        element.querySelector("#analysisErrorMsg").innerHTML = "Too many teams selected! Choose 5 or less.";
+                        hideOverlay();
+                        return;
+                    }
+                    else if (selected.length < 1) {
+                        element.querySelector("#analysisErrorMsg").innerHTML = "No team selected!";
+                        hideOverlay();
+                        return;
+                    }
+                    else {
+                        element.querySelector("#analysisErrorMsg").innerHTML = "";
+                        
+                        // Hide selections
+
+                        element.querySelector("#team-selections").display = "none";
+                    }
+
+                    clearAnalysisData();
+
+                    // retrieve overall graphs (no robot table or stats for multi comparison)
+
+                    try {
+                        const data = await (await fetch(
+                            `
+                                api/v1/scouting/entry/compare/event/${encodeURIComponent(eventCode)}/${selected.join(",")}
+                            `
+                        )).json();
+
+                        console.log(data);
+
+                        if (data.success) {
+                            // Display robot analysis data
+                            document.querySelector("#robot-analysis-data").style.display = "flex";
+                            document.querySelector(".data-window > #robot-analysis-data > h1").style.display = "block";
+                            
+                            // Unhide graphs div
+                            document.querySelector(".analysis-graphs").style.display = "flex";
+
+                            // Add general graphs (scoring, brick time, defense time)
+                            
+                            console.log(data.body.display.graphs)
+                            
+                            data?.body?.display?.graphs?.forEach((configObj) => {
+                                if (configObj.category == "score" && configObj.type == "config"
+                                ) {
+                                    addGraph("overall-graphs", configObj, "score");
+                                }
+                            })
+
+                            document.getElementById(graphList[0].containerId).style.display= "block";
+                            handleGraphSelections();
+                        } else {
+                            element.querySelector("#analysisErrorMsg").innerHTML = data.error;
+                        }
+
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+
+                hideOverlay();
+
+            }
+            resolve();
+        });
+    }
+
+    _this.showAnalysisPageOld= () => {
         return new Promise(async (resolve, reject) => {
             await _this.setMatchNav(0, undefined, undefined, undefined);
             let year =

@@ -3,6 +3,7 @@ import ScoutingCategory from "../models/scoutingCategory";
 import { getCategoryByIdentifier } from "./scouting";
 import crypto from "crypto";
 import config from "../config";
+import ScoutingEntry from "../models/scoutingEntry";
 
 export function hashAccessToken(accessToken) {
     return crypto
@@ -21,6 +22,10 @@ export function getAllTeams() {
 
 export async function teamExistsByNumber(teamNumber: string) {
     return (await getTeamByNumber(teamNumber)) != null;
+}
+
+export function getTeamsWithPracticeEntries() {
+    return ScoutingEntry.find({event: "2026all-prac"}, {team: 1, _id: 0}).lean();
 }
 
 export async function addTeam(
