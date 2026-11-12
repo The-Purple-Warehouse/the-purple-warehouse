@@ -5,11 +5,7 @@
     <script>
         (function () {
             var stored = localStorage.getItem("theme");
-            if (stored === "dark") {
-                document.documentElement.setAttribute("data-theme", "dark");
-            } else if (stored === "light") {
-                document.documentElement.removeAttribute("data-theme");
-            }
+            document.documentElement.setAttribute("data-theme", stored)
         })();
     </script>
     <link href="/css/scouting.css?v=32" rel="stylesheet">
@@ -53,16 +49,6 @@
         },
         year: {{ year }}
       });
-
-        (async () => {
-            const inv = await fetch("/api/v1/scouting/shop/inventory");
-            const invdata = await inv.json();
-            const inventory = invdata.body?.inventory || [];
-            const ownsDarkMode = inventory.some(entry => (entry.itemId?._id));
-            if (ownsDarkMode) {
-                document.querySelector(".dark-mode-toggle-scouting").style.display = "flex";
-            }
-        })();
 
       async function updatePage() {
 

@@ -7,11 +7,7 @@
     <script>
         (function () {
             let stored = localStorage.getItem("theme");
-            if (stored === "dark") {
-                document.documentElement.setAttribute("data-theme", "dark");
-            } else if (stored === "light") {
-                document.documentElement.removeAttribute("data-theme");
-            }
+            document.documentElement.setAttribute("theme", stored);
         })();
     </script>
     <link href="/css/scouting.css?v=32" rel="stylesheet">
