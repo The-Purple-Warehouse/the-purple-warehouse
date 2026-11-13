@@ -4,6 +4,7 @@ import UserInventory from "../models/userInventory";
 import { getTotalIncentives } from "./scouting";
 import PurchaseEntry from "../models/purchaseEntry";
 import { getTeamByNumber } from "./teams";
+import { ObjectID } from "mongodb";
 
 export interface ShopItem {
     id: string;
@@ -33,7 +34,12 @@ interface Incentives {
 }
 
 export async function getShopItems(): Promise<ShopItem[]> {
-    const items = await ShopItem.find({ enabled: true });
+    let items;
+    try {
+        items = await ShopItem.find({ enabled: true });
+    } catch (e) {
+        console.log("error finding shop items");
+    }
     return items.map((item) => ({
         id: item._id.toString(),
         name: item.name,

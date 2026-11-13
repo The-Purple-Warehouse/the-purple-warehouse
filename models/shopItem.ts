@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "../db";
 
 const shopItemSchema = new mongoose.Schema({
     name: {
