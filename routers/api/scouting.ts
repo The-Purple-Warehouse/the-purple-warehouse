@@ -579,7 +579,7 @@ router.get("/leaderboard", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
         const leaders = await aggregateLeaderboard();
-        
+
         const leadersWithLevels = leaders.map((leader) => {
             const { level, progress } = getLevelAndProgress(leader.totalXp);
             return {
@@ -654,7 +654,7 @@ router.get("/shop/items", requireScoutingAuth, async (ctx, next) => {
     addAPIHeaders(ctx);
     try {
         const items = await getShopItems();
-        console.log("receieved items" , items);
+        console.log("receieved items", items);
         const userTotals = await getTotalIncentives(
             ctx.session.scoutingTeamNumber,
             ctx.session.scoutingUsername

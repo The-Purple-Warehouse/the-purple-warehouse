@@ -423,7 +423,6 @@ select.team {
     box-shadow: none;
 }
 
-
 select.event-code:not(:last-of-type),
 select.team:not(:last-of-type) {
     margin-bottom: 25px;
@@ -3526,7 +3525,8 @@ html[data-theme="dark"] body {
     transform: translateX(18px);
 }
 
-.blahaj-bg-toggle-scouting, .blahaj-1072-bg-toggle-scouting {
+.blahaj-bg-toggle-scouting,
+.blahaj-1072-bg-toggle-scouting {
     display: none;
     align-items: center;
     gap: 10px;
@@ -3553,7 +3553,7 @@ html[data-theme="dark"] body {
 }
 
 .blahaj-bg-toggle-scouting .toggle-thumb,
-.blahaj-1072-bg-toggle-scouting .toggle-thumb{
+.blahaj-1072-bg-toggle-scouting .toggle-thumb {
     width: 18px;
     height: 18px;
     background: white;
@@ -3579,7 +3579,8 @@ html[data-theme="dark"] body {
     justify-content: space-between;
 }
 
-#blahaj-img-container, #blahaj-1072-img-container {
+#blahaj-img-container,
+#blahaj-1072-img-container {
     display: none;
     position: absolute;
 }
@@ -3596,7 +3597,7 @@ html[data-theme="dark"] body {
     height: 100%;
 }
 
-[data-theme="blahaj-spin"] #blahaj-img-container, 
+[data-theme="blahaj-spin"] #blahaj-img-container,
 [data-theme="blahaj1072spin"] #blahaj-1072-img-container {
     display: flex;
     flex-direction: column;
@@ -3608,19 +3609,22 @@ html[data-theme="dark"] body {
     height: 100%;
 }
 
-[data-theme="blahaj"] #app, [data-theme="blahaj1072"] #app {
+[data-theme="blahaj"] #app,
+[data-theme="blahaj1072"] #app {
     background: transparent;
     color: black;
     z-index: 5;
 }
 
-[data-theme="blahaj-spin"] #app, [data-theme="blahaj1072spin"] #app {
+[data-theme="blahaj-spin"] #app,
+[data-theme="blahaj1072spin"] #app {
     background: transparent;
     color: black;
     z-index: 5;
 }
 
-[data-theme="blahaj"] .home-window, [data-theme="blahaj1072"] .home-window {
+[data-theme="blahaj"] .home-window,
+[data-theme="blahaj1072"] .home-window {
     background: transparent;
 }
 
@@ -3628,11 +3632,14 @@ html[data-theme="dark"] body {
     opacity: 40%;
 }
 
-[data-theme="blahaj-spin"] .blahaj-img, [data-theme="blahaj1072spin"] .blahaj-img {
+[data-theme="blahaj-spin"] .blahaj-img,
+[data-theme="blahaj1072spin"] .blahaj-img {
     opacity: 60%;
-    animation : blahajspin 1s linear; 
+    animation: blahajspin 1s linear;
 }
 
 @keyframes blahajspin {
-    100% {transform: rotate(360deg)}
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -6306,9 +6306,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             disabledColor: "#888888"
         };
 
-        configuration.theme.blahaj = {
-            
-        }
+        configuration.theme.blahaj = {};
 
         function applyThemeVars() {
             let t =
@@ -6445,15 +6443,17 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
         switch (name) {
             case "Spinning Blahaj Badge":
-                img += "blahahaj.gif"; break;
+                img += "blahahaj.gif";
+                break;
             case "Blahaj 1072 Badge":
-                img += "fedorablahaj.png"; break;
+                img += "fedorablahaj.png";
+                break;
             default:
                 break;
         }
 
         return `<img src = ${img} alt = ${img} width=30 height=30 />`;
-    }
+    };
 
     _this.showLeaderboardPage = async () => {
         return new Promise(async (resolve, reject) => {
@@ -6486,15 +6486,18 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 leader.team
                                             )})</span>
                                         </div>
-                                        <div>${
-                                            leader.decor.map((i) =>
-                                                `
+                                        <div>${leader.decor
+                                            .map(
+                                                (i) =>
+                                                    `
                                                 <span>
-                                                    ${_this.getLeaderboardSwagImage(i)}
+                                                    ${_this.getLeaderboardSwagImage(
+                                                        i
+                                                    )}
                                                 </span>
                                                 `
-                                            ).join("")
-                                        }</div>
+                                            )
+                                            .join("")}</div>
                                     </div>
                                     <div class="stats">
                                         <div class="nuts">
@@ -6588,9 +6591,11 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         </div>
                                     </div>
                                 </div>
-                                <button class="purchasebtn" data-name="${item.name}" data-id="${
-                                    item.id
-                                }" ${ownedIds.has(item.id) ? "disabled" : ""}>
+                                <button class="purchasebtn" data-name="${
+                                    item.name
+                                }" data-id="${item.id}" ${
+                                        ownedIds.has(item.id) ? "disabled" : ""
+                                    }>
                                     ${
                                         ownedIds.has(item.id)
                                             ? "Owned"
@@ -6632,7 +6637,6 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
 
                             // Reload page
                             location.reload();
-                            
                         } else {
                             alert(purchase.error);
                         }

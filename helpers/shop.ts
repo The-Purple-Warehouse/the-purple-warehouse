@@ -37,8 +37,7 @@ export async function getShopItems(): Promise<ShopItem[]> {
     let items;
     try {
         items = await ShopItem.find({ enabled: true });
-    } catch (e)
-    {
+    } catch (e) {
         console.log("error finding shop items");
     }
     return items.map((item) => ({
