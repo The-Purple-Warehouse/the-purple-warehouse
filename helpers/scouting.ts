@@ -7,6 +7,8 @@ import { getEventTeams, getTeamEvents } from "./tba";
 import * as crypto from "crypto";
 import scoutingConfig from "../config/scouting";
 import config from "../config";
+import UserInventory from "../models/userInventory";
+import ShopItem from "../models/shopItem";
 
 const DIVISIONS = [
     "2025arc",
@@ -1047,5 +1049,35 @@ export async function aggregateLeaderboard() {
             }
         }
     ]);
+
+    await addLeaderboardSwag(leaders);
+
+    // account for bought items
+    // TODO
+
     return leaders;
+}
+
+async function addLeaderboardSwag(users) {
+    const leaderboardObj = await ShopItem.find(
+        { type: "leaderboard" },
+        { _id: 1, name: 1 }
+    );
+    for (let i = 0; i < users.length; i++) {
+        let inv = await UserInventory.find({
+            "user.username": users[i].username
+        });
+        const swag: String[] = [];
+        if (inv.length > 0) inv = inv[0].items;
+        for (let j = 0; j < leaderboardObj.length; j++) {
+            for (let k = 0; k < inv.length; k++) {
+                if (
+                    inv[k].itemId.toString() == leaderboardObj[j]._id.toString()
+                ) {
+                    swag.push(leaderboardObj[j].name);
+                }
+            }
+        }
+        users[i]["decor"] = swag;
+    }
 }
