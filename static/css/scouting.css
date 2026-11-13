@@ -423,6 +423,7 @@ select.team {
     box-shadow: none;
 }
 
+
 select.event-code:not(:last-of-type),
 select.team:not(:last-of-type) {
     margin-bottom: 25px;
@@ -599,7 +600,7 @@ body > header .header-btn {
     display: block;
     padding: 0.75em 1em;
     margin: 0 -1em;
-    font-size: 1.125em;
+    font-size: 0.95em;
     cursor: pointer;
     transition: background-color ease-in-out 250ms;
 }
@@ -2981,8 +2982,7 @@ div.preset {
 
 .shop-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: 33% 33% 33%;
     padding: 10px;
 }
 
@@ -2990,6 +2990,7 @@ div.preset {
     background: white;
     border-radius: 10px;
     padding: 15px;
+    margin: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -3078,7 +3079,7 @@ div.preset {
 
 @media (max-width: 600px) {
     .shop-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: 50% 50%;
         gap: 10px;
     }
 
@@ -3523,4 +3524,115 @@ html[data-theme="dark"] body {
 
 [data-theme="dark"] .dark-mode-toggle-scouting .toggle-thumb {
     transform: translateX(18px);
+}
+
+.blahaj-bg-toggle-scouting, .blahaj-1072-bg-toggle-scouting {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75em 1em;
+    margin: 0 -1em;
+    font-size: 1.125em;
+    color: #ffffff;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: calc(100% + 2em);
+    transition: background-color ease-in-out 250ms;
+}
+
+.blahaj-bg-toggle-scouting .toggle-track,
+.blahaj-1072-bg-toggle-scouting .toggle-track {
+    width: 40px;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.blahaj-bg-toggle-scouting .toggle-thumb,
+.blahaj-1072-bg-toggle-scouting .toggle-thumb{
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+}
+
+[data-theme="blahaj"] .blahaj-bg-toggle-scouting .toggle-track,
+[data-theme="blahaj1072"] .blahaj-1072-bg-toggle-scouting .toggle-track {
+    background: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="blahaj"] .blahaj-bg-toggle-scouting .toggle-thumb,
+[data-theme="blahaj1072"] .blahaj-1072-bg-toggle-scouting .toggle-thumb {
+    transform: translateX(18px);
+}
+
+.blahaj-bg-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+#blahaj-img-container, #blahaj-1072-img-container {
+    display: none;
+    position: absolute;
+}
+
+[data-theme="blahaj"] #blahaj-img-container,
+[data-theme="blahaj1072"] #blahaj-1072-img-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+[data-theme="blahaj-spin"] #blahaj-img-container, 
+[data-theme="blahaj1072spin"] #blahaj-1072-img-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+[data-theme="blahaj"] #app, [data-theme="blahaj1072"] #app {
+    background: transparent;
+    color: black;
+    z-index: 5;
+}
+
+[data-theme="blahaj-spin"] #app, [data-theme="blahaj1072spin"] #app {
+    background: transparent;
+    color: black;
+    z-index: 5;
+}
+
+[data-theme="blahaj"] .home-window, [data-theme="blahaj1072"] .home-window {
+    background: transparent;
+}
+
+.blahaj-img {
+    opacity: 40%;
+}
+
+[data-theme="blahaj-spin"] .blahaj-img, [data-theme="blahaj1072spin"] .blahaj-img {
+    opacity: 60%;
+    animation : blahajspin 1s linear; 
+}
+
+@keyframes blahajspin {
+    100% {transform: rotate(360deg)}
 }

@@ -6306,6 +6306,10 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
             disabledColor: "#888888"
         };
 
+        configuration.theme.blahaj = {
+            
+        }
+
         function applyThemeVars() {
             let t =
                 document.documentElement.getAttribute("data-theme") === "dark"
@@ -6436,6 +6440,21 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         return _this.hexFromBytes(sha256(_this.stringToBytes(string)));
     };
 
+    _this.getLeaderboardSwagImage = (name) => {
+        let img = "/img/";
+
+        switch (name) {
+            case "Spinning Blahaj Badge":
+                img += "blahahaj.gif"; break;
+            case "Blahaj 1072 Badge":
+                img += "fedorablahaj.png"; break;
+            default:
+                break;
+        }
+
+        return `<img src = ${img} alt = ${img} width=30 height=30 />`;
+    }
+
     _this.showLeaderboardPage = async () => {
         return new Promise(async (resolve, reject) => {
             await _this.setMatchNav(0, undefined, undefined, undefined);
@@ -6467,6 +6486,15 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                                 leader.team
                                             )})</span>
                                         </div>
+                                        <div>${
+                                            leader.decor.map((i) =>
+                                                `
+                                                <span>
+                                                    ${_this.getLeaderboardSwagImage(i)}
+                                                </span>
+                                                `
+                                            ).join("")
+                                        }</div>
                                     </div>
                                     <div class="stats">
                                         <div class="nuts">
@@ -6560,7 +6588,7 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                                         </div>
                                     </div>
                                 </div>
-                                <button class="purchasebtn" data-id="${
+                                <button class="purchasebtn" data-name="${item.name}" data-id="${
                                     item.id
                                 }" ${ownedIds.has(item.id) ? "disabled" : ""}>
                                     ${
@@ -6602,9 +6630,9 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
                             btn.disabled = true;
                             btn.textContent = "Owned";
 
-                            document.querySelector(
-                                ".dark-mode-toggle-scouting"
-                            ).style.display = "flex";
+                            // Reload page
+                            location.reload();
+                            
                         } else {
                             alert(purchase.error);
                         }
