@@ -15,10 +15,8 @@
     <a data-page="bazaar" href="#/bazaar">Bazaar</a>
     <a data-page="log-out" href="/scouting/logout">Log Out</a>
     <hr style="border-color: rgba(255,255,255,0.15); margin: 0.5em 0;">
-    <button class="dark-mode-toggle-scouting" id="dark-mode-toggle">
-        <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span>Dark Mode</span>
-    </button>
+    <div id = "shop-items-toggle-container">
+    </div>
 </nav>
 <header>
     <button class="nav-left navbar-open-btn"></button>
@@ -67,17 +65,8 @@
         </div>
     </div>
 </header>
-
+<script type = "module" src = "/js/shopitems.js"></script>
 <script defer>
-    document.getElementById("dark-mode-toggle").addEventListener("click", function () {
-        if (document.documentElement.getAttribute("data-theme") === "dark") {
-            document.documentElement.removeAttribute("data-theme");
-            localStorage.setItem("theme", "light");
-        } else {
-            document.documentElement.setAttribute("data-theme", "dark");
-            localStorage.setItem("theme", "dark");
-        }
-    });
 
     if (window.matchMedia) {
         window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (e) {
