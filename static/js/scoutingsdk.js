@@ -6784,4 +6784,4 @@ ${_this.escape(teamNumber)} (Blue ${i + 1})
         });
     };
 };
-w;
+
