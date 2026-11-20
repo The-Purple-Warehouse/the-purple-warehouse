@@ -8,12 +8,6 @@ interface parsedTPWData {
     [team: string]: {
         "avg-tele": number;
         "avg-auto": number;
-        "avg-climb": number;
-        "avg-def": number;
-        "avg-driv": number;
-        "avg-speed": number;
-        "avg-stab": number;
-        "avg-inta": number;
         "avg-upt": number;
         matches: any;
         "tpw-std": number;
@@ -23,10 +17,16 @@ interface parsedTPWData {
 
 interface shotSummary {
     Match: string;
-    AutoScored: number;
-    TeleopScored: number;
-    TeleopPassed: number;
-    TotalFuel: number;
+    L1: number;
+    L2: number;
+    L3: number;
+    L4: number;
+    Missed: number;
+    MissedL1: number;
+    MissedL2: number;
+    MissedL3: number;
+    MissedL4: number;
+    "Total Shots": number;
 }
 
 interface chartConfig {
@@ -94,7 +94,6 @@ interface chartConfig {
             };
             r?: {
                 beginAtZero: boolean;
-                max?: number;
             };
         };
     };
@@ -129,117 +128,83 @@ function getData(data): any {
     }
     let parsed_tpw_data: parsedTPWData = {};
     for (let team in team_data) {
-        let afgps = [];
-        let tfgps = [];
-        let afgpts = {};
-        let tfgpts = {};
-        let l1climbs = [];
-        let egcpts = [];
-        let defe = [];
-        let speed = [];
-        let driver = [];
-        let stab = [];
-        let inta = [];
+        let agps = [];
+        let tgps = [];
+        let agpts = {};
+        let tgpts = {};
+        //let egcpts = [];
         let uptime = [];
         let avg_auto_points = [];
         let avg_tele_points = [];
         let matches = {};
         for (let x of team_data[team]) {
-            let auto_fuel_pieces = x["auto fuel scoring"]
-                .slice(1, x["auto fuel scoring"].length - 1)
+            let auto_pieces = x["auto scoring"]
+                .slice(1, x["auto scoring"].length - 1)
                 .split(", ");
-            let tele_fuel_pieces = x["teleop fuel scoring"]
-                .slice(1, x["teleop fuel scoring"].length - 1)
+            console.log(auto_pieces);
+            let tele_pieces = x["teleop scoring"]
+                .slice(1, x["teleop scoring"].length - 1)
                 .split(", ");
-            let game_pieces = auto_fuel_pieces.concat(tele_fuel_pieces);
-            afgps.push(auto_fuel_pieces);
-            tfgps.push(tele_fuel_pieces);
-            l1climbs.push(x["l1 climb"] === true || x["l1 climb"] === "true");
-            let climb_lev = parseInt(x["climb level"]);
-            if (climb_lev == 0) {
-                egcpts.push(0);
-            } else if (climb_lev == 1) {
-                egcpts.push(10);
-            } else if (climb_lev == 2) {
-                egcpts.push(20);
-            } else if (climb_lev >= 3) {
-                egcpts.push(30);
-            }
-
+            console.log(tele_pieces);
+            let game_pieces = auto_pieces.concat(tele_pieces);
+            agps.push(auto_pieces);
+            tgps.push(tele_pieces);
             try {
-                defe.push(parseInt(x["defense skill"]));
-                speed.push(parseInt(x["speed"]));
-                stab.push(parseInt(x["stability"]));
-                inta.push(parseInt(x["intake consistency"]));
-                driver.push(parseInt(x["driver skill"]));
                 uptime.push(153000 - parseInt(x["brick time"]));
             } catch {
-                defe.push(3);
-                speed.push(3);
-                stab.push(3);
-                inta.push(3);
-                driver.push(3);
                 uptime.push(100);
             }
-
             try {
-                matches[x["match"]][x[""]] = {
-                    auto: auto_fuel_pieces,
-                    teleop: tele_fuel_pieces
-                };
+                matches[x["match"]][x[""]] = game_pieces;
             } catch {
-                matches[x["match"]] = {
-                    [x[""]]: {
-                        auto: auto_fuel_pieces,
-                        teleop: tele_fuel_pieces
-                    }
-                };
+                matches[x["match"]] = { [x[""]]: game_pieces };
             }
         }
-        for (let i = 0; i < afgps.length; ++i) {
-            for (let j = 0; j < afgps[i].length; ++j) {
-                let val = afgps[i][j];
-                if (val == "fsa") {
-                    afgpts[i] = (afgpts[i] || 0) + 1;
+        for (let i = 0; i < agps.length; ++i) {
+            for (let j = 0; j < agps[i].length; ++j) {
+                let val = agps[i][j];
+                if (val == "cs1") {
+                    agpts[i] = (agpts[i] || 0) + 8;
+                } else if (val == "cs2") {
+                    agpts[i] = (agpts[i] || 0) + 4;
+                } else if (val == "cs3") {
+                    agpts[i] = (agpts[i] || 0) + 8;
+                } else if (val == "cs4") {
+                    agpts[i] = (agpts[i] || 0) + 12;
                 } else {
-                    afgpts[i] = (afgpts[i] || 0) + 0;
+                    agpts[i] = (agpts[i] || 0) + 0;
                 }
             }
-            if (l1climbs[i]) {
-                afgpts[i] = (afgpts[i] || 0) + 15;
-            }
-            avg_auto_points.push(afgpts[i]);
+            avg_auto_points.push(agpts[i]);
         }
-        for (let i = 0; i < tfgps.length; ++i) {
-            for (let j = 0; j < tfgps[i].length; ++j) {
-                let val = tfgps[i][j];
-                if (val == "fsa") {
-                    tfgpts[i] = (tfgpts[i] || 0) + 1;
-                } else if (val == "fp") {
-                    tfgpts[i] = (tfgpts[i] || 0) + 0;
+        for (let i = 0; i < tgps.length; i++) {
+            for (let j = 0; j < tgps[i].length; ++j) {
+                let val = tgps[i][j];
+                if (val == "cs1") {
+                    tgpts[i] = (tgpts[i] || 0) + 8;
+                } else if (val == "cs2") {
+                    tgpts[i] = (tgpts[i] || 0) + 2;
+                } else if (val == "cs3") {
+                    tgpts[i] = (tgpts[i] || 0) + 5;
+                } else if (val == "cs4") {
+                    tgpts[i] = (tgpts[i] || 0) + 10;
                 } else {
-                    tfgpts[i] = (tfgpts[i] || 0) + 0;
+                    tgpts[i] = (tgpts[i] || 0) + 0;
                 }
             }
-            avg_tele_points.push(tfgpts[i]);
+            avg_tele_points.push(tgpts[i]);
         }
         let data_tpw: parsedTPWData[string] = {
             "avg-tele": avg(avg_tele_points),
             "avg-auto": avg(avg_auto_points),
-            "avg-climb": avg(egcpts),
-            "avg-def": avg(defe),
-            "avg-driv": avg(driver),
-            "avg-speed": avg(speed),
-            "avg-stab": avg(stab),
-            "avg-inta": avg(inta),
             "avg-upt": avg(uptime),
             matches: matches,
             "tpw-std":
-                std(avg_auto_points) + std(avg_tele_points) + std(egcpts),
+                std(avg_auto_points) + std(avg_tele_points),
             "tpw-score": 0
         };
         data_tpw["tpw-score"] =
-            data_tpw["avg-auto"] + data_tpw["avg-tele"] + data_tpw["avg-climb"];
+            data_tpw["avg-auto"] + data_tpw["avg-tele"];
         parsed_tpw_data[team] = data_tpw;
     }
     return parsed_tpw_data;
@@ -254,40 +219,92 @@ function shotSummary(parsed_data: parsedTPWData, team: string): shotSummary[] {
     }
 
     for (const match in data.matches) {
-        const autoScoredArr: number[] = [];
-        const teleScoredArr: number[] = [];
-        const telePassedArr: number[] = [];
+        const level1: number[] = [];
+        const level2: number[] = [];
+        const level3: number[] = [];
+        const level4: number[] = [];
+        const missed: number[] = [];
+        const missedl1: number[] = [];
+        const missedl2: number[] = [];
+        const missedl3: number[] = [];
+        const missedl4: number[] = [];
         for (const x in data.matches[match]) {
-            const entry = data.matches[match][x];
-            let aScored = 0;
-            for (const e of entry.auto) {
-                if (e == "fsa") {
-                    aScored += 1;
+            let l1 = 0,
+                l2 = 0,
+                l3 = 0,
+                l4 = 0,
+                mi = 0,
+                l1miss = 0,
+                l2miss = 0,
+                l3miss = 0,
+                l4miss = 0;
+            for (const e of data.matches[match][x]) {
+                console.log(e);
+                switch (e) {
+                    case "fs":
+                        console.log("1");
+                        l1 += 1;
+                        break;
+                    case "cs2":
+                        l2 += 1;
+                        break;
+                    case "cs3":
+                        l3 += 1;
+                        break;
+                    case "cs4":
+                        console.log("2");
+                        l4 += 1;
+                        break;
+                    case "cm1":
+                        l1miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm2":
+                        l2miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm3":
+                        l3miss += 1;
+                        mi += 1;
+                        break;
+                    case "cm4":
+                        l4miss += 1;
+                        mi += 1;
+                        break;
                 }
             }
-            let tScored = 0;
-            let tPassed = 0;
-            for (const e of entry.teleop) {
-                if (e == "fsa") {
-                    tScored += 1;
-                } else if (e == "fp") {
-                    tPassed += 1;
-                }
-            }
-            autoScoredArr.push(aScored);
-            teleScoredArr.push(tScored);
-            telePassedArr.push(tPassed);
+            level1.push(l1);
+            level2.push(l2);
+            level3.push(l3);
+            level4.push(l4);
+            missed.push(mi);
+            missedl1.push(l1miss);
+            missedl2.push(l2miss);
+            missedl3.push(l3miss);
+            missedl4.push(l4miss);
         }
-        const autoAvg = avg(autoScoredArr);
-        const teleAvg = avg(teleScoredArr);
-        const passAvg = avg(telePassedArr);
-        const total = autoAvg + teleAvg + passAvg;
+        const l1avg = avg(level1);
+        const l2avg = avg(level2);
+        const l3avg = avg(level3);
+        const l4avg = avg(level4);
+        const mavg = avg(missed);
+        const ml1avg = avg(missedl1);
+        const ml2avg = avg(missedl2);
+        const ml3avg = avg(missedl3);
+        const ml4avg = avg(missedl4);
+        const total = l1avg + l2avg + l3avg + l4avg + mavg;
         gamePieces.push({
             Match: match,
-            AutoScored: autoAvg,
-            TeleopScored: teleAvg,
-            TeleopPassed: passAvg,
-            TotalFuel: total
+            L1: l1avg,
+            L2: l2avg,
+            L3: l3avg,
+            L4: l4avg,
+            Missed: mavg,
+            MissedL1: ml1avg,
+            MissedL2: ml2avg,
+            MissedL3: ml3avg,
+            MissedL4: ml4avg,
+            "Total Shots": total
         });
     }
     return gamePieces;
@@ -300,7 +317,6 @@ function radarChartSpread(
     const categories = [
         "auto points",
         "teleop points",
-        "climb points",
         "total points"
     ];
     const datasets = teams.map((team) => {
@@ -311,7 +327,6 @@ function radarChartSpread(
         const tvals = [
             t["avg-auto"],
             t["avg-tele"],
-            t["avg-climb"],
             t["tpw-score"]
         ];
         const color = () =>
@@ -366,12 +381,7 @@ function getBest(parsed_data: parsedTPWData): number[] {
         if (stats["avg-auto"] > auto) auto = stats["avg-auto"];
         if (stats["avg-tele"] > tele) tele = stats["avg-tele"];
         if (stats["tpw-score"] > total) total = stats["tpw-score"];
-        if (stats["avg-driv"] > drive) drive = stats["avg-driv"];
-        if (stats["avg-def"] > defe) defe = stats["avg-def"];
-        if (stats["avg-stab"] > stab) stab = stats["avg-stab"];
         if (stats["avg-upt"] > upt) upt = stats["avg-upt"];
-        if (stats["avg-speed"] > speed) speed = stats["avg-speed"];
-        if (stats["avg-inta"] > inta) inta = stats["avg-inta"];
     }
     return [auto, tele, total, drive, defe, stab, upt, speed, inta];
 }
@@ -381,12 +391,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
         "auto pts",
         "teleop pts",
         "total pts",
-        "drive skill",
-        "defense",
-        "stability",
         "uptime",
-        "speed",
-        "intake"
     ];
     let maxes = getBest(parsed_data).map((value) =>
         value === 0 ? 1e-9 : value
@@ -400,12 +405,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
             t["avg-auto"] / maxes[0],
             t["avg-tele"] / maxes[1],
             t["tpw-score"] / maxes[2],
-            t["avg-driv"] / maxes[3],
-            t["avg-def"] / maxes[4],
-            t["avg-stab"] / maxes[5],
-            t["avg-upt"] / maxes[6],
-            t["avg-speed"] / maxes[7],
-            t["avg-inta"] / maxes[8]
+            t["avg-upt"] / maxes[3],
         ];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
@@ -453,124 +453,58 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
     };
 }
 
-function overTimeFuelChart(
+function overTimeChart(
     parsed_data: parsedTPWData,
     team: string
 ): chartConfig {
-    const dataS: shotSummary[] = shotSummary(parsed_data, team);
+    const dataS =  shotSummary(parsed_data, team);
     const labels = dataS.map((x) => x.Match);
     const datasets = [
         {
-            label: "Auto Scored",
-            data: dataS.map((x) => x.AutoScored),
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 2,
-            fill: false
-        },
-        {
-            label: "Teleop Scored",
-            data: dataS.map((x) => x.TeleopScored),
-            backgroundColor: "rgba(54, 162, 235, 0.2)",
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 2,
-            fill: false
-        },
-        {
-            label: "Teleop Passed",
-            data: dataS.map((x) => x.TeleopPassed),
-            backgroundColor: "rgba(255, 206, 86, 0.2)",
-            borderColor: "rgba(255, 206, 86, 1)",
-            borderWidth: 2,
-            fill: false
-        },
-        {
-            label: "Total Fuel",
-            data: dataS.map((x) => x.TotalFuel),
-            backgroundColor: "rgba(153, 102, 255, 0.2)",
-            borderColor: "rgba(153, 102, 255, 1)",
-            borderWidth: 2,
-            fill: false
-        }
-    ];
-    return {
-        type: "line",
-        data: {
-            labels,
-            datasets
-        },
-        options: {
-            plugins: {
-                title: {
-                    display: true,
-                    text: `Fuel Scoring Over Time for Team ${team}`
-                },
-                legend: {
-                    display: true,
-                    position: "top",
-                    labels: {
-                        font: {
-                            size: 12
-                        }
-                    }
-                }
-            },
-            aspectRatio: 2,
-            maintainAspectRatio: true,
-            responsive: true,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: "Match Num"
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: "Num"
-                    },
-                    beginAtZero: true
-                }
-            }
-        }
-    };
-}
-
-function autoVsTeleopChart(
-    parsed_data: parsedTPWData,
-    team: string
-): chartConfig {
-    const dataS = shotSummary(parsed_data, team);
-    const labels = dataS.map((x) => x.Match);
-    const datasets = [
-        {
-            label: "Auto Scored",
-            data: dataS.map((x) => x.AutoScored),
+            label: "Ground",
+            data: dataS.map((x) => x.L1),
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 2,
             fill: false
         },
         {
-            label: "Teleop Scored",
-            data: dataS.map((x) => x.TeleopScored),
+            label: "Stack",
+            data: dataS.map((x) => x.L2),
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             borderColor: "rgba(54, 162, 235, 1)",
             borderWidth: 2,
             fill: false
         },
         {
-            label: "Teleop Passed",
-            data: dataS.map((x) => x.TeleopPassed),
+            label: "Low",
+            data: dataS.map((x) => x.L3),
             backgroundColor: "rgba(255, 206, 86, 0.2)",
             borderColor: "rgba(255, 206, 86, 1)",
             borderWidth: 2,
             fill: false
         },
         {
-            label: "Total Fuel",
-            data: dataS.map((x) => x.TotalFuel),
+            label: "High",
+            data: dataS.map((x) => x.L4),
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 2,
+            fill: false
+        },
+        {
+            label: "Missed Shots",
+            data: dataS.map(
+                (x) => x.MissedL1 + x.MissedL2 + x.MissedL3 + x.MissedL4
+            ),
+            backgroundColor: "rgba(153, 102, 255, 0.2)",
+            borderColor: "rgba(153, 102, 255, 1)",
+            borderWidth: 2,
+            fill: false
+        },
+        {
+            label: "Total Shots",
+            data: dataS.map((x) => x["Total Shots"]),
             backgroundColor: "rgba(201, 203, 207, 0.2)",
             borderColor: "rgba(201, 203, 207, 1)",
             borderWidth: 2,
@@ -588,7 +522,7 @@ function autoVsTeleopChart(
             plugins: {
                 title: {
                     display: true,
-                    text: `Auto vs Teleop Fuel Scoring for Team ${team}`
+                    text: `Scoring Over Time for Team ${team}`
                 },
                 legend: {
                     display: true,
@@ -628,9 +562,10 @@ function scoreProportions(
 ): chartConfig {
     const dataS = shotSummary(parsed_data, team);
     const avgs = {
-        "Auto Scored": avg(dataS.map((x) => x.AutoScored)),
-        "Teleop Scored": avg(dataS.map((x) => x.TeleopScored)),
-        "Teleop Passed": avg(dataS.map((x) => x.TeleopPassed))
+        Ground: avg(dataS.map((x) => x.L1)),
+        Stack: avg(dataS.map((x) => x.L2)),
+        Low: avg(dataS.map((x) => x.L3)),
+        High: avg(dataS.map((x) => x.L4)),
     };
     const labels = Object.keys(avgs);
     const data = Object.values(avgs);
@@ -645,12 +580,14 @@ function scoreProportions(
                     backgroundColor: [
                         "rgba(255, 99, 132, 0.5)",
                         "rgba(54, 162, 235, 0.5)",
-                        "rgba(255, 206, 86, 0.5)"
+                        "rgba(255, 206, 86, 0.5)",
+                        "rgba(75, 192, 192, 0.5)",
                     ],
                     borderColor: [
                         "rgba(255, 99, 132, 1)",
                         "rgba(54, 162, 235, 1)",
-                        "rgba(255, 206, 86, 1)"
+                        "rgba(255, 206, 86, 1)",
+                        "rgba(75, 192, 192, 1)",
                     ],
                     borderWidth: 1
                 }
@@ -677,59 +614,41 @@ function scoreProportions(
     };
 }
 
-function climbDistribution(
-    parsed_data: parsedTPWData,
-    team: string
-): chartConfig {
-    const data_team = parsed_data[team];
-    if (!data_team || !data_team.matches) {
-        throw new Error(`No data found for team: ${team}`);
-    }
-
-    // Count climb levels across all matches from raw data
-    // Since we only store fuel data in matches, we need to recompute from source
-    // For now, use the average climb which gives us the distribution info
-    // We'll use a bar chart showing the avg climb points per match trend
-    const dataS = shotSummary(parsed_data, team);
-    const labels = dataS.map((x) => x.Match);
-
-    // Show fuel efficiency: scored per match as stacked bar
-    const datasets = [
-        {
-            label: "Auto Scored",
-            data: dataS.map((x) => x.AutoScored),
-            backgroundColor: "rgba(75, 192, 192, 0.5)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1
-        },
-        {
-            label: "Teleop Scored",
-            data: dataS.map((x) => x.TeleopScored),
-            backgroundColor: "rgba(54, 162, 235, 0.5)",
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 1
-        },
-        {
-            label: "Teleop Passed",
-            data: dataS.map((x) => x.TeleopPassed),
-            backgroundColor: "rgba(255, 206, 86, 0.5)",
-            borderColor: "rgba(255, 206, 86, 1)",
-            borderWidth: 1
-        }
-    ];
-
+function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
+    const dataS: shotSummary[] = shotSummary(parsed_data, team);
+    const accuracy = (successful: number, missed: number): number => {
+        const total = successful + missed;
+        return total === 0 ? 0 : (successful / total) * 100;
+    };
+    const accuracyL1 = dataS.map((x) => accuracy(x.L1, x.MissedL1));
+    const accuracyL2 = dataS.map((x) => accuracy(x.L2, x.MissedL2));
+    const accuracyL3 = dataS.map((x) => accuracy(x.L3, x.MissedL3));
+    const accuracyL4 = dataS.map((x) => accuracy(x.L4, x.MissedL4));
     return {
-        type: "bar",
+        type: "boxplot",
         data: {
-            labels,
-            datasets
+            labels: ["L1", "L2", "L3", "L4", "Processor", "Net"],
+            datasets: [
+                {
+                    label: `${team}`,
+                    data: [
+                        accuracyL1,
+                        accuracyL2,
+                        accuracyL3,
+                        accuracyL4,
+                    ],
+                    backgroundColor: "rgba(125, 64, 144, 0.5)",
+                    borderColor: "rgb(125, 64, 144)",
+                    borderWidth: 2
+                }
+            ]
         },
         options: {
             responsive: true,
             plugins: {
                 title: {
                     display: true,
-                    text: `Fuel Breakdown per Match for Team ${team}`
+                    text: `Shot Accuracy Distribution for Team ${team}`
                 },
                 tooltip: {
                     bodyFont: {
@@ -743,18 +662,14 @@ function climbDistribution(
             aspectRatio: 2,
             maintainAspectRatio: true,
             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: "Match Num"
-                    }
-                },
                 y: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
                     title: {
                         display: true,
-                        text: "Count"
-                    },
-                    beginAtZero: true
+                        text: "Accuracy %"
+                    }
                 }
             }
         }
@@ -775,10 +690,9 @@ export function getGraph(
         throw new Error(`Invalid mode: ${mode} in getGraph func`);
     }
     const tpw_data = getData(parsed_data);
-    if (mode == 0) return overTimeFuelChart(tpw_data, teamS as string);
     if (mode == 1) return radarChartSpread(tpw_data, teamS as string[]);
     if (mode == 2) return radarChartCTB(tpw_data, teamS as string[]);
-    if (mode == 3) return autoVsTeleopChart(tpw_data, teamS as string);
+    if (mode == 3) return overTimeChart(tpw_data, teamS as string);
     if (mode == 4) return scoreProportions(tpw_data, teamS as string);
-    if (mode == 5) return climbDistribution(tpw_data, teamS as string);
+    if (mode == 5) return shotAccuracy(tpw_data, teamS as string);
 }
