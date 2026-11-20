@@ -888,8 +888,8 @@ export async function analysis(event, teamNumber) {
         let matchesFull = (await getMatchesFull(event)) as any;
         let allScoutingData = await getAllDataByEvent(event);
         let allParsedData = parseFormatted(allScoutingData);
-        console.log(allScoutingData)
-        console.log(allParsedData)
+        console.log(allScoutingData);
+        console.log(allParsedData);
         let allScoutedTeams = [
             ...new Set(
                 allScoutingData

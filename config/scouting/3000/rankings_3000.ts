@@ -122,12 +122,10 @@ function getData(data): any {
             "avg-auto": avg(avg_auto_points),
             "avg-upt": avg(uptime),
             matches: matches,
-            "tpw-std":
-                std(avg_auto_points) + std(avg_tele_points),
+            "tpw-std": std(avg_auto_points) + std(avg_tele_points),
             "tpw-score": 0
         };
-        data_tpw["tpw-score"] =
-            data_tpw["avg-auto"] + data_tpw["avg-tele"];
+        data_tpw["tpw-score"] = data_tpw["avg-auto"] + data_tpw["avg-tele"];
         parsed_tpw_data[team] = data_tpw;
     }
     return parsed_tpw_data;
@@ -137,8 +135,7 @@ export function computeRankings(data: parsedRow[]): rankings {
     const parsed_data = getData(data);
     for (let team in parsed_data)
         parsed_data[team]["r-score"] =
-            parsed_data[team]["tpw-score"] -
-            parsed_data[team]["tpw-std"];
+            parsed_data[team]["tpw-score"] - parsed_data[team]["tpw-std"];
     const sorted = Object.entries(parsed_data).sort(
         (a, b) => (b[1]["r-score"] || 0) - (a[1]["r-score"] || 0)
     );

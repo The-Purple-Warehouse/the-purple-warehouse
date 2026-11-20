@@ -199,12 +199,10 @@ function getData(data): any {
             "avg-auto": avg(avg_auto_points),
             "avg-upt": avg(uptime),
             matches: matches,
-            "tpw-std":
-                std(avg_auto_points) + std(avg_tele_points),
+            "tpw-std": std(avg_auto_points) + std(avg_tele_points),
             "tpw-score": 0
         };
-        data_tpw["tpw-score"] =
-            data_tpw["avg-auto"] + data_tpw["avg-tele"];
+        data_tpw["tpw-score"] = data_tpw["avg-auto"] + data_tpw["avg-tele"];
         parsed_tpw_data[team] = data_tpw;
     }
     return parsed_tpw_data;
@@ -314,21 +312,13 @@ function radarChartSpread(
     parsed_data: parsedTPWData,
     teams: string[]
 ): chartConfig {
-    const categories = [
-        "auto points",
-        "teleop points",
-        "total points"
-    ];
+    const categories = ["auto points", "teleop points", "total points"];
     const datasets = teams.map((team) => {
         const t = parsed_data[team];
         if (!t) {
             throw new Error(`No data found for team: ${team}`);
         }
-        const tvals = [
-            t["avg-auto"],
-            t["avg-tele"],
-            t["tpw-score"]
-        ];
+        const tvals = [t["avg-auto"], t["avg-tele"], t["tpw-score"]];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
                 Math.random() * 255
@@ -387,12 +377,7 @@ function getBest(parsed_data: parsedTPWData): number[] {
 }
 
 function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
-    const categories = [
-        "auto pts",
-        "teleop pts",
-        "total pts",
-        "uptime",
-    ];
+    const categories = ["auto pts", "teleop pts", "total pts", "uptime"];
     let maxes = getBest(parsed_data).map((value) =>
         value === 0 ? 1e-9 : value
     );
@@ -405,7 +390,7 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
             t["avg-auto"] / maxes[0],
             t["avg-tele"] / maxes[1],
             t["tpw-score"] / maxes[2],
-            t["avg-upt"] / maxes[3],
+            t["avg-upt"] / maxes[3]
         ];
         const color = () =>
             `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
@@ -453,11 +438,8 @@ function radarChartCTB(parsed_data: parsedTPWData, teams: string[]): any {
     };
 }
 
-function overTimeChart(
-    parsed_data: parsedTPWData,
-    team: string
-): chartConfig {
-    const dataS =  shotSummary(parsed_data, team);
+function overTimeChart(parsed_data: parsedTPWData, team: string): chartConfig {
+    const dataS = shotSummary(parsed_data, team);
     const labels = dataS.map((x) => x.Match);
     const datasets = [
         {
@@ -565,7 +547,7 @@ function scoreProportions(
         Ground: avg(dataS.map((x) => x.L1)),
         Stack: avg(dataS.map((x) => x.L2)),
         Low: avg(dataS.map((x) => x.L3)),
-        High: avg(dataS.map((x) => x.L4)),
+        High: avg(dataS.map((x) => x.L4))
     };
     const labels = Object.keys(avgs);
     const data = Object.values(avgs);
@@ -581,13 +563,13 @@ function scoreProportions(
                         "rgba(255, 99, 132, 0.5)",
                         "rgba(54, 162, 235, 0.5)",
                         "rgba(255, 206, 86, 0.5)",
-                        "rgba(75, 192, 192, 0.5)",
+                        "rgba(75, 192, 192, 0.5)"
                     ],
                     borderColor: [
                         "rgba(255, 99, 132, 1)",
                         "rgba(54, 162, 235, 1)",
                         "rgba(255, 206, 86, 1)",
-                        "rgba(75, 192, 192, 1)",
+                        "rgba(75, 192, 192, 1)"
                     ],
                     borderWidth: 1
                 }
@@ -631,12 +613,7 @@ function shotAccuracy(parsed_data: parsedTPWData, team: string): chartConfig {
             datasets: [
                 {
                     label: `${team}`,
-                    data: [
-                        accuracyL1,
-                        accuracyL2,
-                        accuracyL3,
-                        accuracyL4,
-                    ],
+                    data: [accuracyL1, accuracyL2, accuracyL3, accuracyL4],
                     backgroundColor: "rgba(125, 64, 144, 0.5)",
                     borderColor: "rgb(125, 64, 144)",
                     borderWidth: 2
