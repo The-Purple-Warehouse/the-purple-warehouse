@@ -707,17 +707,16 @@ export function parseFormatted(format: string): parsedRow[] {
             match: parseInt(columns[1], 10),
             team: columns[2],
             alliance: columns[3],
-            leave: columns[4] === "true",
-            "left zone": columns[5] === "true",
-            balanced: columns[6] === "true",
-            park: columns[7] == "true",
-            "auto scoring": parseArr(columns[8]).join(", "),
-            "teleop scoring": parseArr(columns[9]).join(", "),
-            "defense time": parseInt(columns[10], 10),
-            scouter: columns[11].replace(/^"|"$/g, ""),
-            comments: columns[12].replace(/^"|"$/g, ""),
-            accuracy: columns[13] ? parseFloat(columns[13]) : "",
-            timestamp: parseInt(columns[14], 10)
+            "left zone": columns[4] === "true",
+            balanced: columns[5] === "true",
+            park: columns[6] == "true",
+            "auto scoring": parseArr(columns[7]).join(", "),
+            "teleop scoring": parseArr(columns[8]).join(", "),
+            "defense time": parseInt(columns[9], 10),
+            scouter: columns[10].replace(/^"|"$/g, ""),
+            comments: columns[11].replace(/^"|"$/g, ""),
+            accuracy: columns[12] ? parseFloat(columns[12]) : "",
+            timestamp: parseInt(columns[13], 10)
         };
     });
 }
@@ -889,6 +888,8 @@ export async function analysis(event, teamNumber) {
         let matchesFull = (await getMatchesFull(event)) as any;
         let allScoutingData = await getAllDataByEvent(event);
         let allParsedData = parseFormatted(allScoutingData);
+        console.log(allScoutingData)
+        console.log(allParsedData)
         let allScoutedTeams = [
             ...new Set(
                 allScoutingData
@@ -975,7 +976,6 @@ export async function analysis(event, teamNumber) {
             return { display: analyzed, data: data }; // return only the rankings
         }
 
-        const graph0 = getGraph(0, allParsedData, teamNumber);
         const graph3 = getGraph(3, allParsedData, teamNumber);
         const graph4 = getGraph(4, allParsedData, teamNumber);
         const graph5 = getGraph(5, allParsedData, teamNumber);
@@ -1042,13 +1042,6 @@ export async function analysis(event, teamNumber) {
         }
 
         data.predictions = predictions;
-
-        analyzed.push({
-            type: "config",
-            category: "score",
-            label: "Fuel Scoring",
-            value: graph0
-        });
         analyzed.push({
             type: "config",
             category: "score",
