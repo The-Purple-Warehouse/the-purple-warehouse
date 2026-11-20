@@ -372,7 +372,7 @@ router.get(
             ctx.body = {
                 success: true,
                 body: {
-                    display: analysis.disp  lay,
+                    display: analysis.display,
                     data: analysis.data
                 }
             };
