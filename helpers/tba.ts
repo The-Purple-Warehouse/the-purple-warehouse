@@ -63,6 +63,10 @@ async function syncEventsCache(year) {
             key: `${year}all-prac`,
             name: "PRACTICE MATCHES"
         });
+        cache.events[year].value.unshift({
+            key: `${year}ma-prac`,
+            name: "M-Ayhem"
+        });
         fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
     } catch (err) {}
 }
@@ -105,6 +109,10 @@ async function syncTeamEventsCache(year, team) {
         cache.teamEvents[year][team].value.unshift({
             key: `${year}all-prac`,
             name: "PRACTICE MATCHES"
+        });
+        cache.teamEvents[year][team].value.unshift({
+            key: `${year}ma-prac`,
+            name: "M-Ayhem"
         });
         fs.writeFileSync("../tbacache.json", JSON.stringify(cache));
     } catch (err) {}
